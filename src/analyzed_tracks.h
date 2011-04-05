@@ -40,9 +40,9 @@ typedef struct sAnalyzedTrack AnalyzedTrack;
 typedef GTree AnalyzedTracks;
 
 /**
-  * @fn int analyzedTrackInit(AnalyzedTrack* psTrack, char* strPath, float fAverage, float fMedian)
+  * @fn int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath, float fAverage, float fMedian)
   * @brief Initialise un morceau alloué.
-  Charge à l'utilisateur d'appeler la fonction analyzedTrackRelease.
+  Charge à l'utilisateur d'appeler la fonction analyzedTrackRelease().
   *
   * @param[in,out] psTrack Pointeur sur le morceau à initialiser
   * @param[in] strPath Chemin vers le fichier (sur le disque)
@@ -63,9 +63,9 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack);
 
 
 /**
-  * @fn AnalyzedTrack* analyzedTrackCreate(char* strPath, float fAverage, float fMedian)
+  * @fn AnalyzedTrack* analyzedTrackCreate(const char* strPath, float fAverage, float fMedian)
   * @brief Alloue un nouveau morceau en mémoire.
-  Charge à l'utilisateur d'appeler la fonction analyzedTrackDestroy.
+  Charge à l'utilisateur d'appeler la fonction analyzedTrackDestroy().
   *
   * @param[in] strPath Chemin vers le fichier (sur le disque)
   * @param[in] fAverage Réel à stocker comme moyenne (0.0 - 1.0)
@@ -87,7 +87,7 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
 
 
 /**
-  * @fn char * analyzedTrackGetPlace (const AnalyzedTrack* psTrack)
+  * @fn char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir l'emplacement du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
@@ -95,15 +95,15 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
   */
 char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTrackSetPlace (const char* strPlace)
+  * @fn int analyzedTrackSetPath 	(AnalyzedTrack* psTrack, const char* strNewPath)
   * @brief Mutateur pour modifier le chemin vers le fichier
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à modifier.
-  * @param[in] strPlace Chemin vers le fichier.
+  * @param[in] strNewPath Chemin vers le fichier.
   * @return EXIT_SUCCESS si tout s'est bien passé.
   */
 int analyzedTrackSetPath (AnalyzedTrack* psTrack,
-						 const char* strPlace);
+						 const char* strNewPath);
 
 
 /**
@@ -115,15 +115,15 @@ int analyzedTrackSetPath (AnalyzedTrack* psTrack,
   */
 float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTrackSetFrequenciesAverage (const AnalyzedTrack* psTrack, float fAverage)
+  * @fn int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack, float fValue)
   * @brief Mutateur pour modifier la valeur de la moyenne des fréquences.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
-  * @param[in] fAverage Le réel à enregistrer.
+  * @param[in] fValue Le réel à enregistrer.
   * @return EXIT_SUCCESS si tout s'est bien passé.
   */
 int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
-									float fAverage);
+									float fValue);
 
 
 /**
@@ -135,15 +135,15 @@ int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
   */
 float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTrackSetFrequenciesMedian (const AnalyzedTrack* psTrack, float fMedian)
+  * @fn int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack, float fValue)
   * @brief Mutateur pour modifier la valeur médiane des fréquences.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @param[in] fMedian Le réel à stocker.
+  * @param[in] fValue Le réel à stocker.
   * @return EXIT_SUCCESS si tout s'est bien passé
   */
 int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack,
-									float fMedian);
+									float fValue);
 
 
 

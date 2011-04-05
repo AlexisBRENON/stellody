@@ -11,7 +11,7 @@
 
 
 /**
-  * @fn int main (int argc, char *argv)
+  * @fn int main (int argc, char* argv[])
   * @brief Fonction exécutée au lancement du programme.
   *
   * @param[in] argc Nombre d'argument donnés au programme (>0)
@@ -19,7 +19,7 @@
   arguments.
   * @return 0 si tout est OK.
   */
-int main (int argc, char *argv[])
+int main (int argc, char* argv[])
 {
 	printf("%d\n", analyzedTrackRegressionTest());
 

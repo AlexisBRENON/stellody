@@ -99,12 +99,12 @@ float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack)
 	return psTrack->fFrequenciesAverage;
 }
 int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
-										float fvalue)
+										float fValue)
 {
 	assert(psTrack != NULL);
-	assert(fvalue >= 0.0 && fvalue <= 1.0);
+	assert(fValue >= 0.0 && fValue <= 1.0);
 
-	psTrack->fFrequenciesAverage = fvalue;
+	psTrack->fFrequenciesAverage = fValue;
 
 	return EXIT_SUCCESS;
 }
@@ -115,12 +115,12 @@ float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack)
 
 	return psTrack->fFrequenciesMedian;
 }
-int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fvalue)
+int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fValue)
 {
 	assert(psTrack != NULL);
-	assert(fvalue >= 0.0 && fvalue <= 1.0);
+	assert(fValue >= 0.0 && fValue <= 1.0);
 
-	psTrack->fFrequenciesMedian = fvalue;
+	psTrack->fFrequenciesMedian = fValue;
 
 	return EXIT_SUCCESS;
 }
