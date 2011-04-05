@@ -33,11 +33,13 @@
 			<Add option="`pkg-config --libs gtk+-2.0`" />
 			<Add option="-export-dynamic" />
 		</Linker>
-		<Unit filename="src/images/icone.png" />
+		<Unit filename="src/analyzed_tracks.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/analyzed_tracks.h" />
 		<Unit filename="src/stellody.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/windows/Window.glade" />
 		<Extensions>
 			<code_completion />
 			<debugger />
