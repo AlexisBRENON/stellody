@@ -43,18 +43,37 @@ typedef GTree AnalyzedTracks;
   * @fn char * analyzedTrackGetPlace (const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir l'emplacement du morceau.
   *
-  * @param psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
   * @return Renvoi le chemin vers le morceau.
   */
-char * analyzedTrackGetPlace (const AnalyzedTrack* psTrack);
+char* analyzedTrackGetPlace (const AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTrackSetPlace (const char* strPlace)
   * @brief Mutateur pour modifier le chemin vers le fichier
   *
-  * @param psTrack Pointeur sur la structure AnalyzedTrack à modifier.
-  * @param strPlace Chemin vers le fichier.
-  * @return 0 si tout c'est bien passé.
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à modifier.
+  * @param[in] strPlace Chemin vers le fichier.
+  * @return 0 si tout s'est bien passé.
   */
-int analyzedTrackSetPlace (const AnalyzedTrack* psTrack, const char* strPlace);
+int analyzedTrackSetPlace (const AnalyzedTrack* psTrack,
+						 const char* strPlace);
+
+/**
+  * @fn float analyzedTrackGetFrequeciesAverage (const AnalyzedTrack* psTrack)
+  * @brief Accesseur pour obtenir la fréquence moyenne du morceau.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+  * @return Renvoi la valeur de la moyenne
+  */
+float analyzedTrackGetFrequeciesAverage (const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetFrequeciesAverage (const AnalyzedTrack* psTrack, float fAverage)
+  * @brief Mutateur pour modifier la valeur de la moyenne des fréquences.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+  * @param[in] fAverage Le réel à enregistrer.
+  * @return 0 si tout s'est bien passé.
+  */
+int analyzedTrackSetFrequeciesAverage (const AnalyzedTrack* psTrack, float fAverage);
 
 #endif /* _ANALYZED_TRACKS_H_ */
