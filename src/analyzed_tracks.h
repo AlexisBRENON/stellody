@@ -9,7 +9,7 @@
 #ifndef _ANALYZED_TRACKS_H_
 #define _ANALYZED_TRACKS_H_
 
-#include <gtk.h>
+#include <gtk/gtk.h>
 
 
 /**
@@ -53,10 +53,11 @@ char* analyzedTrackGetPlace (const AnalyzedTrack* psTrack);
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à modifier.
   * @param[in] strPlace Chemin vers le fichier.
-  * @return 0 si tout s'est bien passé.
+  * @return EXIT_SUCCESS si tout s'est bien passé.
   */
-int analyzedTrackSetPlace (const AnalyzedTrack* psTrack,
+int analyzedTrackSetPlace (AnalyzedTrack* psTrack,
 						 const char* strPlace);
+
 
 /**
   * @fn float analyzedTrackGetFrequeciesAverage (const AnalyzedTrack* psTrack)
@@ -72,8 +73,28 @@ float analyzedTrackGetFrequeciesAverage (const AnalyzedTrack* psTrack);
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
   * @param[in] fAverage Le réel à enregistrer.
-  * @return 0 si tout s'est bien passé.
+  * @return EXIT_SUCCESS si tout s'est bien passé.
   */
-int analyzedTrackSetFrequeciesAverage (const AnalyzedTrack* psTrack, float fAverage);
+int analyzedTrackSetFrequeciesAverage (const AnalyzedTrack* psTrack,
+									float fAverage);
+
+
+/**
+  * @fn float analyzedTrackGetFrequeciesMedian (const AnalyzedTrack* psTrack)
+  * @brief Accesseur pour obtenir la fréquence médiane du morceau.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @return Renvoi la valeur médiane
+  */
+float analyzedTrackGetFrequeciesMedian (const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetFrequeciesMedian (const AnalyzedTrack* psTrack, float fMedian)
+  * @brief Mutateur pour modifier la valeur médiane des fréquences.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @param[in] fMedian Le réel à stocker.
+  * @return EXIT_SUCCESS si tout s'est bien passé
+  */
+int analyzedTrackSetFrequeciesMedian (const AnalyzedTrack* psTrack, float fMedian);
 
 #endif /* _ANALYZED_TRACKS_H_ */

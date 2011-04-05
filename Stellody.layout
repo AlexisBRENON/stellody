@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="src/analyzed_tracks.c" open="1" top="1" tabpos="3">
+		<Cursor position="719" topLine="0" />
+	</File>
+	<File name="src/analyzed_tracks.h" open="1" top="0" tabpos="2">
+		<Cursor position="3338" topLine="68" />
+	</File>
+	<File name="src/stellody.c" open="1" top="0" tabpos="1">
+		<Cursor position="282" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
