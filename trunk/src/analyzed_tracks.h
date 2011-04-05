@@ -93,7 +93,7 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
   * @return Renvoi le chemin vers le morceau.
   */
-char* analyzedTrackGetPlace (const AnalyzedTrack* psTrack);
+char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTrackSetPlace (const char* strPlace)
   * @brief Mutateur pour modifier le chemin vers le fichier
@@ -102,7 +102,7 @@ char* analyzedTrackGetPlace (const AnalyzedTrack* psTrack);
   * @param[in] strPlace Chemin vers le fichier.
   * @return EXIT_SUCCESS si tout s'est bien passé.
   */
-int analyzedTrackSetPlace (AnalyzedTrack* psTrack,
+int analyzedTrackSetPath (AnalyzedTrack* psTrack,
 						 const char* strPlace);
 
 

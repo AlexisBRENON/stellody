@@ -1,28 +1,27 @@
-/** @brief
-
-    @author
-    @file
-*/
+/**
+  * @brief Fichier contenant le <i>main</i>.
+  *
+  * @author STELLODY TEAM
+  * @file stellody.c
+  */
 
 #include <stdio.h>
-#include <string.h>
-#include <gtk/gtk.h>
 
+#include "analyzed_tracks.h"
+
+
+/**
+  * @fn int main (int argc, char *argv)
+  * @brief Fonction exécutée au lancement du programme.
+  *
+  * @param[in] argc Nombre d'argument donnés au programme (>0)
+  * @param[in,out] argv Tableau de chaine de caractères contenant les
+  arguments.
+  * @return 0 si tout est OK.
+  */
 int main (int argc, char *argv[])
 {
-	GtkBuilder *builder = NULL;
-	GtkWidget *window;
-
-	gtk_init(&argc, &argv);
-
-	builder = gtk_builder_new();
-	gtk_builder_add_from_file(builder, "data/windows/Window.glade", NULL);
-	gtk_builder_connect_signals(builder, NULL);
-
-	window = GTK_WIDGET(gtk_builder_get_object(builder, "window1"));
-	gtk_widget_show_all(window);
-
-	gtk_main();
+	printf("%d\n", analyzedTrackRegressionTest());
 
 	return 0;
 }
