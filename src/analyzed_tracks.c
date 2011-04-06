@@ -3,7 +3,7 @@
   *
   * Fichier d'implémentation des structures de morceaux analysés.
   * @author Alexis BRENON in STELLODY TEAM
-  * @file analyzed_tracks.h
+  * @file analyzed_tracks.c
   */
 
 #include <stdlib.h>
