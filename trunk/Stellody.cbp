@@ -26,7 +26,10 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-pedantic" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
+			<Add option="-g" />
 			<Add option="`pkg-config --cflags gtk+-2.0`" />
 		</Compiler>
 		<Linker>
@@ -37,6 +40,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/analyzed_tracks.h" />
+		<Unit filename="src/documentation.h" />
 		<Unit filename="src/stellody.c">
 			<Option compilerVar="CC" />
 		</Unit>
