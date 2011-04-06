@@ -48,7 +48,7 @@ typedef GTree AnalyzedTracks;
   * @param[in] strPath Chemin vers le fichier (sur le disque)
   * @param[in] fAverage Réel à stocker dans l'attribut Average (0 <= x <= 1)
   * @param[in] fMedian Réel à stocker dans l'attribut Median (0 <= x <= 1)
-  * @return Renvoi EXIT_SUCCESS si tout est OK.
+  * @return EXIT_SUCCESS si tout est OK.
   */
 int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath,
 					float fAverage, float fMedian);
@@ -70,7 +70,7 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack);
   * @param[in] strPath Chemin vers le fichier (sur le disque)
   * @param[in] fAverage Réel à stocker comme moyenne (0.0 - 1.0)
   * @param[in] fMedian Réel à stocker comme médiane (0.0 - 1.0)
-  * @return Pointeur sur AnalyzedTrack nouvellement alloué.
+  * @return Pointeur sur AnalyzedTrack nouvellement allouée.
   */
 AnalyzedTrack* analyzedTrackCreate(const char* strPath, float fAverage,
 								float fMedian);
@@ -87,13 +87,13 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
 
 
 /**
-  * @fn char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
+  * @fn const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir l'emplacement du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
-  * @return Renvoi le chemin vers le morceau.
+  * @return Le chemin vers le morceau (chaine de caractères).
   */
-char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
+const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTrackSetPath 	(AnalyzedTrack* psTrack, const char* strNewPath)
   * @brief Mutateur pour modifier le chemin vers le fichier
@@ -111,7 +111,7 @@ int analyzedTrackSetPath (AnalyzedTrack* psTrack,
   * @brief Accesseur pour obtenir la fréquence moyenne du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
-  * @return Renvoi la valeur de la moyenne
+  * @return La valeur de la moyenne des fréquences.
   */
 float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack);
 /**
@@ -131,7 +131,7 @@ int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
   * @brief Accesseur pour obtenir la fréquence médiane du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @return Renvoi la valeur médiane
+  * @return La valeur médiane des fréquences.
   */
 float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack);
 /**

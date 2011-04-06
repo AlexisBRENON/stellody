@@ -71,7 +71,7 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
 	return EXIT_SUCCESS;
 }
 
-char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
+const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
 {
 	assert(psTrack != NULL);
 
