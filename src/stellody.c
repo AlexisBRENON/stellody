@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "analyzed_tracks.h"
+#include "preferences.h"
 
 
 /**
@@ -21,7 +22,7 @@
   */
 int main (int argc, char* argv[])
 {
-	printf("%d\n", analyzedTrackRegressionTest());
+	printf("Returned value : %d\n", preferencesRegressionTest());
 
 	return 0;
 }

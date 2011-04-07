@@ -12,6 +12,13 @@
 #include <gtk/gtk.h>
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*                        Définitions de types                           */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 /**
   * @struct sAnalyzedTrack
   * @brief Structure représentant un morceau analysé.
@@ -36,8 +43,20 @@ typedef struct sAnalyzedTrack AnalyzedTrack;
 /**
   * @typedef AnalyzedTracks
   * @brief Utilisation d'un arbre binaire pour représenter un ensemble de
-  morceaux */
+  morceaux
+  *
+  * Toutes les fonctions sur les Arbres de la bibliothèque GTK sont
+  utilisables avec cette structure.
+  */
 typedef GTree AnalyzedTracks;
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*         Fonctions relatives à la structure AnalyzedTrack              */
+/*                                                                       */
+/* ********************************************************************* */
+
 
 /**
   * @fn int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath, float fAverage, float fMedian)
@@ -145,6 +164,43 @@ float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack);
 int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack,
 									float fValue);
 
+
+/* ********************************************************************* */
+/*                                                                       */
+/*         Fonctions relatives à la structure AnalyzedTracks             */
+/*                                                                       */
+/* ********************************************************************* */
+
+
+/**
+  * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
+										GKeyFile* ppsContext[])
+  * @brief Initialise l'arbre avec les morceaux sauvés.
+  *
+  * @param psTracks Pointeur sur l'arbre à initialiser.
+  * @param ppsContext Tableau des fichiers ouverts.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
+								GKeyFile* ppsContext[]);
+
+/**
+  * @fn AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext)
+  * @brief Charge tous les morceaux sauvés dans un arbre.
+  Charge à l'utilisateur d'appeler analyzedTracksDestroy().
+  *
+  * @param ppsContext Tableau des fichiers ouverts.
+  * @return Un arbre binaire balancé contenant toutes les chansons classées
+  par chemin.
+  */
+AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[]);
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                          Tests de regressions                         */
+/*                                                                       */
+/* ********************************************************************* */
 
 
 /**
