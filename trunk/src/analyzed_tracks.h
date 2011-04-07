@@ -9,6 +9,7 @@
 #ifndef _ANALYZED_TRACKS_H_
 #define _ANALYZED_TRACKS_H_
 
+#include <gtk/gtk.h>
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -36,26 +37,26 @@ typedef GTree AnalyzedTracks;
 
 /**
   * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-										GKeyFile* ppsContext[])
+										const GKeyFile* ppsContext[])
   * @brief Initialise l'arbre avec les morceaux sauvés.
   *
-  * @param psTracks Pointeur sur l'arbre à initialiser.
-  * @param ppsContext Tableau des fichiers ouverts.
+  * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
+  * @param[in] ppsContext Tableau des fichiers ouverts.
   * @return EXIT_SUCCESS si tout est OK
   */
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-								GKeyFile* ppsContext[]);
+								const GKeyFile* ppsContext[]);
 
 /**
-  * @fn AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext)
+  * @fn AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
   * @brief Charge tous les morceaux sauvés dans un arbre.
   Charge à l'utilisateur d'appeler analyzedTracksDestroy().
   *
-  * @param ppsContext Tableau des fichiers ouverts.
+  * @param[in] ppsContext Tableau des fichiers ouverts.
   * @return Un arbre binaire balancé contenant toutes les chansons classées
   par chemin.
   */
-AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[]);
+AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
 
 
 /* ********************************************************************* */

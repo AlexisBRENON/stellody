@@ -4,10 +4,20 @@
   *
   * Module de manipulation des préférences de l'application.
   * @author Alexis BRENON in STELLODY TEAM
+  * @todo Les fonctions de chargement depuis le fichier.
   */
 
 #ifndef _PREFERENCES_H_
 #define _PREFERENCES_H_
+
+#include <gtk/gtk.h>
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                        Définitions de types                           */
+/*                                                                       */
+/* ********************************************************************* */
+
 
 /**
   * @struct sPreferences
@@ -29,6 +39,13 @@ struct sPreferences
 typedef struct sPreferences Preferences;
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*           Fonctions relatives à la structure Preferences              */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 /**
   * @fn int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
   * @brief Initialise les préférences avec les arguments
@@ -41,6 +58,16 @@ typedef struct sPreferences Preferences;
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesInit (Preferences* psPref, int iX, int iY, int iRate);
+/**
+  * @fn int preferencesInitFromFile (Preferences* psPref, const GKeyFile* ppsContext[])
+  * @brief Charge toutes les chansons du fichier DATA dans l'arbre.
+  *
+  * @param[in,out] psPref Pointeur sur l'arbre initialisé
+  * @param[in] ppsContext Tableau des fichiers ouverts
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesInitFromFile (Preferences* psPref,
+							const GKeyFile* ppsContext[]);
 /**
   * @fn int preferencesRelease (Preferences* psPref)
   * @brief Libère les préférences.
@@ -65,6 +92,15 @@ int preferencesRelease (Preferences* psPref);
   * @return Une structure de préférences nouvellement allouée
   */
 Preferences* preferencesCreate (int iX, int iY, int iRate);
+/**
+  * @fn Preferences* preferencesCreateFromFile (const GKeyFile* ppsContext[])
+  * @brief Crée un arbre remplis avec tous les morceau du fichier DATA.
+  *
+  * @param ppsContext Tableau des fichiers ouverts.
+  * @return Une structure de préférences nouvellement allouée et remplie
+  avec les morceaux du fichier DATA
+  */
+Preferences* preferencesCreateFromFile (const GKeyFile* ppsContext[]);
 /**
   * @fn int preferencesDestroy (Preferences** ppsPref)
   * @brief Détruit une structure de préférences.

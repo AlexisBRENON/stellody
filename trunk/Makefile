@@ -10,7 +10,7 @@ SRC_DIR = 		src
 OBJ_DIR = 		obj
 BIN_DIR = 		bin
 EXEC = 			Stellody
-SRCS = 			stellody.c analyzed_tracks.c
+SRCS = 			stellody.c analyzed_track.c analyzed_tracks.c
 OBJS = 			$(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 all : $(EXEC) clean
