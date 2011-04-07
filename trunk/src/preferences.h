@@ -134,4 +134,13 @@ int preferencesGetAnalysisRate (const Preferences* psPref);
 int preferencesSetAnalysisRate (Preferences* psPref, int iValue);
 
 
+/**
+  * @fn int preferencesRegressionTest (void)
+  * @brief Teste toutes les fonctions du module.
+  *
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesRegressionTest (void);
+
+
 #endif /* _PREFERENCES_H_ */

@@ -41,6 +41,10 @@
 		</Unit>
 		<Unit filename="src/analyzed_tracks.h" />
 		<Unit filename="src/documentation.h" />
+		<Unit filename="src/preferences.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/preferences.h" />
 		<Unit filename="src/stellody.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -12,6 +12,13 @@
 #include "analyzed_tracks.h"
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*         Fonctions relatives à la structure AnalyzedTrack              */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath,
 					float fAverage, float fMedian)
 {
@@ -126,11 +133,42 @@ int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fValue)
 }
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*         Fonctions relatives à la structure AnalyzedTracks             */
+/*                                                                       */
+/* ********************************************************************* */
+
+int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
+								GKeyFile* ppsContext[])
+{
+	/** @todo Implémenter la fonction analyzedTracksInitFromFile() avec
+	les fonctions du module files.*/
+	return EXIT_SUCCESS;
+}
+
+
+AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
+{
+	/** @todo Implémenter la fonction analyzedTracksCreateFromFile() avec
+	les fonctions du module files.*/
+
+	return EXIT_SUCCESS;
+}
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                          Tests de regressions                         */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 int analyzedTrackRegressionTest(void)
 {
 	AnalyzedTrack *psTrack = NULL;
 
-	printf("\n\t -- Lancement du test de régression --\n\n");
+	printf("\n\t -- MODULE ANALYZED_TRACKS --\n\n");
 
 	printf("Création d'un morceau...\n");
 	psTrack = analyzedTrackCreate(NULL, 0, 0);
