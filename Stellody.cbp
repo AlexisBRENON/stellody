@@ -36,6 +36,10 @@
 			<Add option="`pkg-config --libs gtk+-2.0`" />
 			<Add option="-export-dynamic" />
 		</Linker>
+		<Unit filename="src/analyzed_track.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/analyzed_track.h" />
 		<Unit filename="src/analyzed_tracks.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -7,6 +7,7 @@
   */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include "analyzed_track.h"
@@ -144,7 +145,7 @@ int analyzedTrackRegressionTest(void)
 {
 	AnalyzedTrack *psTrack = NULL;
 
-	printf("\n\t -- MODULE ANALYZED_TRACKS --\n\n");
+	printf("\n\t -- MODULE ANALYZED_TRACK --\n\n");
 
 	printf("Création d'un morceau...\n");
 	psTrack = analyzedTrackCreate(NULL, 0, 0);

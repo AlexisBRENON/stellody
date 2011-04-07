@@ -4,9 +4,12 @@
   * Fichier d'implémentation des morceaux analysés.
   * @author Alexis BRENON in STELLODY TEAM
   * @file analyzed_tracks.c
+  * @todo Faire chaque fonction !!
   */
 
 #include <stdlib.h>
+
+#include "analyzed_tracks.h"
 
 /* ********************************************************************* */
 /*                                                                       */
