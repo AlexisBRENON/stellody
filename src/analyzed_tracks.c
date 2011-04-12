@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-								GKeyFile* ppsContext[])
+								const GKeyFile* ppsContext[])
 {
 	/** @todo Implémenter la fonction analyzedTracksInitFromFile() avec
 	les fonctions du module files.*/
@@ -26,7 +26,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 }
 
 
-AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
+AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
 {
 	/** @todo Implémenter la fonction analyzedTracksCreateFromFile() avec
 	les fonctions du module files.*/
