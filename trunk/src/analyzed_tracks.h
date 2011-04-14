@@ -49,6 +49,17 @@ typedef GTree AnalyzedTracks;
   */
 int analyzedTracksInit(AnalyzedTracks* psTracks);
 /**
+  * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
+										const GKeyFile* ppsContext[])
+  * @brief Initialise l'arbre avec les morceaux sauvés.
+  *
+  * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
+  * @param[in] ppsContext Tableau des fichiers ouverts.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
+								const GKeyFile* ppsContext[]);
+/**
   * @fn int analyzedTracksRelease(AnalyzedTracks* psTracks)
   * @brief Libère un arbre à morceaux
   *
@@ -65,27 +76,6 @@ int analyzedTracksRelease(AnalyzedTracks* psTracks);
   */
 AnalyzedTracks* analyzedTracksCreate(void);
 /**
-  * @fn int analyzedTracksDestroy(AnalyzedTracks** psTracks);
-  * @brief Détruit un arbre à morceaux.
-  *
-  * @param[in,out] psTracks Pointeur sur le pointeur sur l'arbre à détruire.
-  * @return EXIT_SUCCESS si tout est OK
-  */
-int analyzedTracksDestroy(AnalyzedTracks** psTracks);
-
-/**
-  * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-										const GKeyFile* ppsContext[])
-  * @brief Initialise l'arbre avec les morceaux sauvés.
-  *
-  * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
-  * @param[in] ppsContext Tableau des fichiers ouverts.
-  * @return EXIT_SUCCESS si tout est OK
-  */
-int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-								const GKeyFile* ppsContext[]);
-
-/**
   * @fn AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
   * @brief Charge tous les morceaux sauvés dans un arbre.
   Charge à l'utilisateur d'appeler analyzedTracksDestroy().
@@ -95,6 +85,15 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
   par chemin.
   */
 AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
+/**
+  * @fn int analyzedTracksDestroy(AnalyzedTracks** psTracks);
+  * @brief Détruit un arbre à morceaux.
+  *
+  * @param[in,out] psTracks Pointeur sur le pointeur sur l'arbre à détruire.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksDestroy(AnalyzedTracks** psTracks);
+
 
 /**
   * @fn int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
