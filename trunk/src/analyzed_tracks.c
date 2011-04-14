@@ -68,6 +68,39 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 }
 
 
+int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
+							AnalyzedTrack* psTrack)
+{
+	int iKey;
+	AnalyzedTrack* psTrackInTree;
+
+	assert(psTracks != NULL);
+	assert(psTrack != NULL);
+
+	/* On vérifie que la clé qu'on s'apprette à entrer n'existe pas déja */
+	iKey = analyzedTrackGetTID(psTrack);
+	psTrackInTree = g_tree_search(psTracks,
+								(GCompareFunc) analyzedTrackCompare,
+								&iKey);
+
+	while (psTrackInTree != NULL)
+	{
+		/* Si elle existe déja, on incrémente l'identification et on refait
+		le test */
+		iKey++;
+		psTrackInTree = g_tree_search(psTracks,
+									(GCompareFunc) analyzedTrackCompare,
+									&iKey);
+	}
+
+	/* Lorsque qu'on a trouvé une clé inutilisée, on la sauvegarde et on
+	stocke le morceau dans l'arbre */
+	analyzedTrackSetTID(psTrack, iKey);
+	g_tree_insert(psTracks, &iKey, psTrack);
+
+	return EXIT_SUCCESS;
+}
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Test de regression                          */
