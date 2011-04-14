@@ -28,6 +28,7 @@
   */
 struct sAnalyzedTrack
 {
+	int iTID; /**< Identifiant du morceau (dans l'abre, le Stellarium) */
 	char * strPath; /**< Emplacement du fichier sur l'ordinateur */
 	float fFrequenciesAverage; /**< Réel codant la moyenne des fréquences du morceau */
 	float fFrequenciesMedian; /**< Réel codant la médiane des fréquences */
@@ -47,18 +48,33 @@ typedef struct sAnalyzedTrack AnalyzedTrack;
 
 
 /**
-  * @fn int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath, float fAverage, float fMedian)
+  * @fn int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
+									const char* strPath, float fAverage,
+									float fMedian)
   * @brief Initialise un morceau alloué.
   Charge à l'utilisateur d'appeler la fonction analyzedTrackRelease().
   *
   * @param[in,out] psTrack Pointeur sur le morceau à initialiser
+  * @param[in] iTID Identifiant du morceau
   * @param[in] strPath Chemin vers le fichier (sur le disque)
   * @param[in] fAverage Réel à stocker dans l'attribut Average (0 <= x <= 1)
   * @param[in] fMedian Réel à stocker dans l'attribut Median (0 <= x <= 1)
   * @return EXIT_SUCCESS si tout est OK.
   */
-int analyzedTrackInit(AnalyzedTrack* psTrack, const char* strPath,
-					float fAverage, float fMedian);
+int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
+							const char* strPath, float fAverage,
+							float fMedian);
+/**
+  * @fn int analyzedTrackInit(AnalyzedTrack* psTrack)
+  * @brief Initialise un morceau avec des valeurs pas défauts.
+  *
+  * Initialise le morceau avec un identifiant de valeur 0, un chemin NULL,
+  et les statistiques à 0.
+  *
+  * @param[in,out] psTrack Pointeur sur le morceau à initialiser
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackInit(AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTrackRelease(AnalyzedTrack* psTrack)
   * @brief Libère un morceau initialisé.
@@ -70,17 +86,26 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack);
 
 
 /**
-  * @fn AnalyzedTrack* analyzedTrackCreate(const char* strPath, float fAverage, float fMedian)
+  * @fn AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
+										float fAverage, float fMedian)
   * @brief Alloue un nouveau morceau en mémoire.
   Charge à l'utilisateur d'appeler la fonction analyzedTrackDestroy().
   *
+  * @param[in] iTID Identifiant du morceau
   * @param[in] strPath Chemin vers le fichier (sur le disque)
   * @param[in] fAverage Réel à stocker comme moyenne (0.0 - 1.0)
   * @param[in] fMedian Réel à stocker comme médiane (0.0 - 1.0)
   * @return Pointeur sur AnalyzedTrack nouvellement allouée.
   */
-AnalyzedTrack* analyzedTrackCreate(const char* strPath, float fAverage,
-								float fMedian);
+AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
+										float fAverage, float fMedian);
+/**
+  * @fn AnalyzedTrack* analyzedTrackCreate(void)
+  * @brief Crée un morceau avec des valeurs par défauts.
+  *
+  * @return Un morceau nouvellement alloué.
+  */
+AnalyzedTrack* analyzedTrackCreate(void);
 /**
   * @fn int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
   * @brief Désalloue un morceau en mémoire.
@@ -92,6 +117,26 @@ AnalyzedTrack* analyzedTrackCreate(const char* strPath, float fAverage,
   */
 int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
 
+
+/**
+  * @fn int analyzedTrackGetTID (const AnalyzedTrack* psTrack)
+  * @brief Accesseur sur l'identifiant du morceau.
+  *
+  * @param[in] psTrack Pointeur sur le morceau à accéder.
+  * @return L'identifiant (entier) du morceau
+  */
+int analyzedTrackGetTID (const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetTID (AnalyzedTrack* psTrack,
+						int iValue)
+  * @brief Mutateur sur l'identifiant d'un morceau.
+  *
+  * @param[in,out] psTrack Pointeur sur le morceau à modifier
+  * @param[in] iValue Nouvelle valeur à stocker
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackSetTID (AnalyzedTrack* psTrack,
+						int iValue);
 
 /**
   * @fn const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
