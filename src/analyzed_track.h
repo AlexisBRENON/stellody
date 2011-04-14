@@ -47,6 +47,23 @@ typedef struct sAnalyzedTrack AnalyzedTrack;
 /*                                                                       */
 /* ********************************************************************* */
 
+/**
+  * @fn int analyzedTrackCompare(const int* iTID1,
+						const int* iTID2,
+						void* pData)
+  * @brief Compare les deux entiers pointés.
+  *
+  * Cette fonction est utilisée par le modules AnalyzedTracks pour ordonner
+  les morceaux dans l'arbre.
+  *
+  * @param[in] iTID1 Pointeur sur un entier à comparer
+  * @param[in] iTID2 Pointeur sur le second entier à comparer
+  * @param[in,out] pData Pointeur sur des données supplémentaires (NULL)
+  * @return 0 si les entiers sont égaux, -1 si iTID1<=iTID2, 1 sinon
+  */
+int analyzedTrackCompare(const int* iTID1,
+						const int* iTID2,
+						void* pData);
 
 /**
   * @fn int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,

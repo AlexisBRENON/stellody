@@ -19,40 +19,23 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-/**
-  * @fn int analyzedTrackCompare(const AnalyzedTrack* psTrack1,
-						const AnalyzedTrack* psTrack2,
-						void* data)
-  * @brief Compare deux morceaux via leur identifiant.
-  *
-  * @param[in] psTrack1 Pointeur sur le premier morceau à comparer
-  * @param[in] psTrack2 Pointeur sur le second morceau à comparer
-  * @param[in,out] data Pointeur générique non utilisé (envoyer NULL)
-  * @return 0 si les deux sont égaux, -1 si le premier est avant le second
-  1 si le second est avant le premier
-  */
-int analyzedTrackCompare(const AnalyzedTrack* psTrack1,
-						const AnalyzedTrack* psTrack2,
-						void* data)
+
+int analyzedTrackCompare(const int* iTID1,
+						const int* iTID2,
+						void* pData)
 {
-	int iValue1;
-	int iValue2;
+	assert(iTID1 != NULL);
+	assert(iTID2 != NULL);
 
-	assert(psTrack1 != NULL);
-	assert(psTrack2 != NULL);
-
-	iValue1 = analyzedTrackGetTID(psTrack1);
-	iValue2 = analyzedTrackGetTID(psTrack2);
-
-	if (iValue1 == iValue2)
+	if (*iTID1 == *iTID2)
 	{
 		return 0;
 	}
-	else if (iValue1 <= iValue2)
+	else if (*iTID1 <= *iTID2)
 	{
 		return -1;
 	}
-	else if (iValue1 > iValue2)
+	else if (*iTID1 > *iTID2)
 	{
 		return 1;
 	}
@@ -248,7 +231,7 @@ int analyzedTrackRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Comparaison de morceaux...\n");
-	assert(analyzedTrackCompare(psTrack, &sTrack2, NULL) == 1);
+	assert(analyzedTrackCompare(&(psTrack->iTID), &(sTrack2.iTID), NULL) == 1);
 	printf("\tFAIT !!\n");
 
 	printf("Changement du chemin...\n");

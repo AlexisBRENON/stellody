@@ -4,7 +4,6 @@
   * Fichier d'implémentation des morceaux analysés.
   * @author Alexis BRENON in STELLODY TEAM
   * @file analyzed_tracks.c
-  * @todo Faire chaque fonction !!
   */
 
 #include <stdlib.h>
@@ -44,10 +43,26 @@ int analyzedTracksRelease(AnalyzedTracks* psTracks)
 }
 
 
+AnalyzedTracks* analyzedTracksCreate(void)
+{
+	return g_tree_new_full((GCompareDataFunc) analyzedTrackCompare, NULL,
+							(GDestroyNotify) free,
+							(GDestroyNotify) analyzedTrackDestroy);
+}
 AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
 {
 	/** @todo Implémenter la fonction analyzedTracksCreateFromFile() avec
 	les fonctions du module files.*/
+
+	return EXIT_SUCCESS;
+}
+int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
+{
+	assert(ppsTracks != NULL &&
+			*ppsTracks != NULL);
+
+	g_tree_destroy(*ppsTracks);
+	*ppsTracks = NULL;
 
 	return EXIT_SUCCESS;
 }
