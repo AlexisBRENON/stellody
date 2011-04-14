@@ -10,6 +10,7 @@
 #define _ANALYZED_TRACKS_H_
 
 #include <gtk/gtk.h>
+#include "analyzed_track.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -34,6 +35,43 @@ typedef GTree AnalyzedTracks;
 /*                                                                       */
 /* ********************************************************************* */
 
+/**
+  * @fn int analyzedTracksInit(AnalyzedTracks* psTracks)
+  * @brief Initialise un arbre à morceaux
+  *
+  * Il est recommandé de ne pas utiliser cette fonction mais plutôt
+  analyzedTracksCreate() qui prépare l'arbre à une destruction (appel
+  d'une fonction de destruction des tous les élements de l'arbre avant
+  de détruire l'arbre lui même).
+  *
+  * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int analyzedTracksInit(AnalyzedTracks* psTracks);
+/**
+  * @fn int analyzedTracksRelease(AnalyzedTracks* psTracks)
+  * @brief Libère un arbre à morceaux
+  *
+  * @param[in,out] psTracks Pointeur sur l'arbre à libérer.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int analyzedTracksRelease(AnalyzedTracks* psTracks);
+
+/**
+  * @fn AnalyzedTracks* analyzedTracksCreate(void);
+  * @brief Crée un arbre à morceaux.
+  *
+  * @return Un pointeur sur l'arbre créé.
+  */
+AnalyzedTracks* analyzedTracksCreate(void);
+/**
+  * @fn int analyzedTracksDestroy(AnalyzedTracks** psTracks);
+  * @brief Détruit un arbre à morceaux.
+  *
+  * @param[in,out] psTracks Pointeur sur le pointeur sur l'arbre à détruire.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksDestroy(AnalyzedTracks** psTracks);
 
 /**
   * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
@@ -58,6 +96,58 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
   */
 AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
 
+/**
+  * @fn int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
+									const AnalyzedTrack* psTrack)
+  * @brief Ajoute un morceau dans l'arbre.
+  *
+  * @param[in,out] psTracks Pointeur sur l'arbre à mettre à jour
+  * @param[in] psTrack Pointeur sur le morceau à ajouter.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
+							const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+									const AnalyzedTrack* psTrack)
+  * @brief Supprime un morceau de l'arbre.
+  *
+  * @param[in,out] psTracks Pointeur sur l'arbre à modifier
+  * @param[in] psTrack Pointeur sur le morceau à supprimer
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+							const AnalyzedTrack* psTrack);
+
+/**
+  * @fn const AnalyzedTrack* analyzedTracksGetConstTrack(
+							const AnalyzedTracks* psTracks,
+							int iKey);
+  * @brief Récupère un pointeur constant sur le morceau de clé/coordonnées
+  \em key.
+  *
+  * @param[in] psTracks Pointeur sur l'arbre contenant le morceau
+  * @param[in] iKey Clé/coordonnées du morceau
+  * @return Un pointeur constant sur le morceau ou NULL
+  */
+const AnalyzedTrack* analyzedTracksGetConstTrack(
+							const AnalyzedTracks* psTracks,
+							int iKey);
+/**
+  * @fn AnalyzedTrack* analyzedTracksGetTrack(
+							const AnalyzedTracks* psTracks,
+							int iKey);
+  * @brief Récupère un pointeur sur le morceau de clé/coordonnées
+  \em key.
+  *
+  * @param[in] psTracks Pointeur sur l'arbre contenant le morceau
+  * @param[in] iKey Clé/coordonnées du morceau
+  * @return Un pointeur sur le morceau ou NULL
+  */
+AnalyzedTrack* analyzedTracksGetTrack(
+							const AnalyzedTracks* psTracks,
+							int iKey);
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -65,6 +155,12 @@ AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
 /*                                                                       */
 /* ********************************************************************* */
 
-
+/**
+  * @fn int analyzedTracksRegressionTest (void)
+  * @brief Test de (non-)regression du module AnalyzedTracks.
+  *
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTracksRegressionTest (void);
 
 #endif /* _ANALYZED_TRACKS_H_ */
