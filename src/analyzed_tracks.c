@@ -8,8 +8,11 @@
   */
 
 #include <stdlib.h>
+#include <gtk/gtk.h>
+#include <assert.h>
 
 #include "analyzed_tracks.h"
+#include "analyzed_track.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -17,11 +20,26 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+int analyzedTracksInit(AnalyzedTracks* psTracks)
+{
+	assert(psTracks != NULL);
+
+	return EXIT_SUCCESS;
+}
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 								const GKeyFile* ppsContext[])
 {
 	/** @todo Implémenter la fonction analyzedTracksInitFromFile() avec
 	les fonctions du module files.*/
+	return EXIT_SUCCESS;
+}
+int analyzedTracksRelease(AnalyzedTracks* psTracks)
+{
+	assert(psTracks != NULL);
+
+	g_tree_foreach(psTracks, (GTraverseFunc) analyzedTrackReleaseFromTree,
+					NULL);
+
 	return EXIT_SUCCESS;
 }
 

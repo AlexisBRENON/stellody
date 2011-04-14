@@ -9,6 +9,7 @@
 #ifndef _ANALYZED_TRACK_H_
 #define _ANALYZED_TRACK_H_
 
+#include <gtk/gtk.h>
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -83,6 +84,19 @@ int analyzedTrackInit(AnalyzedTrack* psTrack);
   * @return EXIT_SUCCESS si tout est OK.
   */
 int analyzedTrackRelease(AnalyzedTrack* psTrack);
+/**
+  * @fn gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
+									gpointer pData)
+  * @brief Libère un morceau contenu dans un arbre.
+  * @warning Cette fonction ne doit pas être appelée par l'utilisateur.
+  *
+  * @param[in,out] pKey Pointeur sur la clé du noeud
+  * @param[in,out] pValue Pointeur sur le noeud
+  * @param[in,out] pData Pointeur sur des données utiles (NULL)
+  * @return \b FALSE si tout est OK
+  */
+gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
+									gpointer pData);
 
 
 /**

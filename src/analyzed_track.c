@@ -107,6 +107,15 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack)
 
 	return EXIT_SUCCESS;
 }
+gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
+									gpointer pData)
+{
+	assert(pValue != NULL);
+
+	analyzedTrackRelease(pValue);
+
+	return FALSE;
+}
 
 
 AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
