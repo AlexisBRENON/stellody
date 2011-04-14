@@ -97,15 +97,15 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
 
 /**
   * @fn int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
-									const AnalyzedTrack* psTrack)
+									AnalyzedTrack* psTrack)
   * @brief Ajoute un morceau dans l'arbre.
   *
   * @param[in,out] psTracks Pointeur sur l'arbre à mettre à jour
-  * @param[in] psTrack Pointeur sur le morceau à ajouter.
+  * @param[in,out] psTrack Pointeur sur le morceau à ajouter.
   * @return EXIT_SUCCESS si tout est OK
   */
 int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
-							const AnalyzedTrack* psTrack);
+							AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
 									const AnalyzedTrack* psTrack)
