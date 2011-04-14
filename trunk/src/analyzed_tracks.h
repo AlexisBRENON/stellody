@@ -86,13 +86,13 @@ AnalyzedTracks* analyzedTracksCreate(void);
   */
 AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
 /**
-  * @fn int analyzedTracksDestroy(AnalyzedTracks** psTracks);
+  * @fn int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
   * @brief Détruit un arbre à morceaux.
   *
-  * @param[in,out] psTracks Pointeur sur le pointeur sur l'arbre à détruire.
+  * @param[in,out] ppsTracks Pointeur sur le pointeur sur l'arbre à détruire.
   * @return EXIT_SUCCESS si tout est OK
   */
-int analyzedTracksDestroy(AnalyzedTracks** psTracks);
+int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
 
 
 /**
