@@ -6,6 +6,8 @@
   */
 
 #include <stdio.h>
+#include <fmod.h>
+
 
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
