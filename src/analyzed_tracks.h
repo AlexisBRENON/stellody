@@ -50,15 +50,15 @@ typedef GTree AnalyzedTracks;
 int analyzedTracksInit(AnalyzedTracks* psTracks);
 /**
   * @fn int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-										const GKeyFile* ppsContext[])
+										GKeyFile* ppsContext[])
   * @brief Initialise l'arbre avec les morceaux sauvés.
   *
   * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
-  * @param[in] ppsContext Tableau des fichiers ouverts.
+  * @param[in,out] ppsContext Tableau des fichiers ouverts.
   * @return EXIT_SUCCESS si tout est OK
   */
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-								const GKeyFile* ppsContext[]);
+								GKeyFile* ppsContext[]);
 /**
   * @fn int analyzedTracksRelease(AnalyzedTracks* psTracks)
   * @brief Libère un arbre à morceaux
@@ -76,20 +76,22 @@ int analyzedTracksRelease(AnalyzedTracks* psTracks);
   */
 AnalyzedTracks* analyzedTracksCreate(void);
 /**
-  * @fn AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
+  * @fn AnalyzedTracks* analyzedTracksCreateFromFile (
+												GKeyFile* ppsContext[])
   * @brief Charge tous les morceaux sauvés dans un arbre.
   Charge à l'utilisateur d'appeler analyzedTracksDestroy().
   *
-  * @param[in] ppsContext Tableau des fichiers ouverts.
+  * @param[in,out] ppsContext Tableau des fichiers ouverts.
   * @return Un arbre binaire balancé contenant toutes les chansons classées
   par chemin.
   */
-AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[]);
+AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[]);
 /**
   * @fn int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
   * @brief Détruit un arbre à morceaux.
   *
-  * @param[in,out] ppsTracks Pointeur sur le pointeur sur l'arbre à détruire.
+  * @param[in,out] ppsTracks Pointeur sur le pointeur sur l'arbre à
+  détruire.
   * @return EXIT_SUCCESS si tout est OK
   */
 int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
@@ -120,7 +122,7 @@ int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
 
 /**
   * @fn const AnalyzedTrack* analyzedTracksGetConstTrack(
-							const AnalyzedTracks* psTracks,
+							AnalyzedTracks* psTracks,
 							int iKey);
   * @brief Récupère un pointeur constant sur le morceau de clé/coordonnées
   \em key.
@@ -130,11 +132,11 @@ int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
   * @return Un pointeur constant sur le morceau ou NULL
   */
 const AnalyzedTrack* analyzedTracksGetConstTrack(
-							const AnalyzedTracks* psTracks,
+							AnalyzedTracks* psTracks,
 							int iKey);
 /**
   * @fn AnalyzedTrack* analyzedTracksGetTrack(
-							const AnalyzedTracks* psTracks,
+							AnalyzedTracks* psTracks,
 							int iKey);
   * @brief Récupère un pointeur sur le morceau de clé/coordonnées
   \em key.
@@ -144,7 +146,7 @@ const AnalyzedTrack* analyzedTracksGetConstTrack(
   * @return Un pointeur sur le morceau ou NULL
   */
 AnalyzedTrack* analyzedTracksGetTrack(
-							const AnalyzedTracks* psTracks,
+							AnalyzedTracks* psTracks,
 							int iKey);
 
 

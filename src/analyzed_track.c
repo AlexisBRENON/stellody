@@ -56,7 +56,7 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 	/* Si on lui passe une chaine de caractère (même vide), on la copie.*/
 	if (strPath != NULL)
 	{
-		psTrack->strPath = (char*) malloc(strlen(strPath)*sizeof(char));
+		psTrack->strPath = (char*) malloc((strlen(strPath)+1)*sizeof(char));
 		strcpy(psTrack->strPath, strPath);
 	}
 	else

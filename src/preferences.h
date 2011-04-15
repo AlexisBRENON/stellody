@@ -4,7 +4,6 @@
   *
   * Module de manipulation des préférences de l'application.
   * @author Alexis BRENON in STELLODY TEAM
-  * @todo Les fonctions de chargement depuis le fichier.
   */
 
 #ifndef _PREFERENCES_H_
@@ -47,7 +46,8 @@ typedef struct sPreferences Preferences;
 
 
 /**
-  * @fn int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
+  * @fn int preferencesInit (Preferences* psPref, int iX, int iY,
+							int iRate)
   * @brief Initialise les préférences avec les arguments
   L'appel à preferencesRelease() est facultatif mais recommandé.
   *
@@ -59,15 +59,16 @@ typedef struct sPreferences Preferences;
   */
 int preferencesInit (Preferences* psPref, int iX, int iY, int iRate);
 /**
-  * @fn int preferencesInitFromFile (Preferences* psPref, const GKeyFile* ppsContext[])
+  * @fn int preferencesInitFromFile (Preferences* psPref,
+									GKeyFile* ppsContext[])
   * @brief Charge toutes les chansons du fichier DATA dans l'arbre.
   *
   * @param[in,out] psPref Pointeur sur l'arbre initialisé
-  * @param[in] ppsContext Tableau des fichiers ouverts
+  * @param[in,out] ppsContext Tableau des fichiers ouverts
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesInitFromFile (Preferences* psPref,
-							const GKeyFile* ppsContext[]);
+							GKeyFile* ppsContext[]);
 /**
   * @fn int preferencesRelease (Preferences* psPref)
   * @brief Libère les préférences.
@@ -93,14 +94,14 @@ int preferencesRelease (Preferences* psPref);
   */
 Preferences* preferencesCreate (int iX, int iY, int iRate);
 /**
-  * @fn Preferences* preferencesCreateFromFile (const GKeyFile* ppsContext[])
+  * @fn Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[])
   * @brief Crée un arbre remplis avec tous les morceau du fichier DATA.
   *
-  * @param ppsContext Tableau des fichiers ouverts.
+  * @param[in,out] ppsContext Tableau des fichiers ouverts.
   * @return Une structure de préférences nouvellement allouée et remplie
   avec les morceaux du fichier DATA
   */
-Preferences* preferencesCreateFromFile (const GKeyFile* ppsContext[]);
+Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[]);
 /**
   * @fn int preferencesDestroy (Preferences** ppsPref)
   * @brief Détruit une structure de préférences.
@@ -168,6 +169,13 @@ int preferencesGetAnalysisRate (const Preferences* psPref);
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesSetAnalysisRate (Preferences* psPref, int iValue);
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                           Test de regression                          */
+/*                                                                       */
+/* ********************************************************************* */
 
 
 /**
