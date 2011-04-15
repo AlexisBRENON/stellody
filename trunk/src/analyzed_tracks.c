@@ -12,6 +12,7 @@
 
 #include "analyzed_tracks.h"
 #include "analyzed_track.h"
+#include "files.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -26,10 +27,51 @@ int analyzedTracksInit(AnalyzedTracks* psTracks)
 	return EXIT_SUCCESS;
 }
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
-								const GKeyFile* ppsContext[])
+								GKeyFile* ppsContext[])
 {
-	/** @todo Implémenter la fonction analyzedTracksInitFromFile() avec
-	les fonctions du module files.*/
+	gsize ulNbTracks;
+	gchar** strGroups;
+	int iTID;
+	char* strPath;
+	float fAverage, fMedian;
+	AnalyzedTrack* psTrack;
+
+	int i;
+
+	assert(psTracks != NULL);
+	assert(ppsContext != NULL);
+
+	psTrack = analyzedTrackCreate();
+
+	/* Récupère l'ensemble des noms des groupes */
+	strGroups = g_key_file_get_groups(ppsContext[DATA], &ulNbTracks);
+
+	/* Chaque groupe correspond à un morceau. On les charge tous. */
+	for (i = 0; strGroups[i] != NULL; i++)
+	{
+		/* On récupère toutes les données relatives au morceau */
+		iTID = g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "iTID", NULL);
+		strPath = g_key_file_get_string(ppsContext[DATA],
+										strGroups[i], "strPath", NULL);
+		fAverage = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fAverage", NULL);
+		fMedian = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fMedian", NULL);
+		/* On initialise le morceau avec les bonnes valeurs */
+		analyzedTrackInitWithData(psTrack, iTID, strPath,
+									fAverage, fMedian);
+		/* On le stocke dans l'arbre */
+		analyzedTracksInsertTrack(psTracks, psTrack);
+
+		/* On libère ce qui est contenu dans le morceau (pour laisser la
+		place au prochain chargement */
+		analyzedTrackRelease(psTrack);
+		free(strPath);
+	}
+
+	analyzedTrackDestroy(&psTrack);
+
 	return EXIT_SUCCESS;
 }
 int analyzedTracksRelease(AnalyzedTracks* psTracks)
@@ -49,10 +91,14 @@ AnalyzedTracks* analyzedTracksCreate(void)
 							(GDestroyNotify) free,
 							(GDestroyNotify) analyzedTrackDestroy);
 }
-AnalyzedTracks* analyzedTracksCreateFromFile (const GKeyFile* ppsContext[])
+AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
-	/** @todo Implémenter la fonction analyzedTracksCreateFromFile() avec
-	les fonctions du module files.*/
+	AnalyzedTracks* psTracks;
+
+	assert(ppsContext != NULL);
+
+	psTracks = analyzedTracksCreate();
+	analyzedTracksInitFromFile(psTracks, ppsContext);
 
 	return EXIT_SUCCESS;
 }
@@ -101,9 +147,42 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 	return EXIT_SUCCESS;
 }
 
+int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+							const AnalyzedTrack* psTrack)
+{
+	assert(psTracks != NULL);
+	assert(psTrack != NULL);
+
+	g_tree_remove(psTracks, &(psTrack->iTID));
+
+	return EXIT_SUCCESS;
+}
+
+const AnalyzedTrack* analyzedTracksGetConstTrack(
+									AnalyzedTracks* psTracks,
+									int iKey)
+{
+	assert(psTracks != NULL);
+
+	return g_tree_search(psTracks, (GCompareFunc) analyzedTrackCompare,
+						&iKey);
+}
+
+AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
+									int iKey)
+{
+	assert (psTracks != NULL);
+
+	return g_tree_search(psTracks, (GCompareFunc) analyzedTrackCompare,
+						&iKey);
+}
+
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Test de regression                          */
 /*                                                                       */
 /* ********************************************************************* */
+
+
 

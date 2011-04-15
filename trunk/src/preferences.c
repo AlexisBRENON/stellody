@@ -11,6 +11,14 @@
 #include <assert.h>
 
 #include "preferences.h"
+#include "files.h"
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*           Fonctions relatives à la structure Preferences              */
+/*                                                                       */
+/* ********************************************************************* */
 
 
 int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
@@ -21,6 +29,27 @@ int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
 	psPref->iAnalysisRate = iRate;
 	psPref->iWindowXSize = iX;
 	psPref->iWindowYSize = iY;
+
+	return EXIT_SUCCESS;
+}
+int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
+{
+	int iRate, iXSize, iYSize;
+
+	assert (psPref != NULL);
+	assert (ppsContext != NULL);
+
+	iRate = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iAnalysisRate", NULL);
+	iXSize = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iWindowXSize", NULL);
+	iYSize = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iWindowYSize", NULL);
+
+	preferencesInit(psPref, iXSize, iYSize, iRate);
 
 	return EXIT_SUCCESS;
 }
@@ -44,6 +73,24 @@ Preferences* preferencesCreate (int iX, int iY, int iRate)
 	preferencesInit(psPref, iX, iY, iRate);
 
 	return psPref;
+}
+Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[])
+{
+	int iRate, iXSize, iYSize;
+
+	assert (ppsContext != NULL);
+
+	iRate = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iAnalysisRate", NULL);
+	iXSize = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iWindowXSize", NULL);
+	iYSize = g_key_file_get_integer(ppsContext[CONFIG],
+									"DEFAULT",
+									"iWindowYSize", NULL);
+
+	return preferencesCreate(iXSize, iYSize, iRate);
 }
 int preferencesDestroy (Preferences** ppsPref)
 {
@@ -104,6 +151,13 @@ int preferencesSetAnalysisRate (Preferences* psPref, int iValue)
 
 	return EXIT_SUCCESS;
 }
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                           Test de regression                          */
+/*                                                                       */
+/* ********************************************************************* */
 
 
 int preferencesRegressionTest (void)
