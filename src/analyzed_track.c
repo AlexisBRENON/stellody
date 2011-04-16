@@ -21,23 +21,37 @@
 
 
 int analyzedTrackCompare(const int* iTID1,
+						const int* iTID2)
+{
+	assert(iTID1 != NULL &&
+			iTID2 != NULL);
+
+	return analyzedTrackDataCompare(iTID1, iTID2, NULL);
+}
+int analyzedTrackDataCompare(const int* iTID1,
 						const int* iTID2,
 						void* pData)
 {
 	assert(iTID1 != NULL);
 	assert(iTID2 != NULL);
 
-	if (*iTID1 == *iTID2)
+	if (pData == NULL)
 	{
-		return 0;
-	}
-	else if (*iTID1 <= *iTID2)
-	{
-		return -1;
-	}
-	else if (*iTID1 > *iTID2)
-	{
-		return 1;
+		if (*iTID1 == *iTID2)
+		{
+			return 0;
+		}
+		else if (*iTID1 <= *iTID2)
+		{
+			return -1;
+		}
+		else if (*iTID1 > *iTID2)
+		{
+			return 1;
+		}
+	} else {
+		printf("pData != 0 !!!!!!!\n");
+		printf("*pData = %d", *((int* )pData));
 	}
 
 	return EXIT_FAILURE;
@@ -231,7 +245,7 @@ int analyzedTrackRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Comparaison de morceaux...\n");
-	assert(analyzedTrackCompare(&(psTrack->iTID), &(sTrack2.iTID), NULL) == 1);
+	assert(analyzedTrackCompare(&(psTrack->iTID), &(sTrack2.iTID)) == 1);
 	printf("\tFAIT !!\n");
 
 	printf("Changement du chemin...\n");

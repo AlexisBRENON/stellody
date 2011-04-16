@@ -3,12 +3,13 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkListStore" id="liststore1"/>
-  <object class="GtkWindow" id="window1">
+  <object class="GtkWindow" id="window">
     <property name="title" translatable="yes">Stellody</property>
+    <property name="window_position">mouse</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">../images/icone.png</property>
+    <property name="icon">../data/images/icone_png.png</property>
     <property name="icon_name">Stellody</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
@@ -84,7 +85,6 @@
                 <child type="submenu">
                   <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
-                    
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem6">
                         <property name="label">gtk-cut</property>
