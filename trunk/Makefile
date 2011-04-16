@@ -1,10 +1,10 @@
 CC =			gcc
 
-CFLAGS = 		-Wall -pedantic -ansi -g -m32 -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
-LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa
+OS = LINUX
+#OS = MAC
 
-GTK_CFLAGS = 	`pkg-config --libs --cflags gtk+-2.0`
-GTK_LDFLAGS = 	
+GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
+GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`		
 
 SRC_DIR = 		src
 OBJ_DIR = 		obj
@@ -16,7 +16,15 @@ SRCS = 			stellody.c \
 				preferences.c
 OBJS = 			$(SRCS:%.c=$(OBJ_DIR)/%.o)
 
-all Ê: $(EXEC)
+ifeq($(OS),LINUX)
+	CFLAGS = 		-Wall -pedantic -ansi -g
+	LDFLAGS =		-export-dynamic
+endif
+ifeq($(OS),MAC)
+	CFLAGS = 		-Wall -pedantic -ansi -g -m32 -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
+	LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa
+endif
+
 
 $(EXEC) : $(OBJS)
 	@echo ""
