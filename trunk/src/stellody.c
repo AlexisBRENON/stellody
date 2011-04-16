@@ -6,7 +6,8 @@
   */
 
 #include <stdio.h>
-#include <fmod.h>
+#include <string.h>
+/*#include <fmod.h>*/
 
 
 #include "analyzed_track.h"
@@ -25,7 +26,25 @@
   */
 int main (int argc, char* argv[])
 {
-	printf("Returned value : %d\n", analyzedTrackRegressionTest());
+	GtkBuilder* builder = NULL;
+	GtkWidget* win = NULL;
+
+	if (argc > 1 && strcmp(argv[1], "-x") == 0)
+	{
+		gtk_init(&argc, &argv);
+
+		gtk_builder_add_from_file(builder, "data/windows/Window.glade",
+									NULL);
+		gtk_builder_connect_signals(builder, NULL);
+
+		win = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
+		gtk_widget_show_all(win);
+		gtk_main();
+	}
+	else
+	{
+		printf("Returned value : %d\n", analyzedTracksRegressionTest());
+	}
 
 	return 0;
 }

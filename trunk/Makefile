@@ -1,7 +1,7 @@
 CC =			gcc
 
-OS = LINUX
-#OS = MAC
+OS =			LINUX
+#OS =			MAC
 
 GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
 GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`		
@@ -16,11 +16,11 @@ SRCS = 			stellody.c \
 				preferences.c
 OBJS = 			$(SRCS:%.c=$(OBJ_DIR)/%.o)
 
-ifeq($(OS),LINUX)
+ifeq ($(OS),LINUX)
 	CFLAGS = 		-Wall -pedantic -ansi -g
 	LDFLAGS =		-export-dynamic
 endif
-ifeq($(OS),MAC)
+ifeq ($(OS),MAC)
 	CFLAGS = 		-Wall -pedantic -ansi -g -m32 -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
 	LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa
 endif
