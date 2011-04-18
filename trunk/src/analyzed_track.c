@@ -141,7 +141,6 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
 	return EXIT_SUCCESS;
 }
 
-
 int analyzedTrackGetTID (const AnalyzedTrack* psTrack)
 {
 	assert(psTrack != NULL);
