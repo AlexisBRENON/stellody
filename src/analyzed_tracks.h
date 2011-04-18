@@ -40,9 +40,7 @@ typedef GTree AnalyzedTracks;
   * @brief Initialise un arbre à morceaux
   *
   * Il est recommandé de ne pas utiliser cette fonction mais plutôt
-  analyzedTracksCreate() qui prépare l'arbre à une destruction (appel
-  d'une fonction de destruction des tous les élements de l'arbre avant
-  de détruire l'arbre lui même).
+  analyzedTracksCreate().
   *
   * @param[in,out] psTracks Pointeur sur l'arbre à initialiser.
   * @return EXIT_SUCCESS si tout est OK.
@@ -90,6 +88,9 @@ AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[]);
   * @fn int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
   * @brief Détruit un arbre à morceaux.
   *
+  * @warning Les morceaux contenus dans l'arbre ne sont pas détruits.
+  L'utilisateur doit le faire lui-même.
+  *
   * @param[in,out] ppsTracks Pointeur sur le pointeur sur l'arbre à
   détruire.
   * @return EXIT_SUCCESS si tout est OK
@@ -109,16 +110,16 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
 int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 							AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-									const AnalyzedTrack* psTrack)
-  * @brief Supprime un morceau de l'arbre.
+  * @fn AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+												AnalyzedTrack* psTrack)
+  * @brief Enlève un morceau de l'arbre.
   *
   * @param[in,out] psTracks Pointeur sur l'arbre à modifier
-  * @param[in] psTrack Pointeur sur le morceau à supprimer
-  * @return EXIT_SUCCESS si tout est OK
+  * @param[in,out] psTrack Pointeur sur le morceau à supprimer
+  * @return L'adresse du morceau enlevé (penser à libérer le morceau)
   */
-int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-							const AnalyzedTrack* psTrack);
+AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+							AnalyzedTrack* psTrack);
 
 /**
   * @fn const AnalyzedTrack* analyzedTracksGetConstTrack(

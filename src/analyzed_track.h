@@ -50,7 +50,7 @@ typedef struct sAnalyzedTrack AnalyzedTrack;
 
 
 /**
-  * @fn int analyzedTrackDCompare(const int* iTID1,
+  * @fn int analyzedTrackCompare(const int* iTID1,
 						const int* iTID2)
   * @brief Compare les deux entiers pointés.
   *
@@ -165,7 +165,6 @@ AnalyzedTrack* analyzedTrackCreate(void);
   * @return EXIT_SUCCESS si tout est OK.
   */
 int analyzedTrackDestroy(AnalyzedTrack** ppsTrack);
-
 
 /**
   * @fn int analyzedTrackGetTID (const AnalyzedTrack* psTrack)

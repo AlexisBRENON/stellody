@@ -4,7 +4,6 @@
   * Fichier d'implémentation des morceaux analysés.
   * @author Alexis BRENON in STELLODY TEAM
   * @file analyzed_tracks.c
-  * @bug Fonction d'insertion buggue, pour plus d'une chanson ^^'
   */
 
 #include <stdlib.h>
@@ -91,7 +90,7 @@ AnalyzedTracks* analyzedTracksCreate(void)
 {
 	return g_tree_new_full((GCompareDataFunc) analyzedTrackDataCompare, NULL,
 							(GDestroyNotify) free,
-							(GDestroyNotify) analyzedTrackDestroy);
+							NULL);
 }
 AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
@@ -119,46 +118,54 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 							AnalyzedTrack* psTrack)
 {
-	int iKey = 0;
+	int iTID = 0, iNewTID = 0;
 	AnalyzedTrack* psTrackInTree = NULL;
+	int *piKey = NULL;
 
 	assert(psTracks != NULL);
 	assert(psTrack != NULL);
 
+	piKey = (int*) malloc(sizeof(int));
+
 	/* On vérifie que la clé qu'on s'apprette à entrer n'existe pas déja */
-	iKey = analyzedTrackGetTID(psTrack);
+	iTID = analyzedTrackGetTID(psTrack);
+	iNewTID = iTID;
 	psTrackInTree = g_tree_search(psTracks,
 								(GCompareFunc) analyzedTrackCompare,
-								&iKey);
+								&iTID);
 
 	while (psTrackInTree != NULL)
 	{
 		/* Si elle existe déja, on incrémente l'identification et on refait
 		le test */
-		iKey++;
-		psTrackInTree = NULL;
+		iNewTID++;
 		psTrackInTree = g_tree_search(psTracks,
 									(GCompareFunc) analyzedTrackCompare,
-									&iKey);
+									&iNewTID);
 	}
 
 	/* Lorsque qu'on a trouvé une clé inutilisée, on la sauvegarde et on
 	stocke le morceau dans l'arbre */
-	analyzedTrackSetTID(psTrack, iKey);
-	g_tree_insert(psTracks, &iKey, psTrack);
+	if (iTID != iNewTID)
+	{
+		analyzedTrackSetTID(psTrack, iNewTID);
+	}
+
+	*piKey = iNewTID;
+	g_tree_insert(psTracks, piKey, psTrack);
 
 	return EXIT_SUCCESS;
 }
 
-int analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-							const AnalyzedTrack* psTrack)
+AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
+										AnalyzedTrack* psTrack)
 {
 	assert(psTracks != NULL);
 	assert(psTrack != NULL);
 
 	g_tree_remove(psTracks, &(psTrack->iTID));
 
-	return EXIT_SUCCESS;
+	return psTrack;
 }
 
 const AnalyzedTrack* analyzedTracksGetConstTrack(
@@ -203,24 +210,23 @@ int analyzedTracksRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Ajout de morceaux à l'arbre...\n");
-	psTrack1 = analyzedTrackCreateWithData(2, "test1", 0.0, 0.0);
+	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0.0, 0.0);
 	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0.0, 0.0);
 	printf("\t\tLes deux identifiants sont à 1...\n");
 	assert(psTrack1 != NULL &&
 			psTrack2 != NULL);
 	analyzedTracksInsertTrack(psTracks, psTrack1);
 	analyzedTracksInsertTrack(psTracks, psTrack2);
-	printf("\t\tL'identifiant du second morceau vaut maintenant : %d",
+	printf("\t\tL'identifiant du second morceau vaut maintenant : %d\n",
 			analyzedTrackGetTID(psTrack2));
 	assert(g_tree_nnodes(psTracks) == 2);
 	assert(analyzedTrackGetTID(psTrack2) == 2);
 	printf("\tFAIT !!\n");
 
 	printf("Suppression d'un morceau...\n");
-	printf("\t\tAttention, détruit le morceau enlevé...\n");
 	analyzedTracksRemoveTrack(psTracks, psTrack1);
 	assert(g_tree_nnodes(psTracks) == 1);
-	assert(psTrack1 == NULL);
+	assert(psTrack1 != NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Modification d'une valeur d'un morceau...\n");
@@ -241,12 +247,14 @@ int analyzedTracksRegressionTest(void)
 
 	printf("Destruction de l'arbre...\n");
 	analyzedTracksDestroy(&psTracks);
-	assert(psTrack2 == NULL);
 	assert(psTracks == NULL);
+	assert(psTrack1 != NULL);
+	assert(psTrack2 != NULL);
+	analyzedTrackDestroy(&psTrack1);
+	analyzedTrackDestroy(&psTrack2);
+	assert(psTrack1 == NULL);
+	assert(psTrack2 == NULL);
 	printf("\tFAIT !!\n");
-
-	assert(psTrackGet == NULL &&
-			psTrackSet == NULL);
 
 	printf("\n\t-- Fin des tests --\n");
 
