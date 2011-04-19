@@ -1,5 +1,5 @@
 /**
-  * @brief Fichier contenant le <i>main</i>.
+  * @brief Fichier contenant le \em main.
   *
   * @author STELLODY TEAM
   * @file stellody.c
@@ -18,6 +18,7 @@
 #include "analyzed_tracks.h"
 #include "preferences.h"
 #include "opengl_drawing.h"
+#include "files.h"
 
 
 /**
@@ -34,8 +35,6 @@ int main (int argc, char* argv[])
 	GtkBuilder* builder = NULL;
 	GtkWidget* win = NULL;
 
-	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
-
 	if (argc > 1 && strcmp(argv[1], "-x") == 0)
 	{
 		gtk_init(&argc, &argv);
@@ -50,13 +49,10 @@ int main (int argc, char* argv[])
 	}
 	else
 	{
-		printf("Returned value : %d\n", analyzedTracksRegressionTest());
+		printf("Returned value : %d\n", filesRegressionTest());
 	}
-	
-	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
 
-	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(
-													&argc, argv));
+	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
 
 	return 0;
 }

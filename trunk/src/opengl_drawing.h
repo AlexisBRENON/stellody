@@ -1,7 +1,6 @@
 /**
- * @brief Entête de Tests OpenGL
+ * @brief Fichier d'entête du module \em OpenGLDrawing.
  *
- * Fichier d'entête des tests faits pour OpenGL.
  * @author Matthieu VIDAL in STELLODY TEAM
  * @file opengl_drawing.h
  */
