@@ -108,8 +108,10 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 	assert(ppsTracks != NULL &&
 			*ppsTracks != NULL);
 
+	printf("Libération\n");
 	g_tree_destroy(*ppsTracks);
 	*ppsTracks = NULL;
+	printf("FAIT !\n");
 
 	return EXIT_SUCCESS;
 }
@@ -158,12 +160,19 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 }
 
 AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-										AnalyzedTrack* psTrack)
+										int iKey)
 {
-	assert(psTracks != NULL);
-	assert(psTrack != NULL);
+	AnalyzedTrack* psTrack = NULL;
 
-	g_tree_remove(psTracks, &(psTrack->iTID));
+	assert(psTracks != NULL);
+	assert(iKey > -1);
+
+	psTrack = analyzedTracksGetTrack(psTracks, iKey);
+
+	if (psTrack != NULL)
+	{
+		g_tree_remove(psTracks, &(psTrack->iTID));
+	}
 
 	return psTrack;
 }
@@ -224,7 +233,7 @@ int analyzedTracksRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Suppression d'un morceau...\n");
-	analyzedTracksRemoveTrack(psTracks, psTrack1);
+	analyzedTracksRemoveTrack(psTracks, psTrack1->iTID);
 	assert(g_tree_nnodes(psTracks) == 1);
 	assert(psTrack1 != NULL);
 	printf("\tFAIT !!\n");

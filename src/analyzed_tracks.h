@@ -111,15 +111,15 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 							AnalyzedTrack* psTrack);
 /**
   * @fn AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-												AnalyzedTrack* psTrack)
+												int iKey)
   * @brief Enlève un morceau de l'arbre.
   *
   * @param[in,out] psTracks Pointeur sur l'arbre à modifier
-  * @param[in,out] psTrack Pointeur sur le morceau à supprimer
+  * @param[in] iKey Clé/identifiant du morceau à supprimer.
   * @return L'adresse du morceau enlevé (penser à libérer le morceau)
   */
 AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
-							AnalyzedTrack* psTrack);
+									int iKey);
 
 /**
   * @fn const AnalyzedTrack* analyzedTracksGetConstTrack(
