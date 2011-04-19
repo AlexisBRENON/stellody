@@ -79,7 +79,7 @@ typedef struct sPoint Point;
  *
  * @return EXIT_SUCCESS si tout est OK
  */
-int testOpenGLRegressionTest(int * argc, char * argv[]) ;
+int OpenGLDrawingRegressionTest(int * argc, char * argv[]) ;
 
 
 #endif

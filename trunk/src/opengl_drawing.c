@@ -397,7 +397,7 @@ static void reshape(int iWidth, int iHeight)
 /* ********************************************************************* */
 
 
-int testOpenGLRegressionTest(int * argc, char * argv[])
+int OpenGLDrawingRegressionTest(int * argc, char * argv[])
 {	
 	printf("\n Test de régression OpenGL_drawing...\n");
 	

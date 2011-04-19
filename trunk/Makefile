@@ -1,7 +1,7 @@
 CC =			gcc
 
-OS =			LINUX
-#OS =			MAC
+#OS =			LINUX
+OS =			MAC
 
 GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
 GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`		
