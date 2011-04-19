@@ -9,7 +9,6 @@
 #include <string.h>
 /*#include <fmod.h>*/
 
-
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
 #include "preferences.h"
@@ -28,7 +27,8 @@ int main (int argc, char* argv[])
 {
 	GtkBuilder* builder = NULL;
 	GtkWidget* win = NULL;
-
+	printf("Returned value : %d\n", testOpenGLRegressionTest(&argc, argv));
+	
 	if (argc > 1 && strcmp(argv[1], "-x") == 0)
 	{
 		gtk_init(&argc, &argv);
