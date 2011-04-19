@@ -33,13 +33,9 @@ int main (int argc, char* argv[])
 {
 	GtkBuilder* builder = NULL;
 	GtkWidget* win = NULL;
-<<<<<<< .mine
 
-=======
-	
->>>>>>> .r35
 	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
-	
+
 	if (argc > 1 && strcmp(argv[1], "-x") == 0)
 	{
 		gtk_init(&argc, &argv);
