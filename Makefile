@@ -4,7 +4,9 @@ OS =			LINUX
 #OS =			MAC
 
 GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
-GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`		
+GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`
+GL_CFLAGS = 	`pkg-config --cflags gl glu`
+GL_LDFLAGS = 	`pkg-config --libs gl glu`		
 
 SRC_DIR = 		src
 OBJ_DIR = 		obj
@@ -14,12 +16,13 @@ SRCS = 			stellody.c \
 			analyzed_track.c \
 			analyzed_tracks.c \
 			preferences.c \
-			opengl_drawing.c
+			opengl_drawing.c \
+			files.c
 OBJS = 			$(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 ifeq ($(OS),LINUX)
 	CFLAGS = 		-Wall -pedantic -ansi -g
-	LDFLAGS =		-export-dynamic
+	LDFLAGS =		-export-dynamic -lglut
 endif
 ifeq ($(OS),MAC)
 	CFLAGS = 		-Wall -pedantic -ansi -m32 -g -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
@@ -29,10 +32,10 @@ endif
 
 $(EXEC) : $(OBJS)
 	@echo ""
-	$(CC) $(LDFLAGS) $(GTK_LDFLAGS) $^ -o $(BIN_DIR)/$@
+	$(CC) $(LDFLAGS) $(GTK_LDFLAGS) $(GL_LDFLAGS) $^ -o $(BIN_DIR)/$@
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	$(CC) -c $(CFLAGS) $(GTK_CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(GTK_CFLAGS) $(GL_CFLAGS) $< -o $@
 
 .PHONY: clean mrproper help
 

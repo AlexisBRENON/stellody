@@ -1,7 +1,6 @@
 /**
- * @brief Implémentation des fonctions OpenGL
+ * @brief Fichier d'implémentation du module \em OpenGLDrawing
  *
- * Fichier d'implémentation des tests OpenGL.
  * @author Matthieu VIDAL in STELLODY TEAM
  * @file opengl_drawing.c
  */
@@ -19,6 +18,10 @@
 #include <assert.h>
 #include "opengl_drawing.h"
 
+
+#ifndef M_PI
+	#define M_PI 3.14159
+#endif
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -46,21 +49,21 @@ static void SphereColour (float alpha, float beta,
 						  float * pfr, float * pfv, float * pfb)
 {
 	/* float gamma = 0 ; */
-	 
+
 	float fLight = 0 ;
 	float fColor = 0 ;
-	
+
 	fLight = 1 - exp((-3) * (y+1)/2) ;
 	fColor = exp((-3) * (y+1)/2) ;
-	
+
 	*pfr = fLight ;
 	*pfv = fLight ;
 	*pfb = fLight ;
-	
-	/* 
-	 
+
+	/*
+
 	Parcours des couleurs verticalement.
-	
+
 	if (y >= 0)
 	{
 		if (y < 0.5)
@@ -76,9 +79,9 @@ static void SphereColour (float alpha, float beta,
 	{
 		r = 0 ;
 	}
-	
+
 	if (y < -0.5 || y > 0.5)
-	{	
+	{
 		v = 0 ;
 	}
 	else
@@ -90,9 +93,9 @@ static void SphereColour (float alpha, float beta,
 		else
 		{
 			v = fLight * fabs(1 - 2*y) ;
-		}	
+		}
 	}
-	
+
 	if (y <= 0)
 	{
 		if (y < -0.5)
@@ -108,22 +111,22 @@ static void SphereColour (float alpha, float beta,
 	{
 		b = 0 ;
 	}
-	 
+
 	Parcours horizontal, avec tous les bugs que ça implique...
-	
+
 	if (alpha <= 0)
 	{
 		gamma = beta ;
-		
+
 		if (beta <= pi)
 		{
-			beta = beta + pi ;				
+			beta = beta + pi ;
 		}
 		else
 		{
 			beta = beta - pi ;
 		}
-		
+
 		if (beta <= 2*pi/3 || beta >= 4*pi/3)
 		{
 			if (beta  <= 2*pi/3)
@@ -139,7 +142,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			r = 0 ;
 		}
-		
+
 		if (beta <= 4*pi/3 || beta >= 0)
 		{
 			if (beta  <= 2*pi/3)
@@ -155,7 +158,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			v = 0 ;
 		}
-		
+
 		if (beta <= 2*pi || beta >= 2*pi/3)
 		{
 			if (beta  <= 4*pi/3)
@@ -171,7 +174,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			b = 0 ;
 		}
-		
+
 		beta = gamma ;
 	}
 	else
@@ -191,7 +194,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			r = 0 ;
 		}
-		
+
 		if (beta <= 4*pi/3 || beta >= 0)
 		{
 			if (beta  <= 2*pi/3)
@@ -207,7 +210,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			v = 0 ;
 		}
-		
+
 		if (beta <= 2*pi || beta >= 2*pi/3)
 		{
 			if (beta  <= 4*pi/3)
@@ -237,18 +240,18 @@ static void drawSphere(void)
 	float z1 = 0 ;
 	float x2 = 0 ;
 	float y2 = 0 ;
-	float z2 = 0 ;	
+	float z2 = 0 ;
 	float r = 0 ;
 	float v = 0 ;
 	float b = 0 ;
 	double step = 2*M_PI / (32) ;
-	
+
 
 	for (alpha = -M_PI ; alpha <= M_PI ; alpha = alpha + step)
 	{
-		
+
 		glBegin(GL_TRIANGLE_STRIP) ;
-		
+
 		for (beta = 0 ; beta < 2*M_PI ; beta = beta + step)
 		{
 			x1 = cos (alpha) * cos (beta) ;
@@ -257,17 +260,17 @@ static void drawSphere(void)
 			x2 = cos (alpha + step) * cos (beta + step) ;
 			y2 = sin (alpha + step) ;
 			z2 = cos (alpha + step) * sin (beta + step) ;
-			
+
 			SphereColour(alpha, beta, x1, y1, z1, &r, &v, &b) ;
-			
+
 			glColor3f(r, v, b) ;
 			glVertex3f(x1, y1, z1) ;
 			glVertex3f(x2, y2, z2) ;
 
 		}
-		
+
 		glEnd() ;
-		
+
 	}
 }
 
@@ -282,24 +285,24 @@ static void drawTetraedre(void)
 		{-0.5, -0.86602540378438, 0.684653196881458, 0, 0, 1},
 		{0, 0, -0.684653196881458, 1, 1, 1}
 	} ;
-	
+
 	glBegin(GL_TRIANGLE_STRIP) ;
 	for(i = 0 ; j < 6 ; j++)
 	{
 		i = j ;
 		if (i >= 4) i = i - 4 ;
-		
+
 		glColor3f(ppEdgesPyramide[i].fRed, ppEdgesPyramide[i].fGreen, ppEdgesPyramide[i].fBlue) ;
 		glVertex3f(ppEdgesPyramide[i].fDimX, ppEdgesPyramide[i].fDimY, ppEdgesPyramide[i].fDimZ) ;
 	}
-	glEnd() ;	
+	glEnd() ;
 }
 
 static void drawCube (void)
 {
 	int i = 0 ;
 	int j = 0 ;
-	
+
 	Point ppEdgesCube[8] =
 	{
 		{-0.5, -0.5, -0.5, 1, 1, 1},
@@ -311,7 +314,7 @@ static void drawCube (void)
 		{0.5, 0.5, -0.5, 0, 0, 1},
 		{0.5, 0.5, 0.5, 0, 0, 1}
 	} ;
-	
+
 	int piFacesCube[6][4] =
 	{
 		{0, 1, 3, 2},
@@ -321,7 +324,7 @@ static void drawCube (void)
 		{1, 3, 7, 5},
 		{0, 2, 6, 4}
 	} ;
-	
+
 	glBegin(GL_QUADS) ;
 	for(i = 0 ; i < 6 ; i++)
 	{
@@ -337,18 +340,18 @@ static void drawCube (void)
 static void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
-	
+
 	drawSphere() ;
 	/* drawTetraedre() ; */
 	/* drawCube() ; */
-	
+
 	glFlush() ;
-	
+
 	glLoadIdentity() ;
 
 	glRotatef(-fAngleX, 0.0, 1.0, 0.0) ;
 	glRotatef(-fAngleY, 1.0, 0.0, 0.0) ;
-	
+
 	glutSwapBuffers() ;
 }
 
@@ -384,14 +387,14 @@ static void key(unsigned char ucKey, int iX, int iY)
 }
 
 static void mouse(int iButton, int iState, int iX, int iY)
-{	
+{
 	if(iButton == GLUT_LEFT_BUTTON && iState == GLUT_DOWN)
 	{
 		fPresse = 1 ;
 		fXOld = iX ;
 		fYOld = iY ;
 	}
-	
+
 	if(iButton == GLUT_LEFT_BUTTON && iState == GLUT_UP)
 	{
 		fPresse = 0 ;
@@ -406,7 +409,7 @@ static void motion(int iX, int iY)
 		fAngleY = fAngleY + (iY-fYOld) ;
 		glutPostRedisplay() ;
 	}
-	
+
 	fXOld = iX ;
 	fYOld = iY ;
 }
@@ -428,27 +431,27 @@ static void reshape(int iWidth, int iHeight)
 
 
 int OpenGLDrawingRegressionTest(int * argc, char * argv[])
-{	
+{
 	printf("\n Test de régression OpenGL_drawing...\n");
-	
+
 	glutInit(argc, argv) ;
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH) ;
 	glutInitWindowPosition(400, 200) ;
 	glutInitWindowSize(800, 800) ;
 	glutCreateWindow("Stellody - OpenGL drawing") ;
-	
+
 	glClearColor(1, 1, 1, 0) ;
 	glPointSize(4.0) ;
 	glEnable(GL_DEPTH_TEST) ;
-	
+
 	glutDisplayFunc(display) ;
 	glutKeyboardFunc(key) ;
-	
+
 	glutMouseFunc(mouse) ;
 	glutMotionFunc(motion) ;
 	glutReshapeFunc(reshape) ;
-	
+
 	glutMainLoop() ;
-	
+
 	return EXIT_SUCCESS;
 }

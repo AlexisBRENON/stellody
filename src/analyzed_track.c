@@ -1,7 +1,6 @@
 /**
-  * @brief Implémentation d'un morceau analysé
+  * @brief Fichier d'implémentation du module \em AnalyzedTrack.
   *
-  * Fichier d'implémentation de la structure d'un morceau analysé.
   * @author Alexis BRENON in STELLODY TEAM
   * @file analyzed_track.c
   */

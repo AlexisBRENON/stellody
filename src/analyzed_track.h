@@ -1,7 +1,7 @@
 /**
   * @brief Entête d'un morceau analysé
   *
-  * Fichier d'entête de la structure d'un morceau analysé.
+  * Fichier d'entête du module \em AnalyzedTrack.
   * @author Alexis BRENON in STELLODY TEAM
   * @file analyzed_track.h
   */
