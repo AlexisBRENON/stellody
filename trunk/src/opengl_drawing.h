@@ -17,10 +17,16 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-
-#include <openGL/gl.h>
-#include <openGL/glu.h>
-#include <glut/glut.h>
+#if defined(__linux)
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+	#include <GL/glut.h>
+#endif
+#if defined(__APPLE__)
+	#include <openGL/gl.h>
+	#include <openGL/glu.h>
+	#include <glut/glut.h>
+#endif
 
 
 /* ********************************************************************* */
@@ -75,7 +81,7 @@ typedef struct sPoint Point;
  * @brief Teste toutes les fonctions du module opengl_drawing.h
  *
  * @param [in] argc pointeur vers argc
- * @param [in] argv pointeur vers argv[] 
+ * @param [in] argv pointeur vers argv[]
  *
  * @return EXIT_SUCCESS si tout est OK
  */

@@ -7,7 +7,12 @@
 
 #include <stdio.h>
 #include <string.h>
-/*#include <fmod.h>*/
+#if defined(__linux)
+	#include <fmodex/fmod.h>
+#endif
+#if defined (__APPLE__)
+	#include <fmod.h>
+#endif
 
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
@@ -28,7 +33,11 @@ int main (int argc, char* argv[])
 {
 	GtkBuilder* builder = NULL;
 	GtkWidget* win = NULL;
+<<<<<<< .mine
+
+=======
 	
+>>>>>>> .r35
 	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
 	
 	if (argc > 1 && strcmp(argv[1], "-x") == 0)
@@ -47,6 +56,9 @@ int main (int argc, char* argv[])
 	{
 		printf("Returned value : %d\n", analyzedTracksRegressionTest());
 	}
+
+	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(
+													&argc, argv));
 
 	return 0;
 }
