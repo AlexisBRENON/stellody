@@ -11,9 +11,10 @@ OBJ_DIR = 		obj
 BIN_DIR = 		bin
 EXEC = 			Stellody
 SRCS = 			stellody.c \
-				analyzed_track.c \
-				analyzed_tracks.c \
-				preferences.c
+			analyzed_track.c \
+			analyzed_tracks.c \
+			preferences.c \
+			opengl_drawing.c
 OBJS = 			$(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 ifeq ($(OS),LINUX)
@@ -36,7 +37,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 .PHONY: clean mrproper help
 
 clean :
-	@rm -fv $(OBJ_DIR)/*.o
+	@rm -fv $(OBJ_DIR)/*.o $(OBJ_DIR)/Cube*
 
 mrproper :
 	@rm -fv $(OBJ_DIR)/*.o
