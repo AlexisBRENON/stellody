@@ -22,7 +22,7 @@ ifeq ($(OS),LINUX)
 	LDFLAGS =		-export-dynamic
 endif
 ifeq ($(OS),MAC)
-	CFLAGS = 		-Wall -pedantic -ansi -g -m32 -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
+	CFLAGS = 		-Wall -pedantic -ansi -m32 -g -I/Developer/FMOD\ Programmers\ API\ Mac/api/inc
 	LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa
 endif
 

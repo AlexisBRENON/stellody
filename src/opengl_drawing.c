@@ -41,204 +41,234 @@ float fPresse = 0 ;
 /* ********************************************************************* */
 
 
+static void SphereColour (float alpha, float beta,
+						  float x, float y, float z,
+						  float * pfr, float * pfv, float * pfb)
+{
+	/* float gamma = 0 ; */
+	 
+	float fLight = 0 ;
+	float fColor = 0 ;
+	
+	fLight = 1 - exp((-3) * (y+1)/2) ;
+	fColor = exp((-3) * (y+1)/2) ;
+	
+	*pfr = fLight ;
+	*pfv = fLight ;
+	*pfb = fLight ;
+	
+	/* 
+	 
+	Parcours des couleurs verticalement.
+	
+	if (y >= 0)
+	{
+		if (y < 0.5)
+		{
+			r = fLight * (2*y) ;
+		}
+		else
+		{
+			r = fLight * fabs(2 - 2*y) ;
+		}
+	}
+	else
+	{
+		r = 0 ;
+	}
+	
+	if (y < -0.5 || y > 0.5)
+	{	
+		v = 0 ;
+	}
+	else
+	{
+		if (y < 0)
+		{
+			v = fLight * fabs(1 + 2*y) ;
+		}
+		else
+		{
+			v = fLight * fabs(1 - 2*y) ;
+		}	
+	}
+	
+	if (y <= 0)
+	{
+		if (y < -0.5)
+		{
+			b = fLight * (2 + 2*y) ;
+		}
+		else
+		{
+			b = fLight * fabs(2*y) ;
+		}
+	}
+	else
+	{
+		b = 0 ;
+	}
+	 
+	Parcours horizontal, avec tous les bugs que ça implique...
+	
+	if (alpha <= 0)
+	{
+		gamma = beta ;
+		
+		if (beta <= pi)
+		{
+			beta = beta + pi ;				
+		}
+		else
+		{
+			beta = beta - pi ;
+		}
+		
+		if (beta <= 2*pi/3 || beta >= 4*pi/3)
+		{
+			if (beta  <= 2*pi/3)
+			{
+				r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
+			}
+			else
+			{
+				r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			r = 0 ;
+		}
+		
+		if (beta <= 4*pi/3 || beta >= 0)
+		{
+			if (beta  <= 2*pi/3)
+			{
+				v = fLight * (beta/(2*pi/3)) ;
+			}
+			else
+			{
+				v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			v = 0 ;
+		}
+		
+		if (beta <= 2*pi || beta >= 2*pi/3)
+		{
+			if (beta  <= 4*pi/3)
+			{
+				b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
+			}
+			else
+			{
+				b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			b = 0 ;
+		}
+		
+		beta = gamma ;
+	}
+	else
+	{
+		if (beta <= 2*pi/3 || beta >= 4*pi/3)
+		{
+			if (beta  <= 2*pi/3)
+			{
+				r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
+			}
+			else
+			{
+				r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			r = 0 ;
+		}
+		
+		if (beta <= 4*pi/3 || beta >= 0)
+		{
+			if (beta  <= 2*pi/3)
+			{
+				v = fLight * (beta/(2*pi/3)) ;
+			}
+			else
+			{
+				v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			v = 0 ;
+		}
+		
+		if (beta <= 2*pi || beta >= 2*pi/3)
+		{
+			if (beta  <= 4*pi/3)
+			{
+				b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
+			}
+			else
+			{
+				b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
+			}
+		}
+		else
+		{
+			b = 0 ;
+		}
+	}
+	*/
+}
+
+
 static void drawSphere(void)
 {
 	float alpha = -90 ;
 	float beta = 0 ;
-	float gamma = 0 ;
-	float x = 0 ;
-	float y = 0 ;
-	float z = 0 ;
-	float fLight = 0 ;
-	float fColor = 0 ;
+	float x1 = 0 ;
+	float y1 = 0 ;
+	float z1 = 0 ;
+	float x2 = 0 ;
+	float y2 = 0 ;
+	float z2 = 0 ;	
 	float r = 0 ;
 	float v = 0 ;
 	float b = 0 ;
-	double pi = 3.141592653589793238462643383279502884197169399375105820974 ;
+	double step = 2*M_PI / (32) ;
 	
-	glBegin(GL_POINTS) ;
-	for (alpha = -pi ; alpha <= pi ; alpha = alpha + pi/(2*180))
+
+	for (alpha = -M_PI ; alpha <= M_PI ; alpha = alpha + step)
 	{
-		for (beta = 0 ; beta < 2*pi ; beta = beta + pi/(2*180))
+		
+		glBegin(GL_TRIANGLE_STRIP) ;
+		
+		for (beta = 0 ; beta < 2*M_PI ; beta = beta + step)
 		{
-			x = cos (alpha) * cos (beta) ;
-			y = sin (alpha) ;
-			z = cos (alpha) * sin (beta) ;
+			x1 = cos (alpha) * cos (beta) ;
+			y1 = sin (alpha) ;
+			z1 = cos (alpha) * sin (beta) ;
+			x2 = cos (alpha + step) * cos (beta + step) ;
+			y2 = sin (alpha + step) ;
+			z2 = cos (alpha + step) * sin (beta + step) ;
 			
-			fLight = 1 - exp((-3) * (y+1)/2) ;
-			fColor = exp((-3) * (y+1)/2) ;
-
-			/* Parcours des couleurs verticalement. */
-			 
-			if (y >= 0)
-			{
-				if (y < 0.5)
-				{
-					r = fLight * (2*y) ;
-				}
-				else
-				{
-					r = fLight * fabs(2 - 2*y) ;
-				}
-			}
-			else
-			{
-				r = 0 ;
-			}
+			SphereColour(alpha, beta, x1, y1, z1, &r, &v, &b) ;
 			
-			if (y < -0.5 || y > 0.5)
-			{	
-				v = 0 ;
-			}
-			else
-			{
-				if (y < 0)
-				{
-					v = fLight * fabs(1 + 2*y) ;
-				}
-				else
-				{
-					v = fLight * fabs(1 - 2*y) ;
-				}	
-			}
-			
-			if (y <= 0)
-			{
-				if (y < -0.5)
-				{
-					b = fLight * (2 + 2*y) ;
-				}
-				else
-				{
-					b = fLight * fabs(2*y) ;
-				}
-			}
-			else
-			{
-				b = 0 ;
-			}
-			
-			/* Parcous horizontal, avec tous les bugs que ça implique...
-
-		if (alpha <= 0)
-		{
-			gamma = beta ;
-			
-			if (beta <= pi)
-			{
-				beta = beta + pi ;				
-			}
-			else
-			{
-				beta = beta - pi ;
-			}
-
-			if (beta <= 2*pi/3 || beta >= 4*pi/3)
-			{
-				if (beta  <= 2*pi/3)
-				{
-					r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
-				}
-				else
-				{
-					r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				r = 0 ;
-			}
-			
-			if (beta <= 4*pi/3 || beta >= 0)
-			{
-				if (beta  <= 2*pi/3)
-				{
-					v = fLight * (beta/(2*pi/3)) ;
-				}
-				else
-				{
-					v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				v = 0 ;
-			}
-			
-			if (beta <= 2*pi || beta >= 2*pi/3)
-			{
-				if (beta  <= 4*pi/3)
-				{
-					b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
-				}
-				else
-				{
-					b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				b = 0 ;
-			}
-			
-			beta = gamma ;
-		}
-		else
-		{
-			if (beta <= 2*pi/3 || beta >= 4*pi/3)
-			{
-				if (beta  <= 2*pi/3)
-				{
-					r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
-				}
-				else
-				{
-					r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				r = 0 ;
-			}
-			
-			if (beta <= 4*pi/3 || beta >= 0)
-			{
-				if (beta  <= 2*pi/3)
-				{
-					v = fLight * (beta/(2*pi/3)) ;
-				}
-				else
-				{
-					v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				v = 0 ;
-			}
-			
-			if (beta <= 2*pi || beta >= 2*pi/3)
-			{
-				if (beta  <= 4*pi/3)
-				{
-					b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
-				}
-				else
-				{
-					b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
-				}
-			}
-			else
-			{
-				b = 0 ;
-			}
-		}
-*/
 			glColor3f(r, v, b) ;
-			glVertex3f(x, y, z) ;
+			glVertex3f(x1, y1, z1) ;
+			glVertex3f(x2, y2, z2) ;
+
 		}
+		
+		glEnd() ;
+		
 	}
-	glEnd() ;
 }
 
 static void drawTetraedre(void)

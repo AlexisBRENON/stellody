@@ -52,6 +52,8 @@ int main (int argc, char* argv[])
 	{
 		printf("Returned value : %d\n", analyzedTracksRegressionTest());
 	}
+	
+	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(&argc, argv));
 
 	printf("Returned value : %d\n", OpenGLDrawingRegressionTest(
 													&argc, argv));
