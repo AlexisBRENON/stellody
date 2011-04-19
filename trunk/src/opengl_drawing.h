@@ -77,7 +77,7 @@ typedef struct sPoint Point;
 
 
 /**
- * @fn testOpenGLRegressionTest(int * argc, char * argv[])
+ * @fn OpenGLDrawingRegressionTest(int * argc, char * argv[])
  * @brief Teste toutes les fonctions du module opengl_drawing.h
  *
  * @param [in] argc pointeur vers argc
