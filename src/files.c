@@ -40,10 +40,10 @@ int filesClose(GKeyFile*** pppsContext)
 {
 	assert(pppsContext != NULL);
 
-	g_key_file_free(*pppsContext[CONFIG]);
-	g_key_file_free(*pppsContext[DATA]);
-	*pppsContext[CONFIG]=NULL;
-	*pppsContext[DATA]=NULL;
+	g_key_file_free((*pppsContext)[CONFIG]);
+	g_key_file_free((*pppsContext)[DATA]);
+	(*pppsContext)[CONFIG]=NULL;
+	(*pppsContext)[DATA]=NULL;
 
 	return EXIT_SUCCESS;
 }
