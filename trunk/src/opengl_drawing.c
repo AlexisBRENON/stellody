@@ -220,7 +220,7 @@ static void SphereColour (float alpha, float beta,
 		{
 			*b = 0 ;
 		}
-	
+	}
 }
 
 
