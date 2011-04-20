@@ -175,7 +175,7 @@ static void drawSphere(void)
 	float b = 0 ;
 	int i = 0 ;
 	int j = 0 ;
-	int n = 32 ;
+	int n = 16 ;
 	double step ;
 	step = 2*M_PI / (n) ;
 
