@@ -52,6 +52,8 @@ int filesClose(GKeyFile*** pppsContext)
 	g_key_file_free((*pppsContext)[DATA]);
 	(*pppsContext)[CONFIG]=NULL;
 	(*pppsContext)[DATA]=NULL;
+	free(*pppsContext);
+	*pppsContext = NULL;
 
 	return EXIT_SUCCESS;
 }
@@ -110,8 +112,7 @@ int filesRegressionTest(void)
 
 	printf("Fermeture et sauvegarde...\n");
 	filesCloseAndSave(&ppsContext);
-	assert(ppsContext[CONFIG] == NULL &&
-			ppsContext[DATA] == NULL);
+	assert(ppsContext == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t -- FIN TEST DE REGRESSION --\n");
