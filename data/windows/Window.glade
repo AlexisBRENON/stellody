@@ -2,24 +2,22 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkListStore" id="liststore1"/>
-  <object class="GtkWindow" id="window">
+  <object class="GtkWindow" id="Stellody_Window">
     <property name="title" translatable="yes">Stellody</property>
-    <property name="window_position">mouse</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">../data/images/icone_png.png</property>
+    <property name="icon">icone_png.png</property>
     <property name="icon_name">Stellody</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="Main_VBox">
         <property name="visible">True</property>
         <child>
-          <object class="GtkMenuBar" id="menubar1">
+          <object class="GtkMenuBar" id="Stellody_MenuBar">
             <property name="visible">True</property>
             <child>
-              <object class="GtkMenuItem" id="menuitem1">
+              <object class="GtkMenuItem" id="File_Menu">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Fichier</property>
                 <property name="use_underline">True</property>
@@ -27,34 +25,18 @@
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="New_Item">
-                        <property name="label">gtk-new</property>
+                      <object class="GtkImageMenuItem" id="AddTrack_Item">
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">AddTrack_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem2">
-                        <property name="label">gtk-open</property>
+                      <object class="GtkImageMenuItem" id="AddDir_Item">
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem3">
-                        <property name="label">gtk-save</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem4">
-                        <property name="label">gtk-save-as</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">AddDir_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -65,10 +47,9 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="Quit_Item">
-                        <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="related_action">Quit_Action</property>
-                        <property name="use_underline">True</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="gtk_main_quit"/>
                       </object>
@@ -78,42 +59,34 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem2">
+              <object class="GtkMenuItem" id="Play_Menu">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">É_dition</property>
+                <property name="label" translatable="yes">_Lecture</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem6">
-                        <property name="label">gtk-cut</property>
+                      <object class="GtkImageMenuItem" id="Play_Item">
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">Play_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem7">
-                        <property name="label">gtk-copy</property>
+                      <object class="GtkImageMenuItem" id="Stop_Item">
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">Stop_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem8">
-                        <property name="label">gtk-paste</property>
+                      <object class="GtkImageMenuItem" id="Pause_Item">
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="Delete_Item">
-                        <property name="label">gtk-delete</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">Pause_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -122,28 +95,28 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem3">
+              <object class="GtkMenuItem" id="Window_Menu">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">_Affichage</property>
+                <property name="label" translatable="yes">_Fenêtre</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="Affichage_Menu">
+                  <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
+                    <property name="ubuntu_local">True</property>
                     <child>
-                      <object class="GtkCheckMenuItem" id="Stellarium">
+                      <object class="GtkImageMenuItem" id="Stellarium_Item">
                         <property name="visible">True</property>
-                        <property name="related_action">Display</property>
+                        <property name="related_action">Stellarium_Action</property>
                         <property name="use_action_appearance">True</property>
-                        <property name="draw_as_radio">True</property>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkCheckMenuItem" id="Preferences">
+                      <object class="GtkImageMenuItem" id="Preferences_Item">
                         <property name="visible">True</property>
-                        <property name="related_action">Préférences</property>
-                        <property name="label" translatable="yes">Préférences</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_as_radio">True</property>
+                        <property name="related_action">Preferences_Action</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                   </object>
@@ -151,18 +124,18 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="Aide_MenuItem">
+              <object class="GtkMenuItem" id="Help_Menu">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Aid_e</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="Aide_Menu">
+                  <object class="GtkMenu" id="Menu4">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="APropos">
-                        <property name="label">gtk-about</property>
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">About_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -177,17 +150,18 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkHBox" id="Play_HBox">
             <property name="visible">True</property>
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox1">
+              <object class="GtkHButtonBox" id="Play_ButtonBox">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkButton" id="button1">
-                    <property name="label">gtk-media-play</property>
+                  <object class="GtkButton" id="Play_But">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="related_action">Play_Action</property>
+                    <property name="use_action_appearance">True</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -197,11 +171,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button2">
-                    <property name="label">gtk-media-pause</property>
+                  <object class="GtkButton" id="Pause_But">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="related_action">Pause_Action</property>
+                    <property name="use_action_appearance">True</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -211,11 +186,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button3">
-                    <property name="label">gtk-media-stop</property>
+                  <object class="GtkButton" id="Stop_But">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="related_action">Stop_Action</property>
+                    <property name="use_action_appearance">True</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -233,21 +209,22 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox3">
+              <object class="GtkVBox" id="PlayInfo_VBox">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkLabel" id="Infos">
+                  <object class="GtkLabel" id="TrackInfo_Label">
                     <property name="visible">True</property>
+                    <property name="single_line_mode">True</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkProgressBar" id="progressbar1">
+                  <object class="GtkProgressBar" id="Play_ProgressBar">
                     <property name="visible">True</property>
                     <property name="fraction">0.25</property>
-                    <property name="adjustment">adjustment1</property>
+                    <property name="adjustment">PlayProgressBar_Adjustement</property>
                   </object>
                   <packing>
                     <property name="position">1</property>
@@ -265,40 +242,36 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="hbox2">
+          <object class="GtkHBox" id="Display_HBox">
             <property name="visible">True</property>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkVBox" id="Lists_VBox">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkTextView" id="textview1">
+                  <object class="GtkTreeView" id="PlayList_TreeView">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="model">PlayList_ListStore</property>
+                    <property name="headers_visible">False</property>
+                    <property name="headers_clickable">False</property>
+                    <property name="reorderable">True</property>
+                    <property name="search_column">0</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTreeView" id="treeview1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="model">liststore1</property>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkVButtonBox" id="vbuttonbox1">
+                  <object class="GtkVButtonBox" id="Window_VButtonBox">
                     <property name="visible">True</property>
                     <property name="layout_style">spread</property>
                     <child>
                       <object class="GtkButton" id="Stellarium_But">
-                        <property name="label" translatable="yes">Stellarium</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="related_action">Stellarium_Action</property>
+                        <property name="use_action_appearance">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -307,11 +280,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="Settings_But">
-                        <property name="label" translatable="yes">Préférences</property>
+                      <object class="GtkButton" id="Preferences_But">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="related_action">Preferences_Action</property>
+                        <property name="use_action_appearance">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -337,7 +311,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -347,35 +321,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox4">
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkLabel" id="TrackName_Label">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="AreaName_Label">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -383,7 +329,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkStatusbar" id="statusbar1">
+          <object class="GtkStatusbar" id="Stellody_StatusBar">
             <property name="visible">True</property>
             <property name="spacing">2</property>
           </object>
@@ -395,27 +341,93 @@
       </object>
     </child>
   </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="value">28</property>
+  <object class="GtkAdjustment" id="PlayProgressBar_Adjustement">
+    <property name="value">30</property>
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
     <property name="page_size">10</property>
   </object>
-  <object class="GtkRadioAction" id="Display">
-    <property name="label">Stellarium</property>
-    <property name="draw_as_radio">True</property>
+  <object class="GtkAction" id="Play_Action">
+    <property name="name">Play_Action</property>
+    <property name="label">Lecture</property>
+    <property name="short_label">Lire</property>
+    <property name="tooltip">Lire le morceau sélectionner</property>
+    <property name="stock_id">gtk-media-play</property>
+    <property name="icon_name">media-playback-start</property>
+    <signal name="activate" handler="on_Play_Action_activate"/>
   </object>
-  <object class="GtkRadioAction" id="Préférences">
-    <property name="label">Préférences</property>
-    <property name="draw_as_radio">True</property>
-    <property name="group">Display</property>
+  <object class="GtkAction" id="Stop_Action">
+    <property name="name">Stop_Action</property>
+    <property name="label">Arrêter</property>
+    <property name="short_label">Stop</property>
+    <property name="tooltip">Arrête la lecture en cours</property>
+    <property name="stock_id">gtk-media-stop</property>
+    <property name="icon_name">media-playback-stop</property>
+    <signal name="activate" handler="on_Stop_Action_activate"/>
+  </object>
+  <object class="GtkAction" id="Pause_Action">
+    <property name="name">Pause_Action</property>
+    <property name="label">Pause</property>
+    <property name="short_label">Pause</property>
+    <property name="tooltip">Met la lecture en pause</property>
+    <property name="stock_id">gtk-media-pause</property>
+    <property name="icon_name">media-playback-pause</property>
+    <signal name="activate" handler="on_Pause_Action_activate"/>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+  </object>
+  <object class="GtkAction" id="AddTrack_Action">
+    <property name="label">Ajouter un morceau</property>
+    <property name="short_label">Ajout</property>
+    <property name="tooltip">Ajouter un nouveau morceau au Stellarium</property>
+    <property name="stock_id">gtk-add</property>
+    <property name="icon_name">list-add</property>
+  </object>
+  <object class="GtkAction" id="AddDir_Action">
+    <property name="label">Ajouter un répertoire</property>
+    <property name="short_label">Ajouts</property>
+    <property name="tooltip">Ajouter un répertoire au Stellarium</property>
+    <property name="stock_id">gtk-add</property>
+    <property name="icon_name">list-add</property>
   </object>
   <object class="GtkAction" id="Quit_Action">
     <property name="label">Quitter</property>
+    <property name="short_label">Quitter</property>
     <property name="tooltip">Quitter l'application</property>
-    <property name="stock_id">gtk-close</property>
-    <property name="is_important">True</property>
+    <property name="stock_id">gtk-quit</property>
+    <property name="icon_name">application-exit</property>
     <signal name="activate" handler="gtk_main_quit"/>
+  </object>
+  <object class="GtkAction" id="Stellarium_Action">
+    <property name="label">Stellarium</property>
+    <property name="short_label">Stellarium</property>
+    <property name="tooltip">Affiche le Stellarium</property>
+  </object>
+  <object class="GtkAction" id="Preferences_Action">
+    <property name="label">Préférences</property>
+    <property name="short_label">Préférences</property>
+    <property name="tooltip">Modifier les préférences</property>
+    <property name="stock_id">gtk-preferences</property>
+    <property name="icon_name">preferences-system</property>
+  </object>
+  <object class="GtkAction" id="About_Action">
+    <property name="label">A Propos</property>
+    <property name="short_label">A Propos</property>
+    <property name="tooltip">A propos de l'application</property>
+    <property name="stock_id">gtk-about</property>
+    <property name="icon_name">help-about</property>
+  </object>
+  <object class="GtkListStore" id="PlayList_ListStore">
+    <columns>
+      <!-- column-name TrackTitle -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Test</col>
+      </row>
+    </data>
   </object>
 </interface>
