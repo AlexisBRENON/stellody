@@ -12,6 +12,14 @@
 
 #include "files.h"
 
+/* ********************************************************************* */
+/*                                                                       */
+/*                               Constantes                              */
+/*                                                                       */
+/* ********************************************************************* */
+
+#define CONFIG_FILE ".stellody_config"
+#define DATA_FILE ".stellody_data"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -26,11 +34,11 @@ GKeyFile** filesOpen(void)
 	ppsContext = (GKeyFile**) malloc(3*sizeof(GKeyFile*));
 
 	ppsContext[CONFIG] = g_key_file_new();
-	g_key_file_load_from_file(ppsContext[CONFIG], "stellody_config",
+	g_key_file_load_from_file(ppsContext[CONFIG], CONFIG_FILE,
 							G_KEY_FILE_KEEP_COMMENTS, NULL);
 
 	ppsContext[DATA] = g_key_file_new();
-	g_key_file_load_from_file(ppsContext[DATA], "stellody_data",
+	g_key_file_load_from_file(ppsContext[DATA], DATA_FILE,
 									G_KEY_FILE_KEEP_COMMENTS, NULL);
 
 	return ppsContext;
@@ -64,12 +72,12 @@ int filesSave(GKeyFile** ppsContext)
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
 
-	pfConfig = fopen("stellody_config", "w");
+	pfConfig = fopen(CONFIG_FILE, "w");
 	assert(pfConfig != NULL);
 	fprintf(pfConfig, "%s\n", g_key_file_to_data(ppsContext[CONFIG], NULL,
 												NULL));
 
-	pfData = fopen("stellody_data", "w");
+	pfData = fopen(DATA_FILE, "w");
 	assert(pfData != NULL);
 	fprintf(pfData, "%s\n", g_key_file_to_data(ppsContext[DATA], NULL,
 												NULL));
