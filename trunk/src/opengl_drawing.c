@@ -48,8 +48,6 @@ static void SphereColour (float alpha, float beta,
 						  float x, float y, float z,
 						  float * r, float * v, float * b)
 {
-	float gamma = 0 ;
-
 	float fLight = 0 ;
 	float fColor = 0 ;
 
@@ -180,7 +178,7 @@ static void drawSphere(void)
 	step = 2*M_PI / (n) ;
 
 
-	for (i = 0 ; i <= n/2 ; i++)
+	for (i = 0 ; i < n/2 ; i++)
 	{
 
 		alpha = -M_PI/2 + i * step ;
