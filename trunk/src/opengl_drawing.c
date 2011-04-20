@@ -108,118 +108,52 @@ static void SphereColour (float alpha, float beta,
 
 	/* Parcours horizontal, avec tous les bugs que ça implique... */
 
-	if (alpha <= 0)
+	if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
 	{
-		gamma = beta ;
-
-		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
+		if (beta  <= 2*M_PI/3)
 		{
-			beta = beta + M_PI ;
+			*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
 		}
 		else
 		{
-			beta = beta - M_PI ;
+			*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
 		}
-
-		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
-		{
-			if (beta  <= 2*M_PI/3)
-			{
-				*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
-			}
-		}
-		else
-		{
-			*r = 0 ;
-		}
-
-		if (beta <= 4*M_PI/3 || beta >= 0)
-		{
-			if (beta  <= 2*M_PI/3)
-			{
-				*v = fLight * (beta/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
-			}
-		}
-		else
-		{
-			*v = 0 ;
-		}
-
-		if (beta <= 2*M_PI || beta >= 2*M_PI/3)
-		{
-			if (beta  <= 4*M_PI/3)
-			{
-				*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
-			}
-		}
-		else
-		{
-			*b = 0 ;
-		}
-
-		beta = gamma ;
 	}
 	else
 	{
-		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
+		*r = 0 ;
+	}
+	
+	if (beta <= 4*M_PI/3 || beta >= 0)
+	{
+		if (beta  <= 2*M_PI/3)
 		{
-			if (beta  <= 2*M_PI/3)
-			{
-				*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
-			}
+			*v = fLight * (beta/(2*M_PI/3)) ;
 		}
 		else
 		{
-			*r = 0 ;
+			*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
 		}
+	}
+	else
+	{
+		*v = 0 ;
+	}
 
-		if (beta <= 4*M_PI/3 || beta >= 0)
+	if (beta <= 2*M_PI || beta >= 2*M_PI/3)
+	{
+		if (beta  <= 4*M_PI/3)
 		{
-			if (beta  <= 2*M_PI/3)
-			{
-				*v = fLight * (beta/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
-			}
+			*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
 		}
 		else
 		{
-			*v = 0 ;
+			*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
 		}
-
-		if (beta <= 2*M_PI || beta >= 2*M_PI/3)
-		{
-			if (beta  <= 4*M_PI/3)
-			{
-				*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
-			}
-			else
-			{
-				*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
-			}
-		}
-		else
-		{
-			*b = 0 ;
-		}
+	}
+	else
+	{
+		*b = 0 ;
 	}
 }
 
@@ -246,7 +180,7 @@ static void drawSphere(void)
 	step = 2*M_PI / (n) ;
 
 
-	for (alpha = -M_PI ; alpha <= M_PI ; alpha = alpha + step)
+	for (i = 0 ; i <= n/2 ; i++)
 	{
 
 		alpha = -M_PI/2 + i * step ;
@@ -359,8 +293,8 @@ static void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
 
-	/* drawSphere() ; */
-	drawTetraedre() ;
+	drawSphere() ;
+	/* drawTetraedre() ; */
 	/* drawCube() ; */
 
 	glFlush() ;
