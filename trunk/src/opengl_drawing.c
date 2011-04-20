@@ -58,10 +58,6 @@ static void SphereColour (float alpha, float beta,
 
 	/* Parcours des couleurs verticalement.
 
-	/*
-
-	Parcours des couleurs verticalement.
-
 	if (y >= 0)
 	{
 		if (y < 0.5)
@@ -110,7 +106,7 @@ static void SphereColour (float alpha, float beta,
 		*b = 0 ;
 	} */
 
-	Parcours horizontal, avec tous les bugs que ça implique...
+	/* Parcours horizontal, avec tous les bugs que ça implique... */
 
 	if (alpha <= 0)
 	{
@@ -118,16 +114,16 @@ static void SphereColour (float alpha, float beta,
 
 		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
 		{
-			beta = beta + pi ;
+			beta = beta + M_PI ;
 		}
 		else
 		{
-			beta = beta - pi ;
+			beta = beta - M_PI ;
 		}
 
-		if (beta <= 2*pi/3 || beta >= 4*pi/3)
+		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
 		{
-			if (beta  <= 2*pi/3)
+			if (beta  <= 2*M_PI/3)
 			{
 				*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
 			}
@@ -177,7 +173,7 @@ static void SphereColour (float alpha, float beta,
 	}
 	else
 	{
-		if (beta <= 2*pi/3 || beta >= 4*pi/3)
+		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
 		{
 			if (beta  <= 2*M_PI/3)
 			{
@@ -246,7 +242,8 @@ static void drawSphere(void)
 	int i = 0 ;
 	int j = 0 ;
 	int n = 512 ;
-	double step = 2*M_PI / (n) ;
+	double step ;
+	step = 2*M_PI / (n) ;
 
 
 	for (alpha = -M_PI ; alpha <= M_PI ; alpha = alpha + step)
