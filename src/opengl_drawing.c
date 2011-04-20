@@ -46,19 +46,17 @@ float fPresse = 0 ;
 
 static void SphereColour (float alpha, float beta,
 						  float x, float y, float z,
-						  float * pfr, float * pfv, float * pfb)
+						  float * r, float * v, float * b)
 {
-	/* float gamma = 0 ; */
+	float gamma = 0 ;
 
 	float fLight = 0 ;
 	float fColor = 0 ;
 
-	fLight = 1 - exp((-3) * (y+1)/2) ;
+	fLight = 1 - exp((-2) * (y+1)/2) ;
 	fColor = exp((-3) * (y+1)/2) ;
 
-	*pfr = fLight ;
-	*pfv = fLight ;
-	*pfb = fLight ;
+	/* Parcours des couleurs verticalement.
 
 	/*
 
@@ -68,31 +66,31 @@ static void SphereColour (float alpha, float beta,
 	{
 		if (y < 0.5)
 		{
-			r = fLight * (2*y) ;
+			*r = fLight * (2*y) ;
 		}
 		else
 		{
-			r = fLight * fabs(2 - 2*y) ;
+			*r = fLight * fabs(2 - 2*y) ;
 		}
 	}
 	else
 	{
-		r = 0 ;
+		*r = 0 ;
 	}
 
 	if (y < -0.5 || y > 0.5)
 	{
-		v = 0 ;
+		*v = 0 ;
 	}
 	else
 	{
 		if (y < 0)
 		{
-			v = fLight * fabs(1 + 2*y) ;
+			*v = fLight * fabs(1 + 2*y) ;
 		}
 		else
 		{
-			v = fLight * fabs(1 - 2*y) ;
+			*v = fLight * fabs(1 - 2*y) ;
 		}
 	}
 
@@ -100,17 +98,17 @@ static void SphereColour (float alpha, float beta,
 	{
 		if (y < -0.5)
 		{
-			b = fLight * (2 + 2*y) ;
+			*b = fLight * (2 + 2*y) ;
 		}
 		else
 		{
-			b = fLight * fabs(2*y) ;
+			*b = fLight * fabs(2*y) ;
 		}
 	}
 	else
 	{
-		b = 0 ;
-	}
+		*b = 0 ;
+	} */
 
 	Parcours horizontal, avec tous les bugs que ça implique...
 
@@ -118,7 +116,7 @@ static void SphereColour (float alpha, float beta,
 	{
 		gamma = beta ;
 
-		if (beta <= pi)
+		if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
 		{
 			beta = beta + pi ;
 		}
@@ -131,48 +129,48 @@ static void SphereColour (float alpha, float beta,
 		{
 			if (beta  <= 2*pi/3)
 			{
-				r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
+				*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
 			}
 			else
 			{
-				r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
+				*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			r = 0 ;
+			*r = 0 ;
 		}
 
-		if (beta <= 4*pi/3 || beta >= 0)
+		if (beta <= 4*M_PI/3 || beta >= 0)
 		{
-			if (beta  <= 2*pi/3)
+			if (beta  <= 2*M_PI/3)
 			{
-				v = fLight * (beta/(2*pi/3)) ;
+				*v = fLight * (beta/(2*M_PI/3)) ;
 			}
 			else
 			{
-				v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
+				*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			v = 0 ;
+			*v = 0 ;
 		}
 
-		if (beta <= 2*pi || beta >= 2*pi/3)
+		if (beta <= 2*M_PI || beta >= 2*M_PI/3)
 		{
-			if (beta  <= 4*pi/3)
+			if (beta  <= 4*M_PI/3)
 			{
-				b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
+				*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
 			}
 			else
 			{
-				b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
+				*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			b = 0 ;
+			*b = 0 ;
 		}
 
 		beta = gamma ;
@@ -181,53 +179,52 @@ static void SphereColour (float alpha, float beta,
 	{
 		if (beta <= 2*pi/3 || beta >= 4*pi/3)
 		{
-			if (beta  <= 2*pi/3)
+			if (beta  <= 2*M_PI/3)
 			{
-				r = fLight * ((2*pi/3 - beta)/(2*pi/3)) ;
+				*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
 			}
 			else
 			{
-				r = fLight * ((beta-4*pi/3)/(2*pi/3)) ;
+				*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			r = 0 ;
+			*r = 0 ;
 		}
 
-		if (beta <= 4*pi/3 || beta >= 0)
+		if (beta <= 4*M_PI/3 || beta >= 0)
 		{
-			if (beta  <= 2*pi/3)
+			if (beta  <= 2*M_PI/3)
 			{
-				v = fLight * (beta/(2*pi/3)) ;
+				*v = fLight * (beta/(2*M_PI/3)) ;
 			}
 			else
 			{
-				v = fLight * ((2*pi/3 - (beta-2*pi/3))/(2*pi/3)) ;
+				*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			v = 0 ;
+			*v = 0 ;
 		}
 
-		if (beta <= 2*pi || beta >= 2*pi/3)
+		if (beta <= 2*M_PI || beta >= 2*M_PI/3)
 		{
-			if (beta  <= 4*pi/3)
+			if (beta  <= 4*M_PI/3)
 			{
-				b = fLight * ((beta-2*pi/3)/(2*pi/3)) ;
+				*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
 			}
 			else
 			{
-				b = fLight * ((2*pi/3 - (beta-4*pi/3))/(2*pi/3)) ;
+				*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
 			}
 		}
 		else
 		{
-			b = 0 ;
+			*b = 0 ;
 		}
-	}
-	*/
+	
 }
 
 
@@ -235,6 +232,8 @@ static void drawSphere(void)
 {
 	float alpha = -90 ;
 	float beta = 0 ;
+	float alphaS = -90 ;
+	float betaS = 0 ;	
 	float x1 = 0 ;
 	float y1 = 0 ;
 	float z1 = 0 ;
@@ -244,23 +243,45 @@ static void drawSphere(void)
 	float r = 0 ;
 	float v = 0 ;
 	float b = 0 ;
-	double step = 2*M_PI / (32) ;
+	int i = 0 ;
+	int j = 0 ;
+	int n = 512 ;
+	double step = 2*M_PI / (n) ;
 
 
 	for (alpha = -M_PI ; alpha <= M_PI ; alpha = alpha + step)
 	{
 
+		alpha = -M_PI/2 + i * step ;
+		
 		glBegin(GL_TRIANGLE_STRIP) ;
 
-		for (beta = 0 ; beta < 2*M_PI ; beta = beta + step)
+		for (j = 0 ; j <= n ; j++)
 		{
+			beta = j * step ;
+			
 			x1 = cos (alpha) * cos (beta) ;
 			y1 = sin (alpha) ;
 			z1 = cos (alpha) * sin (beta) ;
-			x2 = cos (alpha + step) * cos (beta + step) ;
-			y2 = sin (alpha + step) ;
-			z2 = cos (alpha + step) * sin (beta + step) ;
 
+			alphaS = alpha + step ;
+			betaS = beta + step ;			
+
+			/*
+			if (alphaS >= 2 * M_PI)
+			{
+				alphaS = alphaS - 2 * M_PI ;
+			}
+
+			if (betaS >= 2 * M_PI)
+			{
+				betaS = betaS - 2 * M_PI ;
+			} */
+			
+			x2 = cos (alphaS) * cos (betaS) ;
+			y2 = sin (alphaS) ;
+			z2 = cos (alphaS) * sin (betaS) ;
+			
 			SphereColour(alpha, beta, x1, y1, z1, &r, &v, &b) ;
 
 			glColor3f(r, v, b) ;
@@ -437,14 +458,15 @@ int OpenGLDrawingRegressionTest(int * argc, char * argv[])
 	glutInit(argc, argv) ;
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH) ;
 	glutInitWindowPosition(400, 200) ;
-	glutInitWindowSize(800, 800) ;
+	glutInitWindowSize(400, 400) ;
 	glutCreateWindow("Stellody - OpenGL drawing") ;
 
 	glClearColor(1, 1, 1, 0) ;
-	glPointSize(4.0) ;
+	glPointSize(1.0) ;
 	glEnable(GL_DEPTH_TEST) ;
 
 	glutDisplayFunc(display) ;
+	
 	glutKeyboardFunc(key) ;
 
 	glutMouseFunc(mouse) ;
