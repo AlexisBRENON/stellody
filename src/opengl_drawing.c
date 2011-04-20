@@ -121,7 +121,7 @@ static void SphereColour (float alpha, float beta,
 	{
 		*r = 0 ;
 	}
-	
+
 	if (beta <= 4*M_PI/3 || beta >= 0)
 	{
 		if (beta  <= 2*M_PI/3)
@@ -161,7 +161,7 @@ static void drawSphere(void)
 	float alpha = -90 ;
 	float beta = 0 ;
 	float alphaS = -90 ;
-	float betaS = 0 ;	
+	float betaS = 0 ;
 	float x1 = 0 ;
 	float y1 = 0 ;
 	float z1 = 0 ;
@@ -182,19 +182,19 @@ static void drawSphere(void)
 	{
 
 		alpha = -M_PI/2 + i * step ;
-		
+
 		glBegin(GL_TRIANGLE_STRIP) ;
 
 		for (j = 0 ; j <= n ; j++)
 		{
 			beta = j * step ;
-			
+
 			x1 = cos (alpha) * cos (beta) ;
 			y1 = sin (alpha) ;
 			z1 = cos (alpha) * sin (beta) ;
 
 			alphaS = alpha + step ;
-			betaS = beta + step ;			
+			betaS = beta + step ;
 
 			/*
 			if (alphaS >= 2 * M_PI)
@@ -206,11 +206,11 @@ static void drawSphere(void)
 			{
 				betaS = betaS - 2 * M_PI ;
 			} */
-			
+
 			x2 = cos (alphaS) * cos (betaS) ;
 			y2 = sin (alphaS) ;
 			z2 = cos (alphaS) * sin (betaS) ;
-			
+
 			SphereColour(alpha, beta, x1, y1, z1, &r, &v, &b) ;
 
 			glColor3f(r, v, b) ;
@@ -395,7 +395,7 @@ int OpenGLDrawingRegressionTest(int * argc, char * argv[])
 	glEnable(GL_DEPTH_TEST) ;
 
 	glutDisplayFunc(display) ;
-	
+
 	glutKeyboardFunc(key) ;
 
 	glutMouseFunc(mouse) ;
