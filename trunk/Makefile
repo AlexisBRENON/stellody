@@ -6,14 +6,14 @@
 # ############################################################################ #
 
 
-# D√©finition des cibles particuli√®res
+# Définition des cibles particulières
 .PHONY: clean mrproper help mac lin
 
 
-# D√©finition de variables :
+# Définition de variables :
 	# Compilateur
 CC =			gcc
-	# Fichiers nescessaires √† GTK+
+	# Fichiers nécessaires √† GTK+
 GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
 GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`
 	# Fichiers nescessaires √† OpenGL (pour Ubuntu)
@@ -22,11 +22,11 @@ GL_LDFLAGS = 	`pkg-config --libs gl glu`
 
 	# Dossier contenant les sources
 SRC_DIR = 		src
-	# Dossier o√π cr√©er les fichiers objets
+	# Dossier où créer les fichiers objets
 OBJ_DIR = 		obj
-	# Dossier o√π cr√©er l'ex√©cutable
+	# Dossier où créer l'exécutable
 BIN_DIR = 		bin
-	# Nom de l'ex√©cutable
+	# Nom de l'exécutable
 EXEC = 			stellody
 	# Noms des fichiers sources
 SRCS = 			stellody.c \
@@ -35,28 +35,28 @@ SRCS = 			stellody.c \
 			preferences.c \
 			opengl_drawing.c \
 			files.c
-	# Noms des fichiers objets (g√©n√©ration dynamique)
+	# Noms des fichiers objets (génération dynamique)
 OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)
 OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 
-	# Options nescessaires √† la compilation sous linux
+	# Options nécessaires √† la compilation sous linux
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g 	$(GTK_CFLAGS)	$(GL_CFLAGS)
 LIN_LDFLAGS =		-export-dynamic -lglut 		$(GTK_LDFLAGS)	$(GL_LDFLAGS)
-	# Options nescessaires √† la compilation sous MAC
+	# Options nécessaires √† la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
 				-I/Developer/FMOD\ Programmers\ API\ Mac/api/inc \
 				$(GTK_CFLAGS)
 MAC_LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa \
 				$(GTK_LDFLAGS)
 				
-# Fin de d√©finition de variables
+# Fin de définition de variables
 
 
 # ############################################################################ #
 # ############################################################################ #
 
 
-# D√©but de l'√©num√©ration des cibles
+# Début de l'énumération des cibles
 
 
 help :
@@ -64,10 +64,10 @@ help :
 	@echo "                    <-=  AIDE  =->"
 	@echo
 	@echo "Voici les cibles que vous pouvez appeler :"
-	@echo "    - make mac        Construit l'ex√©cutable pour MAC OS X"
-	@echo "    - make lin        Construit l'ex√©cutable pour Ubuntu"
-	@echo "    - make clean      D√©truit les fichiers objets"
-	@echo "    - make mrproper   D√©truit tout ce qui peut √™tre reconstruit"
+	@echo "    - make mac        Construit l'exécutable pour MAC OS X"
+	@echo "    - make lin        Construit l'exécutable pour Ubuntu"
+	@echo "    - make clean      Détruit les fichiers objets"
+	@echo "    - make mrproper   Détruit tout ce qui peut être reconstruit"
 	@echo "    - make [help]     Affiche cette page d'aide"
 	@echo
 	
@@ -78,22 +78,22 @@ $(EXEC) : $(OBJS)
 		
 mac : $(OBJS_MAC)
 	@echo
-	@echo "Ci-dessus : erreurs compilateur (syntaxe)"
-	@echo "Ci_dessous : erreurs linker"
+	@echo "Fin des erreurs compilateur (syntaxe)."
+	@echo "Début des erreurs linker."
 	@echo
 	@$(CC) $(MAC_LDFLAGS) $^ -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin de compilation"
+	@echo "Fin de compilation."
 	@echo
 
 lin : $(OBJS_LIN)
 	@echo
-	@echo "Ci-dessus : erreurs compilateur (syntaxe)"
-	@echo "Ci_dessous : erreurs linker"
+	@echo "Fin des erreurs compilateur (syntaxe)."
+	@echo "Début des erreurs linker."
 	@echo
 	@$(CC) $(LIN_LDFLAGS) $^ -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin de compilation"
+	@echo "Fin de compilation."
 	@echo
 
 $(OBJ_DIR)/%_mac.o : $(SRC_DIR)/%.c
