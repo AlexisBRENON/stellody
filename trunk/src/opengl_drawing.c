@@ -244,7 +244,7 @@ static void drawSphere(void)
 			y2 = sin (alphaS) ;
 			z2 = cos (alphaS) * sin (betaS) ;
 			
-			SphereColour(4, beta, y1, &r, &v, &b) ;
+			SphereColour(2, beta, y1, &r, &v, &b) ;
 
 			glColor3f(r, v, b) ;
 			glVertex3f(x1, y1, z1) ;

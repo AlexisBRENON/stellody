@@ -36,26 +36,23 @@
 
 
 /**
- * @struct sPoint
- * @brief Structure représentant un point.
+ * @struct sStar
+ * @brief Structure pour l'utilisation d'étoiles.
  *
- * Cette structure est utilisée pour représenter un point, elle contient ses
-   coordonnées en trois dimension et sa couleur en rouge, vert et bleu.
+ * Cette structure est utilisée pour gérer les étoiles.
  */
-struct sPoint
+struct sStar
 {
-	float fDimX ;  /**< Réel codant la dimension en x */
-	float fDimY ;  /**< Réel codant la dimension en y */
-	float fDimZ ;  /**< Réel codant la dimension en z */
-	float fRed ;   /**< Réel codant la couleur rouge */
-	float fGreen ; /**< Réel codant la couleur verte */
-	float fBlue ;  /**< Réel codant la couleur bleue */
+	float fTaille ;  /**< Réel codant la taille de l'étoile. */
+	float fCouleur ;  /**< Réel codant la couleur de l'étoile. */
 } ;
+
+
 /**
- * @typedef Point
- * @brief Redéfinit la structure sPoint.
+ * @typedef Star
+ * @brief Redéfinit la structure sStar.
  */
-typedef struct sPoint Point;
+typedef struct sStar Star;
 
 
 /* ********************************************************************* */
