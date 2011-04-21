@@ -12,16 +12,17 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "opengl_drawing.h"
 
-
 #ifndef M_PI
 	#define M_PI 3.14159
 #endif
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -44,124 +45,156 @@ float fPresse = 0 ;
 /* ********************************************************************* */
 
 
-static void SphereColour (float alpha, float beta,
-						  float x, float y, float z,
+static void SphereColour (int Colour, float beta, float y,
 						  float * r, float * v, float * b)
 {
 	float fLight = 0 ;
-	float fColor = 0 ;
 
-	fLight = 1 - exp((-2) * (y+1)/2) ;
-	fColor = exp((-3) * (y+1)/2) ;
+	switch(Colour)
+	{
+		case 0 :								/* Noir. */
+			
+			*r = *v = *b = 0 ;
+			
+			break ;
+			
+		case 1 :								/* Blanc. */
 
-	/* Parcours des couleurs verticalement.
+			*r = *v = *b = 1 ;
+			
+			break ;
+			
+		case 2 :								/* Dégradé de gris. */
 
-	if (y >= 0)
-	{
-		if (y < 0.5)
-		{
-			*r = fLight * (2*y) ;
-		}
-		else
-		{
-			*r = fLight * fabs(2 - 2*y) ;
-		}
-	}
-	else
-	{
-		*r = 0 ;
-	}
-
-	if (y < -0.5 || y > 0.5)
-	{
-		*v = 0 ;
-	}
-	else
-	{
-		if (y < 0)
-		{
-			*v = fLight * fabs(1 + 2*y) ;
-		}
-		else
-		{
-			*v = fLight * fabs(1 - 2*y) ;
-		}
-	}
-
-	if (y <= 0)
-	{
-		if (y < -0.5)
-		{
-			*b = fLight * (2 + 2*y) ;
-		}
-		else
-		{
-			*b = fLight * fabs(2*y) ;
-		}
-	}
-	else
-	{
-		*b = 0 ;
-	} */
-
-	/* Parcours horizontal, avec tous les bugs que ça implique... */
-
-	if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
-	{
-		if (beta  <= 2*M_PI/3)
-		{
-			*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
-		}
-		else
-		{
-			*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
-		}
-	}
-	else
-	{
-		*r = 0 ;
-	}
-
-	if (beta <= 4*M_PI/3 || beta >= 0)
-	{
-		if (beta  <= 2*M_PI/3)
-		{
-			*v = fLight * (beta/(2*M_PI/3)) ;
-		}
-		else
-		{
-			*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
-		}
-	}
-	else
-	{
-		*v = 0 ;
-	}
-
-	if (beta <= 2*M_PI || beta >= 2*M_PI/3)
-	{
-		if (beta  <= 4*M_PI/3)
-		{
-			*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
-		}
-		else
-		{
-			*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
-		}
-	}
-	else
-	{
-		*b = 0 ;
+			fLight = 1 - exp((-2) * (y+1)/2) ;
+			
+			*r = *v = *b = fLight ;
+			
+			break ;
+			
+		case 3 :								/* Couleurs verticales. */
+			
+			fLight = 1 - exp((-2) * (y+1)/2) ;
+			
+			if (y >= 0)
+			{
+				if (y < 0.5)
+				{
+					*r = fLight * (2*y) ;
+				}
+				else
+				{
+					*r = fLight * fabs(2 - 2*y) ;
+				}
+			}
+			else
+			{
+				*r = 0 ;
+			}
+			
+			if (y < -0.5 || y > 0.5)
+			{
+				*v = 0 ;
+			}
+			else
+			{
+				if (y < 0)
+				{
+					*v = fLight * fabs(1 + 2*y) ;
+				}
+				else
+				{
+					*v = fLight * fabs(1 - 2*y) ;
+				}
+			}
+			
+			if (y <= 0)
+			{
+				if (y < -0.5)
+				{
+					*b = fLight * (2 + 2*y) ;
+				}
+				else
+				{
+					*b = fLight * fabs(2*y) ;
+				}
+			}
+			else
+			{
+				*b = 0 ;
+			}
+			
+			break ;
+			
+		case 4 :								/* Couleurs horizontales. */
+			
+			fLight = 1 - exp((-2) * (y+1)/2) ;
+			
+			if (beta <= 2*M_PI/3 || beta >= 4*M_PI/3)
+			{
+				if (beta  <= 2*M_PI/3)
+				{
+					*r = fLight * ((2*M_PI/3 - beta)/(2*M_PI/3)) ;
+				}
+				else
+				{
+					*r = fLight * ((beta-4*M_PI/3)/(2*M_PI/3)) ;
+				}
+			}
+			else
+			{
+				*r = 0 ;
+			}
+			
+			if (beta <= 4*M_PI/3 || beta >= 0)
+			{
+				if (beta  <= 2*M_PI/3)
+				{
+					*v = fLight * (beta/(2*M_PI/3)) ;
+				}
+				else
+				{
+					*v = fLight * ((2*M_PI/3 - (beta-2*M_PI/3))/(2*M_PI/3)) ;
+				}
+			}
+			else
+			{
+				*v = 0 ;
+			}
+			
+			if (beta <= 2*M_PI || beta >= 2*M_PI/3)
+			{
+				if (beta  <= 4*M_PI/3)
+				{
+					*b = fLight * ((beta-2*M_PI/3)/(2*M_PI/3)) ;
+				}
+				else
+				{
+					*b = fLight * ((2*M_PI/3 - (beta-4*M_PI/3))/(2*M_PI/3)) ;
+				}
+			}
+			else
+			{
+				*b = 0 ;
+			}
+			
+			break ;
+			
+		default :								/* Noir. */
+			
+			*r = *v = *b = 0 ;
+			
+			break ;
+			
 	}
 }
-
 
 static void drawSphere(void)
 {
 	float alpha = -90 ;
 	float beta = 0 ;
 	float alphaS = -90 ;
-	float betaS = 0 ;
+	float betaS = 0 ;	
 	float x1 = 0 ;
 	float y1 = 0 ;
 	float z1 = 0 ;
@@ -173,7 +206,7 @@ static void drawSphere(void)
 	float b = 0 ;
 	int i = 0 ;
 	int j = 0 ;
-	int n = 256 ;
+	int n = 512 ;
 	double step ;
 	step = 2*M_PI / (n) ;
 
@@ -182,19 +215,19 @@ static void drawSphere(void)
 	{
 
 		alpha = -M_PI/2 + i * step ;
-
+		
 		glBegin(GL_TRIANGLE_STRIP) ;
 
 		for (j = 0 ; j <= n ; j++)
 		{
 			beta = j * step ;
-
+			
 			x1 = cos (alpha) * cos (beta) ;
 			y1 = sin (alpha) ;
 			z1 = cos (alpha) * sin (beta) ;
 
 			alphaS = alpha + step ;
-			betaS = beta + step ;
+			betaS = beta + step ;			
 
 			/*
 			if (alphaS >= 2 * M_PI)
@@ -206,12 +239,12 @@ static void drawSphere(void)
 			{
 				betaS = betaS - 2 * M_PI ;
 			} */
-
+			
 			x2 = cos (alphaS) * cos (betaS) ;
 			y2 = sin (alphaS) ;
 			z2 = cos (alphaS) * sin (betaS) ;
-
-			SphereColour(alpha, beta, x1, y1, z1, &r, &v, &b) ;
+			
+			SphereColour(4, beta, y1, &r, &v, &b) ;
 
 			glColor3f(r, v, b) ;
 			glVertex3f(x1, y1, z1) ;
@@ -224,11 +257,12 @@ static void drawSphere(void)
 	}
 }
 
-static void drawTetraedre(void)
+static void drawTetrahedron(void)
 {
 	int i = 0 ;
 	int j = 0 ;
-	Point ppEdgesPyramide[4] =
+	
+	float ppfVertexTetrahedron[4][6] =
 	{
 		{1, 0, 0.684653196881458, 1, 0, 0},
 		{-0.5, 0.86602540378439, 0.684653196881458, 0, 1, 0},
@@ -242,8 +276,8 @@ static void drawTetraedre(void)
 		i = j ;
 		if (i >= 4) i = i - 4 ;
 
-		glColor3f(ppEdgesPyramide[i].fRed, ppEdgesPyramide[i].fGreen, ppEdgesPyramide[i].fBlue) ;
-		glVertex3f(ppEdgesPyramide[i].fDimX, ppEdgesPyramide[i].fDimY, ppEdgesPyramide[i].fDimZ) ;
+		glColor3f(ppfVertexTetrahedron[i][3], ppfVertexTetrahedron[i][4], ppfVertexTetrahedron[i][5]) ;
+		glVertex3f(ppfVertexTetrahedron[i][0], ppfVertexTetrahedron[i][1], ppfVertexTetrahedron[i][2]) ;
 	}
 	glEnd() ;
 }
@@ -253,7 +287,7 @@ static void drawCube (void)
 	int i = 0 ;
 	int j = 0 ;
 
-	Point ppEdgesCube[8] =
+	float ppfVertexCube[8][6] =
 	{
 		{-0.5, -0.5, -0.5, 1, 1, 1},
 		{-0.5, -0.5, 0.5, 1, 1, 1},
@@ -280,8 +314,8 @@ static void drawCube (void)
 	{
 		for(j = 0 ; j < 4 ; j ++)
 		{
-			glColor3f(ppEdgesCube[piFacesCube[i][j]].fRed, ppEdgesCube[piFacesCube[i][j]].fGreen, ppEdgesCube[piFacesCube[i][j]].fBlue) ;
-			glVertex3f(ppEdgesCube[piFacesCube[i][j]].fDimX, ppEdgesCube[piFacesCube[i][j]].fDimY, ppEdgesCube[piFacesCube[i][j]].fDimZ) ;
+			glColor3f(ppfVertexCube[piFacesCube[i][j]][3], ppfVertexCube[piFacesCube[i][j]][4], ppfVertexCube[piFacesCube[i][j]][5]) ;
+			glVertex3f(ppfVertexCube[piFacesCube[i][j]][0], ppfVertexCube[piFacesCube[i][j]][1], ppfVertexCube[piFacesCube[i][j]][2]) ;
 		}
 	}
 	glEnd() ;
@@ -292,7 +326,7 @@ static void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) ;
 
 	drawSphere() ;
-	/* drawTetraedre() ; */
+	/* drawTetrahedron() ; */
 	/* drawCube() ; */
 
 	glFlush() ;
@@ -395,9 +429,8 @@ int OpenGLDrawingRegressionTest(int * argc, char * argv[])
 	glEnable(GL_DEPTH_TEST) ;
 
 	glutDisplayFunc(display) ;
-
+	
 	glutKeyboardFunc(key) ;
-
 	glutMouseFunc(mouse) ;
 	glutMotionFunc(motion) ;
 	glutReshapeFunc(reshape) ;
