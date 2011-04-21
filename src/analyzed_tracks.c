@@ -22,7 +22,7 @@
 
 int analyzedTracksInit(AnalyzedTracks* psTracks)
 {
-	assert(psTracks != NULL);
+	assert (psTracks != NULL);
 
 	return EXIT_SUCCESS;
 }
@@ -38,8 +38,8 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 
 	int i;
 
-	assert(psTracks != NULL);
-	assert(ppsContext != NULL);
+	assert (psTracks != NULL);
+	assert (ppsContext != NULL);
 
 	psTrack = analyzedTrackCreate();
 
@@ -76,7 +76,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 }
 int analyzedTracksRelease(AnalyzedTracks* psTracks)
 {
-	assert(psTracks != NULL);
+	assert (psTracks != NULL);
 
 	g_tree_foreach(psTracks, (GTraverseFunc) analyzedTrackReleaseFromTree,
 					NULL);
@@ -95,7 +95,7 @@ AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
 	AnalyzedTracks* psTracks;
 
-	assert(ppsContext != NULL);
+	assert (ppsContext != NULL);
 
 	psTracks = analyzedTracksCreate();
 	analyzedTracksInitFromFile(psTracks, ppsContext);
@@ -104,7 +104,7 @@ AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 }
 int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 {
-	assert(ppsTracks != NULL &&
+	assert (ppsTracks != NULL &&
 			*ppsTracks != NULL);
 
 	printf("Libération\n");
@@ -123,8 +123,8 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 	AnalyzedTrack* psTrackInTree = NULL;
 	int *piKey = NULL;
 
-	assert(psTracks != NULL);
-	assert(psTrack != NULL);
+	assert (psTracks != NULL);
+	assert (psTrack != NULL);
 
 	piKey = (int*) malloc(sizeof(int));
 
@@ -163,8 +163,8 @@ AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
 {
 	AnalyzedTrack* psTrack = NULL;
 
-	assert(psTracks != NULL);
-	assert(iKey > -1);
+	assert (psTracks != NULL);
+	assert (iKey > -1);
 
 	psTrack = analyzedTracksGetTrack(psTracks, iKey);
 
@@ -180,7 +180,7 @@ const AnalyzedTrack* analyzedTracksGetConstTrack(
 									AnalyzedTracks* psTracks,
 									int iKey)
 {
-	assert(psTracks != NULL);
+	assert (psTracks != NULL);
 
 	return g_tree_search(psTracks, (GCompareFunc) analyzedTrackCompare,
 						&iKey);
@@ -214,40 +214,40 @@ int analyzedTracksRegressionTest(void)
 
 	printf("Création de l'arbre...\n");
 	psTracks = analyzedTracksCreate();
-	assert(psTracks != NULL);
+	assert (psTracks != NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Ajout de morceaux à l'arbre...\n");
 	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0.0, 0.0);
 	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0.0, 0.0);
 	printf("\t\tLes deux identifiants sont à 1...\n");
-	assert(psTrack1 != NULL &&
+	assert (psTrack1 != NULL &&
 			psTrack2 != NULL);
 	analyzedTracksInsertTrack(psTracks, psTrack1);
 	analyzedTracksInsertTrack(psTracks, psTrack2);
 	printf("\t\tL'identifiant du second morceau vaut maintenant : %d\n",
 			analyzedTrackGetTID(psTrack2));
-	assert(g_tree_nnodes(psTracks) == 2);
-	assert(analyzedTrackGetTID(psTrack2) == 2);
+	assert (g_tree_nnodes(psTracks) == 2);
+	assert (analyzedTrackGetTID(psTrack2) == 2);
 	printf("\tFAIT !!\n");
 
 	printf("Suppression d'un morceau...\n");
 	analyzedTracksRemoveTrack(psTracks, psTrack1->iTID);
-	assert(g_tree_nnodes(psTracks) == 1);
-	assert(psTrack1 != NULL);
+	assert (g_tree_nnodes(psTracks) == 1);
+	assert (psTrack1 != NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Modification d'une valeur d'un morceau...\n");
 	psTrackSet = analyzedTracksGetTrack(psTracks, 2);
-	assert(psTrackSet != NULL);
+	assert (psTrackSet != NULL);
 	analyzedTrackSetPath(psTrackSet, "ça marche");
-	assert(strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
+	assert (strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
 	printf("\tFAIT !!\n");
 
 	printf("Lecture d'une valeur d'un morceau...\n");
 	psTrackGet = analyzedTracksGetConstTrack(psTracks, 2);
-	assert(psTrackGet != NULL);
-	assert(analyzedTrackGetTID(psTrackGet) == 2 &&
+	assert (psTrackGet != NULL);
+	assert (analyzedTrackGetTID(psTrackGet) == 2 &&
 			analyzedTrackGetFrequenciesAverage(psTrackGet) == 0.0 &&
 			analyzedTrackGetFrequenciesMedian(psTrackGet) == 0.0 &&
 			strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
@@ -255,13 +255,13 @@ int analyzedTracksRegressionTest(void)
 
 	printf("Destruction de l'arbre...\n");
 	analyzedTracksDestroy(&psTracks);
-	assert(psTracks == NULL);
-	assert(psTrack1 != NULL);
-	assert(psTrack2 != NULL);
+	assert (psTracks == NULL);
+	assert (psTrack1 != NULL);
+	assert (psTrack2 != NULL);
 	analyzedTrackDestroy(&psTrack1);
 	analyzedTrackDestroy(&psTrack2);
-	assert(psTrack1 == NULL);
-	assert(psTrack2 == NULL);
+	assert (psTrack1 == NULL);
+	assert (psTrack2 == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t-- Fin des tests --\n");
