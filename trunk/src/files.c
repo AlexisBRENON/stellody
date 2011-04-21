@@ -46,7 +46,7 @@ GKeyFile** filesOpen(void)
 
 int filesClose(GKeyFile*** pppsContext)
 {
-	assert(pppsContext != NULL);
+	assert (pppsContext != NULL);
 
 	g_key_file_free((*pppsContext)[CONFIG]);
 	g_key_file_free((*pppsContext)[DATA]);
@@ -61,7 +61,7 @@ int filesClose(GKeyFile*** pppsContext)
 
 int filesCloseAndSave(GKeyFile*** pppsContext)
 {
-	assert(pppsContext != NULL);
+	assert (pppsContext != NULL);
 
 	filesSave(*pppsContext);
 	filesClose(pppsContext);
@@ -75,12 +75,12 @@ int filesSave(GKeyFile** ppsContext)
 	FILE* pfData = NULL;
 
 	pfConfig = fopen(CONFIG_FILE, "w");
-	assert(pfConfig != NULL);
+	assert (pfConfig != NULL);
 	fprintf(pfConfig, "%s\n", g_key_file_to_data(ppsContext[CONFIG], NULL,
 												NULL));
 
 	pfData = fopen(DATA_FILE, "w");
-	assert(pfData != NULL);
+	assert (pfData != NULL);
 	fprintf(pfData, "%s\n", g_key_file_to_data(ppsContext[DATA], NULL,
 												NULL));
 
@@ -106,13 +106,13 @@ int filesRegressionTest(void)
 
 	printf("Ouverture d'un fichier...\n");
 	ppsContext = filesOpen();
-	assert(ppsContext[CONFIG] != NULL &&
+	assert (ppsContext[CONFIG] != NULL &&
 			ppsContext[DATA] != NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Fermeture et sauvegarde...\n");
 	filesCloseAndSave(&ppsContext);
-	assert(ppsContext == NULL);
+	assert (ppsContext == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t -- FIN TEST DE REGRESSION --\n");

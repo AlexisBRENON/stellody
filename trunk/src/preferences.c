@@ -23,8 +23,8 @@
 
 int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
 {
-	assert(psPref != NULL);
-	assert(iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
+	assert (psPref != NULL);
+	assert (iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
 
 	psPref->iAnalysisRate = iRate;
 	psPref->iWindowXSize = iX;
@@ -55,7 +55,7 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 }
 int preferencesRelease (Preferences* psPref)
 {
-	assert(psPref != NULL);
+	assert (psPref != NULL);
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
@@ -67,7 +67,7 @@ Preferences* preferencesCreate (int iX, int iY, int iRate)
 {
 	Preferences* psPref = NULL;
 
-	assert(iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
+	assert (iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
 
 	psPref = (Preferences*) malloc(sizeof(Preferences));
 	preferencesInit(psPref, iX, iY, iRate);
@@ -94,7 +94,7 @@ Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[])
 }
 int preferencesDestroy (Preferences** ppsPref)
 {
-	assert(*ppsPref != NULL);
+	assert (*ppsPref != NULL);
 
 	preferencesRelease(*ppsPref);
 	free(*ppsPref);
@@ -106,14 +106,14 @@ int preferencesDestroy (Preferences** ppsPref)
 
 int preferencesGetWindowXSize (const Preferences* psPref)
 {
-	assert(psPref != NULL);
+	assert (psPref != NULL);
 
 	return psPref->iWindowXSize;
 }
 int preferencesSetWindowXSize (Preferences* psPref, int iValue)
 {
-	assert(psPref != NULL);
-	assert(iValue >= 0);
+	assert (psPref != NULL);
+	assert (iValue >= 0);
 
 	psPref->iWindowXSize = iValue;
 
@@ -122,14 +122,14 @@ int preferencesSetWindowXSize (Preferences* psPref, int iValue)
 
 int preferencesGetWindowYSize (const Preferences* psPref)
 {
-	assert(psPref != NULL);
+	assert (psPref != NULL);
 
 	return psPref->iWindowYSize;
 }
 int preferencesSetWindowYSize (Preferences* psPref, int iValue)
 {
-	assert(psPref != NULL);
-	assert(iValue >= 0);
+	assert (psPref != NULL);
+	assert (iValue >= 0);
 
 	psPref->iWindowYSize = iValue;
 
@@ -138,14 +138,14 @@ int preferencesSetWindowYSize (Preferences* psPref, int iValue)
 
 int preferencesGetAnalysisRate (const Preferences* psPref)
 {
-	assert(psPref != NULL);
+	assert (psPref != NULL);
 
 	return psPref->iAnalysisRate;
 }
 int preferencesSetAnalysisRate (Preferences* psPref, int iValue)
 {
-	assert(psPref != NULL);
-	assert(iValue > 0 && iValue <= 100);
+	assert (psPref != NULL);
+	assert (iValue > 0 && iValue <= 100);
 
 	psPref->iAnalysisRate = iValue;
 
@@ -168,7 +168,7 @@ int preferencesRegressionTest (void)
 
 	printf("Création d'une structure...\n");
 	psPref = preferencesCreate(800, 600, 50);
-	assert(psPref != NULL &&
+	assert (psPref != NULL &&
 			psPref->iWindowXSize == 800 &&
 			psPref->iWindowYSize == 600 &&
 			psPref->iAnalysisRate == 50);
@@ -178,20 +178,20 @@ int preferencesRegressionTest (void)
 	preferencesSetAnalysisRate(psPref, 100);
 	preferencesSetWindowXSize(psPref, 0);
 	preferencesSetWindowYSize(psPref, 0);
-	assert(psPref->iWindowXSize == 0 &&
+	assert (psPref->iWindowXSize == 0 &&
 			psPref->iWindowYSize == 0 &&
 			psPref->iAnalysisRate == 100);
 	printf("\tFAIT !!\n");
 
 	printf("Récupération des valeurs...\n");
-	assert(psPref->iWindowXSize == preferencesGetWindowXSize(psPref) &&
+	assert (psPref->iWindowXSize == preferencesGetWindowXSize(psPref) &&
 			psPref->iWindowYSize == preferencesGetWindowYSize(psPref) &&
 			psPref->iAnalysisRate == preferencesGetAnalysisRate(psPref));
 	printf("\tFAIT !!\n");
 
 	printf("Destruction de la structure...\n");
 	preferencesDestroy(&psPref);
-	assert(psPref == NULL);
+	assert (psPref == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t -- Fin du test de régression --\n");

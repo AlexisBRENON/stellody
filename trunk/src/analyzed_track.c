@@ -22,7 +22,7 @@
 int analyzedTrackCompare(const int* iTID1,
 						const int* iTID2)
 {
-	assert(iTID1 != NULL &&
+	assert (iTID1 != NULL &&
 			iTID2 != NULL);
 
 	return analyzedTrackDataCompare(iTID1, iTID2, NULL);
@@ -31,8 +31,8 @@ int analyzedTrackDataCompare(const int* iTID1,
 						const int* iTID2,
 						void* pData)
 {
-	assert(iTID1 != NULL);
-	assert(iTID2 != NULL);
+	assert (iTID1 != NULL);
+	assert (iTID2 != NULL);
 
 	if (pData == NULL)
 	{
@@ -84,7 +84,7 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 }
 int analyzedTrackInit(AnalyzedTrack* psTrack)
 {
-	assert(psTrack != NULL);
+	assert (psTrack != NULL);
 
 	return analyzedTrackInitWithData(psTrack, 0, NULL, 0.0, 0.0);
 }
@@ -106,7 +106,7 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack)
 gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
 									gpointer pData)
 {
-	assert(pValue != NULL);
+	assert (pValue != NULL);
 
 	analyzedTrackRelease(pValue);
 
@@ -130,8 +130,8 @@ AnalyzedTrack* analyzedTrackCreate (void)
 }
 int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
 {
-	assert(ppsTrack != NULL);
-	assert(*ppsTrack != NULL);
+	assert (ppsTrack != NULL);
+	assert (*ppsTrack != NULL);
 
 	analyzedTrackRelease(*ppsTrack);
 	free(*ppsTrack);
@@ -142,14 +142,14 @@ int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
 
 int analyzedTrackGetTID (const AnalyzedTrack* psTrack)
 {
-	assert(psTrack != NULL);
+	assert (psTrack != NULL);
 
 	return psTrack->iTID;
 }
 int analyzedTrackSetTID (AnalyzedTrack* psTrack, int iValue)
 {
-	assert(psTrack != NULL);
-	assert(iValue >= 0);
+	assert (psTrack != NULL);
+	assert (iValue >= 0);
 
 	psTrack->iTID = iValue;
 
@@ -158,14 +158,14 @@ int analyzedTrackSetTID (AnalyzedTrack* psTrack, int iValue)
 
 const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
 {
-	assert(psTrack != NULL);
+	assert (psTrack != NULL);
 
 	return psTrack->strPath;
 }
 int analyzedTrackSetPath (AnalyzedTrack* psTrack, const char* strNewPath)
 {
-	assert(psTrack != NULL);
-	assert(strNewPath != NULL);
+	assert (psTrack != NULL);
+	assert (strNewPath != NULL);
 
 	if (psTrack->strPath != NULL)
 	{
@@ -179,15 +179,15 @@ int analyzedTrackSetPath (AnalyzedTrack* psTrack, const char* strNewPath)
 
 float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack)
 {
-	assert(psTrack != NULL);
+	assert (psTrack != NULL);
 
 	return psTrack->fFrequenciesAverage;
 }
 int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
 										float fValue)
 {
-	assert(psTrack != NULL);
-	assert(fValue >= 0.0 && fValue <= 1.0);
+	assert (psTrack != NULL);
+	assert (fValue >= 0.0 && fValue <= 1.0);
 
 	psTrack->fFrequenciesAverage = fValue;
 
@@ -196,14 +196,14 @@ int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
 
 float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack)
 {
-	assert(psTrack != NULL);
+	assert (psTrack != NULL);
 
 	return psTrack->fFrequenciesMedian;
 }
 int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fValue)
 {
-	assert(psTrack != NULL);
-	assert(fValue >= 0.0 && fValue <= 1.0);
+	assert (psTrack != NULL);
+	assert (fValue >= 0.0 && fValue <= 1.0);
 
 	psTrack->fFrequenciesMedian = fValue;
 
@@ -227,7 +227,7 @@ int analyzedTrackRegressionTest(void)
 
 	printf("Création d'un morceau...\n");
 	psTrack = analyzedTrackCreateWithData(100, NULL, 0, 0);
-	assert(psTrack != NULL &&
+	assert (psTrack != NULL &&
 			psTrack->iTID == 100 &&
 			psTrack->strPath == NULL &&
 			psTrack->fFrequenciesAverage == 0 &&
@@ -236,31 +236,31 @@ int analyzedTrackRegressionTest(void)
 
 	printf("Initialisation d'un morceau...\n");
 	analyzedTrackInitWithData(&sTrack2, 50, "test", 0.5, 0.5);
-	assert(sTrack2.iTID == 50 &&
+	assert (sTrack2.iTID == 50 &&
 			sTrack2.fFrequenciesAverage == 0.5 &&
 			sTrack2.fFrequenciesMedian == 0.5 &&
 			strcmp(sTrack2.strPath, "test")==0);
 	printf("\tFAIT !!\n");
 
 	printf("Comparaison de morceaux...\n");
-	assert(analyzedTrackCompare(&(psTrack->iTID), &(sTrack2.iTID)) == 1);
+	assert (analyzedTrackCompare(&(psTrack->iTID), &(sTrack2.iTID)) == 1);
 	printf("\tFAIT !!\n");
 
 	printf("Changement du chemin...\n");
 	analyzedTrackSetPath(psTrack, "/test/path");
-	assert(strcmp(psTrack->strPath, "/test/path") == 0);
+	assert (strcmp(psTrack->strPath, "/test/path") == 0);
 	printf("\tFAIT !!\n");
 
 	printf("Rechangement du chemin...\n");
 	analyzedTrackSetPath(psTrack, "/test2/filepath");
-	assert(strcmp(psTrack->strPath, "/test2/filepath") == 0);
+	assert (strcmp(psTrack->strPath, "/test2/filepath") == 0);
 	printf("\tFAIT !!\n");
 
 	printf("Changement des valeurs...\n");
 	analyzedTrackSetFrequenciesAverage(psTrack, 0.5);
 	analyzedTrackSetFrequenciesMedian(psTrack, 0.25);
 	analyzedTrackSetTID(psTrack, 555);
-	assert(psTrack->fFrequenciesAverage == 0.5 &&
+	assert (psTrack->fFrequenciesAverage == 0.5 &&
 			psTrack->fFrequenciesMedian == 0.25 &&
 			psTrack->iTID == 555);
 	printf("\tFAIT !!\n");
@@ -276,12 +276,12 @@ int analyzedTrackRegressionTest(void)
 
 	printf("Libération d'un morceau...\n");
 	analyzedTrackRelease(&sTrack2);
-	assert(sTrack2.strPath == NULL);
+	assert (sTrack2.strPath == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Destruction du morceau...\n");
 	analyzedTrackDestroy(&psTrack);
-	assert(psTrack == NULL);
+	assert (psTrack == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t -- Fin du test de régression --\n");
