@@ -2,12 +2,23 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="PlayList_ListStore">
+    <columns>
+      <!-- column-name TrackTitle -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Test</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="Stellody_Window">
     <property name="title" translatable="yes">Stellody</property>
-    <property name="default_width">800</property>
+    <property name="default_width">796</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">icone_png.png</property>
+    <property name="icon">../images/icone_png.png</property>
     <property name="icon_name">Stellody</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
@@ -29,6 +40,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">AddTrack_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -37,6 +49,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">AddDir_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -50,6 +63,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Quit_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="gtk_main_quit"/>
                       </object>
@@ -71,6 +85,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Play_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -79,6 +94,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Stop_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -87,6 +103,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Pause_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -108,6 +125,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Stellarium_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -116,6 +134,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">Preferences_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -136,6 +155,7 @@
                         <property name="visible">True</property>
                         <property name="related_action">About_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -418,16 +438,5 @@
     <property name="tooltip">A propos de l'application</property>
     <property name="stock_id">gtk-about</property>
     <property name="icon_name">help-about</property>
-  </object>
-  <object class="GtkListStore" id="PlayList_ListStore">
-    <columns>
-      <!-- column-name TrackTitle -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Test</col>
-      </row>
-    </data>
   </object>
 </interface>
