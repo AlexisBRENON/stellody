@@ -119,7 +119,6 @@
                 <child type="submenu">
                   <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
-                    <property name="ubuntu_local">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="Stellarium_Item">
                         <property name="visible">True</property>
