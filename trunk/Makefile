@@ -82,39 +82,45 @@ check :
 		
 mac : check $(OBJS_MAC)
 	@echo
-	@echo "Fin des erreurs compilateur (syntaxe)."
-	@echo "------------------------"
-	@echo "Début des erreurs linker."
+	@echo "Fin des messages compilateur (syntaxe)."
+	@echo
+	@echo "======================================="
+	@echo
+	@echo "Début des messages linker."
 	@echo
 	@$(CC) $(MAC_LDFLAGS) $(OBJS_MAC) -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin des erreurs linker."
-	@echo "------------------------"
+	@echo "Fin des messages linker."
 	@echo
-	@echo "Stellody construit !"
+	@echo "======================================="
+	@echo
+	@echo "Stellody construit avec sucès !"
 	@echo
 	
 lin : check $(OBJS_LIN)
 	@echo
-	@echo "Fin des erreurs compilateur (syntaxe)."
-	@echo "------------------------"
-	@echo "Début des erreurs linker."
+	@echo "Fin des messages compilateur (syntaxe)."
+	@echo
+	@echo "======================================="
+	@echo
+	@echo "Début des messages linker."
 	@echo
 	@$(CC) $(LIN_LDFLAGS) $(OBJS_LIN) -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin des erreurs linker."
-	@echo "------------------------"
+	@echo "Fin des messages linker."
 	@echo
-	@echo "Stellody construit !"
+	@echo "======================================="
+	@echo
+	@echo "Stellody construit avec sucès !"
 	@echo
 
 $(OBJ_DIR)/%_mac.o : $(SRC_DIR)/%.c
-	@echo "  $<"
+	@echo "  $<\n"
 	@$(CC) -c $(MAC_CFLAGS) $< -o $@
 	@echo "------------------------"
 
 $(OBJ_DIR)/%_lin.o : $(SRC_DIR)/%.c
-	@echo "  $<"
+	@echo "  $<\n"
 	@$(CC) -c $(LIN_CFLAGS) $< -o $@
 	@echo "------------------------"
 
