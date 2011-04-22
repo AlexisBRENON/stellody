@@ -14,8 +14,10 @@
     </data>
   </object>
   <object class="GtkWindow" id="Stellody_Window">
+    <property name="width_request">800</property>
+    <property name="height_request">600</property>
     <property name="title" translatable="yes">Stellody</property>
-    <property name="default_width">796</property>
+    <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">../images/icone_png.png</property>
@@ -291,6 +293,7 @@
                         <property name="receives_default">True</property>
                         <property name="related_action">Stellarium_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -305,6 +308,7 @@
                         <property name="receives_default">True</property>
                         <property name="related_action">Preferences_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="use_stock">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -394,9 +398,6 @@
     <property name="icon_name">media-playback-pause</property>
     <signal name="activate" handler="on_Pause_Action_activate"/>
   </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-  </object>
   <object class="GtkAction" id="AddTrack_Action">
     <property name="label">Ajouter un morceau</property>
     <property name="short_label">Ajout</property>
@@ -430,6 +431,7 @@
     <property name="tooltip">Modifier les préférences</property>
     <property name="stock_id">gtk-preferences</property>
     <property name="icon_name">preferences-system</property>
+    <property name="always_show_image">True</property>
   </object>
   <object class="GtkAction" id="About_Action">
     <property name="label">A Propos</property>

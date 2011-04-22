@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 #include "preferences.h"
 #include "files.h"
@@ -21,35 +22,37 @@
 /* ********************************************************************* */
 
 
-int preferencesInit (Preferences* psPref, int iX, int iY, int iRate)
+int preferencesInit (Preferences* psPref)
 {
 	assert (psPref != NULL);
-	assert (iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
 
-	psPref->iAnalysisRate = iRate;
-	psPref->iWindowXSize = iX;
-	psPref->iWindowYSize = iY;
+	psPref->iAnalysisRate = 0;
+	psPref->iWindowXSize = 0;
+	psPref->iWindowYSize = 0;
+	psPref->iNbPath = 0;
+	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
 }
 int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 {
-	int iRate, iXSize, iYSize;
-
 	assert (psPref != NULL);
 	assert (ppsContext != NULL);
 
-	iRate = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iAnalysisRate", NULL);
-	iXSize = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iWindowXSize", NULL);
-	iYSize = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iWindowYSize", NULL);
-
-	preferencesInit(psPref, iXSize, iYSize, iRate);
+	psPref->iAnalysisRate = g_key_file_get_integer(ppsContext[CONFIG],
+												"DEFAULT",
+												"iAnalysisRate", NULL);
+	psPref->iWindowXSize = g_key_file_get_integer(ppsContext[CONFIG],
+												"DEFAULT",
+												"iWindowXSize", NULL);
+	psPref->iWindowYSize = g_key_file_get_integer(ppsContext[CONFIG],
+												"DEFAULT",
+												"iWindowYSize", NULL);
+	psPref->pstrFilesPath = g_key_file_get_string_list(ppsContext[CONFIG],
+											"DEFAULT",
+											"pstrPath",
+											(gsize*) &(psPref->iNbPath),
+											NULL);
 
 	return EXIT_SUCCESS;
 }
@@ -59,38 +62,31 @@ int preferencesRelease (Preferences* psPref)
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
+	psPref->iNbPath = -1;
+	g_strfreev(psPref->pstrFilesPath);
 
 	return EXIT_SUCCESS;
 }
 
-Preferences* preferencesCreate (int iX, int iY, int iRate)
+Preferences* preferencesCreate (void)
 {
 	Preferences* psPref = NULL;
 
-	assert (iX >= 0 && iY >= 0 && iRate > 0 && iRate <= 100);
-
 	psPref = (Preferences*) malloc(sizeof(Preferences));
-	preferencesInit(psPref, iX, iY, iRate);
+	preferencesInit(psPref);
 
 	return psPref;
 }
 Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[])
 {
-	int iRate, iXSize, iYSize;
+	Preferences* psPref = NULL;
 
 	assert (ppsContext != NULL);
 
-	iRate = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iAnalysisRate", NULL);
-	iXSize = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iWindowXSize", NULL);
-	iYSize = g_key_file_get_integer(ppsContext[CONFIG],
-									"DEFAULT",
-									"iWindowYSize", NULL);
+	psPref = preferencesCreate();
+	preferencesInitFromFile(psPref, ppsContext);
 
-	return preferencesCreate(iXSize, iYSize, iRate);
+	return psPref;
 }
 int preferencesDestroy (Preferences** ppsPref)
 {
@@ -152,6 +148,37 @@ int preferencesSetAnalysisRate (Preferences* psPref, int iValue)
 	return EXIT_SUCCESS;
 }
 
+char** preferencesGetFilesPath(const Preferences* psPref,
+									int* piSize)
+{
+	assert (psPref != NULL);
+	*piSize = psPref->iNbPath;
+
+	return (psPref->pstrFilesPath);
+}
+int preferencesSetFilesPath(Preferences* psPref, int iSize,
+							const char* pstrPath[])
+{
+	int i;
+
+	assert (psPref != NULL);
+	assert (iSize > 0);
+	assert (pstrPath != NULL);
+
+	psPref->iNbPath = iSize;
+	g_strfreev(psPref->pstrFilesPath);
+	psPref->pstrFilesPath = (gchar**) malloc(iSize*sizeof(gchar*));
+	for (i = 0; i < iSize; i++)
+	{
+		int len;
+		len = strlen(pstrPath[i]);
+		(psPref->pstrFilesPath)[i] = (gchar*) malloc((len+1)*
+													sizeof(gchar));
+		strcpy((psPref->pstrFilesPath)[i], pstrPath[i]);
+	}
+
+	return EXIT_SUCCESS;
+}
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -167,11 +194,8 @@ int preferencesRegressionTest (void)
 	printf("\n\t -- MODULE PREFERENCES --\n\n");
 
 	printf("Création d'une structure...\n");
-	psPref = preferencesCreate(800, 600, 50);
-	assert (psPref != NULL &&
-			psPref->iWindowXSize == 800 &&
-			psPref->iWindowYSize == 600 &&
-			psPref->iAnalysisRate == 50);
+	psPref = preferencesCreate();
+	assert (psPref != NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Modification des valeurs...\n");

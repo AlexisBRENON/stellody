@@ -8,10 +8,10 @@
 #include <stdio.h>
 #include <string.h>
 #if defined(__linux)
-	#include <fmodex/fmod.h>
+#include <fmodex/fmod.h>
 #endif
 #if defined (__APPLE__)
-	#include <fmod.h>
+#include <fmod.h>
 #endif
 
 #include "analyzed_track.h"
@@ -32,32 +32,30 @@
   */
 int main (int argc, char* argv[])
 {
-	GtkBuilder* builder = NULL;
-	GtkWidget* win = NULL;
+    GtkBuilder* builder = NULL;
+    GtkWidget* win = NULL;
 
-	printf("argv[0] : %s\n", argv[0]);
+    if (argc > 1 && strcmp(argv[1], "-x") == 0)
+    {
+        gtk_init(&argc, &argv);
 
-	if (argc > 1 && strcmp(argv[1], "-x") == 0)
-	{
-		gtk_init(&argc, &argv);
+        builder = gtk_builder_new();
+        gtk_builder_add_from_file(builder, "data/windows/Window.glade",
+                                  NULL);
+        gtk_builder_connect_signals(builder, NULL);
 
-		builder = gtk_builder_new();
-		gtk_builder_add_from_file(builder, "data/windows/Window.glade",
-									NULL);
-		gtk_builder_connect_signals(builder, NULL);
-
-		win = GTK_WIDGET(gtk_builder_get_object(builder,
-												"Stellody_Window"));
-		gtk_widget_show_all(win);
-		gtk_main();
-	}
-	else
-	{
-		printf("Returned value : %d\n", filesRegressionTest());
-		printf("Returned value : %d\n",
-				OpenGLDrawingRegressionTest(&argc, argv));
-	}
+        win = GTK_WIDGET(gtk_builder_get_object(builder,
+                                                "Stellody_Window"));
+        gtk_widget_show_all(win);
+        gtk_main();
+    }
+    else
+    {
+        printf("Returned value : %d\n", filesRegressionTest());
+        printf("Returned value : %d\n",
+               OpenGLDrawingRegressionTest(&argc, argv));
+    }
 
 
-	return 0;
+    return 0;
 }
