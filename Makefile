@@ -6,27 +6,27 @@
 # ############################################################################ #
 
 
-# Définition des cibles particulières
+# D√©finition des cibles particuli√®res
 .PHONY: clean mrproper help mac lin
 
 
-# Définition de variables :
+# D√©finition de variables :
 	# Compilateur
 CC =			gcc
-	# Fichiers nécessaires √† GTK+
+	# Fichiers n√©cessaires √†¬† GTK+
 GTK_CFLAGS = 	`pkg-config --cflags gtk+-2.0`
 GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`
-	# Fichiers nescessaires √† OpenGL (pour Ubuntu)
+	# Fichiers n√©cessaires √†¬† OpenGL (pour Ubuntu)
 GL_CFLAGS = 	`pkg-config --cflags gl glu`
 GL_LDFLAGS = 	`pkg-config --libs gl glu`
 
 	# Dossier contenant les sources
 SRC_DIR = 		src
-	# Dossier où créer les fichiers objets
+	# Dossier o√π cr√©er les fichiers objets
 OBJ_DIR = 		obj
-	# Dossier où créer l'exécutable
+	# Dossier o√π cr√©er l'ex√©cutable
 BIN_DIR = 		bin
-	# Nom de l'exécutable
+	# Nom de l'ex√©cutable
 EXEC = 			stellody
 	# Noms des fichiers sources
 SRCS = 			stellody.c \
@@ -35,28 +35,28 @@ SRCS = 			stellody.c \
 			preferences.c \
 			opengl_drawing.c \
 			files.c
-	# Noms des fichiers objets (génération dynamique)
+	# Noms des fichiers objets (g√©n√©ration dynamique)
 OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)
 OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 
-	# Options nécessaires √† la compilation sous linux
+	# Options n√©cessaires √†¬† la compilation sous linux
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g 	$(GTK_CFLAGS)	$(GL_CFLAGS)
 LIN_LDFLAGS =		-export-dynamic -lglut 		$(GTK_LDFLAGS)	$(GL_LDFLAGS)
-	# Options nécessaires √† la compilation sous MAC
+	# Options n√©cessaires √†¬† la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
 				-I/Developer/FMOD\ Programmers\ API\ Mac/api/inc \
 				$(GTK_CFLAGS)
 MAC_LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa \
 				$(GTK_LDFLAGS)
 				
-# Fin de définition de variables
+# Fin de d√©finition de variables
 
 
 # ############################################################################ #
 # ############################################################################ #
 
 
-# Début de l'énumération des cibles
+# D√©but de l'√©num√©ration des cibles
 
 
 help :
@@ -64,52 +64,63 @@ help :
 	@echo "                    <-=  AIDE  =->"
 	@echo
 	@echo "Voici les cibles que vous pouvez appeler :"
-	@echo "    - make mac        Construit l'exécutable pour MAC OS X"
-	@echo "    - make lin        Construit l'exécutable pour Ubuntu"
-	@echo "    - make clean      Détruit les fichiers objets"
-	@echo "    - make mrproper   Détruit tout ce qui peut être reconstruit"
+	@echo "    - make mac        Construit l'ex√©cutable pour MAC OS X"
+	@echo "    - make lin        Construit l'ex√©cutable pour Ubuntu"
+	@echo "    - make clean      D√©truit les fichiers objets"
+	@echo "    - make mrproper   D√©truit tout ce qui peut √™tre reconstruit"
 	@echo "    - make [help]     Affiche cette page d'aide"
 	@echo
-	
-	
-$(EXEC) : $(OBJS)
-	@echo ""
-	$(CC) $(LDFLAGS) $(GTK_LDFLAGS) $(GL_LDFLAGS) $^ -o $(BIN_DIR)/$@
 		
-mac : $(OBJS_MAC)
+check :
+	@echo
+	@if [ ! -e bin ]; then mkdir bin; fi
+	@if [ ! -e obj ]; then mkdir obj; fi
+	@if [ ! -e data ]; then	echo "Dossiers de donn√©es inexistants..."; exit 1;fi
+	@if [ ! -e .stellody_data ]; then echo "# Fichier de donn√©es" >.stellody_data; fi
+	@if [ ! -e .stellody_config ]; then echo "# Fichier de configuration" >.stellody_data; fi
+	
+		
+mac : check $(OBJS_MAC)
 	@echo
 	@echo "Fin des erreurs compilateur (syntaxe)."
-	@echo "Début des erreurs linker."
+	@echo "------------------------"
+	@echo "D√©but des erreurs linker."
 	@echo
-	@$(CC) $(MAC_LDFLAGS) $^ -o $(BIN_DIR)/$(EXEC)
+	@$(CC) $(MAC_LDFLAGS) $(OBJS_MAC) -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin de compilation."
+	@echo "Fin des erreurs linker."
+	@echo "------------------------"
 	@echo
-
-lin : $(OBJS_LIN)
+	@echo "Stellody construit !"
+	@echo
+	
+lin : check $(OBJS_LIN)
 	@echo
 	@echo "Fin des erreurs compilateur (syntaxe)."
-	@echo "Début des erreurs linker."
+	@echo "------------------------"
+	@echo "D√©but des erreurs linker."
 	@echo
-	@$(CC) $(LIN_LDFLAGS) $^ -o $(BIN_DIR)/$(EXEC)
+	@$(CC) $(LIN_LDFLAGS) $(OBJS_LIN) -o $(BIN_DIR)/$(EXEC)
 	@echo
-	@echo "Fin de compilation."
+	@echo "Fin des erreurs linker."
+	@echo "------------------------"
+	@echo
+	@echo "Stellody construit !"
 	@echo
 
 $(OBJ_DIR)/%_mac.o : $(SRC_DIR)/%.c
-	@echo " ."
+	@echo "  $<"
 	@$(CC) -c $(MAC_CFLAGS) $< -o $@
+	@echo "------------------------"
 
 $(OBJ_DIR)/%_lin.o : $(SRC_DIR)/%.c
-	@echo " ."
+	@echo "  $<"
 	@$(CC) -c $(LIN_CFLAGS) $< -o $@
-
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	@$(CC) -c $(CFLAGS) $(GTK_CFLAGS) $(GL_CFLAGS) $< -o $@
+	@echo "------------------------"
 
 clean :
 	@echo
-	@rm -fv $(OBJ_DIR)/*.o $(OBJ_DIR)/Cube*
+	@rm -fv $(OBJ_DIR)/*.o
 	@echo
 
 mrproper :
