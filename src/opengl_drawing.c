@@ -244,7 +244,7 @@ static void drawSphere(void)
 			y2 = sin (alphaS) ;
 			z2 = cos (alphaS) * sin (betaS) ;
 			
-			SphereColour(2, beta, y1, &r, &v, &b) ;
+			SphereColour(4, beta, y1, &r, &v, &b) ;
 
 			glColor3f(r, v, b) ;
 			glVertex3f(x1, y1, z1) ;
@@ -403,8 +403,6 @@ static void reshape(int iWidth, int iHeight)
 	if(iWidth < iHeight) glViewport(0, (iHeight-iWidth)/2, iWidth, iWidth) ;
 	if(iHeight < iWidth) glViewport((iWidth-iHeight)/2, 0, iHeight, iHeight) ;
 }
-
-
 
 
 /* ********************************************************************* */
