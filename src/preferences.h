@@ -208,6 +208,9 @@ int preferencesSetFilesPath (Preferences* psPref, int iSize,
   * @fn int preferencesRegressionTest (void)
   * @brief Teste toutes les fonctions du module.
   *
+  * @bug SEGFAULT en exécution mais pas en déboguage au niveau de la
+  destruction...
+  *
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesRegressionTest (void);

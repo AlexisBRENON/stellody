@@ -18,8 +18,8 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-#define CONFIG_FILE ".stellody_config"
-#define DATA_FILE ".stellody_data"
+#define CONFIG_FILE ".stellody_config" /**< Nom du fichier de config */
+#define DATA_FILE ".stellody_data" /**< Nom du fichier de données */
 
 /* ********************************************************************* */
 /*                                                                       */

@@ -58,12 +58,19 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 }
 int preferencesRelease (Preferences* psPref)
 {
+	int i;
+
 	assert (psPref != NULL);
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
-	psPref->iNbPath = -1;
 	g_strfreev(psPref->pstrFilesPath);
+	for (i = 0; i < psPref->iNbPath; i++)
+	{
+		(psPref->pstrFilesPath)[i] = NULL;
+	}
+	psPref->iNbPath = -1;
+	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
 }
@@ -90,6 +97,7 @@ Preferences* preferencesCreateFromFile (GKeyFile* ppsContext[])
 }
 int preferencesDestroy (Preferences** ppsPref)
 {
+	assert (ppsPref != NULL);
 	assert (*ppsPref != NULL);
 
 	preferencesRelease(*ppsPref);
@@ -152,7 +160,10 @@ char** preferencesGetFilesPath(const Preferences* psPref,
 									int* piSize)
 {
 	assert (psPref != NULL);
-	*piSize = psPref->iNbPath;
+	if (piSize != NULL)
+	{
+		*piSize = psPref->iNbPath;
+	}
 
 	return (psPref->pstrFilesPath);
 }
@@ -190,6 +201,10 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 int preferencesRegressionTest (void)
 {
 	Preferences* psPref = NULL;
+	char strPath1[] = "test1";
+	char strPath2[] = "test2";
+	const char* pstrPath[2];
+	int iNbPath;
 
 	printf("\n\t -- MODULE PREFERENCES --\n\n");
 
@@ -202,15 +217,26 @@ int preferencesRegressionTest (void)
 	preferencesSetAnalysisRate(psPref, 100);
 	preferencesSetWindowXSize(psPref, 0);
 	preferencesSetWindowYSize(psPref, 0);
+	pstrPath[0]=strPath1;
+	pstrPath[1]=strPath2;
+	preferencesSetFilesPath(psPref, 2, pstrPath);
 	assert (psPref->iWindowXSize == 0 &&
 			psPref->iWindowYSize == 0 &&
-			psPref->iAnalysisRate == 100);
+			psPref->iAnalysisRate == 100 &&
+			strcmp((psPref->pstrFilesPath)[0],"test1") == 0 &&
+			strcmp((psPref->pstrFilesPath)[1],"test2") == 0 &&
+			psPref->iNbPath == 2);
 	printf("\tFAIT !!\n");
 
 	printf("Récupération des valeurs...\n");
 	assert (psPref->iWindowXSize == preferencesGetWindowXSize(psPref) &&
 			psPref->iWindowYSize == preferencesGetWindowYSize(psPref) &&
-			psPref->iAnalysisRate == preferencesGetAnalysisRate(psPref));
+			psPref->iAnalysisRate == preferencesGetAnalysisRate(psPref) &&
+			strcmp((psPref->pstrFilesPath)[0],
+					(preferencesGetFilesPath(psPref, &iNbPath))[0]) == 0 &&
+			strcmp((psPref->pstrFilesPath)[1],
+					(preferencesGetFilesPath(psPref, NULL))[0]) == 1 &&
+			iNbPath == 2);
 	printf("\tFAIT !!\n");
 
 	printf("Destruction de la structure...\n");
