@@ -31,7 +31,7 @@
 GKeyFile** filesOpen(void)
 {
 	GKeyFile** ppsContext;
-	ppsContext = (GKeyFile**) malloc(3*sizeof(GKeyFile*));
+	ppsContext = (GKeyFile**) malloc(2*sizeof(GKeyFile*));
 
 	ppsContext[CONFIG] = g_key_file_new();
 	g_key_file_load_from_file(ppsContext[CONFIG], CONFIG_FILE,

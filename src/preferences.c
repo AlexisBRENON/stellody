@@ -58,18 +58,12 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 }
 int preferencesRelease (Preferences* psPref)
 {
-	int i;
-
 	assert (psPref != NULL);
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
-	g_strfreev(psPref->pstrFilesPath);
-	for (i = 0; i < psPref->iNbPath; i++)
-	{
-		(psPref->pstrFilesPath)[i] = NULL;
-	}
 	psPref->iNbPath = -1;
+	g_strfreev(psPref->pstrFilesPath);
 	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
@@ -176,9 +170,12 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 	assert (iSize > 0);
 	assert (pstrPath != NULL);
 
-	psPref->iNbPath = iSize;
+	/* Libère les anciens chemins sauvegardés */
 	g_strfreev(psPref->pstrFilesPath);
-	psPref->pstrFilesPath = (gchar**) malloc(iSize*sizeof(gchar*));
+
+	/* Stocke les nouveaux chemins */
+	psPref->iNbPath = iSize;
+	psPref->pstrFilesPath = (gchar**) malloc((iSize+1)*sizeof(gchar*));
 	for (i = 0; i < iSize; i++)
 	{
 		int len;
@@ -187,6 +184,8 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 													sizeof(gchar));
 		strcpy((psPref->pstrFilesPath)[i], pstrPath[i]);
 	}
+	(psPref->pstrFilesPath)[iSize] = NULL;
+
 
 	return EXIT_SUCCESS;
 }
@@ -248,3 +247,4 @@ int preferencesRegressionTest (void)
 
 	return EXIT_SUCCESS;
 }
+

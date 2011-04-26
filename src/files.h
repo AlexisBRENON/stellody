@@ -22,9 +22,9 @@
   */
 enum eSTELLODY_FILES
 {
-	ERROR	= 0, /**< Fichier d'erreurs (inutilisé) */
-	CONFIG	= 1, /**< Fichier de configuration (paramètres...) */
-	DATA    = 2  /**< Fichier de données (tous les morceaux) */
+	ERROR	= 2, /**< Fichier d'erreurs (inutilisé) */
+	CONFIG	= 0, /**< Fichier de configuration (paramètres...) */
+	DATA    = 1  /**< Fichier de données (tous les morceaux) */
 };
 /**
   * @typedef STELLODY_FILES

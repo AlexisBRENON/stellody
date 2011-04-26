@@ -107,10 +107,8 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 	assert (ppsTracks != NULL &&
 			*ppsTracks != NULL);
 
-	printf("Libération\n");
 	g_tree_destroy(*ppsTracks);
 	*ppsTracks = NULL;
-	printf("FAIT !\n");
 
 	return EXIT_SUCCESS;
 }
