@@ -20,6 +20,7 @@
 #include "preferences.h"
 #include "opengl_drawing.h"
 #include "files.h"
+#include "gui.h"
 
 
 /**
@@ -33,10 +34,14 @@
   */
 int main (int argc, char* argv[])
 {
-    GtkBuilder* builder = NULL;
-    GtkWidget* win = NULL;
+	gpointer pDatas[NB_DATA];
+	GKeyFile** ppsFilesContext;
+    int i, iAnswer = -1;
 
-    int iAnswer = -1;
+    for (i = 0; i < NB_DATA; i++)
+    {
+    	pDatas[i] = NULL;
+    }
 
 	printf ("Que voulez-vous faire ?\n\n");
 	printf ("\t1 : preferencesRegressionTest\n");
@@ -44,7 +49,7 @@ int main (int argc, char* argv[])
 	printf ("\t3 : analyzedTrackRegressionTest\n");
 	printf ("\t4 : filesRegressionTest\n");
 	printf ("\t5 : openglRegressionTest\n");
-	printf ("\t9 : Test interface\n");
+	printf ("\t9 : Test intégral\n");
 	printf ("\n\t0 : Quitter\n");
 
     while (iAnswer < 0 || iAnswer > 9)
@@ -52,6 +57,8 @@ int main (int argc, char* argv[])
     	printf("\n Choix : ");
     	scanf("%d", &iAnswer);
     }
+
+    gtk_init(&argc, &argv);
 
     switch (iAnswer)
     {
@@ -78,17 +85,15 @@ int main (int argc, char* argv[])
                OpenGLDrawingRegressionTest(&argc, argv));
 			break;
 		case 9:
-			gtk_init(&argc, &argv);
-
-			builder = gtk_builder_new();
-			gtk_builder_add_from_file(builder, "data/windows/Window.glade",
-									NULL);
-			gtk_builder_connect_signals(builder, NULL);
-
-			win = GTK_WIDGET(gtk_builder_get_object(builder,
-                                                "Stellody_Window"));
-			gtk_widget_show_all(win);
+			ppsFilesContext = filesOpen();
+			pDatas[PREFERENCES] = preferencesCreateFromFile(
+													ppsFilesContext);
+			pDatas[MAIN_BUILDER] = guiLoad(pDatas);
 			gtk_main();
+			filesCloseAndSave(&ppsFilesContext,
+							(Preferences*) pDatas[PREFERENCES],
+							(AnalyzedTracks*) pDatas[ANALYZED_TRACKS]);
+			preferencesDestroy((Preferences**) &pDatas[PREFERENCES]);
 			break;
 		default:
 			printf ("Choix incorrect...");

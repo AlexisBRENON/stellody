@@ -1,30 +1,10 @@
+# Fichier de configuration de l'application Stellody.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[DEFAULT]
+iAnalysisRate=25
+iWindowXSize=800
+iWindowYSize=600
+pstrPath=
 
 
 
