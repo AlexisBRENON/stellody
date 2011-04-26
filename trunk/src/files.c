@@ -11,6 +11,8 @@
 #include <gtk/gtk.h>
 
 #include "files.h"
+#include "preferences.h"
+#include "analyzed_tracks.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -59,25 +61,47 @@ int filesClose(GKeyFile*** pppsContext)
 }
 
 
-int filesCloseAndSave(GKeyFile*** pppsContext)
+int filesCloseAndSave(GKeyFile*** pppsContext,
+					const Preferences* psPref,
+					const AnalyzedTracks* psTracks)
 {
 	assert (pppsContext != NULL);
 
-	filesSave(*pppsContext);
+	filesSave(*pppsContext,	psPref, psTracks);
 	filesClose(pppsContext);
 
 	return EXIT_SUCCESS;
 }
 
-int filesSave(GKeyFile** ppsContext)
+int filesSave(GKeyFile** ppsContext,
+			const Preferences* psPref,
+			const AnalyzedTracks* psTracks)
 {
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
+	int iSize = 0;
 
-	pfConfig = fopen(CONFIG_FILE, "w");
-	assert (pfConfig != NULL);
-	fprintf(pfConfig, "%s\n", g_key_file_to_data(ppsContext[CONFIG], NULL,
-												NULL));
+	if (psPref != NULL)
+	{
+		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "iAnalysisRate",
+								preferencesGetAnalysisRate(psPref));
+		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "iWindowXSize",
+								preferencesGetWindowXSize(psPref));
+		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "iWindowYSize",
+								preferencesGetWindowYSize(psPref));
+		/*g_key_file_set_string_list(ppsContext[CONFIG],
+									"DEFAULT", "pstrPath",
+									preferencesGetFilesPath(psPref, &iSize),
+									iSize);*/
+
+		pfConfig = fopen(CONFIG_FILE, "w");
+		assert (pfConfig != NULL);
+		fprintf(pfConfig, "%s\n", g_key_file_to_data(ppsContext[CONFIG],
+													NULL, NULL));
+	}
 
 	pfData = fopen(DATA_FILE, "w");
 	assert (pfData != NULL);
@@ -111,7 +135,7 @@ int filesRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Fermeture et sauvegarde...\n");
-	filesCloseAndSave(&ppsContext);
+	filesClose(&ppsContext);
 	assert (ppsContext == NULL);
 	printf("\tFAIT !!\n");
 

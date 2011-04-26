@@ -159,7 +159,7 @@ char** preferencesGetFilesPath(const Preferences* psPref,
 		*piSize = psPref->iNbPath;
 	}
 
-	return (psPref->pstrFilesPath);
+	return psPref->pstrFilesPath;
 }
 int preferencesSetFilesPath(Preferences* psPref, int iSize,
 							const char* pstrPath[])

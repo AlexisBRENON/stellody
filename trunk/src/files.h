@@ -8,6 +8,9 @@
 #ifndef _FILES_H_
 #define _FILES_H_
 
+#include "preferences.h"
+#include "analyzed_tracks.h"
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -58,22 +61,34 @@ GKeyFile** filesOpen (void);
 int filesClose (GKeyFile*** pppsContext);
 
 /**
-  * @fn int filesCloseAndSave (GKeyFile*** pppsContext)
+  * @fn int filesCloseAndSave (GKeyFile*** pppsContext
+							const Preferences* psPref,
+							const AnalyzedTracks* psTracks)
   * @brief Ferme les fichiers et libère le tableau en sauvegardant.
   *
   * @param[in,out] pppsContext Pointeur sur le tableau de GKeyFile*
+  * @param[in] psPref Pointeur sur les préférences à sauvegarder
+  * @param[in] psTracks Pointeur sur les morceau à sauvegarder
   * @return EXIT_SUCCESS si tout est OK
   */
-int filesCloseAndSave (GKeyFile*** pppsContext);
+int filesCloseAndSave (GKeyFile*** pppsContext,
+					const Preferences* psPref,
+					const AnalyzedTracks* psTracks);
 
 /**
-  * @fn filesSave (GKeyFile** ppsContext)
+  * @fn filesSave (GKeyFile** ppsContext
+				const Preferences* psPref,
+				const AnalyzedTracks* psTracks);)
   * @brief Sauvegarde les données des GKeyFile*
   *
   * @param[in,out] ppsContext Tableau de GKeyFile*
+  * @param[in] psPref Pointeur sur les préférences à sauvegarder
+  * @param[in] psTracks Pointeur sur les morceau à sauvegarder
   * @return EXIT_SUCCESS si tout est OK
   */
-int filesSave (GKeyFile** ppsContext);
+int filesSave (GKeyFile** ppsContext,
+			const Preferences* psPref,
+			const AnalyzedTracks* psTracks);
 
 
 /* ********************************************************************* */
