@@ -10,8 +10,17 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 
+#if defined(__linux)
+#include <fmodex/fmod.h>
+#endif
+#if defined (__APPLE__)
+#include <fmod.h>
+#endif
+
 #include "gui.h"
 #include "preferences.h"
+#include "analyzed_tracks.h"
+#include "analyzed_track.h"
 
 
 /* ********************************************************************* */
@@ -166,7 +175,39 @@ int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
 
 int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	printf ("Lecture\n");
+	FMOD_SOUND* pSound = NULL;
+	FMOD_BOOL bIsPlaying = FALSE;
+	const char* strPath;
+	AnalyzedTrack* psTrack = NULL;
+	int i = 1;
+
+	if (pData[FMOD_MY_CHANNEL] != NULL)
+	{
+		FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[FMOD_MY_CHANNEL],
+								&bIsPlaying);
+	}
+	if (bIsPlaying == FALSE)
+	{
+		if (pData[PLAYLIST] == NULL)
+		{
+			do
+			{
+				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS], i);
+				i++;
+			} while (psTrack == NULL);
+
+			strPath = analyzedTrackGetPath(psTrack);
+			FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+									strPath,
+									FMOD_CREATESTREAM | FMOD_SOFTWARE,
+									NULL,
+									&pSound);
+		}
+
+		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+							FMOD_CHANNEL_FREE, pSound, FALSE,
+							(FMOD_CHANNEL**)&(pData[FMOD_MY_CHANNEL]));
+	}
 
 	return EXIT_SUCCESS;
 }
@@ -212,29 +253,18 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		psBuilder = gtk_builder_new();
 		gtk_builder_add_from_file(psBuilder, GUI_STELLARIUM, NULL);
 
-		psStellarium = GTK_WIDGET(gtk_builder_get_object(psBuilder,
-													GUI_STELLARIUM_WIN));
-		psContainer = GTK_WIDGET(
-							gtk_builder_get_object(pData[MAIN_BUILDER],
-												GUI_MAIN_CONTAINER));
-		gtk_box_pack_start((GtkBox*)psContainer,
-							psStellarium, TRUE, TRUE, 0);
-		gtk_widget_show_all(psStellarium);
-
 		pData[STELLARIUM_BUILDER] = psBuilder;
 	}
-	else
-	{
-		psStellarium = GTK_WIDGET(gtk_builder_get_object(
-												pData[STELLARIUM_BUILDER],
-												GUI_STELLARIUM_WIN));
-		psContainer = GTK_WIDGET(
-						gtk_builder_get_object(pData[MAIN_BUILDER],
-											GUI_MAIN_CONTAINER));
-		gtk_box_pack_start((GtkBox*)psContainer,
-								psStellarium, TRUE, TRUE, 5);
-		gtk_widget_show_all(psStellarium);
-	}
+
+	psStellarium = GTK_WIDGET(gtk_builder_get_object(
+											pData[STELLARIUM_BUILDER],
+											GUI_STELLARIUM_WIN));
+	psContainer = GTK_WIDGET(
+					gtk_builder_get_object(pData[MAIN_BUILDER],
+										GUI_MAIN_CONTAINER));
+	gtk_box_pack_start((GtkBox*)psContainer,
+							psStellarium, TRUE, TRUE, 0);
+	gtk_widget_show_all(psStellarium);
 
 	return EXIT_SUCCESS;
 }
@@ -283,7 +313,30 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	printf ("About\n");
+	GtkBuilder* psBuilder = NULL;
+	GtkWidget* psAbout = NULL;
+	GtkWidget* psContainer = NULL;
+
+	guiUnparent(pData);
+
+	if (pData[ABOUT_BUILDER] == NULL)
+	{
+		psBuilder = gtk_builder_new();
+		gtk_builder_add_from_file(psBuilder, GUI_ABOUT, NULL);
+		gtk_builder_connect_signals(psBuilder, pData);
+
+		pData[ABOUT_BUILDER] = psBuilder;
+	}
+
+	psAbout = GTK_WIDGET(gtk_builder_get_object(
+											pData[ABOUT_BUILDER],
+											GUI_ABOUT_WIN));
+	psContainer = GTK_WIDGET(
+					gtk_builder_get_object(pData[MAIN_BUILDER],
+										GUI_MAIN_CONTAINER));
+	gtk_box_pack_start((GtkBox*)psContainer,
+							psAbout, TRUE, TRUE, 0);
+	gtk_widget_show_all(psAbout);
 
 	return EXIT_SUCCESS;
 }

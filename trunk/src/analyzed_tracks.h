@@ -87,8 +87,6 @@ AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[]);
   * @fn int analyzedTracksDestroy(AnalyzedTracks** ppsTracks);
   * @brief Détruit un arbre à morceaux.
   *
-  * @warning Les morceaux contenus dans l'arbre ne sont pas détruits.
-  L'utilisateur doit le faire lui-même.
   *
   * @param[in,out] ppsTracks Pointeur sur le pointeur sur l'arbre à
   détruire.

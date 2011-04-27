@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
 #if defined(__linux)
 #include <fmodex/fmod.h>
 #endif
@@ -23,6 +23,9 @@
 #include "gui.h"
 
 
+int regressionTests (int argc, char* argv[]);
+int stellody (int argc, char* argv[]);
+
 /**
   * @fn int main (int argc, char* argv[])
   * @brief Fonction exécutée au lancement du programme.
@@ -34,21 +37,10 @@
   */
 int main (int argc, char* argv[])
 {
-	gpointer pDatas[NB_DATA];
-	GKeyFile** ppsFilesContext;
-    int i, iAnswer = -1;
-
-    for (i = 0; i < NB_DATA; i++)
-    {
-    	pDatas[i] = NULL;
-    }
+    int iAnswer = -1;
 
 	printf ("Que voulez-vous faire ?\n\n");
-	printf ("\t1 : preferencesRegressionTest\n");
-	printf ("\t2 : analyzedTracksRegressionTest\n");
-	printf ("\t3 : analyzedTrackRegressionTest\n");
-	printf ("\t4 : filesRegressionTest\n");
-	printf ("\t5 : openglRegressionTest\n");
+	printf ("\t1 : Tests de regression\n");
 	printf ("\t9 : Test intégral\n");
 	printf ("\n\t0 : Quitter\n");
 
@@ -64,6 +56,43 @@ int main (int argc, char* argv[])
     {
     	case 0:
 			break;
+
+		case 1:
+			regressionTests(argc, argv);
+			break;
+
+		case 9:
+			stellody(argc, argv);
+			break;
+
+		default:
+			printf ("Choix incorrect...");
+			break;
+    }
+
+
+    return 0;
+}
+
+int regressionTests(int argc, char* argv[])
+{
+	int iAnswer = -1;
+
+	printf ("Que voulez-vous faire ?\n\n");
+	printf ("\t1 : preferencesRegressionTest\n");
+	printf ("\t2 : analyzedTracksRegressionTest\n");
+	printf ("\t3 : analyzedTrackRegressionTest\n");
+	printf ("\t4 : filesRegressionTest\n");
+	printf ("\t5 : openglRegressionTest\n");
+
+	while (iAnswer < 0 || iAnswer > 5)
+    {
+    	printf("\n Choix : ");
+    	scanf("%d", &iAnswer);
+    }
+
+    switch (iAnswer)
+    {
 		case 1:
 			printf ("\nReturned value : %d\n",
 					preferencesRegressionTest());
@@ -84,23 +113,63 @@ int main (int argc, char* argv[])
 			printf("Returned value : %d\n",
                OpenGLDrawingRegressionTest(&argc, argv));
 			break;
-		case 9:
-			ppsFilesContext = filesOpen();
-			pDatas[PREFERENCES] = preferencesCreateFromFile(
-													ppsFilesContext);
-			pDatas[MAIN_BUILDER] = guiLoad(pDatas);
-			gtk_main();
-			filesCloseAndSave(&ppsFilesContext,
-							(Preferences*) pDatas[PREFERENCES],
-							(AnalyzedTracks*) pDatas[ANALYZED_TRACKS]);
-			preferencesDestroy((Preferences**) &pDatas[PREFERENCES]);
-			break;
 		default:
-			printf ("Choix incorrect...");
 			break;
     }
 
-
-    return 0;
+    return EXIT_SUCCESS;
 }
+
+int stellody(int argc, char* argv[])
+{
+	gpointer pDatas[NB_DATA];
+	GKeyFile** pFileContext;
+	int i;
+
+	AnalyzedTrack* psTrack;
+
+	for (i = 0; i < NB_DATA; i++)
+	{
+		pDatas[i] = NULL;
+	}
+
+	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
+	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
+					1, FMOD_INIT_NORMAL, NULL);
+	gtk_init(&argc, &argv);
+
+	pFileContext = filesOpen();
+	pDatas[PREFERENCES] = preferencesCreateFromFile(pFileContext);
+	pDatas[ANALYZED_TRACKS] = analyzedTracksCreateFromFile(pFileContext);
+
+	psTrack = analyzedTracksGetTrack(
+						(AnalyzedTracks*)(pDatas[ANALYZED_TRACKS]), 1);
+
+	pDatas[MAIN_BUILDER] = guiLoad(pDatas);
+
+	gtk_main();
+
+	filesCloseAndSave(&pFileContext,
+					pDatas[PREFERENCES],
+					pDatas[ANALYZED_TRACKS]);
+	preferencesDestroy((Preferences**) &(pDatas[PREFERENCES]));
+	analyzedTracksDestroy((AnalyzedTracks**)&(pDatas[ANALYZED_TRACKS]));
+
+	FMOD_System_Release((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT]);
+
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
