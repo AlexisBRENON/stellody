@@ -214,14 +214,19 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	printf ("Stop\n");
+	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[FMOD_MY_CHANNEL]);
 
 	return EXIT_SUCCESS;
 }
 
 int on_Pause_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	printf ("Pause\n");
+	FMOD_BOOL bIsPaused;
+
+	FMOD_Channel_GetPaused((FMOD_CHANNEL*) pData[FMOD_MY_CHANNEL],
+							&bIsPaused);
+	FMOD_Channel_SetPaused(pData[FMOD_MY_CHANNEL],
+							!bIsPaused);
 
 	return EXIT_SUCCESS;
 }
