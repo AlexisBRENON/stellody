@@ -41,13 +41,16 @@ OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)
 OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 
 	# Options nécessaires à  la compilation sous linux
-LIN_CFLAGS = 		-Wall -pedantic -ansi -g 	$(GTK_CFLAGS)	$(GL_CFLAGS)
-LIN_LDFLAGS =		-export-dynamic -lglut 		$(GTK_LDFLAGS)	$(GL_LDFLAGS)
+LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
+					$(GTK_CFLAGS)	$(GL_CFLAGS)
+LIN_LDFLAGS =		-export-dynamic -lglut -lfmodex-4.32.09 \
+					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 	# Options nécessaires à  la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
 				-I/Developer/FMOD\ Programmers\ API\ Mac/api/inc \
 				$(GTK_CFLAGS)
-MAC_LDFLAGS =		-m32 -framework GLUT -framework OpenGL -framework Cocoa \
+MAC_LDFLAGS =		-m32 -lfmodex-4.32.09 \
+				-framework GLUT -framework OpenGL -framework Cocoa \
 				$(GTK_LDFLAGS)
 				
 # Fin de définition de variables
