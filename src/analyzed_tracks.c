@@ -41,14 +41,14 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 	assert (psTracks != NULL);
 	assert (ppsContext != NULL);
 
-	psTrack = analyzedTrackCreate();
-
 	/* Récupère l'ensemble des noms des groupes */
 	strGroups = g_key_file_get_groups(ppsContext[DATA], &ulNbTracks);
 
 	/* Chaque groupe correspond à un morceau. On les charge tous. */
 	for (i = 0; strGroups[i] != NULL; i++)
 	{
+		psTrack = analyzedTrackCreate();
+
 		/* On récupère toutes les données relatives au morceau */
 		iTID = g_key_file_get_integer(ppsContext[DATA],
 										strGroups[i], "iTID", NULL);
@@ -63,14 +63,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 									fAverage, fMedian);
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
-
-		/* On libère ce qui est contenu dans le morceau (pour laisser la
-		place au prochain chargement */
-		analyzedTrackRelease(psTrack);
-		free(strPath);
 	}
-
-	analyzedTrackDestroy(&psTrack);
 
 	return EXIT_SUCCESS;
 }
@@ -89,7 +82,7 @@ AnalyzedTracks* analyzedTracksCreate(void)
 {
 	return g_tree_new_full((GCompareDataFunc) analyzedTrackDataCompare, NULL,
 							(GDestroyNotify) free,
-							NULL);
+							(GDestroyNotify) free);
 }
 AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
@@ -100,12 +93,14 @@ AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 	psTracks = analyzedTracksCreate();
 	analyzedTracksInitFromFile(psTracks, ppsContext);
 
-	return EXIT_SUCCESS;
+	return psTracks;
 }
 int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 {
-	assert (ppsTracks != NULL &&
-			*ppsTracks != NULL);
+	assert (ppsTracks != NULL);
+	assert (*ppsTracks != NULL);
+
+	analyzedTracksRelease(*ppsTracks);
 
 	g_tree_destroy(*ppsTracks);
 	*ppsTracks = NULL;

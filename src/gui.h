@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 6 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 9 /**< Nombre de cases aux tableaux de données */
 /**
   * @enum eGUI_DATA
   * @brief Enumération permettant de retrouver les différentes données dans
@@ -31,7 +31,10 @@ enum eGUI_DATA
 	MAIN_BUILDER		= 2, /**< Builder de la fenêtre principale. */
 	STELLARIUM_BUILDER	= 3, /**< Builder du Stellarium */
 	PREFERENCES_BUILDER = 4, /**< Builder des préférences. */
-	ABOUT_BUILDER		= 5  /**< Builder du A Propos. */
+	ABOUT_BUILDER		= 5, /**< Builder du A Propos. */
+	FMOD_CONTEXT		= 6, /**< Contexte Fmod. */
+	FMOD_MY_CHANNEL		= 7, /**< Unique canal Fmod */
+	PLAYLIST			= 8  /**< Liste des morceaux à lire */
 };
 /**
   * @typedef GUI_DATA

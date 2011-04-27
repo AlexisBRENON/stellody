@@ -79,7 +79,6 @@ int filesSave(GKeyFile** ppsContext,
 {
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
-	int iSize = 0;
 
 	if (psPref != NULL)
 	{
