@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 9 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 10 /**< Nombre de cases aux tableaux de données */
 /**
   * @enum eGUI_DATA
   * @brief Enumération permettant de retrouver les différentes données dans
@@ -33,8 +33,9 @@ enum eGUI_DATA
 	PREFERENCES_BUILDER = 4, /**< Builder des préférences. */
 	ABOUT_BUILDER		= 5, /**< Builder du A Propos. */
 	FMOD_CONTEXT		= 6, /**< Contexte Fmod. */
-	FMOD_MY_CHANNEL		= 7, /**< Unique canal Fmod */
-	PLAYLIST			= 8  /**< Liste des morceaux à lire */
+	PLAYING_CHANNEL		= 7, /**< Canal FMod de lecture. */
+	ANALYZING_CHANNEL	= 8, /**< Canal FMod d'analyse. */
+	PLAYLIST			= 9  /**< Liste des morceaux à lire */
 };
 /**
   * @typedef GUI_DATA
@@ -163,6 +164,25 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData);
   */
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData);
 
+/**
+  * @fn int on_Track_Scale_value_changed (GtkWidget* psWidget,
+										GdkEventButton* pEvent,
+										gpointer* pData)
+  * @brief Permet de se déplacer dans un morceau en lecture.
+  *
+  * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
+  * @param[in,out] pEvent Un pointeur sur une structure évenement
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int on_Track_Scale_value_changed (GtkWidget* psWidget,
+								GdkEventButton* pEvent,
+								gpointer* pData);
+
+
+/* ********************************************************************* */
+/*                           FENÊTRE PREFERENCES                         */
+/* ********************************************************************* */
 
 
 /**

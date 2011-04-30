@@ -187,12 +187,23 @@ char** preferencesGetFilesPath (const Preferences* psPref,
   *
   * @param[in,out] psPref Pointeur sur la structure à modifier
   * @param[in] iSize Taille du tableau pstrPath
-  * @param[in] pstrPath Tableau de chaine de caractère, contenant le chemin
+  * @param[in,out] pstrPath Tableau de chaine de caractère, contenant le chemin
   des dossiers contenant les morceaux
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesSetFilesPath (Preferences* psPref, int iSize,
-							const char* pstrPath[]);
+							char* pstrPath[]);
+
+/**
+  * @fn int preferencesAddFilesPath (Preferences* psPref,
+									const char* strPath)
+  * @brief Ajoute un chemin aux chemins existant.
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier
+  * @param[in] strPath Chemin à ajouter
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesAddFilesPath (Preferences* psPref, const char* strPath);
 
 
 

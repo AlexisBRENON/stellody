@@ -135,7 +135,7 @@ int stellody(int argc, char* argv[])
 
 	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
 	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
-					1, FMOD_INIT_NORMAL, NULL);
+					2, FMOD_INIT_NORMAL, NULL);
 	gtk_init(&argc, &argv);
 
 	pFileContext = filesOpen();

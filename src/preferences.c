@@ -162,7 +162,7 @@ char** preferencesGetFilesPath(const Preferences* psPref,
 	return psPref->pstrFilesPath;
 }
 int preferencesSetFilesPath(Preferences* psPref, int iSize,
-							const char* pstrPath[])
+							char* pstrPath[])
 {
 	int i;
 
@@ -190,6 +190,33 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 	return EXIT_SUCCESS;
 }
 
+int preferencesAddFilesPath(Preferences* psPref, const char* strPath)
+{
+	int iSize;
+	int i;
+	int len;
+	char** pstrNewPath;
+	char** pstrOldPath;
+
+	pstrOldPath = preferencesGetFilesPath(psPref, &iSize);
+
+	pstrNewPath = (char **) malloc((iSize+2)*sizeof(char*));
+	for (i = 0; i < iSize; i++)
+	{
+		strcpy(pstrNewPath[i], pstrOldPath[i]);
+	}
+
+	len = strlen(strPath);
+	pstrNewPath[iSize] = (char*) malloc((len+1)*sizeof(char));
+	strcpy(pstrNewPath[iSize], strPath);
+
+	pstrNewPath[iSize+1] = NULL;
+
+	preferencesSetFilesPath(psPref, iSize+1, pstrNewPath);
+
+	return EXIT_SUCCESS;
+}
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Test de regression                          */
@@ -202,7 +229,7 @@ int preferencesRegressionTest (void)
 	Preferences* psPref = NULL;
 	char strPath1[] = "test1";
 	char strPath2[] = "test2";
-	const char* pstrPath[2];
+	char* pstrPath[2];
 	int iNbPath;
 
 	printf("\n\t -- MODULE PREFERENCES --\n\n");

@@ -20,7 +20,7 @@
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">../images/icone_png.png</property>
+    <property name="icon">../images/logo_bmp.bmp</property>
     <property name="icon_name">Stellody</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
@@ -241,12 +241,17 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkProgressBar" id="Play_ProgressBar">
+                  <object class="GtkHScale" id="Track_Scale">
                     <property name="visible">True</property>
-                    <property name="fraction">0.25</property>
-                    <property name="adjustment">PlayProgressBar_Adjustement</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">Track_Adjustment</property>
+                    <property name="restrict_to_fill_level">False</property>
+                    <property name="fill_level">0</property>
+                    <property name="draw_value">False</property>
+                    <signal name="button_release_event" handler="on_Track_Scale_value_changed"/>
                   </object>
                   <packing>
+                    <property name="expand">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -339,6 +344,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="padding">5</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -363,13 +369,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="PlayProgressBar_Adjustement">
-    <property name="value">30</property>
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-    <property name="page_size">10</property>
   </object>
   <object class="GtkAction" id="Play_Action">
     <property name="name">Play_Action</property>
@@ -443,5 +442,11 @@
     <property name="stock_id">gtk-about</property>
     <property name="icon_name">help-about</property>
     <signal name="activate" handler="on_About_Action_activate"/>
+  </object>
+  <object class="GtkAdjustment" id="Track_Adjustment">
+    <property name="upper">98</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">1</property>
   </object>
 </interface>
