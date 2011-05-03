@@ -79,7 +79,7 @@ int filesSave(GKeyFile** ppsContext,
 {
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
-	/*int iSize;*/
+	int iSize;
 
 	if (psPref != NULL)
 	{
@@ -92,10 +92,10 @@ int filesSave(GKeyFile** ppsContext,
 		g_key_file_set_integer(ppsContext[CONFIG],
 								"DEFAULT", "iWindowYSize",
 								preferencesGetWindowYSize(psPref));
-		/*g_key_file_set_string_list(ppsContext[CONFIG],
+		g_key_file_set_string_list(ppsContext[CONFIG],
 									"DEFAULT", "pstrPath",
-									preferencesGetFilesPath(psPref, &iSize),
-									iSize);*/
+			(const gchar* const*) preferencesGetFilesPath(psPref, &iSize),
+									iSize);
 
 		pfConfig = fopen(CONFIG_FILE, "w");
 		assert (pfConfig != NULL);

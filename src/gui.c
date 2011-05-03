@@ -10,12 +10,17 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+
+#if defined(__linux) || defined (__APPLE__)
+	#include <dirent.h>
+#endif
+
 #include <gtk/gtk.h>
 
 #if defined(__linux)
 #include <fmodex/fmod.h>
 #endif
-#if defined (__APPLE__)
+#if defined (__APPLE__) || defined (_WIN32)
 #include <fmod.h>
 #endif
 
@@ -162,6 +167,9 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 
 	return bIsPlaying;
 }
+
+
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                   Fonctions relatives à la fenêtre                    */
@@ -171,6 +179,7 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 /* ********************************************************************* */
 /*                           FENÊTRE PRINCIPALE                          */
 /* ********************************************************************* */
+
 
 GtkBuilder* guiLoad (const gpointer pData)
 {
@@ -227,10 +236,17 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	const char* strPath;
 	AnalyzedTrack* psTrack = NULL;
 	GtkWidget* pScale = NULL;
+	GtkWidget* pLabel = NULL;
 	GtkObject* pAdjustment = NULL;
 	int i = 1;
+	int iNbTags = 0;
 	unsigned int uiTrackPosition = 0;
 	unsigned int uiTrackLength = 0;
+	FMOD_TAG Tag;
+	char* strTitle;
+	char* strSinger;
+	char* strTrackInfo;
+
 
 	if (pData[PLAYING_CHANNEL] != NULL)
 	{
@@ -260,24 +276,55 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 			} while (psTrack == NULL && i < 100);
 
 			strPath = analyzedTrackGetPath(psTrack);
-			FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+
+		}
+		else
+		{
+			/* Sinon, on charge le premier morceau de la playlist et on
+			le supprime. */
+			AnalyzedTrack* psTrackInPlaylist;
+			psTrackInPlaylist = ((GSList*)pData[PLAYLIST])->data;
+			strPath = analyzedTrackGetPath(psTrackInPlaylist);
+			pData[PLAYLIST] = g_slist_remove((GSList*)pData[PLAYLIST],
+												psTrackInPlaylist);
+		}
+
+		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 									strPath,
 									FMOD_CREATESTREAM | FMOD_SOFTWARE,
 									NULL,
 									&pSound);
-			/* On le fait commencer au moment voulu */
-			FMOD_Sound_GetLength(pSound, &uiTrackLength, FMOD_TIMEUNIT_MS);
-			uiTrackPosition = (uiTrackPosition*uiTrackLength)/100;
 
-			gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment),
-									(double) uiTrackLength/1000);
-			gtk_range_set_value(GTK_RANGE(pScale),
-								(double) uiTrackPosition/1000);
-		}
-		else
-		{
-			/** @todo Si la playlist n'est pas vide. */
-		}
+		/* On met à l'échelle la barre de lecture */
+		FMOD_Sound_GetLength(pSound, &uiTrackLength, FMOD_TIMEUNIT_MS);
+		uiTrackPosition = (uiTrackPosition*uiTrackLength)/100;
+
+		gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment),
+								(double) uiTrackLength/1000);
+		gtk_range_set_value(GTK_RANGE(pScale),
+							(double) uiTrackPosition/1000);
+
+		/* On récupère les tags */
+		FMOD_Sound_GetTag(pSound, "TIT2", 0, &Tag);
+		strTitle = (char*)Tag.data;
+		FMOD_Sound_GetTag(pSound, "TPE1", 0, &Tag);
+		strSinger = (char*) Tag.data;
+
+		/* On les concatène */
+		strTrackInfo = (char*) malloc((strlen(strTitle)+
+										3+
+										strlen(strSinger)
+										+1)*sizeof(char));
+		strcpy(strTrackInfo, strSinger);
+		strcat(strTrackInfo, " - ");
+		strcat(strTrackInfo, strTitle);
+
+		/* On les affiche dans le label */
+		pLabel = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
+													"TrackInfo_Label"));
+		gtk_label_set_text(GTK_LABEL(pLabel), strTrackInfo);
+
+		free(strTrackInfo);
 
 		/* On joue le morceau. */
 		g_timeout_add_seconds(1,
@@ -287,6 +334,7 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 							FMOD_CHANNEL_FREE, pSound, TRUE,
 							(FMOD_CHANNEL**)&(pData[PLAYING_CHANNEL]));
+		/* A partir du moment voulu */
 		FMOD_Channel_SetPosition((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
 						uiTrackPosition, FMOD_TIMEUNIT_MS);
 		FMOD_Channel_SetPaused((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
@@ -299,6 +347,7 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
 	GtkWidget* pRange = NULL;
+	GtkWidget* pLabel = NULL;
 	GtkObject* pAdjustment = NULL;
 
 	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[PLAYING_CHANNEL]);
@@ -312,6 +361,10 @@ int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment), 0);
 	gtk_range_set_value(GTK_RANGE(pRange), 0);
+
+	pLabel = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
+													"TrackInfo_Label"));
+	gtk_label_set_text (GTK_LABEL(pLabel), "");
 
 	return EXIT_SUCCESS;
 }
@@ -388,7 +441,8 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 										GTK_DIALOG_MODAL,
 										GTK_MESSAGE_WARNING,
 										GTK_BUTTONS_CLOSE,
-		"<b>Erreur :</b>\n\tLe fichier %s n'est pas reconnu.",
+								"<b><big><u>Erreur :</u></big></b>\n\n\
+Le fichier:\n \t%s\n n'est pas un fichier comptatible.",
 										strFilename);
 			gtk_dialog_run(GTK_DIALOG(pErrorDialog));
 
@@ -409,10 +463,20 @@ int on_AddDir_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* pParent;
 	int iDialogAnswer;
 
-
-	/* Affichage de la fenêtre de sélection de fichier. */
 	pParent = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
 										GUI_MAIN_WIN));
+
+#if defined(_WIN32)
+	/* Affiche un message d'errreur. */
+	pDialog = gtk_message_dialog_new(
+									GTK_WINDOW(pParent),
+									GTK_DIALOG_MODAL,
+									GTK_MESSAGE_WARNING,
+									GTK_BUTTONS_CLOSE,
+					"Fonctionnalité non prise en charge sous Windows.\n\
+Utilisez un systeme <u>UNIX</u> :p !");
+#else
+	/* Affichage de la fenêtre de sélection de fichier. */
 	pDialog = gtk_file_chooser_dialog_new ("Ajouter un dossier...",
 				      GTK_WINDOW(pParent),
 				      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
@@ -426,16 +490,55 @@ int on_AddDir_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	/* Si l'utilisateur a ouvert un fichier */
 	if (iDialogAnswer == GTK_RESPONSE_ACCEPT)
 	{
-		char* strFoldername;
+		char* strFolderName;
+		char* strFileName;
+		char* strExtension;
+		DIR *dirp;
+		struct dirent *dp;
+		int iLength = 0;
+		int i = 0;
 
-		strFoldername = gtk_file_chooser_get_filename(
+
+		strFolderName = gtk_file_chooser_get_filename(
 											GTK_FILE_CHOOSER (pDialog));
-
 		preferencesAddFilesPath((Preferences*) pData[PREFERENCES],
-								strFoldername);
+								strFolderName);
 
-		g_free (strFoldername);
+		/* Ajoute tous les fichiers du dossier. */
+		dirp = opendir(strFolderName);
+		assert(dirp);
+        while ((dp = readdir(dirp)) != NULL)
+		{
+			strFileName = dp->d_name;
+			strExtension = strrchr(strFileName, '.');
+			iLength = strlen(strExtension);
+
+			for (i = 0; i<iLength; i++)
+			{
+				strExtension[i] = tolower(strExtension[i]);
+			}
+
+			/* On vérifie que ce soit un fichier pris en charge */
+			if (strcmp(strExtension, ".mp3") == 0 ||
+				strcmp(strExtension, ".wma") == 0 ||
+				strcmp(strExtension, ".mid") == 0 ||
+				strcmp(strExtension, ".m3u") == 0 ||
+				strcmp(strExtension, ".mp2") == 0 ||
+				strcmp(strExtension, ".ogg") == 0 ||
+				strcmp(strExtension, ".raw") == 0 ||
+				strcmp(strExtension, ".wav") == 0)
+			{
+				printf ("Nouveau morceau ajouté :\n");
+				printf ("\t%s\n", strFileName);
+			}
+		}
+
+		closedir(dirp);
+
+		g_free (strFolderName);
 	}
+
+#endif
 
 	gtk_widget_destroy (pDialog);
 
