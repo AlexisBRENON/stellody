@@ -61,9 +61,9 @@ GKeyFile** filesOpen (void);
 int filesClose (GKeyFile*** pppsContext);
 
 /**
-  * @fn int filesCloseAndSave (GKeyFile*** pppsContext
-							const Preferences* psPref,
-							const AnalyzedTracks* psTracks)
+  * @fn int filesCloseAndSave (GKeyFile*** pppsContext,
+					const Preferences* psPref,
+					const AnalyzedTracks* psTracks);
   * @brief Ferme les fichiers et libère le tableau en sauvegardant.
   *
   * @param[in,out] pppsContext Pointeur sur le tableau de GKeyFile*
@@ -76,9 +76,9 @@ int filesCloseAndSave (GKeyFile*** pppsContext,
 					const AnalyzedTracks* psTracks);
 
 /**
-  * @fn filesSave (GKeyFile** ppsContext
-				const Preferences* psPref,
-				const AnalyzedTracks* psTracks);)
+  * @fn int filesSave (GKeyFile** ppsContext,
+			const Preferences* psPref,
+			const AnalyzedTracks* psTracks)
   * @brief Sauvegarde les données des GKeyFile*
   *
   * @param[in,out] ppsContext Tableau de GKeyFile*

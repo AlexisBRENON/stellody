@@ -544,7 +544,7 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 }
 
 int on_Track_Scale_value_changed (GtkWidget* psWidget,
-								GdkEventButton* event,
+								GdkEventButton* pEvent,
 								 gpointer* pData)
 {
 	gdouble dNewTrackPosition;

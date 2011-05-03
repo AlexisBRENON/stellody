@@ -182,7 +182,7 @@ char** preferencesGetFilesPath (const Preferences* psPref,
 										int* piSize);
 /**
   * @fn int preferencesSetFilesPath (Preferences* psPref, int iSize,
-							const char* pstrPath[])
+							char* pstrPath[])
   * @brief Mutateur sur les chemins de fichiers.
   *
   * @param[in,out] psPref Pointeur sur la structure à modifier

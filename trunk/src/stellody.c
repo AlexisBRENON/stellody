@@ -74,6 +74,15 @@ int main (int argc, char* argv[])
     return 0;
 }
 
+/**
+  * @fn int regressionTests(int argc, char* argv[])
+  * @brief Fonction regroupant les tests de regressions dans un menu.
+  *
+  * @param[in] argc Nombre d'argument donnés au programme (>0)
+  * @param[in,out] argv Tableau de chaine de caractères contenant les
+  arguments.
+  * @return 0 si tout est OK.
+  */
 int regressionTests(int argc, char* argv[])
 {
 	int iAnswer = -1;
@@ -120,6 +129,15 @@ int regressionTests(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
+/**
+  * @fn int stellody(int argc, char* argv[])
+  * @brief Lance le programme principal (programme final).
+  *
+  * @param[in] argc Nombre d'argument donnés au programme (>0)
+  * @param[in,out] argv Tableau de chaine de caractères contenant les
+  arguments.
+  * @return 0 si tout est OK.
+  */
 int stellody(int argc, char* argv[])
 {
 	gpointer pDatas[NB_DATA];
