@@ -82,7 +82,7 @@ AnalyzedTracks* analyzedTracksCreate(void)
 {
 	return g_tree_new_full((GCompareDataFunc) analyzedTrackDataCompare, NULL,
 							(GDestroyNotify) free,
-							(GDestroyNotify) free);
+							NULL);
 }
 AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
@@ -164,6 +164,7 @@ AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
 	if (psTrack != NULL)
 	{
 		g_tree_remove(psTracks, &(psTrack->iTID));
+		analyzedTrackDestroy(&psTrack);
 	}
 
 	return psTrack;
@@ -225,9 +226,9 @@ int analyzedTracksRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Suppression d'un morceau...\n");
-	analyzedTracksRemoveTrack(psTracks, psTrack1->iTID);
+	psTrack1 = analyzedTracksRemoveTrack(psTracks, psTrack1->iTID);
 	assert (g_tree_nnodes(psTracks) == 1);
-	assert (psTrack1 != NULL);
+	assert (psTrack1 == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Modification d'une valeur d'un morceau...\n");
@@ -249,12 +250,7 @@ int analyzedTracksRegressionTest(void)
 	printf("Destruction de l'arbre...\n");
 	analyzedTracksDestroy(&psTracks);
 	assert (psTracks == NULL);
-	assert (psTrack1 != NULL);
-	assert (psTrack2 != NULL);
-	analyzedTrackDestroy(&psTrack1);
 	analyzedTrackDestroy(&psTrack2);
-	assert (psTrack1 == NULL);
-	assert (psTrack2 == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("\n\t-- Fin des tests --\n");
