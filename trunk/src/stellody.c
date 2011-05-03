@@ -11,7 +11,7 @@
 #if defined(__linux)
 #include <fmodex/fmod.h>
 #endif
-#if defined (__APPLE__)
+#if defined (__APPLE__) || defined (_WIN32)
 #include <fmod.h>
 #endif
 
