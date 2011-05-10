@@ -36,6 +36,10 @@ int preferencesInit (Preferences* psPref)
 }
 int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 {
+	gchar** pstrTemp = NULL;
+	int i = 0;
+	int iSize = 0;
+
 	assert (psPref != NULL);
 	assert (ppsContext != NULL);
 
@@ -48,11 +52,24 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iWindowYSize = g_key_file_get_integer(ppsContext[CONFIG],
 												"DEFAULT",
 												"iWindowYSize", NULL);
-	psPref->pstrFilesPath = g_key_file_get_string_list(ppsContext[CONFIG],
+	pstrTemp = g_key_file_get_string_list(ppsContext[CONFIG],
 											"DEFAULT",
 											"pstrPath",
 											(gsize*) &(psPref->iNbPath),
 											NULL);
+	iSize = psPref->iNbPath;
+	psPref->pstrFilesPath = (gchar**) malloc((iSize+1)*sizeof(gchar*));
+	for (i = 0; i < iSize; i++)
+	{
+		int len;
+		len = strlen(pstrTemp[i]);
+		(psPref->pstrFilesPath)[i] = (gchar*) malloc((len+1)*
+													sizeof(gchar));
+		strcpy((psPref->pstrFilesPath)[i], pstrTemp[i]);
+	}
+	(psPref->pstrFilesPath)[iSize] = NULL;
+
+	g_strfreev(pstrTemp);
 
 	return EXIT_SUCCESS;
 }
@@ -171,7 +188,13 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 	assert (pstrPath != NULL);
 
 	/* Libère les anciens chemins sauvegardés */
-	g_strfreev(psPref->pstrFilesPath);
+	for (i = 0; i < psPref->iNbPath; i++)
+	{
+		free(psPref->pstrFilesPath[i]);
+		psPref->pstrFilesPath[i] = NULL;
+	}
+	free(psPref->pstrFilesPath);
+	psPref->pstrFilesPath = NULL;
 
 	/* Stocke les nouveaux chemins */
 	psPref->iNbPath = iSize;
@@ -192,27 +215,44 @@ int preferencesSetFilesPath(Preferences* psPref, int iSize,
 
 int preferencesAddFilesPath(Preferences* psPref, const char* strPath)
 {
-	int iSize;
-	int i;
-	int len;
-	char** pstrNewPath;
-	char** pstrOldPath;
+	int iSize = 0;
+	int i = 0;
+	int len = 0;
+	char** pstrNewPath = NULL;
+	char** pstrOldPath = NULL;
+	int iAnswer = -1;
 
 	pstrOldPath = preferencesGetFilesPath(psPref, &iSize);
 
-	pstrNewPath = (char **) malloc((iSize+2)*sizeof(char*));
-	for (i = 0; i < iSize; i++)
+	while (iAnswer != 0 && i < iSize)
 	{
-		strcpy(pstrNewPath[i], pstrOldPath[i]);
+		iAnswer = strcmp(pstrOldPath[i], strPath);
+		i++;
 	}
 
-	len = strlen(strPath);
-	pstrNewPath[iSize] = (char*) malloc((len+1)*sizeof(char));
-	strcpy(pstrNewPath[iSize], strPath);
+	if (iAnswer == 0)
+	{
+		return EXIT_FAILURE;
+	}
+	else
+	{
+		pstrNewPath = (char **) malloc((iSize+2)*sizeof(char*));
+		for (i = 0; i < iSize; i++)
+		{
+			len = strlen(pstrOldPath[i]);
+			pstrNewPath[i] = (char*) malloc((len+1)*sizeof(char));
+			strcpy(pstrNewPath[i], pstrOldPath[i]);
+		}
 
-	pstrNewPath[iSize+1] = NULL;
+		len = strlen(strPath);
+		pstrNewPath[iSize] = (char*) malloc((len+1)*sizeof(char));
+		strcpy(pstrNewPath[iSize], strPath);
 
-	preferencesSetFilesPath(psPref, iSize+1, pstrNewPath);
+		pstrNewPath[iSize+1] = NULL;
+
+		preferencesSetFilesPath(psPref, iSize+1, pstrNewPath);
+	}
+
 
 	return EXIT_SUCCESS;
 }

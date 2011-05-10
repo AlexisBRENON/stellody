@@ -20,7 +20,7 @@
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="destroy_with_parent">True</property>
-    <property name="icon">../images/logo_bmp.bmp</property>
+    <property name="icon">../images/logo.png</property>
     <property name="icon_name">Stellody</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
@@ -67,6 +67,7 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -157,6 +158,7 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="F2" signal="activate"/>
                       </object>
                     </child>
                   </object>
@@ -327,6 +329,7 @@
                         <property name="receives_default">True</property>
                         <property name="related_action">Quit_Action</property>
                         <property name="use_action_appearance">True</property>
+                        <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>

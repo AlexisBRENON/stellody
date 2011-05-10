@@ -239,7 +239,6 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* pLabel = NULL;
 	GtkObject* pAdjustment = NULL;
 	int i = 1;
-	int iNbTags = 0;
 	unsigned int uiTrackPosition = 0;
 	unsigned int uiTrackLength = 0;
 	FMOD_TAG Tag;
@@ -497,45 +496,57 @@ Utilisez un systeme <u>UNIX</u> :p !");
 		struct dirent *dp;
 		int iLength = 0;
 		int i = 0;
+		int iPathAdded = 0;
 
 
 		strFolderName = gtk_file_chooser_get_filename(
 											GTK_FILE_CHOOSER (pDialog));
-		preferencesAddFilesPath((Preferences*) pData[PREFERENCES],
-								strFolderName);
+		iPathAdded = preferencesAddFilesPath((Preferences*)
+											pData[PREFERENCES],
+											strFolderName);
 
-		/* Ajoute tous les fichiers du dossier. */
-		dirp = opendir(strFolderName);
-		assert(dirp);
-        while ((dp = readdir(dirp)) != NULL)
+		if (iPathAdded == EXIT_SUCCESS)
 		{
-			strFileName = dp->d_name;
-			strExtension = strrchr(strFileName, '.');
-			iLength = strlen(strExtension);
-
-			for (i = 0; i<iLength; i++)
+			/* Ajoute tous les fichiers du dossier. */
+			dirp = opendir(strFolderName);
+			assert(dirp);
+			while ((dp = readdir(dirp)) != NULL)
 			{
-				strExtension[i] = tolower(strExtension[i]);
+				strFileName = dp->d_name;
+				/** @todo Changer la façon de récupérer l'extension.
+				Récupérer les 4 derniers caractères car s'il n'y a pas de
+				point, ça plante. */
+				strExtension = strrchr(strFileName, '.');
+				iLength = strlen(strExtension);
+
+				for (i = 0; i<iLength; i++)
+				{
+					strExtension[i] = tolower(strExtension[i]);
+				}
+
+				/* On vérifie que ce soit un fichier pris en charge */
+				if (strcmp(strExtension, ".mp3") == 0 ||
+					strcmp(strExtension, ".wma") == 0 ||
+					strcmp(strExtension, ".mid") == 0 ||
+					strcmp(strExtension, ".m3u") == 0 ||
+					strcmp(strExtension, ".mp2") == 0 ||
+					strcmp(strExtension, ".ogg") == 0 ||
+					strcmp(strExtension, ".raw") == 0 ||
+					strcmp(strExtension, ".wav") == 0)
+				{
+					printf ("Nouveau morceau ajouté :\n");
+					printf ("\t%s\n", strFileName);
+				}
 			}
 
-			/* On vérifie que ce soit un fichier pris en charge */
-			if (strcmp(strExtension, ".mp3") == 0 ||
-				strcmp(strExtension, ".wma") == 0 ||
-				strcmp(strExtension, ".mid") == 0 ||
-				strcmp(strExtension, ".m3u") == 0 ||
-				strcmp(strExtension, ".mp2") == 0 ||
-				strcmp(strExtension, ".ogg") == 0 ||
-				strcmp(strExtension, ".raw") == 0 ||
-				strcmp(strExtension, ".wav") == 0)
-			{
-				printf ("Nouveau morceau ajouté :\n");
-				printf ("\t%s\n", strFileName);
-			}
+			closedir(dirp);
+
+			g_free (strFolderName);
 		}
-
-		closedir(dirp);
-
-		g_free (strFolderName);
+		else
+		{
+			printf ("Dossier déjà existant...\n");
+		}
 	}
 
 #endif

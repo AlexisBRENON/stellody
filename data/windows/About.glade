@@ -7,7 +7,7 @@
     <child>
       <object class="GtkImage" id="image1">
         <property name="visible">True</property>
-        <property name="pixbuf">../images/icone_png.png</property>
+        <property name="pixbuf">../images/logo2.png</property>
       </object>
       <packing>
         <property name="position">0</property>

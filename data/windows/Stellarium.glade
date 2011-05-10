@@ -17,6 +17,9 @@
     <child>
       <object class="GtkDrawingArea" id="Stellarium_DrawingArea">
         <property name="visible">True</property>
+        <signal name="expose_event" handler="GLDraw"/>
+        <signal name="realize" handler="GLInit"/>
+        <signal name="configure_event" handler="GLResize"/>
       </object>
       <packing>
         <property name="position">1</property>
