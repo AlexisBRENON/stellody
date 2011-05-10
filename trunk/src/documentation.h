@@ -10,7 +10,7 @@
 /**
   * @mainpage Stellody
 
-  * @image html "icone_png.png"
+  * @image html "logo2.png"
 \n\n <center><h1>Stellody</h1></center>\n\n
   * @section Présentation
 
