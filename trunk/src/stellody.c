@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <gtk/gtk.h>
+#include <gtk/gtkgl.h>
+
 #if defined(__linux)
 #include <fmodex/fmod.h>
 #endif

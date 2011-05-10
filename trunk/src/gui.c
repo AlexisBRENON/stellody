@@ -16,6 +16,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <gtk/gtkgl.h>
 
 #if defined(__linux)
 #include <fmodex/fmod.h>
@@ -513,13 +514,10 @@ Utilisez un systeme <u>UNIX</u> :p !");
 			while ((dp = readdir(dirp)) != NULL)
 			{
 				strFileName = dp->d_name;
-				/** @todo Changer la façon de récupérer l'extension.
-				Récupérer les 4 derniers caractères car s'il n'y a pas de
-				point, ça plante. */
-				strExtension = strrchr(strFileName, '.');
-				iLength = strlen(strExtension);
+				iLength = strlen(strFileName);
+				strExtension = &(strFileName[iLength-4]);
 
-				for (i = 0; i<iLength; i++)
+				for (i = 1; i < 4; i++)
 				{
 					strExtension[i] = tolower(strExtension[i]);
 				}
@@ -566,10 +564,28 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	if (pData[STELLARIUM_BUILDER] == NULL)
 	{
+		GdkGLConfig* pConfig = NULL;
+		GtkWidget* pDrawingArea = NULL;
+
+		/* Crée le Stellarium à partir du fichier glade. */
 		psBuilder = gtk_builder_new();
 		gtk_builder_add_from_file(psBuilder, GUI_STELLARIUM, NULL);
 
 		pData[STELLARIUM_BUILDER] = psBuilder;
+
+		/* Active la capacité OpenGL au Stellarium */
+		pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psBuilder,
+											"Stellarium_DrawingArea"));
+
+		pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
+											GDK_GL_MODE_DEPTH |
+											GDK_GL_MODE_DOUBLE);
+		gtk_widget_set_gl_capability(pDrawingArea,
+										pConfig,
+										NULL,
+										TRUE,
+										GDK_GL_RGBA_TYPE);
+
 	}
 
 	psStellarium = GTK_WIDGET(gtk_builder_get_object(

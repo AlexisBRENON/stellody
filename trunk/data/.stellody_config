@@ -4,7 +4,8 @@
 iAnalysisRate=25
 iWindowXSize=800
 iWindowYSize=600
-pstrPath=/home/alexis/Musique;
+pstrPath=/home/alexis/Musique;/home/alexis/FAC/S4/LIF7/Projet/stellody/bin;
+
 
 
 
