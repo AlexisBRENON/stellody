@@ -214,7 +214,11 @@ int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
 										float fValue)
 {
 	assert (psTrack != NULL);
-	assert (fValue >= 0.0 && fValue <= 1.0);
+
+	if (fValue < 0)
+	{
+		fValue = fValue * (-1);
+	}
 
 	psTrack->fFrequenciesAverage = fValue;
 
@@ -230,7 +234,11 @@ float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack)
 int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fValue)
 {
 	assert (psTrack != NULL);
-	assert (fValue >= 0.0 && fValue <= 1.0);
+
+	if (fValue < 0)
+	{
+		fValue = fValue * (-1);
+	}
 
 	psTrack->fFrequenciesMedian = fValue;
 

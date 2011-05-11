@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 
@@ -31,26 +32,33 @@ static gboolean analysisSetValues (gpointer pData[])
 {
 	gboolean bIsPlaying = FALSE;
 	AnalyzedTrack* psTrack = NULL;
-	float pfSpectrumValue[64];
+	float pfSpectrumValue[128];
 	int i;
 	float fAnalysisRate;
 	unsigned int uiPosition;
+	float fOldAverage = 0;
+	float fOldMedian = 0;
+	float fAverage = 0;
+	float fMedian = 0;
 
 	FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								&bIsPlaying);
 
-	if (bIsPlaying == TRUE)
-	{
-		/* On récupère le taux d'analyse */
-		fAnalysisRate = (float) preferencesGetAnalysisRate(
+	psTrack = (AnalyzedTrack*) (g_list_first(
+								(GList*) pData[ANALYZELIST]))->data;
+
+	/* On récupère le taux d'analyse */
+	fAnalysisRate = (float) preferencesGetAnalysisRate(
 										(Preferences*) pData[PREFERENCES]);
 
-		/* Au maximum (100%) on analysera toutes les 25ms le morceau en
-		vitesse normale.
-		Au quart (25%) on analysera toutes les 25ms le morceau en vitesse
-		x4. */
-		fAnalysisRate = 25/(fAnalysisRate/100.0);
+	/* Au maximum (100%) on analysera toutes les 25ms le morceau en
+	vitesse normale.
+	Au quart (25%) on analysera toutes les 25ms le morceau en vitesse
+	x4. */
+	fAnalysisRate = 25/(fAnalysisRate/100.0);
 
+	if (bIsPlaying == TRUE)
+	{
 		FMOD_Channel_GetPosition((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								&uiPosition,
 								FMOD_TIMEUNIT_MS);
@@ -59,30 +67,100 @@ static gboolean analysisSetValues (gpointer pData[])
 								FMOD_TIMEUNIT_MS);
 
 		FMOD_Channel_GetSpectrum((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
-								pfSpectrumValue, 64,
+								pfSpectrumValue, 128,
 								1, FMOD_DSP_FFT_WINDOW_RECT);
 
-		/* Test... */
-		for (i = 0; i < 64; i = i+2)
+		/* On regarde les valeurs retournées (on ignore les bords) */
+		for (i = 8; i < 120; i++)
 		{
+			/* On uniformise les valeurs en passant aux décibels */
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
-			printf("décibel %d : %.2f\n", i,
-							10.0*pfSpectrumValue[i]*2.0);
+			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
+
+			fAverage += pfSpectrumValue[i];
 		}
-		printf("\n\n");
+		fAverage /= 112;
+		fMedian = pfSpectrumValue[62];
+
+		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
+		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
+
+		analyzedTrackSetFrequenciesAverage(psTrack,
+											fOldAverage+fAverage);
+		analyzedTrackSetFrequenciesMedian(psTrack,
+											fOldMedian+fMedian);
 	}
 	else /* Si ça ne joue plus, c'est que l'analyse est finie. */
 	{
-		psTrack = (AnalyzedTrack*) (g_list_first(
-									(GList*) pData[ANALYZELIST]))->data;
+		GtkWidget* psStatusBar = NULL;
+		const char* strConstFileName = NULL;
+		char* strFileName = NULL;
+		char* strStatusBarMessage = NULL;
+		int iTIDMax = 0;
+		int iTIDMin = 0;
+		int iTID = 0;
+
+/* ********************************************************************* */
+
+		/* On assigne les nouvelles valeur au morceau */
+		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
+		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
+		fAverage = fOldAverage/fAnalysisRate;
+		fMedian = fOldMedian/fAnalysisRate,
+
+		analyzedTrackSetFrequenciesAverage(psTrack,
+											fAverage);
+		analyzedTrackSetFrequenciesMedian(psTrack,
+											fMedian);
+		analyzedTrackSetTID(psTrack, fAverage+fMedian);
 		analyzedTrackSetAnalyzed(psTrack, 1);
-		/* Set TID */
+
+/* ********************************************************************* */
+
+		/* On insère le morceau dans l'arbre et on le supprime de la liste
+		à analyser */
 		analyzedTracksInsertTrack(pData[ANALYZED_TRACKS],
 									psTrack);
 		pData[ANALYZELIST] = g_list_remove((GList*) pData[ANALYZELIST],
 											psTrack);
 
-		printf("Analyse Terminée\n");
+/* ********************************************************************* */
+
+		/* Il se peut que le TID ai changé à l'insertion, on le récupère */
+		iTID = analyzedTrackGetTID(psTrack);
+		iTIDMax = preferencesGetMaxTID((Preferences*) pData[PREFERENCES]);
+		iTIDMin = preferencesGetMinTID((Preferences*) pData[PREFERENCES]);
+
+		/* On vérifie que les bornes sont tjs correctes */
+		if (iTID > iTIDMax)
+		{
+			preferencesSetMaxTID((Preferences*) pData[PREFERENCES], iTID);
+		}
+		else if (iTID < iTIDMin)
+		{
+			preferencesSetMinTID((Preferences*) pData[PREFERENCES], iTID);
+		}
+
+/* ********************************************************************* */
+
+		/* On informe l'utilisateur que l'analyse est finie */
+
+		strConstFileName = analyzedTrackGetPath(psTrack);
+		strFileName = strrchr(strConstFileName, '/');
+
+		strStatusBarMessage = (char*) malloc((strlen(strFileName)+9)
+											*sizeof(char));
+		strcpy(strStatusBarMessage, &(strFileName[1]));
+		strcat(strStatusBarMessage, " analysé.");
+
+		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+										(GtkBuilder*) pData[MAIN_BUILDER],
+										"Stellody_StatusBar"));
+		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+
+		gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
+						 strStatusBarMessage);
+		free(strStatusBarMessage);
 	}
 
 	return bIsPlaying;
@@ -124,11 +202,13 @@ int analysisTrack (const char* strPath, gpointer* pData)
 								FALSE,
 								(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL]);
 		/* On coupe le son, le morceau doit être joué mais pas entendu */
-		/*FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-								0.0);*/
+		FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+								0.0);
 		FMOD_Channel_SetPaused((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
 								FALSE);
 
+		/* On crée un time_out sur la fonction qui analysera et stockera
+		les données d'analyse */
 		g_idle_add((GSourceFunc) analysisSetValues,
 					pData);
 	}
