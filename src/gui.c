@@ -430,8 +430,6 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 			strcmp(strExtension, ".raw") == 0 ||
 			strcmp(strExtension, ".wav") == 0)
 		{
-			printf ("Nouveau morceau ajouté :\n");
-			printf ("\t%s\n", strFilename);
 			analysisTrack(strFilename, pData);
 			/* Modification du TIDMAx */
 		}

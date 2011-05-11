@@ -11,8 +11,8 @@ fMedian=0
 iTID=1
 bAnalyzed=1
 strPath=/home/alexis/Musique/Always where I need to be - The Kooks.mp3
-fAverage=0
-fMedian=0
+fAverage=0.046439912170171738
+fMedian=0.063878908753395081
 
 
 [/home/alexis/Musique/Someone like you - Adele.mp3]
@@ -21,4 +21,6 @@ bAnalyzed=1
 strPath=/home/alexis/Musique/Someone like you - Adele.mp3
 fAverage=0
 fMedian=0
+
+
 
