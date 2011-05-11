@@ -29,6 +29,7 @@
 struct sAnalyzedTrack
 {
 	int iTID; /**< Identifiant du morceau (dans l'abre, le Stellarium) */
+	char bAnalyzed; /**< Permet de savoir si le morceau a déjà été analysé */
 	char * strPath; /**< Emplacement du fichier sur l'ordinateur */
 	float fFrequenciesAverage; /**< Réel codant la moyenne des
 	fréquences du morceau */
@@ -184,6 +185,25 @@ int analyzedTrackGetTID (const AnalyzedTrack* psTrack);
   */
 int analyzedTrackSetTID (AnalyzedTrack* psTrack,
 						int iValue);
+
+/**
+  * @fn char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack)
+  * @brief Accesseur sur l'état d'analyse du morceau.
+  *
+  * @param[in] psTrack Pointeur sur le morceau à accéder.
+  * @return 0 si le morceau n'est pas analysé, 1 sinon.
+  */
+char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack);
+/**
+  * @fn int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack,
+									 char bAnalyzed)
+  * @brief Mutateur sur l'état d'analyse du morceau.
+  *
+  * @param[in,out] psTrack Pointeur sur le morceau à modifier
+  * @param[in] bAnalyzed 0 si le morceau n'est pas analysé, 1 sinon.
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bAnalyzed);
 
 /**
   * @fn const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)

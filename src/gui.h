@@ -129,7 +129,8 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData);
   *
   * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
   * @param[in,out] pData Données autres passées au callback.
-  * @return EXIT_SUCCESS si tout est OK.
+  * @return EXIT_SUCCESS si le répertoire a été ajouté, EXIT_FAILURE si le
+  répertoire était déja présent.
   */
 int on_AddDir_Action_activate (GtkWidget* psWidget, gpointer* pData);
 

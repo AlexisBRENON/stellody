@@ -30,11 +30,12 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 								GKeyFile* ppsContext[])
 {
 	gsize ulNbTracks;
-	gchar** strGroups;
-	int iTID;
-	char* strPath;
-	float fAverage, fMedian;
-	AnalyzedTrack* psTrack;
+	gchar** strGroups = NULL;
+	int iTID = 0;
+	char bAnalyzed = 0;
+	char* strPath = NULL;
+	float fAverage = 0, fMedian = 0;
+	AnalyzedTrack* psTrack = NULL;
 
 	int i;
 
@@ -52,6 +53,8 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		/* On récupère toutes les données relatives au morceau */
 		iTID = g_key_file_get_integer(ppsContext[DATA],
 										strGroups[i], "iTID", NULL);
+		bAnalyzed = (char) g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "bAnalyzed", NULL);
 		strPath = g_key_file_get_string(ppsContext[DATA],
 										strGroups[i], "strPath", NULL);
 		fAverage = (float) g_key_file_get_double(ppsContext[DATA],
@@ -61,6 +64,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		/* On initialise le morceau avec les bonnes valeurs */
 		analyzedTrackInitWithData(psTrack, iTID, strPath,
 									fAverage, fMedian);
+		analyzedTrackSetAnalyzed(psTrack, bAnalyzed);
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
 	}

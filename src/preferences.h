@@ -27,11 +27,13 @@
   */
 struct sPreferences
 {
-	int iWindowXSize; /**< Largeur de la fenêtre en pixels */
-	int iWindowYSize; /**< Hauteur de la fenêtre en pixels */
-	int iAnalysisRate; /**< Taux d'analyse (1 - 100) */
-	int iNbPath; /**< Nombre de chemin/taille du tableau pstrFilesPath */
-	char** pstrFilesPath; /**< Chemins des dossiers contenant les
+	int iWindowXSize;		/**< Largeur de la fenêtre en pixels */
+	int iWindowYSize; 		/**< Hauteur de la fenêtre en pixels */
+	int iAnalysisRate; 		/**< Taux d'analyse (1 - 100) */
+	int iMinTID;			/**< Plus petit identifiant dans l'arbre */
+	int iMaxTID;			/**< Plus grand identifiant dans l'arbre */
+	int iNbPath; 			/**< Nombre de chemin/taille du tableau pstrFilesPath */
+	char** pstrFilesPath;	/**< Chemins des dossiers contenant les
 	morceaux */
 };
 /**
@@ -166,6 +168,42 @@ int preferencesGetAnalysisRate (const Preferences* psPref);
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesSetAnalysisRate (Preferences* psPref, int iValue);
+
+/**
+  * @fn int preferencesGetMaxTID(const Preferences* psPref)
+  * @brief Accesseur sur le TID maximum.
+  *
+  * @param[in] psPref Pointeur sur la structure à accéder
+  * @return L'identifiant maximal de l'arbre.
+  */
+int preferencesGetMaxTID(const Preferences* psPref);
+/**
+  * @fn int preferencesSetMaxTID(Preferences* psPref, int iValue)
+  * @brief Mutateur
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier
+  * @param[in] iValue Nouvelle valeur de TID maximal
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesSetMaxTID(Preferences* psPref, int iValue);
+
+/**
+  * @fn int preferencesGetMinTID(const Preferences* psPref)
+  * @brief Accesseur sur le TID minimum.
+  *
+  * @param[in] psPref Pointeur sur la structure à accéder
+  * @return L'identifiant minimal de l'arbre.
+  */
+int preferencesGetMinTID(const Preferences* psPref);
+/**
+  * @fn int preferencesSetMinTID(Preferences* psPref, int iValue)
+  * @brief Mutateur
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier
+  * @param[in] iValue Nouvelle valeur de TID minimal
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesSetMinTID(Preferences* psPref, int iValue);
 
 /**
   * @fn const char** preferencesGetFilesPath (const Preferences* psPref,

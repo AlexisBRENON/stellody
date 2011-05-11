@@ -77,6 +77,7 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 		psTrack->strPath = NULL;
 	}
 	psTrack->iTID = iTID;
+	psTrack->bAnalyzed = 1;
 	psTrack->fFrequenciesAverage = fAverage;
 	psTrack->fFrequenciesMedian = fMedian;
 
@@ -86,13 +87,17 @@ int analyzedTrackInit(AnalyzedTrack* psTrack)
 {
 	assert (psTrack != NULL);
 
-	return analyzedTrackInitWithData(psTrack, 0, NULL, 0.0, 0.0);
+	analyzedTrackInitWithData(psTrack, 0, NULL, 0.0, 0.0);
+	analyzedTrackSetAnalyzed(psTrack, 0);
+
+	return EXIT_SUCCESS;
 }
 int analyzedTrackRelease(AnalyzedTrack* psTrack)
 {
 	assert (psTrack != NULL);
 
 	psTrack->iTID = 0;
+	psTrack->bAnalyzed = 0;
 	psTrack->fFrequenciesAverage = 0;
 	psTrack->fFrequenciesMedian = 0;
 	if (psTrack->strPath != NULL)
@@ -126,7 +131,11 @@ AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
 }
 AnalyzedTrack* analyzedTrackCreate (void)
 {
-	return analyzedTrackCreateWithData(0, NULL, 0.0, 0.0);
+	AnalyzedTrack* psTrack = NULL;
+	psTrack = analyzedTrackCreateWithData(0, NULL, 0.0, 0.0);
+	analyzedTrackSetAnalyzed(psTrack, 0);
+
+	return psTrack;
 }
 int analyzedTrackDestroy(AnalyzedTrack** ppsTrack)
 {
@@ -155,6 +164,24 @@ int analyzedTrackSetTID (AnalyzedTrack* psTrack, int iValue)
 
 	return EXIT_SUCCESS;
 }
+
+char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack)
+{
+	assert(psTrack != NULL);
+
+	return psTrack->bAnalyzed;
+}
+
+int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bValue)
+{
+	assert(psTrack != NULL);
+	assert(bValue == 0 || bValue == 1);
+
+	psTrack->bAnalyzed = bValue;
+
+	return EXIT_SUCCESS;
+}
+
 
 const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
 {
