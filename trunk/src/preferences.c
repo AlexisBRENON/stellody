@@ -29,6 +29,8 @@ int preferencesInit (Preferences* psPref)
 	psPref->iAnalysisRate = 0;
 	psPref->iWindowXSize = 0;
 	psPref->iWindowYSize = 0;
+	psPref->iMaxTID = 0;
+	psPref->iMinTID = 0;
 	psPref->iNbPath = 0;
 	psPref->pstrFilesPath = NULL;
 
@@ -52,11 +54,20 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iWindowYSize = g_key_file_get_integer(ppsContext[CONFIG],
 												"DEFAULT",
 												"iWindowYSize", NULL);
+	psPref->iMaxTID = g_key_file_get_integer(ppsContext[CONFIG],
+											"DEFAULT",
+											"iMaxTID", NULL);
+	psPref->iMinTID = g_key_file_get_integer(ppsContext[CONFIG],
+											"DEFAULT",
+											"iMinTID", NULL);
 	pstrTemp = g_key_file_get_string_list(ppsContext[CONFIG],
 											"DEFAULT",
 											"pstrPath",
 											(gsize*) &(psPref->iNbPath),
 											NULL);
+	/* Copie le tableau de chaines de manière à ne pas mélanger allocations
+	GTK et libération manuelle (on alloue manuellement et on libère avec
+	GTK ce qui à été alloué par GTK).*/
 	iSize = psPref->iNbPath;
 	psPref->pstrFilesPath = (gchar**) malloc((iSize+1)*sizeof(gchar*));
 	for (i = 0; i < iSize; i++)
@@ -75,12 +86,20 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 }
 int preferencesRelease (Preferences* psPref)
 {
+	int i;
+
 	assert (psPref != NULL);
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
 	psPref->iNbPath = -1;
-	g_strfreev(psPref->pstrFilesPath);
+	for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
+	{
+		free(psPref->pstrFilesPath[i]);
+		psPref->pstrFilesPath[i] = NULL;
+	}
+	free(psPref->pstrFilesPath[i]);
+	psPref->pstrFilesPath[i] = NULL;
 	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
@@ -163,6 +182,38 @@ int preferencesSetAnalysisRate (Preferences* psPref, int iValue)
 	assert (iValue > 0 && iValue <= 100);
 
 	psPref->iAnalysisRate = iValue;
+
+	return EXIT_SUCCESS;
+}
+
+int preferencesGetMaxTID(const Preferences* psPref)
+{
+	assert(psPref != NULL);
+
+	return psPref->iMaxTID;
+}
+int preferencesSetMaxTID(Preferences* psPref, int iValue)
+{
+	assert(psPref != NULL);
+	assert(iValue > 0 && iValue > psPref->iMaxTID);
+
+	psPref->iMaxTID = iValue;
+
+	return EXIT_SUCCESS;
+}
+
+int preferencesGetMinTID(const Preferences* psPref)
+{
+	assert(psPref != NULL);
+
+	return psPref->iMinTID;
+}
+int preferencesSetMinTID(Preferences* psPref, int iValue)
+{
+	assert(psPref != NULL);
+	assert(iValue > 0 && iValue < psPref->iMinTID);
+
+	psPref->iMinTID = iValue;
 
 	return EXIT_SUCCESS;
 }

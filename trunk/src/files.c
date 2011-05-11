@@ -13,6 +13,7 @@
 #include "files.h"
 #include "preferences.h"
 #include "analyzed_tracks.h"
+#include "analyzed_track.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -28,6 +29,46 @@
 /*                   Fonctions relatives aux fichiers                    */
 /*                                                                       */
 /* ********************************************************************* */
+
+static gboolean filesSaveTracks (int* pKey,
+								AnalyzedTrack* pValue,
+								GKeyFile* pData)
+{
+	int iTID = 0;
+	char bAnalyzed = 0;
+	const char* strPath = NULL;
+	float fAverage = 0;
+	float fMedian = 0;
+
+	iTID = analyzedTrackGetTID(pValue);
+	bAnalyzed = analyzedTrackGetAnalyzed(pValue);
+	strPath = analyzedTrackGetPath(pValue);
+	fAverage = analyzedTrackGetFrequenciesAverage(pValue);
+	fMedian = analyzedTrackGetFrequenciesMedian(pValue);
+
+	g_key_file_set_integer(pData,
+							strPath,
+							"iTID",
+							iTID);
+	g_key_file_set_integer(pData,
+							strPath,
+							"bAnalyzed",
+							(int) bAnalyzed);
+	g_key_file_set_string(pData,
+						strPath,
+						"strPath",
+						strPath);
+	g_key_file_set_double(pData,
+						strPath,
+						"fAverage",
+						fAverage);
+	g_key_file_set_double(pData,
+						strPath,
+						"fMedian",
+						fMedian);
+
+	return FALSE;
+}
 
 
 GKeyFile** filesOpen(void)
@@ -63,7 +104,7 @@ int filesClose(GKeyFile*** pppsContext)
 
 int filesCloseAndSave(GKeyFile*** pppsContext,
 					const Preferences* psPref,
-					const AnalyzedTracks* psTracks)
+					AnalyzedTracks* psTracks)
 {
 	assert (pppsContext != NULL);
 
@@ -103,10 +144,17 @@ int filesSave(GKeyFile** ppsContext,
 													NULL, NULL));
 	}
 
-	pfData = fopen(DATA_FILE, "w");
-	assert (pfData != NULL);
-	fprintf(pfData, "%s\n", g_key_file_to_data(ppsContext[DATA], NULL,
-												NULL));
+
+	if (psTracks != NULL)
+	{
+		g_tree_foreach((GTree*) psTracks,
+						(GTraverseFunc) filesSaveTracks,
+						ppsContext[DATA]);
+		pfData = fopen(DATA_FILE, "w");
+		assert (pfData != NULL);
+		fprintf(pfData, "%s\n", g_key_file_to_data(ppsContext[DATA], NULL,
+													NULL));
+	}
 
 	fclose(pfConfig);
 	fclose(pfData);

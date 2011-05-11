@@ -99,6 +99,7 @@
   </object>
   <object class="GtkAdjustment" id="AnalysisRate_Adjustement">
     <property name="value">25</property>
+    <property name="lower">1</property>
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>

@@ -14,16 +14,16 @@
 
 
 /**
-  * @fn AnalyzedTrack* analysisTrack (const char* strPath, gpointer* pData)
-  * @brief Analyse un morceau et renvoie le morceau créé.
+  * @fn int analysisTrack (const char* strPath, gpointer* pData)
+  * @brief Lance l'analyse d'un morceau.
   *
   * @param[in] strPath Chemin du fichier à analyser
   * @param[in,out] pData Le tableau de données
-  * @return Un pointeur sur une AnalyzedTrack nouvellement allouée
+  * @return EXIT_SUCCESS si tout est OK
   */
-AnalyzedTrack* analysisTrack (const char* strPath, gpointer* pData);
+int analysisTrack (const char* strPath, gpointer* pData);
 
-/**
+/*/**
   * @fn int analysisTrackToTracks (const char* strPath,
 								AnalyzedTracks* psTracks,
 								gpointer* pData)
@@ -33,10 +33,10 @@ AnalyzedTrack* analysisTrack (const char* strPath, gpointer* pData);
   * @param[in,out] psTracks Pointeur sur l'arbre
   * @param[in,out] pData Le tableau de données
   * @return EXIT_SUCCESS si tout est OK
-  */
+  *
 int analysisTrackToTracks (const char* strPath,
 						AnalyzedTracks* psTracks,
-						gpointer* pData);
+						gpointer* pData);*/
 
 
 

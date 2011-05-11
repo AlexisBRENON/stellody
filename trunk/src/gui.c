@@ -16,7 +16,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <gtk/gtkgl.h>
+/*#include <gtk/gtkgl.h>*/
 
 #if defined(__linux)
 #include <fmodex/fmod.h>
@@ -29,6 +29,7 @@
 #include "preferences.h"
 #include "analyzed_tracks.h"
 #include "analyzed_track.h"
+#include "analysis.h"
 
 
 /* ********************************************************************* */
@@ -431,6 +432,8 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		{
 			printf ("Nouveau morceau ajouté :\n");
 			printf ("\t%s\n", strFilename);
+			analysisTrack(strFilename, pData);
+			/* Modification du TIDMAx */
 		}
 		else
 		{
@@ -534,6 +537,7 @@ Utilisez un systeme <u>UNIX</u> :p !");
 				{
 					printf ("Nouveau morceau ajouté :\n");
 					printf ("\t%s\n", strFileName);
+					/* Modification du TIDMax */
 				}
 			}
 
@@ -564,7 +568,7 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	if (pData[STELLARIUM_BUILDER] == NULL)
 	{
-		GdkGLConfig* pConfig = NULL;
+		/*GdkGLConfig* pConfig = NULL;*/
 		GtkWidget* pDrawingArea = NULL;
 
 		/* Crée le Stellarium à partir du fichier glade. */
@@ -577,14 +581,14 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psBuilder,
 											"Stellarium_DrawingArea"));
 
-		pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
+		/*pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
 											GDK_GL_MODE_DEPTH |
 											GDK_GL_MODE_DOUBLE);
 		gtk_widget_set_gl_capability(pDrawingArea,
 										pConfig,
 										NULL,
 										TRUE,
-										GDK_GL_RGBA_TYPE);
+										GDK_GL_RGBA_TYPE);*/
 
 	}
 
