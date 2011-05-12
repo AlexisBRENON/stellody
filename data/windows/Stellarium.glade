@@ -4,6 +4,7 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkVBox" id="Stellarium_VBox">
     <property name="visible">True</property>
+    <property name="spacing">5</property>
     <child>
       <object class="GtkLabel" id="Stellarium_Label">
         <property name="visible">True</property>

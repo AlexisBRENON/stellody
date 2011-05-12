@@ -140,8 +140,7 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 		/* Si elle existe déja, on incrémente l'identification et on refait
 		le test */
 		iNewTID++;
-		psTrackInTree = g_tree_search(psTracks,
-									(GCompareFunc) analyzedTrackCompare,
+		psTrackInTree = g_tree_lookup(psTracks,
 									&iNewTID);
 	}
 

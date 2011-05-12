@@ -169,7 +169,7 @@ int stellody(int argc, char* argv[])
 	pDatas[ANALYZED_TRACKS] = analyzedTracksCreateFromFile(pFileContext);
 
 	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
-					(GTraverseFunc) (analyzedTracksRemoveForAnalyze),
+					(GTraverseFunc) analyzedTracksRemoveForAnalyze,
 					pDatas);
 
 	gtk_main();
