@@ -147,7 +147,7 @@ int stellody(int argc, char* argv[])
 	GKeyFile** pFileContext;
 	int i;
 
-	AnalyzedTrack* psTrack;
+	srand(time(NULL));
 
 	for (i = 0; i < NB_DATA; i++)
 	{
@@ -162,14 +162,15 @@ int stellody(int argc, char* argv[])
 	gtk_init(&argc, &argv);
 	gtk_gl_init(&argc, &argv);
 
+	pDatas[MAIN_BUILDER] = guiLoad(pDatas);
+
 	pFileContext = filesOpen();
 	pDatas[PREFERENCES] = preferencesCreateFromFile(pFileContext);
 	pDatas[ANALYZED_TRACKS] = analyzedTracksCreateFromFile(pFileContext);
 
-	psTrack = analyzedTracksGetTrack(
-						(AnalyzedTracks*)(pDatas[ANALYZED_TRACKS]), 1);
-
-	pDatas[MAIN_BUILDER] = guiLoad(pDatas);
+	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
+					(GTraverseFunc) (analyzedTracksRemoveForAnalyze),
+					pDatas);
 
 	gtk_main();
 

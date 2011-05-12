@@ -10,6 +10,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <time.h>
 
 #if defined(__linux) || defined (__APPLE__)
 	#include <dirent.h>
@@ -267,12 +268,32 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		/* Si aucun morceau n'est dans la playlist... */
 		if (pData[PLAYLIST] == NULL)
 		{
-			/* On charge la premier morceau qu'on trouve */
+			int iTIDMax = 0;
+
+			iTIDMax = preferencesGetMaxTID((Preferences*)
+											pData[PREFERENCES]);
+
+			/* On charge un morceau aléatoirement */
+			i = rand() % (iTIDMax+1);
 			do
 			{
-				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS], i);
+				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
+													i);
 				i++;
-			} while (psTrack == NULL && i < 100);
+			} while (psTrack == NULL && i <= iTIDMax);
+
+			if (psTrack == NULL)
+			{
+				GtkWidget* psStatusBar;
+
+				psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+										(GtkBuilder*) pData[MAIN_BUILDER],
+										"Stellody_StatusBar"));
+				gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+				gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
+									"Aucun morceau trouvé...");
+				return EXIT_FAILURE;
+			}
 
 			strPath = analyzedTrackGetPath(psTrack);
 
@@ -502,9 +523,9 @@ Utilisez un systeme <u>UNIX</u> :p !");
 
 		strFolderName = gtk_file_chooser_get_filename(
 											GTK_FILE_CHOOSER (pDialog));
-		iPathAdded = preferencesAddFilesPath((Preferences*)
+		/*iPathAdded = preferencesAddFilesPath((Preferences*)
 											pData[PREFERENCES],
-											strFolderName);
+											strFolderName);*/
 
 		if (iPathAdded == EXIT_SUCCESS)
 		{

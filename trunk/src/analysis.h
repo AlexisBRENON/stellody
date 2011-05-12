@@ -23,4 +23,16 @@
   */
 int analysisTrack (const char* strPath, gpointer* pData);
 
+
+/**
+  * @fn gboolean analysisCheckNewAnalyze (gpointer pData[])
+  * @brief Un timeout qui vérifie la présence ou non de morceaux à
+  analyser.
+  *
+  * @param[in,out] pData Le tableau de donnée
+  * @return TRUE pour continuer la vérification, FALSE lorsque qu'il n'y a
+  plus à vérifier.
+  */
+gboolean analysisCheckNewAnalyze (gpointer pData[]);
+
 #endif /* __ANALYSIS_H__ */
