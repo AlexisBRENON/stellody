@@ -35,7 +35,8 @@ SRCS = 			stellody.c \
 			preferences.c \
 			opengl_drawing.c \
 			files.c \
-			gui.c
+			gui.c \
+			analysis.c
 	# Noms des fichiers objets (génération dynamique)
 OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)
 OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
@@ -43,7 +44,10 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 	# Options nécessaires à  la compilation sous linux
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
 					$(GTK_CFLAGS)	$(GL_CFLAGS)
-LIN_LDFLAGS =		-export-dynamic -lglut -lfmodex-4.32.09 \
+LIN_LDFLAGS =		-export-dynamic \
+					-lglut \
+					-lfmodex-4.32.09 \
+					-lgtkglext-x11-1.0 \
 					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 	# Options nécessaires à  la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \

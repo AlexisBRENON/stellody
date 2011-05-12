@@ -16,7 +16,7 @@
 #endif
 
 #include <gtk/gtk.h>
-/*#include <gtk/gtkgl.h>*/
+#include <gtk/gtkgl.h>
 
 #if defined(__linux)
 #include <fmodex/fmod.h>
@@ -171,7 +171,6 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 }
 
 
-
 /* ********************************************************************* */
 /*                                                                       */
 /*                   Fonctions relatives à la fenêtre                    */
@@ -181,7 +180,6 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 /* ********************************************************************* */
 /*                           FENÊTRE PRINCIPALE                          */
 /* ********************************************************************* */
-
 
 GtkBuilder* guiLoad (const gpointer pData)
 {
@@ -431,7 +429,6 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 			strcmp(strExtension, ".wav") == 0)
 		{
 			analysisTrack(strFilename, pData);
-			/* Modification du TIDMAx */
 		}
 		else
 		{
@@ -484,6 +481,8 @@ Utilisez un systeme <u>UNIX</u> :p !");
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
+										"/home/alexis");
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
@@ -533,9 +532,18 @@ Utilisez un systeme <u>UNIX</u> :p !");
 					strcmp(strExtension, ".raw") == 0 ||
 					strcmp(strExtension, ".wav") == 0)
 				{
-					printf ("Nouveau morceau ajouté :\n");
-					printf ("\t%s\n", strFileName);
-					/* Modification du TIDMax */
+					char* strFullFileName = NULL;
+					int iPathLength = 0;
+
+					iPathLength = strlen(strFolderName);
+					strFullFileName = (char*) malloc(
+								(iLength+iPathLength+2)*sizeof(char));
+					strcpy(strFullFileName, strFolderName);
+					strcat(strFullFileName, "/");
+					strcat(strFullFileName, strFileName);
+					analysisTrack(strFullFileName, pData);
+					free(strFullFileName);
+					strFullFileName = NULL;
 				}
 			}
 
@@ -566,7 +574,7 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	if (pData[STELLARIUM_BUILDER] == NULL)
 	{
-		/*GdkGLConfig* pConfig = NULL;*/
+		GdkGLConfig* pConfig = NULL;
 		GtkWidget* pDrawingArea = NULL;
 
 		/* Crée le Stellarium à partir du fichier glade. */
@@ -579,14 +587,14 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psBuilder,
 											"Stellarium_DrawingArea"));
 
-		/*pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
+		pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
 											GDK_GL_MODE_DEPTH |
 											GDK_GL_MODE_DOUBLE);
 		gtk_widget_set_gl_capability(pDrawingArea,
 										pConfig,
 										NULL,
 										TRUE,
-										GDK_GL_RGBA_TYPE);*/
+										GDK_GL_RGBA_TYPE);
 
 	}
 
@@ -691,6 +699,9 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 
 	return EXIT_SUCCESS;
 }
+
+
+
 /* ********************************************************************* */
 /*                           FENÊTRE PREFERENCES                         */
 /* ********************************************************************* */
