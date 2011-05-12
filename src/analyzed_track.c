@@ -63,8 +63,6 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 {
 	assert (psTrack != NULL);
 	assert (iTID >= 0);
-	assert (fAverage >= 0.0 && fAverage <= 1.0);
-	assert (fMedian >= 0.0 && fMedian <= 1.0);
 
 	/* Si on lui passe une chaine de caractère (même vide), on la copie.*/
 	if (strPath != NULL)

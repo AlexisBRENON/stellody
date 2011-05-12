@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 #include <gtk/gtk.h>
-/*#include <gtk/gtkgl.h>*/
+#include <gtk/gtkgl.h>
 
 #if defined(__linux)
 #include <fmodex/fmod.h>
@@ -153,11 +153,14 @@ int stellody(int argc, char* argv[])
 	{
 		pDatas[i] = NULL;
 	}
+	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
+	*((int*) pDatas[CHECKANALYZE]) = 0;
 
 	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
 	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
 					2, FMOD_INIT_NORMAL, NULL);
 	gtk_init(&argc, &argv);
+	gtk_gl_init(&argc, &argv);
 
 	pFileContext = filesOpen();
 	pDatas[PREFERENCES] = preferencesCreateFromFile(pFileContext);
@@ -177,6 +180,9 @@ int stellody(int argc, char* argv[])
 	analyzedTracksDestroy((AnalyzedTracks**)&(pDatas[ANALYZED_TRACKS]));
 
 	FMOD_System_Release((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT]);
+
+	free(pDatas[CHECKANALYZE]);
+	pDatas[CHECKANALYZE] = NULL;
 
 	return EXIT_SUCCESS;
 }

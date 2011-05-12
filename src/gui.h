@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 11 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 12 /**< Nombre de cases aux tableaux de données */
 /**
   * @enum eGUI_DATA
   * @brief Enumération permettant de retrouver les différentes données dans
@@ -36,7 +36,8 @@ enum eGUI_DATA
 	PLAYING_CHANNEL		= 7, /**< Canal FMod de lecture. */
 	ANALYZING_CHANNEL	= 8, /**< Canal FMod d'analyse. */
 	PLAYLIST			= 9, /**< Liste des morceaux à lire */
-	ANALYZELIST			= 10 /**< Liste des morceau à analyser */
+	ANALYZELIST			= 10,/**< Liste des morceau à analyser */
+	CHECKANALYZE		= 11 /**< ID du timer de vérification d'analyse */
 };
 /**
   * @typedef GUI_DATA

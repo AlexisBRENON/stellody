@@ -28,6 +28,12 @@
 #include "analysis.h"
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*                           Fonctions privées                           */
+/*                                                                       */
+/* ********************************************************************* */
+
 static gboolean analysisSetValues (gpointer pData[])
 {
 	gboolean bIsPlaying = FALSE;
@@ -40,6 +46,10 @@ static gboolean analysisSetValues (gpointer pData[])
 	float fOldMedian = 0;
 	float fAverage = 0;
 	float fMedian = 0;
+	GtkWidget* psStatusBar = NULL;
+	const char* strConstFileName = NULL;
+	char* strFileName = NULL;
+	char* strStatusBarMessage = NULL;
 
 	FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								&bIsPlaying);
@@ -50,15 +60,37 @@ static gboolean analysisSetValues (gpointer pData[])
 	/* On récupère le taux d'analyse */
 	fAnalysisRate = (float) preferencesGetAnalysisRate(
 										(Preferences*) pData[PREFERENCES]);
-
 	/* Au maximum (100%) on analysera toutes les 25ms le morceau en
 	vitesse normale.
 	Au quart (25%) on analysera toutes les 25ms le morceau en vitesse
 	x4. */
 	fAnalysisRate = 25/(fAnalysisRate/100.0);
 
+
+	/* On informe l'utilisateur que l'analyse est finie */
+	strConstFileName = analyzedTrackGetPath(psTrack);
+	strFileName = strrchr(strConstFileName, '/');
+
+	/* On récupère la barre d'état */
+	psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+										(GtkBuilder*) pData[MAIN_BUILDER],
+										"Stellody_StatusBar"));
+	/* On efface le message présent */
+	gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+
+
 	if (bIsPlaying == TRUE)
 	{
+		strStatusBarMessage = (char*) malloc((
+									strlen("Analyse du fichier ")+
+									strlen(strFileName)+
+									strlen(" en cours..."))
+											*sizeof(char));
+		sprintf(strStatusBarMessage,
+				"Analyse du fichier %s en cours...", &(strFileName[1]));
+		gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
+							strStatusBarMessage);
+
 		FMOD_Channel_GetPosition((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								&uiPosition,
 								FMOD_TIMEUNIT_MS);
@@ -77,10 +109,10 @@ static gboolean analysisSetValues (gpointer pData[])
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
-			fAverage += pfSpectrumValue[i];
+			fAverage = fAverage + (pfSpectrumValue[i]*100);
 		}
 		fAverage /= 112;
-		fMedian = pfSpectrumValue[62];
+		fMedian = pfSpectrumValue[62]*100;
 
 		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
 		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
@@ -92,10 +124,6 @@ static gboolean analysisSetValues (gpointer pData[])
 	}
 	else /* Si ça ne joue plus, c'est que l'analyse est finie. */
 	{
-		GtkWidget* psStatusBar = NULL;
-		const char* strConstFileName = NULL;
-		char* strFileName = NULL;
-		char* strStatusBarMessage = NULL;
 		int iTIDMax = 0;
 		int iTIDMin = 0;
 		int iTID = 0;
@@ -143,54 +171,53 @@ static gboolean analysisSetValues (gpointer pData[])
 
 /* ********************************************************************* */
 
-		/* On informe l'utilisateur que l'analyse est finie */
-
-		strConstFileName = analyzedTrackGetPath(psTrack);
-		strFileName = strrchr(strConstFileName, '/');
-
-		strStatusBarMessage = (char*) malloc((strlen(strFileName)+9)
+		strStatusBarMessage = (char*) malloc((
+									strlen("Le fichier ")+
+									strlen(strFileName)+
+									strlen(" vient d'être analysé."))
 											*sizeof(char));
-		strcpy(strStatusBarMessage, &(strFileName[1]));
-		strcat(strStatusBarMessage, " analysé.");
-
-		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
-										(GtkBuilder*) pData[MAIN_BUILDER],
-										"Stellody_StatusBar"));
-		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+		sprintf(strStatusBarMessage,
+				"Le fichier %s vient d'être analysé.", &(strFileName[1]));
 
 		gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
 						 strStatusBarMessage);
-		free(strStatusBarMessage);
+
 	}
+
+	free(strStatusBarMessage);
 
 	return bIsPlaying;
 }
 
-
-int analysisTrack (const char* strPath, gpointer* pData)
+static gboolean analysisCheckNewAnalyze (gpointer pData[])
 {
-	AnalyzedTrack* psTrack = NULL;
-	FMOD_SOUND* psSound = NULL;
-	FMOD_BOOL bIsPlaying = FALSE;
+	FMOD_BOOL bIsPlaying;
 
-
-	psTrack = analyzedTrackCreate();
-	analyzedTrackSetPath(psTrack, strPath);
-	pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
-										psTrack);
-
-	if (pData[ANALYZING_CHANNEL] != NULL) /* Si le canal à déjà été crée */
+	/* Si la liste d'analyse est vide */
+	if (pData[ANALYZELIST] == NULL)
 	{
-		/* On regarde s'il est en train de jouer. */
-		FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
-								&bIsPlaying);
+		/* C'est fonction n'a plus lieu d'être appelée */
+		return FALSE;
 	}
 
-	if (bIsPlaying == FALSE) /* S'il n'est pas en train de jouer */
+	FMOD_Channel_IsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+							&bIsPlaying);
+	/* Si le canal d'analyse est déja en train de jouer */
+	if (bIsPlaying == TRUE)
 	{
+		/* On attend */
+		return TRUE;
+	}
+	else /* Sinon */
+	{
+		FMOD_SOUND* psSound = NULL;
+		AnalyzedTrack* psTrack = NULL;
+
+		psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
+
 		/* On crée le son à analyser */
 		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-								strPath,
+								analyzedTrackGetPath(psTrack),
 								FMOD_CREATESTREAM | FMOD_SOFTWARE,
 								NULL,
 								&psSound);
@@ -211,44 +238,75 @@ int analysisTrack (const char* strPath, gpointer* pData)
 		les données d'analyse */
 		g_idle_add((GSourceFunc) analysisSetValues,
 					pData);
+		return TRUE;
+	}
+
+}
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                     Fonctions relatives à l'analyse                   */
+/*                                                                       */
+/* ********************************************************************* */
+
+
+int analysisTrack (const char* strPath, gpointer* pData)
+{
+	AnalyzedTrack* psTrack = NULL;
+	FMOD_BOOL bIsPlaying = FALSE;
+
+
+	psTrack = analyzedTrackCreate();
+	analyzedTrackSetPath(psTrack, strPath);
+	pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
+										psTrack);
+
+	if (pData[ANALYZING_CHANNEL] != NULL) /* Si le canal à déjà été crée */
+	{
+		/* On regarde s'il est en train de jouer. */
+		FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
+								&bIsPlaying);
+	}
+
+	if (bIsPlaying == FALSE) /* S'il n'est pas en train de jouer */
+	{
+		FMOD_SOUND* psSound = NULL;
+
+		/* On crée le son à analyser */
+		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+								strPath,
+								FMOD_CREATESTREAM | FMOD_SOFTWARE,
+								NULL,
+								&psSound);
+
+		/* On lance le son (en pause) */
+		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+								FMOD_CHANNEL_FREE,
+								psSound,
+								FALSE,
+								(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL]);
+		/* On coupe le son, le morceau doit être joué mais pas entendu */
+		FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+								0.0);
+		FMOD_Channel_SetPaused((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+								FALSE);
+		/* On crée un time_out sur la fonction qui analysera et stockera
+		les données d'analyse */
+		g_idle_add((GSourceFunc) analysisSetValues,
+					pData);
 	}
 	else /* Si un morceau est déjà en cours d'analyse */
 	{
-		/* On ne fait rien */
+		if (*((int*) pData[CHECKANALYZE]) == 0)
+		{
+			*((int*) pData[CHECKANALYZE]) = g_timeout_add_seconds(2,
+									(GSourceFunc) analysisCheckNewAnalyze,
+									pData);
+		}
 	}
 
 	return EXIT_SUCCESS;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

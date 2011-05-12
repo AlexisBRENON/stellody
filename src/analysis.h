@@ -23,28 +23,4 @@
   */
 int analysisTrack (const char* strPath, gpointer* pData);
 
-/*/**
-  * @fn int analysisTrackToTracks (const char* strPath,
-								AnalyzedTracks* psTracks,
-								gpointer* pData)
-  * @brief Analyse un morceau et l'ajoute à un arbre.
-  *
-  * @param[in] strPath Chemin du fichier à analyser
-  * @param[in,out] psTracks Pointeur sur l'arbre
-  * @param[in,out] pData Le tableau de données
-  * @return EXIT_SUCCESS si tout est OK
-  *
-int analysisTrackToTracks (const char* strPath,
-						AnalyzedTracks* psTracks,
-						gpointer* pData);*/
-
-
-
-
-
-
-
-
-
-
 #endif /* __ANALYSIS_H__ */
