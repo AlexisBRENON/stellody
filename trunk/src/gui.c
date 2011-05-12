@@ -601,6 +601,7 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		/* Crée le Stellarium à partir du fichier glade. */
 		psBuilder = gtk_builder_new();
 		gtk_builder_add_from_file(psBuilder, GUI_STELLARIUM, NULL);
+		gtk_builder_connect_signals(psBuilder, pData);
 
 		pData[STELLARIUM_BUILDER] = psBuilder;
 
