@@ -88,7 +88,8 @@ int on_Quit_Action_activate (GtkWidget* psWidget, gpointer* pData);
   *
   * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
   * @param[in,out] pData Données autres passées au callback.
-  * @return EXIT_SUCCESS si tout est OK.
+  * @return EXIT_SUCCESS si tout est OK, EXIT_FAILURE si aucun morceau n'a
+  été trouvé.
   */
 int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData);
 

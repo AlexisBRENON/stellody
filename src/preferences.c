@@ -56,10 +56,10 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 												"iWindowYSize", NULL);
 	psPref->iMaxTID = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
-											"iMaxTID", NULL);
+											"iTIDMax", NULL);
 	psPref->iMinTID = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
-											"iMinTID", NULL);
+											"iTIDMin", NULL);
 	pstrTemp = g_key_file_get_string_list(ppsContext[CONFIG],
 											"DEFAULT",
 											"pstrPath",

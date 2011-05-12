@@ -189,60 +189,6 @@ static gboolean analysisSetValues (gpointer pData[])
 	return bIsPlaying;
 }
 
-static gboolean analysisCheckNewAnalyze (gpointer pData[])
-{
-	FMOD_BOOL bIsPlaying;
-
-	/* Si la liste d'analyse est vide */
-	if (pData[ANALYZELIST] == NULL)
-	{
-		/* C'est fonction n'a plus lieu d'être appelée */
-		return FALSE;
-	}
-
-	FMOD_Channel_IsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-							&bIsPlaying);
-	/* Si le canal d'analyse est déja en train de jouer */
-	if (bIsPlaying == TRUE)
-	{
-		/* On attend */
-		return TRUE;
-	}
-	else /* Sinon */
-	{
-		FMOD_SOUND* psSound = NULL;
-		AnalyzedTrack* psTrack = NULL;
-
-		psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
-
-		/* On crée le son à analyser */
-		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-								analyzedTrackGetPath(psTrack),
-								FMOD_CREATESTREAM | FMOD_SOFTWARE,
-								NULL,
-								&psSound);
-
-		/* On lance le son (en pause) */
-		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-								FMOD_CHANNEL_FREE,
-								psSound,
-								FALSE,
-								(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL]);
-		/* On coupe le son, le morceau doit être joué mais pas entendu */
-		FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-								0.0);
-		FMOD_Channel_SetPaused((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-								FALSE);
-
-		/* On crée un time_out sur la fonction qui analysera et stockera
-		les données d'analyse */
-		g_idle_add((GSourceFunc) analysisSetValues,
-					pData);
-		return TRUE;
-	}
-
-}
-
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -309,4 +255,60 @@ int analysisTrack (const char* strPath, gpointer* pData)
 	return EXIT_SUCCESS;
 
 }
+
+
+gboolean analysisCheckNewAnalyze (gpointer pData[])
+{
+	FMOD_BOOL bIsPlaying;
+
+	/* Si la liste d'analyse est vide */
+	if (pData[ANALYZELIST] == NULL)
+	{
+		/* C'est fonction n'a plus lieu d'être appelée */
+		return FALSE;
+	}
+
+	FMOD_Channel_IsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+							&bIsPlaying);
+	/* Si le canal d'analyse est déja en train de jouer */
+	if (bIsPlaying == TRUE)
+	{
+		/* On attend */
+		return TRUE;
+	}
+	else /* Sinon */
+	{
+		FMOD_SOUND* psSound = NULL;
+		AnalyzedTrack* psTrack = NULL;
+
+		psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
+
+		/* On crée le son à analyser */
+		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+								analyzedTrackGetPath(psTrack),
+								FMOD_CREATESTREAM | FMOD_SOFTWARE,
+								NULL,
+								&psSound);
+
+		/* On lance le son (en pause) */
+		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+								FMOD_CHANNEL_FREE,
+								psSound,
+								FALSE,
+								(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL]);
+		/* On coupe le son, le morceau doit être joué mais pas entendu */
+		FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+								0.0);
+		FMOD_Channel_SetPaused((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+								FALSE);
+
+		/* On crée un time_out sur la fonction qui analysera et stockera
+		les données d'analyse */
+		g_idle_add((GSourceFunc) analysisSetValues,
+					pData);
+		return TRUE;
+	}
+
+}
+
 

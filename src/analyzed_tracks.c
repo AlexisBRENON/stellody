@@ -13,6 +13,8 @@
 #include "analyzed_tracks.h"
 #include "analyzed_track.h"
 #include "files.h"
+#include "gui.h"
+#include "analysis.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -65,6 +67,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		analyzedTrackInitWithData(psTrack, iTID, strPath,
 									fAverage, fMedian);
 		analyzedTrackSetAnalyzed(psTrack, bAnalyzed);
+
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
 	}
@@ -180,19 +183,48 @@ const AnalyzedTrack* analyzedTracksGetConstTrack(
 {
 	assert (psTracks != NULL);
 
-	return g_tree_search(psTracks, (GCompareFunc) analyzedTrackCompare,
-						&iKey);
+	return g_tree_lookup(psTracks, &iKey);
 }
 
 AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
 									int iKey)
 {
+	AnalyzedTrack* psTrack = NULL;
+
 	assert (psTracks != NULL);
 
-	return g_tree_search(psTracks, (GCompareFunc) analyzedTrackCompare,
-						&iKey);
+	psTrack = g_tree_lookup(psTracks, &iKey);
+
+	return psTrack;
 }
 
+
+gboolean analyzedTracksRemoveForAnalyze(int* piKey,
+										AnalyzedTrack* psTrack,
+										gpointer* pData)
+{
+	char bAnalyzed = 0;
+
+	bAnalyzed = analyzedTrackGetAnalyzed(psTrack);
+
+	if (bAnalyzed == 0)
+	{
+		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
+											psTrack);
+		g_tree_steal(pData[ANALYZED_TRACKS], piKey);
+		free(piKey);
+		piKey = NULL;
+
+		if (*((int*) pData[CHECKANALYZE]) == 0)
+		{
+			*((int*) pData[CHECKANALYZE]) = g_timeout_add_seconds(2,
+									(GSourceFunc) analysisCheckNewAnalyze,
+									pData);
+		}
+	}
+
+	return FALSE;
+}
 
 /* ********************************************************************* */
 /*                                                                       */

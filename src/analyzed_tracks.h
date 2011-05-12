@@ -148,6 +148,22 @@ AnalyzedTrack* analyzedTracksGetTrack(
 							int iKey);
 
 
+/**
+  * @fn gboolean analyzedTracksRemoveForAnalyze (int* piKey,
+										AnalyzedTrack* psTrack,
+										gpointer* pData)
+  * @brief Enlève tous les morceau de l'arbre qui ne sont pas encore
+  analysés pour les rajouter à la liste d'analyse.
+  *
+  * @param[in,out] piKey pointeur sur la clé dans l'arbre
+  * @param[in,out] psTrack pointeur sur le morceau
+  * @param[in,out] pData Tableau des données utilisées
+  * @return FALSE pour continuer la traversée
+  */
+gboolean analyzedTracksRemoveForAnalyze (int* piKey,
+										AnalyzedTrack* psTrack,
+										gpointer* pData);
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Test de regression                          */
