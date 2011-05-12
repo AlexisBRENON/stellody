@@ -31,7 +31,23 @@
 
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 {
-	printf("Initialisation OpenGL\n");
+	GdkGLContext * contexte = NULL;
+	GdkGLDrawable * surface = NULL;
+
+	contexte = gtk_widget_get_gl_context(psWidget);
+	surface = gtk_widget_get_gl_drawable(psWidget);
+
+	if(gdk_gl_drawable_gl_begin(surface,contexte))
+	{
+		/* appels OpenGL */
+		printf("Fonction d'initialisation Open_GL\n");
+
+		glClearColor(0,0,0.2,1);
+		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
+		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
+	}
+
+	return EXIT_SUCCESS;
 
 	return EXIT_SUCCESS;
 }
@@ -52,7 +68,6 @@ int drawingGlDraw (GtkWidget* psWidget,
 		/* appels OpenGL */
 		printf("Fonction de dessin Open_GL\n");
 
-		glClearColor(0,0,0.2,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */

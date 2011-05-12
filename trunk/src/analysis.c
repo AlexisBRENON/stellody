@@ -128,6 +128,8 @@ static gboolean analysisSetValues (gpointer pData[])
 		int iTIDMin = 0;
 		int iTID = 0;
 
+		iTID = analyzedTrackGetTID(psTrack);
+
 /* ********************************************************************* */
 
 		/* On assigne les nouvelles valeur au morceau */
@@ -145,9 +147,10 @@ static gboolean analysisSetValues (gpointer pData[])
 
 /* ********************************************************************* */
 
-		/* On insère le morceau dans l'arbre et on le supprime de la liste
-		à analyser */
-		analyzedTracksInsertTrack(pData[ANALYZED_TRACKS],
+		/* On supprime le morceau de la liste d'analyse */
+		g_tree_steal((GTree*) pData[ANALYZED_TRACKS],
+					&iTID);
+		analyzedTracksInsertTrack((AnalyzedTracks*) pData[ANALYZED_TRACKS],
 									psTrack);
 		pData[ANALYZELIST] = g_list_remove((GList*) pData[ANALYZELIST],
 											psTrack);
@@ -207,6 +210,8 @@ int analysisTrack (const char* strPath, gpointer* pData)
 	analyzedTrackSetPath(psTrack, strPath);
 	pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
 										psTrack);
+	analyzedTracksInsertTrack((AnalyzedTracks*) pData[ANALYZED_TRACKS],
+								psTrack);
 
 	if (pData[ANALYZING_CHANNEL] != NULL) /* Si le canal à déjà été crée */
 	{
