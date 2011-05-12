@@ -16,15 +16,15 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+#include <gtk/gtk.h>
+
 #if defined(__linux)
 	#include <GL/gl.h>
 	#include <GL/glu.h>
-	#include <GL/glut.h>
 #endif
 #if defined(__APPLE__)
 	#include <openGL/gl.h>
 	#include <openGL/glu.h>
-	#include <glut/glut.h>
 #endif
 
 
@@ -35,26 +35,6 @@
 /* ********************************************************************* */
 
 
-/**
- * @struct sStar
- * @brief Structure pour l'utilisation d'étoiles.
- *
- * Cette structure est utilisée pour gérer les étoiles.
- */
-struct sStar
-{
-	float fTaille ;  /**< Réel codant la taille de l'étoile. */
-	float fCouleur ;  /**< Réel codant la couleur de l'étoile. */
-} ;
-
-
-/**
- * @typedef Star
- * @brief Redéfinit la structure sStar.
- */
-typedef struct sStar Star;
-
-
 /* ********************************************************************* */
 /*                                                                       */
 /*                   Fonctions relatives à OpenGL                        */
@@ -63,7 +43,15 @@ typedef struct sStar Star;
 
 
 
+int drawingGlInit (GtkWidget* psWidget, gpointer* pData);
 
+int drawingGlDraw (GtkWidget* psWidget,
+				GdkEventExpose* psEvent,
+				gpointer* pData);
+
+int drawingGlResize (GtkWidget* psWidget,
+					GdkEventConfigure* psEvent,
+					gpointer* pData);
 
 /* ********************************************************************* */
 /*                                                                       */
