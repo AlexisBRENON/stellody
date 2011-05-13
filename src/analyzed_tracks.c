@@ -131,8 +131,7 @@ int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 	/* On vérifie que la clé qu'on s'apprette à entrer n'existe pas déja */
 	iTID = analyzedTrackGetTID(psTrack);
 	iNewTID = iTID;
-	psTrackInTree = g_tree_search(psTracks,
-								(GCompareFunc) analyzedTrackCompare,
+	psTrackInTree = g_tree_lookup(psTracks,
 								&iTID);
 
 	while (psTrackInTree != NULL)

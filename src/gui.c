@@ -280,7 +280,8 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
 													i);
 				i++;
-			} while (psTrack == NULL && i <= iTIDMax);
+			} while ((psTrack == NULL && i <= iTIDMax) ||
+					analyzedTrackGetAnalyzed(psTrack) == 0);;
 
 			if (psTrack == NULL)
 			{
