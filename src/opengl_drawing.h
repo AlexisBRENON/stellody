@@ -12,7 +12,7 @@
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                     Librairies OpenGL MAC OS X                        */
+/*                          Librairies OpenGL                            */
 /*                                                                       */
 /* ********************************************************************* */
 
@@ -26,6 +26,8 @@
 	#include <openGL/gl.h>
 	#include <openGL/glu.h>
 #endif
+
+#include <gtk/gtk.h>
 
 
 /* ********************************************************************* */
@@ -41,7 +43,9 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+int GLInit(GtkWidget * Widget, gpointer * pData) ;
 
+int GLDraw(GtkWidget * Widget, GdkEventExpose * Event, gpointer * pData) ;
 
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData);
 

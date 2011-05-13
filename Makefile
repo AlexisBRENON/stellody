@@ -45,17 +45,22 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
 					$(GTK_CFLAGS)	$(GL_CFLAGS)
 LIN_LDFLAGS =		-export-dynamic \
-					-lglut \
 					-lfmodex-4.32.09 \
 					-lgtkglext-x11-1.0 \
 					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
+
 	# Options nécessaires à  la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
+				-I/Developer/sw/include/gtkglext-1.0 \
+				-I/Developer/sw/lib/gtkglext-1.0/include \
 				-I/Developer/FMOD\ Programmers\ API\ Mac/api/inc \
-				$(GTK_CFLAGS)
-MAC_LDFLAGS =		-m32 -lfmodex-4.32.09 \
-				-framework GLUT -framework OpenGL -framework Cocoa \
-				$(GTK_LDFLAGS)
+				$(GTK_CFLAGS)	$(GL_CFLAGS)
+MAC_LDFLAGS =		-m32 -lfmodex -lgtkglext-x11-1.0.0 -lgdkglext-x11-1.0.0 \
+				-framework OpenGL -framework Cocoa \
+				-L/Developer/FMOD\ Programmers\ API\ Mac/api/lib \
+				-L/Developer/sw/ \
+				-L/Developer/sw/lib \
+				$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 				
 # Fin de définition de variables
 
