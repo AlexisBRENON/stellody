@@ -8,9 +8,22 @@
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                     Librairies OpenGL MAC OS X                        */
+/*                             Librairies                                */
 /*                                                                       */
 /* ********************************************************************* */
+
+#if defined(__linux)
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+#endif
+#if defined(__APPLE__)
+#include <openGL/gl.h>
+#include <openGL/glu.h>
+#include <glut/glut.h>
+#endif
+
+#include <gtk/gtk.h>
 
 
 #include <math.h>

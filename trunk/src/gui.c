@@ -613,6 +613,7 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
 											GDK_GL_MODE_DEPTH |
 											GDK_GL_MODE_DOUBLE);
+
 		gtk_widget_set_gl_capability(pDrawingArea,
 										pConfig,
 										NULL,

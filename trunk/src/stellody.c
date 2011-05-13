@@ -128,6 +128,8 @@ int regressionTests(int argc, char* argv[])
 		default:
 			break;
     }
+	
+	printf("Fin du MAIN !");
 
     return EXIT_SUCCESS;
 }
