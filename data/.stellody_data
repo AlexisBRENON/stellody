@@ -3,49 +3,49 @@
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3]
 iTID=4
 bAnalyzed=0
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3
+strPath=data/Musics/Did You Get It.mp3
 fAverage=286.3330078125
 fMedian=491.7021484375
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3]
 iTID=5
 bAnalyzed=0
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3
+strPath=data/Musics/Stories from Emona I.mp3
 fAverage=0
 fMedian=0
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Push On.mp3]
 iTID=6
 bAnalyzed=0
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Push On.mp3
+strPath=data/Musics/Push On.mp3
 fAverage=0
 fMedian=0
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Privet.mp3]
 iTID=7
 bAnalyzed=1
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Privet.mp3
+strPath=data/Musics/Privet.mp3
 fAverage=2.8879711627960205
 fMedian=2.9893031120300293
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
 iTID=8
 bAnalyzed=1
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
+strPath=data/Musics/Kachkin - People need People album version.mp3
 fAverage=4.227776050567627
 fMedian=3.7954921722412109
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3]
 iTID=38
 bAnalyzed=1
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3
+strPath=data/Musics/Dropping out of School.mp3
 fAverage=18.564931869506836
 fMedian=19.513393402099609
 
 [/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/people.mp3]
 iTID=49
 bAnalyzed=1
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/people.mp3
+strPath=data/Musics/people.mp3
 fAverage=24.775184631347656
 fMedian=24.390680313110352
 
