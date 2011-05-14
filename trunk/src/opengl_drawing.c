@@ -23,9 +23,6 @@
 #include <glut/glut.h>
 #endif
 
-#include <gtk/gtk.h>
-
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +39,95 @@
 #endif
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*                    Fonctions générales OpenGL                         */
+/*                                                                       */
+/* ********************************************************************* */
+
+
+static void drawSphere(void)
+{
+	float alpha = -90 ;
+	float beta = 0 ;
+	float alphaS = -90 ;
+	float betaS = 0 ;
+	float x1 = 0 ;
+	float y1 = 0 ;
+	float z1 = 0 ;
+	float x2 = 0 ;
+	float y2 = 0 ;
+	float z2 = 0 ;
+	int i = 0 ;
+	int j = 0 ;
+	int n = 64 ;
+	double step ;
+	step = 2*M_PI / (n) ;
+	
+	
+	for (i = 0 ; i < n/2 ; i++)
+	{
+		
+		alpha = -M_PI/2 + i * step ;
+		
+		glBegin(GL_TRIANGLE_STRIP) ;
+		
+		for (j = 0 ; j <= n ; j++)
+		{
+			beta = j * step ;
+			
+			x1 = cos (alpha) * cos (beta) ;
+			y1 = sin (alpha) ;
+			z1 = cos (alpha) * sin (beta) ;
+			
+			alphaS = alpha + step ;
+			betaS = beta + step ;
+			
+			/*
+			 if (alphaS >= 2 * M_PI)
+			 {
+			 alphaS = alphaS - 2 * M_PI ;
+			 }
+			 
+			 if (betaS >= 2 * M_PI)
+			 {
+			 betaS = betaS - 2 * M_PI ;
+			 } */
+			
+			x2 = cos (alphaS) * cos (betaS) ;
+			y2 = sin (alphaS) ;
+			z2 = cos (alphaS) * sin (betaS) ;
+						
+			glVertex3f(x1, y1, z1) ;
+			glVertex3f(x2, y2, z2) ;
+			
+		}
+		
+		glEnd() ;
+		
+	}
+}
+
+static void sceneDraw(void)
+{
+	glPushMatrix() ;
+	
+	glTranslatef(0, 0, -10) ;
+	glScalef(1, 1, 1) ;
+	glColor3f(0.20, 0.60, 0.60) ;
+	drawSphere() ;
+	
+	glPopMatrix() ;
+}
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                   Fonctions d'affichage OpenGL                        */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 {
 	GdkGLContext * contexte = NULL;
@@ -53,15 +139,59 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
 		/* appels OpenGL */
+		
 		printf("Fonction d'initialisation Open_GL\n");
+		
+		
+		/* Début de l'initialisation. */
+		
+		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
+		glClearDepth(1.0) ;
+		glDepthFunc(GL_LESS) ;
+		glEnable(GL_DEPTH_TEST) ;
+		glShadeModel(GL_SMOOTH) ;
+		
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
+		glDisable(GL_BLEND) ;
+		glAlphaFunc(GL_GREATER, 0.01f) ;
+		glDisable(GL_ALPHA_TEST) ;
+		
+		glEnable( GL_NORMALIZE);
 
-		glClearColor(0,0,0.2,1);
-
-
-		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
-		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
+		/* Fin de l'initialisation. */
+		
+		gdk_gl_drawable_swap_buffers(surface) ;	/* permutation des tampons */
+		gdk_gl_drawable_gl_end(surface) ;		/* désactivation du contexte */
 	}
 
+	return EXIT_SUCCESS;
+}
+
+int drawingGlResize (GtkWidget* psWidget,
+					 GdkEventConfigure* psEvent,
+					 gpointer* pData)
+{
+	GdkGLContext * contexte = NULL;
+	GdkGLDrawable * surface = NULL;
+	
+	contexte = gtk_widget_get_gl_context(psWidget);
+	surface = gtk_widget_get_gl_drawable(psWidget);
+	
+	if(gdk_gl_drawable_gl_begin(surface,contexte))
+	{
+		
+		printf("Fonction de redimenssionnement\n");
+		
+		glViewport(0, 0, psEvent->width, psEvent->height) ;
+		
+		glMatrixMode(GL_PROJECTION) ;
+		glLoadIdentity() ;
+		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.1, 100);
+		glMatrixMode(GL_MODELVIEW);
+		
+		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
+	}
+	
 	return EXIT_SUCCESS;
 }
 
@@ -82,7 +212,23 @@ int drawingGlDraw (GtkWidget* psWidget,
 		printf("Fonction de dessin Open_GL\n");
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
+		/* Début des dessins. */
+		
+		glPointSize(1.0) ;
+		glEnable(GL_DEPTH_TEST) ;
+		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+		sceneDraw() ;
+		
+		
+		/* Fin des dessins. */
+		
+		
 		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
 	}
@@ -90,14 +236,7 @@ int drawingGlDraw (GtkWidget* psWidget,
 	return EXIT_SUCCESS;
 }
 
-int drawingGlResize (GtkWidget* psWidget,
-					GdkEventConfigure* psEvent,
-					gpointer* pData)
-{
-	printf("Fonction de redimenssionnement\n");
 
-	return EXIT_SUCCESS;
-}
 
 
 /* ********************************************************************* */
