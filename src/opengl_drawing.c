@@ -111,12 +111,24 @@ static void drawSphere(void)
 static void sceneDraw(void)
 {
 	glPushMatrix() ;
-	
-	glTranslatef(0, 0, -10) ;
-	glScalef(1, 1, 1) ;
-	glColor3f(0.20, 0.60, 0.60) ;
+	glTranslatef(0, 0, 1) ;
+	glScalef(0.5, 0.5, 0.5) ;
+	glColor3f(1, 0, 0) ;
 	drawSphere() ;
-	
+	glPopMatrix() ;
+
+	glPushMatrix() ;
+	glTranslatef(1, 1, 0) ;
+	glScalef(0.5, 0.5, 0.5) ;
+	glColor3f(0, 1, 0) ;
+	drawSphere() ;
+	glPopMatrix() ;
+
+	glPushMatrix() ;
+	glTranslatef(-1, 1, 0) ;
+	glScalef(0.5, 0.5, 0.5) ;
+	glColor3f(0, 0, 1) ;
+	drawSphere() ;
 	glPopMatrix() ;
 }
 
@@ -182,11 +194,17 @@ int drawingGlResize (GtkWidget* psWidget,
 		
 		printf("Fonction de redimenssionnement\n");
 		
-		glViewport(0, 0, psEvent->width, psEvent->height) ;
+		if (psEvent->height==0)
+		{
+			psEvent->height=1 ;
+		}
 		
+		if(psEvent->width < psEvent->height) glViewport(0, (psEvent->height-psEvent->width)/2, psEvent->width, psEvent->width);
+		if(psEvent->height < psEvent->width) glViewport((psEvent->width-psEvent->height)/2, 0, psEvent->height, psEvent->height);
+				
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.1, 100);
+		gluPerspective(40, (GLfloat) psEvent->width / (GLfloat) psEvent->height , -100, 100);
 		glMatrixMode(GL_MODELVIEW);
 		
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
