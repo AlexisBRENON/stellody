@@ -163,13 +163,8 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
 		glShadeModel(GL_SMOOTH) ;
-		
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
-		glDisable(GL_BLEND) ;
-		glAlphaFunc(GL_GREATER, 0.01f) ;
-		glDisable(GL_ALPHA_TEST) ;
-		
-		glEnable( GL_NORMALIZE);
+
+		glEnable(GL_NORMALIZE);
 
 		/* Fin de l'initialisation. */
 		
@@ -195,17 +190,12 @@ int drawingGlResize (GtkWidget* psWidget,
 		
 		printf("Fonction de redimenssionnement\n");
 		
-		if (psEvent->height==0)
-		{
-			psEvent->height=1 ;
-		}
-		
 		glViewport(0, 0, psEvent->width, psEvent->height);
 				
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 100);
-		glMatrixMode(GL_MODELVIEW);
+		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 10000);
+		glMatrixMode(GL_MODELVIEW) ;
 		
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
 	}
