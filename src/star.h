@@ -39,7 +39,7 @@ struct sStar
 {
 	float fSize ;		/**< Taille de l'étoile */
 	float fColourR ;	/**< Couleur rouge  de l'étoile */
-	float fColourV ;	/**< Couleur verte  de l'étoile */
+	float fColourG ;	/**< Couleur verte  de l'étoile */
 	float fColourB ;	/**< Couleur bleue  de l'étoile */
 	float fPositionX ;	/**< Position en x de l'étoile */
 	float fPositionY ;	/**< Position en y de l'étoile */
@@ -64,7 +64,7 @@ typedef struct sStar Star ;
  *
  * @param[in] pStar Pointeur sur l'étoile à initialiser.
  * @param[in,out] pAnalysedTrack Pointeur sur l'analyse.
- * @return EXIT_SUCCESS si tout est OK
+ * @return 0 si tout s'est bien passé.
  */
 int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack) ;
 
@@ -87,13 +87,13 @@ float starGetSize (const Star * pStar) ;
 float starGetColourR (const Star * pStar) ;
 
 /**
- * @fn float starGetColourV (const Star * pStar)
+ * @fn float starGetColourG (const Star * pStar)
  * @brief Accesseur de la couleur verte d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
- * @return fColourV de l'étoile
+ * @return fColourG de l'étoile
  */
-float starGetColourV (const Star * pStar) ;
+float starGetColourG (const Star * pStar) ;
 
 /**
  * @fn float starGetColourB (const Star * pStar)
