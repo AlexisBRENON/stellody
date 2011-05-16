@@ -745,33 +745,3 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	return EXIT_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

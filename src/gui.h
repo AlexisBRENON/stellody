@@ -26,18 +26,19 @@
   */
 enum eGUI_DATA
 {
-	PREFERENCES 		= 0, /**< Structure de préférences. */
-	ANALYZED_TRACKS		= 1, /**< Arbre des morceaux analysés. */
-	MAIN_BUILDER		= 2, /**< Builder de la fenêtre principale. */
-	STELLARIUM_BUILDER	= 3, /**< Builder du Stellarium */
-	PREFERENCES_BUILDER = 4, /**< Builder des préférences. */
-	ABOUT_BUILDER		= 5, /**< Builder du A Propos. */
-	FMOD_CONTEXT		= 6, /**< Contexte Fmod. */
-	PLAYING_CHANNEL		= 7, /**< Canal FMod de lecture. */
-	ANALYZING_CHANNEL	= 8, /**< Canal FMod d'analyse. */
-	PLAYLIST			= 9, /**< Liste des morceaux à lire */
-	ANALYZELIST			= 10,/**< Liste des morceau à analyser */
-	CHECKANALYZE		= 11 /**< ID du timer de vérification d'analyse */
+	PREFERENCES 		= 0,	/**< Structure de préférences. */
+	ANALYZED_TRACKS		= 1,	/**< Arbre des morceaux analysés. */
+	MAIN_BUILDER		= 2,	/**< Builder de la fenêtre principale. */
+	STELLARIUM_BUILDER	= 3,	/**< Builder du Stellarium */
+	PREFERENCES_BUILDER = 4,	/**< Builder des préférences. */
+	ABOUT_BUILDER		= 5,	/**< Builder du A Propos. */
+	FMOD_CONTEXT		= 6,	/**< Contexte Fmod. */
+	PLAYING_CHANNEL		= 7,	/**< Canal FMod de lecture. */
+	ANALYZING_CHANNEL	= 8,	/**< Canal FMod d'analyse. */
+	PLAYLIST			= 9,	/**< Liste des morceaux à lire */
+	ANALYZELIST			= 10,	/**< Liste des morceau à analyser */
+	CHECKANALYZE		= 11,	/**< ID du timer de vérification d'analyse */
+	OPENGL				= 12	/**< Structure de données OpenGL */
 };
 /**
   * @typedef GUI_DATA

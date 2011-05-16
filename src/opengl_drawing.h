@@ -36,6 +36,28 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+/**
+ * @struct sOpenGLData
+ * @brief Structure permettant l'utilisation de données OpenGL.
+ *
+ * Cette structure est utilisée pour passer des données en paramètres via
+ pData. Elle contient les données nécessaires à la bonne utilisation d'OpenGL
+ sans l'utilisation de variables globales.
+ */
+struct sOpenGLData
+{
+	float fCenterX ; /**< Position en x de la direction de la caméra */
+	float fCenterY ; /**< Position en y de la direction de la caméra */
+	float fCenterZ ; /**< Position en z de la direction de la caméra */
+	float fEyeX ;	 /**< Position en x de la caméra */
+	float fEyeY ;	 /**< Position en y de la caméra */
+	float fEyeZ ;	 /**< Position en z de la caméra */
+} ;
+/**
+ * @typedef OpenGLData
+ * @brief Redéfinit la structure sOpenGLData.
+ */
+typedef struct sOpenGLData OpenGLData;
 
 /* ********************************************************************* */
 /*                                                                       */
