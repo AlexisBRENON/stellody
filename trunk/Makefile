@@ -36,7 +36,8 @@ SRCS = 			stellody.c \
 			opengl_drawing.c \
 			files.c \
 			gui.c \
-			analysis.c
+			analysis.c \
+			star.c
 	# Noms des fichiers objets (génération dynamique)
 OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)
 OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)

@@ -32,6 +32,7 @@
 
 #include <gtk/gtkgl.h>
 
+#include "star.h"
 #include "opengl_drawing.h"
 
 #ifndef M_PI
@@ -111,21 +112,21 @@ static void drawSphere(void)
 static void sceneDraw(void)
 {
 	glPushMatrix() ;
-	glTranslatef(0, 0, 1) ;
+	glTranslatef(0, 0, -1) ;
 	glScalef(0.5, 0.5, 0.5) ;
 	glColor3f(1, 0, 0) ;
 	drawSphere() ;
 	glPopMatrix() ;
 
 	glPushMatrix() ;
-	glTranslatef(1, 1, 0) ;
+	glTranslatef(1, 0, -1) ;
 	glScalef(0.5, 0.5, 0.5) ;
 	glColor3f(0, 1, 0) ;
 	drawSphere() ;
 	glPopMatrix() ;
 
 	glPushMatrix() ;
-	glTranslatef(-1, 1, 0) ;
+	glTranslatef(-1, 0, -1) ;
 	glScalef(0.5, 0.5, 0.5) ;
 	glColor3f(0, 0, 1) ;
 	drawSphere() ;
@@ -199,12 +200,11 @@ int drawingGlResize (GtkWidget* psWidget,
 			psEvent->height=1 ;
 		}
 		
-		if(psEvent->width < psEvent->height) glViewport(0, (psEvent->height-psEvent->width)/2, psEvent->width, psEvent->width);
-		if(psEvent->height < psEvent->width) glViewport((psEvent->width-psEvent->height)/2, 0, psEvent->height, psEvent->height);
+		glViewport(0, 0, psEvent->width, psEvent->height);
 				
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(40, (GLfloat) psEvent->width / (GLfloat) psEvent->height , -100, 100);
+		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 100);
 		glMatrixMode(GL_MODELVIEW);
 		
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
@@ -240,6 +240,8 @@ int drawingGlDraw (GtkWidget* psWidget,
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		
+		gluLookAt(0, 0, 0, 0, 0, 1, 0, 1, 0);
 		
 		sceneDraw() ;
 		
