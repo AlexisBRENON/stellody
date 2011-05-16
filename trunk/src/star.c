@@ -34,8 +34,8 @@ int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack)
 	
 	pStar->fSize = 0.5;
 	pStar->fColourR = 0.5 ;
-	pStar->fColourV = 0.5;
-	pStar->fColourB = 0.5;
+	pStar->fColourG = 0.5 ;
+	pStar->fColourB = 0.5 ;
 	pStar->fPositionX = 0 ;
 	pStar->fPositionY = 0 ;
 	pStar->fPositionZ = 0 ;
@@ -57,11 +57,11 @@ float starGetColourR (const Star * pStar)
 	return pStar->fColourR ;
 }
 
-float starGetColourV (const Star * pStar)
+float starGetColourG (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 	
-	return pStar->fColourV ;
+	return pStar->fColourG ;
 }
 
 float starGetColourB (const Star * pStar)

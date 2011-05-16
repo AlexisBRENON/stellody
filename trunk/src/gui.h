@@ -38,7 +38,7 @@ enum eGUI_DATA
 	PLAYLIST			= 9,	/**< Liste des morceaux à lire */
 	ANALYZELIST			= 10,	/**< Liste des morceau à analyser */
 	CHECKANALYZE		= 11,	/**< ID du timer de vérification d'analyse */
-	OPENGL				= 12	/**< Structure de données OpenGL */
+	OPENGLDATA			= 12	/**< Structure de données OpenGL */
 };
 /**
   * @typedef GUI_DATA
