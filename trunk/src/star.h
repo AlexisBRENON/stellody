@@ -6,8 +6,8 @@
  */
 
 
-#ifndef _OPENGL_DRAWING_H_
-#define _OPENGL_DRAWING_H_
+#ifndef _STAR_H_
+#define _STAR_H_
 
 
 /* ********************************************************************* */
