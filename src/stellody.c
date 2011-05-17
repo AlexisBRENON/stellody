@@ -187,6 +187,9 @@ int stellody(int argc, char* argv[])
 	free(pDatas[CHECKANALYZE]);
 	pDatas[CHECKANALYZE] = NULL;
 
+	free(pDatas[OPENGLDATA]);
+	pDatas[OPENGLDATA] = NULL;
+	
 	return EXIT_SUCCESS;
 }
 

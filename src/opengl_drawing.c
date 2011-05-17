@@ -1739,6 +1739,22 @@ gboolean drawingButtonMouse (GtkWidget * psWidget,
 							 GdkEventButton * psEvent,
 							 gpointer * pData)
 {
+	switch (psEvent->button)
+	{
+		case 4 :		/* Pifomètre haut */
+			printf("Touche appuyée : gauche\n") ;
+			((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
+			break ;
+		case 5 :		/* Pifomètre bas */
+			printf("Touche appuyée : droite\n") ;
+			((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
+			break ;
+
+		default:
+			printf("Touche appuyée : %x\n", psEvent->button) ;
+			break;
+	}
+	
 	return TRUE ;
 }
 
@@ -1759,18 +1775,22 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 	switch (psEvent->keyval)
 	{
 		case 0xff51 :		/* Flèche gauche */
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX - 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
-			break ;
-		case 0xff53 :		/* Flèche droite */
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX + 1 ;
+			printf("Touche appuyée : gauche\n") ;
+			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX + 1 ;
 			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
 			break ;
+		case 0xff53 :		/* Flèche droite */
+			printf("Touche appuyée : droite\n") ;
+			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX - 1 ;
+			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
+			break ;
 		case 0xff54 :		/* Flèche basse */
+			printf("Touche appuyée : bas\n") ;
 			((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY - 1 ;
 			((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY - 1 ;
 			break ;
 		case 0xff52 :		/* Flèche haute */
+			printf("Touche appuyée : haut\n") ;
 			((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY + 1 ;
 			((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY + 1 ;
 			break ;
@@ -1778,6 +1798,9 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 			printf("Touche appuyée : %x\n", psEvent->keyval) ;
 			break;
 	}
+	
+	gtk_widget_queue_draw(psWidget) ;
+	
 	return TRUE ;
 }
 
@@ -1790,6 +1813,8 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 
 	contexte = gtk_widget_get_gl_context(psWidget);
 	surface = gtk_widget_get_gl_drawable(psWidget);
+	
+	pData[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
 
 	printf("\tContexte et surface récupérés.\n");
 
