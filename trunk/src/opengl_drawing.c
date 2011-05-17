@@ -1740,7 +1740,7 @@ gboolean drawingButtonMouse (GtkWidget * psWidget,
 							 GdkEventButton * psEvent,
 							 gpointer * pData)
 {
-	
+	return TRUE ;
 }
 
 gboolean drawingMotionMouse (GtkWidget * psWidget,
@@ -1750,19 +1750,20 @@ gboolean drawingMotionMouse (GtkWidget * psWidget,
 							 guint iTime,
 							 gpointer * pData)
 {
-	
+	return TRUE ;
 }
 
 gboolean drawingKeyboard (GtkWidget * psWidget,
 						  GdkEventKey * psEvent,
 						  gpointer * pData)
 {
-	switch (psEvent->KeyVal)
+	switch (psEvent->keyval)
 	{
 		default:
-			printf("Touche appuyée : %x", psEvent->KeyVal) ;
+			printf("Touche appuyée : %x", psEvent->keyval) ;
 			break;
 	}
+	return TRUE ;
 }
 
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
