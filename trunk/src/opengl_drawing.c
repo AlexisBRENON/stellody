@@ -1689,11 +1689,10 @@ static void printSelectedStar(Star * pStar)
 	glPushMatrix() ;
 
 	glTranslatef(starGetX(pStar), starGetY(pStar), starGetZ(pStar)) ;
-	glRotatef(-15, 0, 0, 1) ;
-	glRotatef(-fTime*fRotationAngle, 0, 1, 0) ;
+	glRotatef(15, 0, 0, 1) ;
+	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
 	glTranslatef(0.75, 0, 0) ;
-	glRotatef(90, 0, 0, 1) ;
-	glRotatef(180, 1, 0, 0) ;
+	glRotatef(-90, 0, 0, 1) ;
 	glScalef(0.025, 0.025, 0.025) ;
 	DrawAWing(1) ;
 
@@ -1724,10 +1723,11 @@ static void sceneDraw(gpointer* pData)
 
 	starCreate(& sStar, psTrack) ;
 
-	printSelectedStar(& sStar) ;
-
 	glPushMatrix() ;
+
+	printSelectedStar(& sStar) ;
 	DrawStar(& sStar) ;
+	
 	glPopMatrix() ;
 }
 
@@ -1749,11 +1749,11 @@ gboolean drawingButtonMouse (GtkWidget * psWidget,
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_DOWN :
-					printf ("Bas\n") ;
+					printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
 					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
 					break ;
 				case GDK_SCROLL_UP :
-					printf ("Haut\n") ;
+					printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
 					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
 					break ;
 				default:
@@ -1789,13 +1789,13 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 	{
 		case 0xff51 :		/* Flèche gauche */
 			printf("Touche appuyée : gauche\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX + 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
+			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX - 1 ;
+			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
 			break ;
 		case 0xff53 :		/* Flèche droite */
 			printf("Touche appuyée : droite\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX - 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
+			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX + 1 ;
+			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
 			break ;
 		case 0xff54 :		/* Flèche basse */
 			printf("Touche appuyée : bas\n") ;
@@ -1839,7 +1839,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 
 		/* Début de l'initialisation. */
 
-		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
+		glClearColor(0.0f, 0.0f, 0.3f, 1.0f) ;
 		glClearDepth(1.0) ;
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
@@ -1848,7 +1848,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		glEnable(GL_NORMALIZE);
 
 		((OpenGLData*)pData[OPENGLDATA])->fCenterX = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0.3 ;
+		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fCenterZ = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fEyeX = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fEyeY = 0 ;
@@ -1880,19 +1880,12 @@ int drawingGlResize (GtkWidget* psWidget,
 	surface = gtk_widget_get_gl_drawable(psWidget);
 
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
-	{
-		if (psEvent->width >=psEvent->width)
-		{
-			glViewport(0, 0, psEvent->width, psEvent->width);
-		}
-		else
-		{
-			glViewport(0, 0, psEvent->height, psEvent->height);
-		}
-
+	{ 		
+		glViewport(0, 0, psEvent->width, psEvent->height) ;
+		
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(120, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.4, 1000000000);
+		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.0001, 1000000000);
 		glMatrixMode(GL_MODELVIEW) ;
 
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
@@ -1917,19 +1910,21 @@ int drawingGlDraw (GtkWidget* psWidget,
 
 		/* Début des dessins. */
 
+		glMatrixMode(GL_MODELVIEW);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-
-		gluLookAt(((OpenGLData*)pData[OPENGLDATA])->fCenterX,
-				  ((OpenGLData*)pData[OPENGLDATA])->fCenterY,
-				  ((OpenGLData*)pData[OPENGLDATA])->fCenterZ,
-				  ((OpenGLData*)pData[OPENGLDATA])->fEyeX,
+		gluLookAt(((OpenGLData*)pData[OPENGLDATA])->fEyeX,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
+				  ((OpenGLData*)pData[OPENGLDATA])->fCenterX,
+				  ((OpenGLData*)pData[OPENGLDATA])->fCenterY,
+				  ((OpenGLData*)pData[OPENGLDATA])->fCenterZ,
 				  0, 1, 0) ;
 
+		
+		
 		sceneDraw(pData) ;
 
 		glLineWidth(5);
@@ -1950,7 +1945,10 @@ int drawingGlDraw (GtkWidget* psWidget,
 		glEnd();
 
 		/* Fin des dessins. */
+		
 
+		
+		
 
 
 
