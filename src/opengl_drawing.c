@@ -1698,8 +1698,8 @@ static void printSelectedStar(Star * pStar)
 	DrawAWing(1) ;
 
 	glPopMatrix() ;
-	
-	
+
+
 }
 
 static int DrawStar(Star * psStar)
@@ -1846,7 +1846,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		glShadeModel(GL_SMOOTH) ;
 
 		glEnable(GL_NORMALIZE);
-		
+
 		((OpenGLData*)pData[OPENGLDATA])->fCenterX = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0.3 ;
 		((OpenGLData*)pData[OPENGLDATA])->fCenterZ = 0 ;
@@ -1859,7 +1859,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		gdk_gl_drawable_swap_buffers(surface) ;	/* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface) ;		/* désactivation du contexte */
 	}
-	
+
 	g_timeout_add(40,
 				  (GSourceFunc) gtk_widget_queue_draw,
 				  psWidget);
@@ -1892,7 +1892,7 @@ int drawingGlResize (GtkWidget* psWidget,
 
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(90, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 1000000000);
+		gluPerspective(120, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.4, 1000000000);
 		glMatrixMode(GL_MODELVIEW) ;
 
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
@@ -1929,31 +1929,31 @@ int drawingGlDraw (GtkWidget* psWidget,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
 				  0, 1, 0) ;
-		
+
 		sceneDraw(pData) ;
-			
+
 		glLineWidth(5);
 		glBegin( GL_LINES );
-		
+
 		glColor3f( 1.f, 0.f, 0.f);
 		glVertex3f( 0.f, 0.f, 0.f);
 		glVertex3f( 1.f, 0.f, 0.f);
-		
+
 		glColor3f( 0.f, 1.f, 0.f);
 		glVertex3f( 0.f, 0.f, 0.f);
 		glVertex3f( 0.f, 1.f, 0.f);
-		
+
 		glColor3f( 0.f, 0.f, 1.f);
 		glVertex3f( 0.f, 0.f, 0.f);
 		glVertex3f( 0.f, 0.f, 1.f);
-		
+
 		glEnd();
 
 		/* Fin des dessins. */
 
-		
-		
-		
+
+
+
 
 
 		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */

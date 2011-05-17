@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
@@ -40,39 +41,15 @@ int stellody (int argc, char* argv[]);
   */
 int main (int argc, char* argv[])
 {
-    int iAnswer = -1;
+	if (argc == 1)
+	{
+		stellody(argc, argv);
+	}
 
-	printf ("Que voulez-vous faire ?\n\n");
-	printf ("\t1 : Tests de regression\n");
-	printf ("\t9 : Test intégral\n");
-	printf ("\n\t0 : Quitter\n");
-
-    while (iAnswer < 0 || iAnswer > 9)
-    {
-    	printf("\n Choix : ");
-    	scanf("%d", &iAnswer);
-    }
-
-    gtk_init(&argc, &argv);
-
-    switch (iAnswer)
-    {
-    	case 0:
-			break;
-
-		case 1:
-			regressionTests(argc, argv);
-			break;
-
-		case 9:
-			stellody(argc, argv);
-			break;
-
-		default:
-			printf ("Choix incorrect...");
-			break;
-    }
-
+	if (argc == 2 && strcmp(argv[1], "--tests") == 0)
+	{
+		regressionTests(argc, argv);
+	}
 
     return 0;
 }
@@ -128,7 +105,7 @@ int regressionTests(int argc, char* argv[])
 		default:
 			break;
     }
-	
+
 	printf("Fin du MAIN !");
 
     return EXIT_SUCCESS;
@@ -189,7 +166,7 @@ int stellody(int argc, char* argv[])
 
 	free(pDatas[OPENGLDATA]);
 	pDatas[OPENGLDATA] = NULL;
-	
+
 	return EXIT_SUCCESS;
 }
 
