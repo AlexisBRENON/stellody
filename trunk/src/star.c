@@ -24,14 +24,14 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack)
+int starCreate(Star * pStar, const AnalyzedTrack * pTrack)
 {
 	float fAverage = 0 ;
 	float fMedian = 0 ;
-	
-	fAverage = analyzedTrackGetFrequenciesAverage(pAnalyzedTrack) ;
-	fMedian = analyzedTrackGetFrequenciesMedian(pAnalyzedTrack) ;
-	
+
+	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
+	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
+
 	pStar->fSize = 0.5 ;
 	pStar->fColourR = 1 ;
 	pStar->fColourG = 0.5 ;
@@ -39,56 +39,56 @@ int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack)
 	pStar->fPositionX = 0 ;
 	pStar->fPositionY = 0 ;
 	pStar->fPositionZ = 0 ;
-	
+
 	return (0) ;
 }
 
 float starGetSize (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fSize ;
 }
 
 float starGetColourR (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourR ;
 }
 
 float starGetColourG (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourG ;
 }
 
 float starGetColourB (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourB ;
 }
 
 float starGetX (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fPositionX ;
 }
 
 float starGetY (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fPositionY ;
 }
 
 float starGetZ (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fPositionZ ;
 }
 
