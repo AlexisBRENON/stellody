@@ -66,7 +66,7 @@ typedef struct sOpenGLData OpenGLData;
 /* ********************************************************************* */
 
 gboolean drawingButtonMouse (GtkWidget * psWidget,
-							 GdkEventButton * psEvent,
+							 GdkEventAny * psEvent,
 							 gpointer * pData) ;
 
 gboolean drawingMotionMouse (GtkWidget * psWidget,
