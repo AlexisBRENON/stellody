@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 12 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 13 /**< Nombre de cases aux tableaux de données */
 /**
   * @enum eGUI_DATA
   * @brief Enumération permettant de retrouver les différentes données dans

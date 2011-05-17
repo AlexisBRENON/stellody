@@ -107,26 +107,28 @@ static gboolean analysisSetValues (gpointer pData[])
 								1, FMOD_DSP_FFT_WINDOW_RECT);
 
 		/* On regarde les valeurs retournées (on ignore les bords) */
-		for (i = 1; i < 13; i++)
+		for (i = 1; i < 129; i++)
 		{
 			/* On uniformise les valeurs en passant aux décibels */
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
-			printf("[%d] : %f\n", i, pfSpectrumValue[i]);
-
 			fAverage = fAverage + pfSpectrumValue[i];
 		}
-		fAverage = fAverage/12;
-		fMedian = pfSpectrumValue[6];
+		fAverage = fAverage/128;
+		fMedian = pfSpectrumValue[63];
 
 		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
 		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
 
-		analyzedTrackSetFrequenciesAverage(psTrack,
-											fOldAverage+fAverage);
-		analyzedTrackSetFrequenciesMedian(psTrack,
-											fOldMedian+fMedian);
+		if (fAverage > -150 && fMedian > -150)
+		{
+			printf("Moyenne : %f, Mediane : %f\n", fAverage, fMedian);
+			analyzedTrackSetFrequenciesAverage(psTrack,
+												fOldAverage+fAverage);
+			analyzedTrackSetFrequenciesMedian(psTrack,
+												fOldMedian+fMedian);
+		}
 	}
 	else /* Si ça ne joue plus, c'est que l'analyse est finie. */
 	{
