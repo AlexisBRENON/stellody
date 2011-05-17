@@ -181,26 +181,26 @@ void DrawSphere()
 	int j = 0 ;
 	int n = 64 ;
 	double step = 2*M_PI / (n) ;
-	
-	
+
+
 	for (i = 0 ; i < n/2 ; i++)
 	{
-		
+
 		alpha = -M_PI/2 + i * step ;
-		
+
 		glBegin(GL_TRIANGLE_STRIP) ;
-		
+
 		for (j = 0 ; j <= n ; j++)
 		{
 			beta = j * step ;
-			
+
 			x1 = cos (alpha) * cos (beta) ;
 			y1 = sin (alpha) ;
 			z1 = cos (alpha) * sin (beta) ;
-			
+
 			alphaS = alpha + step ;
 			betaS = beta + step ;			
-			
+
 			x2 = cos (alphaS) * cos (betaS) ;
 			y2 = sin (alphaS) ;
 			z2 = cos (alphaS) * sin (betaS) ;
@@ -1742,28 +1742,31 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 	GdkGLContext * contexte = NULL;
 	GdkGLDrawable * surface = NULL;
 
+	printf("Fonction d'initialisation Open_GL\n");
+
 	contexte = gtk_widget_get_gl_context(psWidget);
 	surface = gtk_widget_get_gl_drawable(psWidget);
+
+	printf("\tContexte et surface récupérés.\n");
 
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
 		/* appels OpenGL */
-		
-		printf("Fonction d'initialisation Open_GL\n");
-		
-		
+
+		printf("\tOuverture de la surface OK\n");
+
 		/* Début de l'initialisation. */
-		
+
 		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 		glClearDepth(1.0) ;
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
 		glShadeModel(GL_SMOOTH) ;
-		
+
 		glEnable(GL_NORMALIZE);
 
 		/* Fin de l'initialisation. */
-		
+
 		gdk_gl_drawable_swap_buffers(surface) ;	/* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface) ;		/* désactivation du contexte */
 	}
@@ -1777,15 +1780,15 @@ int drawingGlResize (GtkWidget* psWidget,
 {
 	GdkGLContext * contexte = NULL;
 	GdkGLDrawable * surface = NULL;
-	
+
 	contexte = gtk_widget_get_gl_context(psWidget);
 	surface = gtk_widget_get_gl_drawable(psWidget);
-	
+
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
-		
+
 		printf("Fonction de redimenssionnement\n");
-		
+
 		if (psEvent->width >=psEvent->width)
 		{
 			glViewport(0, 0, psEvent->width, psEvent->width);
@@ -1794,15 +1797,15 @@ int drawingGlResize (GtkWidget* psWidget,
 		{
 			glViewport(0, 0, psEvent->height, psEvent->height);
 		}
-				
+
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
 		gluPerspective(90, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 10000);
 		glMatrixMode(GL_MODELVIEW) ;
-		
+
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
 	}
-	
+
 	return EXIT_SUCCESS;
 }
 
@@ -1823,22 +1826,22 @@ int drawingGlDraw (GtkWidget* psWidget,
 		printf("Fonction de dessin Open_GL\n");
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		/* Début des dessins. */
 				
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		
+
 		gluLookAt(0, 0, 0, 0, 0, 100, 0, 1, 0);
 		
 		sceneDraw(pData) ;
 		
 		
 		/* Fin des dessins. */
-		
-		
+
+
 		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
 	}

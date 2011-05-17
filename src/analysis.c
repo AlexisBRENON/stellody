@@ -28,6 +28,10 @@
 #include "analysis.h"
 
 
+
+#define iNUMVALUES 512
+
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Fonctions privées                           */
@@ -38,7 +42,7 @@ static gboolean analysisSetValues (gpointer pData[])
 {
 	gboolean bIsPlaying = FALSE;
 	AnalyzedTrack* psTrack = NULL;
-	float pfSpectrumValue[128];
+	float pfSpectrumValue[iNUMVALUES];
 	int i;
 	float fAnalysisRate;
 	unsigned int uiPosition;
@@ -99,20 +103,22 @@ static gboolean analysisSetValues (gpointer pData[])
 								FMOD_TIMEUNIT_MS);
 
 		FMOD_Channel_GetSpectrum((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
-								pfSpectrumValue, 128,
+								pfSpectrumValue, iNUMVALUES,
 								1, FMOD_DSP_FFT_WINDOW_RECT);
 
 		/* On regarde les valeurs retournées (on ignore les bords) */
-		for (i = 8; i < 120; i++)
+		for (i = 1; i < 13; i++)
 		{
 			/* On uniformise les valeurs en passant aux décibels */
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
-			fAverage = fAverage + (pfSpectrumValue[i]*100);
+			printf("[%d] : [%f]\n", i, pfSpectrumValue[i]);
+
+			fAverage = fAverage + pfSpectrumValue[i];
 		}
-		fAverage /= 112;
-		fMedian = pfSpectrumValue[62]*100;
+		fAverage = fAverage/12;
+		fMedian = pfSpectrumValue[6];
 
 		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
 		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
@@ -142,7 +148,7 @@ static gboolean analysisSetValues (gpointer pData[])
 											fAverage);
 		analyzedTrackSetFrequenciesMedian(psTrack,
 											fMedian);
-		analyzedTrackSetTID(psTrack, fAverage+fMedian);
+		analyzedTrackSetTID(psTrack, (fAverage+fMedian)*(-100));
 		analyzedTrackSetAnalyzed(psTrack, 1);
 
 /* ********************************************************************* */
@@ -240,8 +246,6 @@ int analysisTrack (const char* strPath, gpointer* pData)
 		/* On coupe le son, le morceau doit être joué mais pas entendu */
 		FMOD_Channel_SetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
 								0.0);
-		FMOD_Channel_SetPaused((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-								FALSE);
 		/* On crée un time_out sur la fonction qui analysera et stockera
 		les données d'analyse */
 		g_idle_add((GSourceFunc) analysisSetValues,
@@ -269,6 +273,16 @@ gboolean analysisCheckNewAnalyze (gpointer pData[])
 	/* Si la liste d'analyse est vide */
 	if (pData[ANALYZELIST] == NULL)
 	{
+		GtkWidget* psStatusBar = NULL;
+
+		/* On récupère la barre d'état */
+		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+									(GtkBuilder*) pData[MAIN_BUILDER],
+									"Stellody_StatusBar"));
+		/* On efface le message présent */
+		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+
+
 		/* C'est fonction n'a plus lieu d'être appelée */
 		return FALSE;
 	}

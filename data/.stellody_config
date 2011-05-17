@@ -1,12 +1,28 @@
 # Fichier de configuration de l'application Stellody.
 
 [DEFAULT]
-iAnalysisRate=3
+iAnalysisRate=1
 iWindowXSize=800
 iWindowYSize=600
 pstrPath=
 iTIDMax=49
 iTIDMin=0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
