@@ -165,7 +165,7 @@ static void DrawTriangle(void)
 	glEnd() ;
 }
 
-void DrawSphere()
+static void DrawSphere()
 {
 	float alpha = -90 ;
 	float beta = 0 ;
@@ -286,7 +286,7 @@ static void DrawCutCone(float Longueur)
 	glEnd() ;
 }
 
-void DrawCylinder()
+static void DrawCylinder()
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -357,7 +357,7 @@ void DrawCylinder()
 }
 
 /* Angle compris entre 1 et 64 ; 64 pour un cylindre complet. */
-void DrawPartialCylinder(int Angle)
+static void DrawPartialCylinder(int Angle)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -443,7 +443,7 @@ void DrawPartialCylinder(int Angle)
 	glEnd() ;
 }
 
-void DrawCone()
+static void DrawCone()
 {
 	float beta = 0 ;
 	float x = 0 ;
@@ -487,7 +487,7 @@ void DrawCone()
 	
 }
 
-void DrawRing(void)
+static void DrawRing(void)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -1736,6 +1736,34 @@ static void sceneDraw(gpointer* pData)
 /*                                                                       */
 /* ********************************************************************* */
 
+gboolean drawingButtonMouse (GtkWidget * psWidget,
+							 GdkEventButton * psEvent,
+							 gpointer * pData)
+{
+	
+}
+
+gboolean drawingMotionMouse (GtkWidget * psWidget,
+							 GdkDragContext * psDragContext,
+							 gint iPostionX,
+							 gint iPostionY,
+							 guint iTime,
+							 gpointer * pData)
+{
+	
+}
+
+gboolean drawingKeyboard (GtkWidget * psWidget,
+						  GdkEventKey * psEvent,
+						  gpointer * pData)
+{
+	switch (psEvent->KeyVal)
+	{
+		default:
+			printf("Touche appuyée : %x", psEvent->KeyVal) ;
+			break;
+	}
+}
 
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 {
@@ -1778,6 +1806,8 @@ int drawingGlResize (GtkWidget* psWidget,
 					 GdkEventConfigure* psEvent,
 					 gpointer* pData)
 {
+	printf("Fonction de redimenssionnement\n");
+
 	GdkGLContext * contexte = NULL;
 	GdkGLDrawable * surface = NULL;
 
@@ -1786,9 +1816,6 @@ int drawingGlResize (GtkWidget* psWidget,
 
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
-
-		printf("Fonction de redimenssionnement\n");
-
 		if (psEvent->width >=psEvent->width)
 		{
 			glViewport(0, 0, psEvent->width, psEvent->width);
@@ -1814,6 +1841,8 @@ int drawingGlDraw (GtkWidget* psWidget,
 				gpointer* pData)
 {
 
+	printf("Fonction de dessin Open_GL\n");
+	
 	GdkGLContext * contexte = NULL;
 	GdkGLDrawable * surface = NULL;
 
@@ -1823,7 +1852,6 @@ int drawingGlDraw (GtkWidget* psWidget,
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
 		/* appels OpenGL */
-		printf("Fonction de dessin Open_GL\n");
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

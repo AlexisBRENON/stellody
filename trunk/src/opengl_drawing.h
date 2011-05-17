@@ -65,6 +65,21 @@ typedef struct sOpenGLData OpenGLData;
 /*                                                                       */
 /* ********************************************************************* */
 
+gboolean drawingButtonMouse (GtkWidget * psWidget,
+							 GdkEventButton * psEvent,
+							 gpointer * pData) ;
+
+gboolean drawingMotionMouse (GtkWidget * psWidget,
+							 GdkDragContext * psDragContext,
+							 gint iPostionX,
+							 gint iPostionY,
+							 guint iTime,
+							 gpointer * pData) ;
+
+gboolean drawingKeyboard (GtkWidget * psWidget,
+						  GdkEventKey * psEvent,
+						  gpointer * pData) ;
+
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData);
 
 int drawingGlDraw (GtkWidget* psWidget,
