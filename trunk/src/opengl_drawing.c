@@ -1736,25 +1736,35 @@ static void sceneDraw(gpointer* pData)
 /* ********************************************************************* */
 
 gboolean drawingButtonMouse (GtkWidget * psWidget,
-							 GdkEventButton * psEvent,
+							 GdkEventAny * psEvent,
 							 gpointer * pData)
 {
-	switch (psEvent->button)
+	switch (psEvent->type)
 	{
-		case 4 :		/* Pifomètre haut */
-			printf("Touche appuyée : gauche\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
-			break ;
-		case 5 :		/* Pifomètre bas */
-			printf("Touche appuyée : droite\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
-			break ;
+		case GDK_SCROLL:
+			printf("Scroll ");
+
+			switch (((GdkEventScroll*)psEvent)->direction) {
+				case GDK_SCROLL_DOWN:
+					printf ("Bas\n");
+					break;
+				case GDK_SCROLL_UP:
+					printf ("Haut\n");
+					break;
+				default:
+					break;
+			}
+
+			break;
+
+		case GDK_BUTTON_RELEASE:
+			printf("Relache !\n");
+			break;
 
 		default:
-			printf("Touche appuyée : %x\n", psEvent->button) ;
 			break;
 	}
-	
+
 	return TRUE ;
 }
 
@@ -1765,6 +1775,8 @@ gboolean drawingMotionMouse (GtkWidget * psWidget,
 							 guint iTime,
 							 gpointer * pData)
 {
+	printf ("Drag souris !\n");
+
 	return TRUE ;
 }
 
@@ -1798,9 +1810,9 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 			printf("Touche appuyée : %x\n", psEvent->keyval) ;
 			break;
 	}
-	
+
 	gtk_widget_queue_draw(psWidget) ;
-	
+
 	return TRUE ;
 }
 
@@ -1813,7 +1825,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 
 	contexte = gtk_widget_get_gl_context(psWidget);
 	surface = gtk_widget_get_gl_drawable(psWidget);
-	
+
 	pData[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
 
 	printf("\tContexte et surface récupérés.\n");
