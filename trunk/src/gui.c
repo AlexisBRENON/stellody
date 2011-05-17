@@ -326,9 +326,16 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 							(double) uiTrackPosition/1000);
 
 		/* On récupère les tags */
-		FMOD_Sound_GetTag(pSound, "TIT2", 0, &Tag);
+/*		FMOD_Sound_GetNumTags(pSound, &nbTag, NULL);
+		for (i = 0; i < nbTag; i++)
+		{
+			FMOD_Sound_GetTag(pSound, NULL, i, &Tag);
+			printf ("%s\n", Tag.name);
+			printf ("%s\n\n", (char*) Tag.data);
+		}*/
+		FMOD_Sound_GetTag(pSound, "TITLE", 0, &Tag);
 		strTitle = (char*)Tag.data;
-		FMOD_Sound_GetTag(pSound, "TPE1", 0, &Tag);
+		FMOD_Sound_GetTag(pSound, "ARTIST", 0, &Tag);
 		strSinger = (char*) Tag.data;
 
 		/* On les concatène */
@@ -343,7 +350,8 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		/* On les affiche dans le label */
 		pLabel = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
 													"TrackInfo_Label"));
-		gtk_label_set_text(GTK_LABEL(pLabel), strTrackInfo);
+		gtk_label_set_text(GTK_LABEL(pLabel),
+							strTrackInfo);
 
 		free(strTrackInfo);
 
@@ -418,6 +426,8 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
+										"data/Musics");
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
@@ -504,7 +514,7 @@ Utilisez un systeme <u>UNIX</u> :p !");
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
-										"/home/alexis");
+										"data/Musics");
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
