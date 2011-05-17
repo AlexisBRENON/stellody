@@ -65,10 +65,6 @@ typedef struct sOpenGLData OpenGLData;
 /*                                                                       */
 /* ********************************************************************* */
 
-int GLInit(GtkWidget * Widget, gpointer * pData) ;
-
-int GLDraw(GtkWidget * Widget, GdkEventExpose * Event, gpointer * pData) ;
-
 int drawingGlInit (GtkWidget* psWidget, gpointer* pData);
 
 int drawingGlDraw (GtkWidget* psWidget,
