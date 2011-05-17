@@ -1690,13 +1690,16 @@ static void printSelectedStar(Star * pStar)
 
 	glTranslatef(starGetX(pStar), starGetY(pStar), starGetZ(pStar)) ;
 	glRotatef(-15, 0, 0, 1) ;
-	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
-	glTranslatef(0.75, 0, 1) ;
-	glRotatef(-90, 0, 0, 1) ;
-	glScalef(0.05, 0.05, 0.05) ;
+	glRotatef(-fTime*fRotationAngle, 0, 1, 0) ;
+	glTranslatef(0.75, 0, 0) ;
+	glRotatef(90, 0, 0, 1) ;
+	glRotatef(180, 1, 0, 0) ;
+	glScalef(0.025, 0.025, 0.025) ;
 	DrawAWing(1) ;
 
 	glPopMatrix() ;
+	
+	
 }
 
 static int DrawStar(Star * psStar)
@@ -1721,7 +1724,7 @@ static void sceneDraw(gpointer* pData)
 
 	starCreate(& sStar, psTrack) ;
 
-	/* printSelectedStar(& sStar) ; */
+	printSelectedStar(& sStar) ;
 
 	glPushMatrix() ;
 	DrawStar(& sStar) ;
@@ -1845,19 +1848,23 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		glShadeModel(GL_SMOOTH) ;
 
 		glEnable(GL_NORMALIZE);
-
+		
 		((OpenGLData*)pData[OPENGLDATA])->fCenterX = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0 ;
+		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0.3 ;
 		((OpenGLData*)pData[OPENGLDATA])->fCenterZ = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fEyeX = 0 ;
 		((OpenGLData*)pData[OPENGLDATA])->fEyeY = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 100 ;
+		((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 10 ;
 
 		/* Fin de l'initialisation. */
 
 		gdk_gl_drawable_swap_buffers(surface) ;	/* permutation des tampons */
 		gdk_gl_drawable_gl_end(surface) ;		/* désactivation du contexte */
 	}
+	
+	g_timeout_add(40,
+				  (GSourceFunc) gtk_widget_queue_draw,
+				  psWidget);
 
 	return EXIT_SUCCESS;
 }
@@ -1887,7 +1894,7 @@ int drawingGlResize (GtkWidget* psWidget,
 
 		glMatrixMode(GL_PROJECTION) ;
 		glLoadIdentity() ;
-		gluPerspective(90, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 10000);
+		gluPerspective(90, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0, 1000000000);
 		glMatrixMode(GL_MODELVIEW) ;
 
 		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
@@ -1903,16 +1910,12 @@ int drawingGlDraw (GtkWidget* psWidget,
 	GdkGLContext * contexte = NULL;
 	GdkGLDrawable * surface = NULL;
 
-	printf("Fonction de dessin Open_GL\n");
-
 	contexte = gtk_widget_get_gl_context(psWidget);
 	surface = gtk_widget_get_gl_drawable(psWidget);
 
 	if(gdk_gl_drawable_gl_begin(surface,contexte))
 	{
 		/* appels OpenGL */
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		/* Début des dessins. */
 
@@ -1928,11 +1931,31 @@ int drawingGlDraw (GtkWidget* psWidget,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
 				  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
 				  0, 1, 0) ;
-
+		
 		sceneDraw(pData) ;
-
+			
+		glLineWidth(5);
+		glBegin( GL_LINES );
+		
+		glColor3f( 1.f, 0.f, 0.f);
+		glVertex3f( 0.f, 0.f, 0.f);
+		glVertex3f( 1.f, 0.f, 0.f);
+		
+		glColor3f( 0.f, 1.f, 0.f);
+		glVertex3f( 0.f, 0.f, 0.f);
+		glVertex3f( 0.f, 1.f, 0.f);
+		
+		glColor3f( 0.f, 0.f, 1.f);
+		glVertex3f( 0.f, 0.f, 0.f);
+		glVertex3f( 0.f, 0.f, 1.f);
+		
+		glEnd();
 
 		/* Fin des dessins. */
+
+		
+		
+		
 
 
 		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
