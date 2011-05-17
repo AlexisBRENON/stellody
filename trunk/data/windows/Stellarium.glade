@@ -19,6 +19,7 @@
       <object class="GtkDrawingArea" id="Stellarium_DrawingArea">
         <property name="visible">True</property>
         <signal name="expose_event" handler="drawingGlDraw"/>
+        <signal name="key_press_event" handler="drawingKeyboard"/>
         <signal name="realize" handler="drawingGlInit"/>
         <signal name="configure_event" handler="drawingGlResize"/>
       </object>

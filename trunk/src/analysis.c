@@ -113,7 +113,7 @@ static gboolean analysisSetValues (gpointer pData[])
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
-			printf("[%d] : [%f]\n", i, pfSpectrumValue[i]);
+			printf("[%d] : %f\n", i, pfSpectrumValue[i]);
 
 			fAverage = fAverage + pfSpectrumValue[i];
 		}

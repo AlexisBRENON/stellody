@@ -22,3 +22,24 @@ strPath=data/Musics/Privet.mp3
 fAverage=-11.760441780090332
 fMedian=-12.536242485046387
 
+[data/Musics/people.mp3]
+iTID=1140
+bAnalyzed=1
+strPath=data/Musics/people.mp3
+fAverage=-6.2331662178039551
+fMedian=-5.175743579864502
+
+[data/Musics/Stories from Emona I.mp3]
+iTID=2335
+bAnalyzed=1
+strPath=data/Musics/Stories from Emona I.mp3
+fAverage=-12.611637115478516
+fMedian=-10.741477012634277
+
+[data/Musics/Privet.mp3]
+iTID=2429
+bAnalyzed=1
+strPath=data/Musics/Privet.mp3
+fAverage=-11.760441780090332
+fMedian=-12.536242485046387
+
