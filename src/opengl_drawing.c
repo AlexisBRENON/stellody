@@ -1744,30 +1744,28 @@ gboolean drawingButtonMouse (GtkWidget * psWidget,
 {
 	switch (psEvent->type)
 	{
-		case GDK_SCROLL:
-			printf("Scroll ");
-
-			switch (((GdkEventScroll*)psEvent)->direction) {
-				case GDK_SCROLL_DOWN:
-					printf ("Bas\n");
-					break;
-				case GDK_SCROLL_UP:
-					printf ("Haut\n");
-					break;
+		case GDK_SCROLL :
+			printf("Scroll ") ;
+			switch (((GdkEventScroll*)psEvent)->direction)
+			{
+				case GDK_SCROLL_DOWN :
+					printf ("Bas\n") ;
+					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
+					break ;
+				case GDK_SCROLL_UP :
+					printf ("Haut\n") ;
+					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
+					break ;
 				default:
-					break;
+					break ;
 			}
-
-			break;
-
-		case GDK_BUTTON_RELEASE:
-			printf("Relache !\n");
-			break;
-
-		default:
-			break;
+			break ;
+		case GDK_BUTTON_RELEASE :
+			printf("Relache !\n") ;
+			break ;
+		default :
+			break ;
 	}
-
 	return TRUE ;
 }
 
