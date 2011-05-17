@@ -5,8 +5,12 @@ iAnalysisRate=1
 iWindowXSize=800
 iWindowYSize=600
 pstrPath=
-iTIDMax=2429
+iTIDMax=3216
 iTIDMin=0
+
+
+
+
 
 
 
