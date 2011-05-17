@@ -1755,6 +1755,7 @@ gboolean drawingButtonMouse (GtkWidget * psWidget,
 				case GDK_SCROLL_UP :
 					printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
 					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
+					if (((OpenGLData*)pData[OPENGLDATA])->fEyeZ < 1) ((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 1 ;
 					break ;
 				default:
 					break ;
@@ -1785,31 +1786,60 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 						  GdkEventKey * psEvent,
 						  gpointer * pData)
 {
-	switch (psEvent->keyval)
+	printf("State : %d\n", psEvent->state) ;
+	
+	switch (psEvent->state)
 	{
-		case 0xff51 :		/* Flèche gauche */
-			printf("Touche appuyée : gauche\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX - 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
-			break ;
-		case 0xff53 :		/* Flèche droite */
-			printf("Touche appuyée : droite\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX + 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
-			break ;
-		case 0xff54 :		/* Flèche basse */
-			printf("Touche appuyée : bas\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY - 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY - 1 ;
-			break ;
-		case 0xff52 :		/* Flèche haute */
-			printf("Touche appuyée : haut\n") ;
-			((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY + 1 ;
-			((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY + 1 ;
-			break ;
-		default:
-			printf("Touche appuyée : %x\n", psEvent->keyval) ;
+		case 4 :		/* Contrôle. */
+			
 			break;
+		case 1 :		/* Majuscule. */
+		switch (psEvent->keyval)
+		{
+			case 0xff54 :		/* Flèche basse */
+				printf("Touche appuyée : Maj + bas\n") ;
+				printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
+				break ;
+			case 0xff52 :		/* Flèche haute */
+				printf("Touche appuyée : Maj + haut\n") ;
+				printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
+				if (((OpenGLData*)pData[OPENGLDATA])->fEyeZ < 1) ((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 1 ;
+				break ;
+			default :
+				printf("Touche appuyée : %x\n", psEvent->keyval) ;
+				break;
+		}	
+			break;
+		default :
+		switch (psEvent->keyval)
+		{
+			case 0xff51 :		/* Flèche gauche */
+				printf("Touche appuyée : gauche\n") ;
+				((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX - 1 ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
+				break ;
+			case 0xff53 :		/* Flèche droite */
+				printf("Touche appuyée : droite\n") ;
+				((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX + 1 ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
+				break ;
+			case 0xff54 :		/* Flèche basse */
+				printf("Touche appuyée : bas\n") ;
+				((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY - 1 ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY - 1 ;
+				break ;
+			case 0xff52 :		/* Flèche haute */
+				printf("Touche appuyée : haut\n") ;
+				((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY + 1 ;
+				((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY + 1 ;
+				break ;
+			default :
+				printf("Touche appuyée : %x\n", psEvent->keyval) ;
+				break;
+		}
+		break ;
 	}
 
 	gtk_widget_queue_draw(psWidget) ;
@@ -1839,7 +1869,7 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 
 		/* Début de l'initialisation. */
 
-		glClearColor(0.0f, 0.0f, 0.3f, 1.0f) ;
+		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 		glClearDepth(1.0) ;
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
