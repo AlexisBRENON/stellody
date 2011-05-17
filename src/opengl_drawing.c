@@ -29,7 +29,7 @@
 #include <assert.h>
 
 #include <gtk/gtk.h>
-
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkgl.h>
 
 #include "star.h"
@@ -1759,8 +1759,24 @@ gboolean drawingKeyboard (GtkWidget * psWidget,
 {
 	switch (psEvent->keyval)
 	{
+		case 0xff51 :		/* Flèche gauche */
+			(OpenGLData *) (pData[OPENGLDATA])->fCenterX = (OpenGLData *) (pData[OPENGLDATA])->fCenterX - 1 ;
+			(OpenGLData *) (pData[OPENGLDATA])->fEyeX = (OpenGLData *) (pData[OPENGLDATA])->fEyeX - 1 ;
+			break ;
+		case 0xff53 :		/* Flèche droite */
+			(OpenGLData *) (pData[OPENGLDATA])->fCenterX = (OpenGLData *) (pData[OPENGLDATA])->fCenterX + 1 ;
+			(OpenGLData *) (pData[OPENGLDATA])->fEyeX = (OpenGLData *) (pData[OPENGLDATA])->fEyeX + 1 ;	
+			break ;
+		case 0xff54 :		/* Flèche basse */
+			(OpenGLData *) (pData[OPENGLDATA])->fCenterY = (OpenGLData *) (pData[OPENGLDATA])->fCenterY - 1 ;
+			(OpenGLData *) (pData[OPENGLDATA])->fEyeY = (OpenGLData *) (pData[OPENGLDATA])->fEyeY - 1 ;	
+			break ;
+		case 0xff52 :		/* Flèche haute */
+			(OpenGLData *) (pData[OPENGLDATA])->fCenterY = (OpenGLData *) (pData[OPENGLDATA])->fCenterY + 1 ;
+			(OpenGLData *) (pData[OPENGLDATA])->fEyeY = (OpenGLData *) (pData[OPENGLDATA])->fEyeY + 1 ;	
+			break ;
 		default:
-			printf("Touche appuyée : %x", psEvent->keyval) ;
+			printf("Touche appuyée : %x\n", psEvent->keyval) ;
 			break;
 	}
 	return TRUE ;
@@ -1793,6 +1809,13 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 		glShadeModel(GL_SMOOTH) ;
 
 		glEnable(GL_NORMALIZE);
+		
+		(OpenGLData *) (pData[OPENGLDATA])->fCenterX = 0 ;
+		(OpenGLData *) (pData[OPENGLDATA])->fCenterY = 0 ;
+		(OpenGLData *) (pData[OPENGLDATA])->fCenterZ = 0 ;
+		(OpenGLData *) (pData[OPENGLDATA])->fEyeX = 0 ;
+		(OpenGLData *) (pData[OPENGLDATA])->fEyeY = 0 ;
+		(OpenGLData *) (pData[OPENGLDATA])->fEyeZ = 100 ;
 
 		/* Fin de l'initialisation. */
 
@@ -1863,7 +1886,13 @@ int drawingGlDraw (GtkWidget* psWidget,
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		gluLookAt(0, 0, 0, 0, 0, 100, 0, 1, 0);
+		gluLookAt((OpenGLData *) (pData[OPENGLDATA])->fCenterX, 
+				  (OpenGLData *) (pData[OPENGLDATA])->fCenterY,
+				  (OpenGLData *) (pData[OPENGLDATA])->fCenterZ,
+				  (OpenGLData *) (pData[OPENGLDATA])->fEyeX,
+				  (OpenGLData *) (pData[OPENGLDATA])->fEyeY,
+				  (OpenGLData *) (pData[OPENGLDATA])->fEyeZ,
+				  0, 1, 0) ;
 		
 		sceneDraw(pData) ;
 		
