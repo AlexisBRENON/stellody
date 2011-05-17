@@ -32,10 +32,10 @@ int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack)
 	fAverage = analyzedTrackGetFrequenciesAverage(pAnalyzedTrack) ;
 	fMedian = analyzedTrackGetFrequenciesMedian(pAnalyzedTrack) ;
 	
-	pStar->fSize = 0.5;
-	pStar->fColourR = 0.5 ;
-	pStar->fColourG = 0.5 ;
-	pStar->fColourB = 0.5 ;
+	pStar->fSize = 0.5 ;
+	pStar->fColourR = 1 ;
+	pStar->fColourG = 0.25 ;
+	pStar->fColourB = 0 ;
 	pStar->fPositionX = 0 ;
 	pStar->fPositionY = 0 ;
 	pStar->fPositionZ = 0 ;
