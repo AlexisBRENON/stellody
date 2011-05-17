@@ -138,6 +138,7 @@ int stellody(int argc, char* argv[])
 	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
 	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
 					2, FMOD_INIT_NORMAL, NULL);
+	pDatas[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
 	gtk_init(&argc, &argv);
 	gtk_gl_init(&argc, &argv);
 

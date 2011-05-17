@@ -202,4 +202,99 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData);
 
 
+/* ********************************************************************* */
+/*                           FENÊTRE STELLARIUM                          */
+/* ********************************************************************* */
+
+/**
+  * @fn int on_Stellarium_DrawingArea_realize(
+								GtkWidget* psWidget,
+								gpointer* pData)
+  * @brief Fonction appelée à la réalisation du widget. Entraine
+  l'initialisation d'OpenGL.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_Stellarium_DrawingArea_realize(
+								GtkWidget* psWidget,
+								gpointer* pData);
+
+/**
+  * @fn int on_Stellarium_DrawingArea_configure_event(
+								GtkWidget* psWidget,
+								GdkEventConfigure* psEvent,
+								gpointer* pData)
+  * @brief Fonction appelée au redimensionnement du widget.
+  Entraine le redimenssionnement de la scene OpenGL.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_Stellarium_DrawingArea_configure_event(
+								GtkWidget* psWidget,
+								GdkEventConfigure* psEvent,
+								gpointer* pData);
+
+/**
+  * @fn int on_Stellarium_DrawingArea_expose_event (
+							GtkWidget* psWidget,
+							GdkEventExpose* psEvent,
+							gpointer* pData)
+  * @brief Fonction appelée à l'affichage du widget.
+  Entraine le rafraichissement de la scene OpenGL.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_Stellarium_DrawingArea_expose_event (
+							GtkWidget* psWidget,
+							GdkEventExpose* psEvent,
+							gpointer* pData);
+
+/**
+  * @fn int on_Stellarium_DrawingArea_key_press_event(
+							GtkWidget * psWidget,
+							GdkEventKey * psEvent,
+							gpointer * pData)
+  * @brief Fonction appelée lorsque qu'une touche du clavier est appuyée
+  (Widget ayant le focus).
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_Stellarium_DrawingArea_key_press_event(
+							GtkWidget * psWidget,
+							GdkEventKey * psEvent,
+							gpointer * pData);
+
+/**
+  * @fn int on_Stellarium_DrawingArea_button_release_event (
+								GtkWidget * psWidget,
+								GdkEventAny * psEvent,
+								gpointer * pData)
+  * @brief Fonction appelée lorsqu'un bouton de souris est relaché.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_Stellarium_DrawingArea_button_release_event (
+								GtkWidget * psWidget,
+								GdkEventAny * psEvent,
+								gpointer * pData);
+
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+
 #endif /* __GUI_H__ */

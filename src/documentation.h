@@ -30,12 +30,12 @@ des informations sur le morceau (durée, rythme...).
 
 Pour compiler Stellody, rien de plus simple.
 \li .../$ cd stellody
-\li .../stellody$ make
+\li .../stellody$ make {lin|mac}
 
 Le fichier executable est créé dans le dossier stellody/bin.\n
 Pour avoir plus d'informations à propos du Makefile :
 
-\li .../stellody$ make help
+\li .../stellody$ make [help]
 
 	@section Exécution
 

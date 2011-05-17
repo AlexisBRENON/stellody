@@ -1,6 +1,6 @@
 /**
   * @file preferences.c
-  * @brief Fichier d'implémentation du module \em preferences.
+  * @brief Fichier d'implémentation du module \em Preferences.
   *
   * Module de manipulation des préférences de l'application.
   * @author Alexis BRENON in STELLODY TEAM

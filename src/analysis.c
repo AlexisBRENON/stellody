@@ -29,7 +29,7 @@
 
 
 
-#define iNUMVALUES 512
+#define iNUMVALUES 512 /**< Nombre de valeur récupérées à chaque analyse.*/
 
 
 /* ********************************************************************* */

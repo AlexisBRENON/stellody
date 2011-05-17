@@ -196,14 +196,14 @@ int analyzedTrackSetTID (AnalyzedTrack* psTrack,
 char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack);
 /**
   * @fn int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack,
-									 char bAnalyzed)
+									 char bValue)
   * @brief Mutateur sur l'état d'analyse du morceau.
   *
   * @param[in,out] psTrack Pointeur sur le morceau à modifier
-  * @param[in] bAnalyzed 0 si le morceau n'est pas analysé, 1 sinon.
+  * @param[in] bValue 0 si le morceau n'est pas analysé, 1 sinon.
   * @return EXIT_SUCCESS si tout est OK
   */
-int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bAnalyzed);
+int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bValue);
 
 /**
   * @fn const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)

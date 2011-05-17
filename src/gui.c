@@ -31,7 +31,7 @@
 #include "analyzed_tracks.h"
 #include "analyzed_track.h"
 #include "analysis.h"
-
+#include "opengl_drawing.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -755,3 +755,133 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	return EXIT_SUCCESS;
 }
+
+/* ********************************************************************* */
+/*                           FENÊTRE STELLARIUM                          */
+/* ********************************************************************* */
+
+int on_Stellarium_DrawingArea_realize(
+								GtkWidget* psWidget,
+								gpointer* pData)
+{
+	GdkGLContext * psContext = NULL;
+	GdkGLDrawable * psSurface = NULL;
+	gboolean bActivate = FALSE;
+
+	psContext = gtk_widget_get_gl_context(psWidget);
+	psSurface = gtk_widget_get_gl_drawable(psWidget);
+
+	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
+
+	if (bActivate == TRUE)
+	{
+		drawingGlInit((OpenGLData*)pData[OPENGLDATA]);
+		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
+
+		g_timeout_add(40,
+					(GSourceFunc) gtk_widget_queue_draw,
+					psWidget);
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+
+int on_Stellarium_DrawingArea_configure_event(
+								GtkWidget* psWidget,
+								GdkEventConfigure* psEvent,
+								gpointer* pData)
+{
+	GdkGLContext * psContext = NULL;
+	GdkGLDrawable * psSurface = NULL;
+	gboolean bActivate = FALSE;
+
+	psContext = gtk_widget_get_gl_context(psWidget);
+	psSurface = gtk_widget_get_gl_drawable(psWidget);
+
+	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
+
+	if (bActivate == TRUE)
+	{
+		drawingGlResize(psEvent->width, psEvent->height);
+		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+int on_Stellarium_DrawingArea_expose_event (
+							GtkWidget* psWidget,
+							GdkEventExpose* psEvent,
+							gpointer* pData)
+{
+	GdkGLContext * psContext = NULL;
+	GdkGLDrawable * psSurface = NULL;
+	gboolean bActivate = FALSE;
+
+	psContext = gtk_widget_get_gl_context(psWidget);
+	psSurface = gtk_widget_get_gl_drawable(psWidget);
+
+	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
+
+	if (bActivate == TRUE)
+	{
+		drawingGlDraw(pData);
+		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
+		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+int on_Stellarium_DrawingArea_key_press_event(
+							GtkWidget * psWidget,
+							GdkEventKey * psEvent,
+							gpointer * pData)
+{
+	printf("Si possible, ne pas utiliser, c'est pas intuitif...\n");
+
+	return EXIT_SUCCESS;
+}
+
+int on_Stellarium_DrawingArea_button_release_event (
+								GtkWidget * psWidget,
+								GdkEventAny * psEvent,
+								gpointer * pData)
+{
+	switch (psEvent->type)
+	{
+		case GDK_SCROLL:
+			printf("Appel de la fonction de scroll\n");
+			break;
+		case GDK_BUTTON_RELEASE:
+			printf("Appel de la fonction de click\n");
+			break;
+		default:
+			break;
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

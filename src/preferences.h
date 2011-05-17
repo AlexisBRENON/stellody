@@ -1,6 +1,6 @@
 /**
   * @file preferences.h
-  * @brief Fichier d'entête du module \em preferences.
+  * @brief Fichier d'entête du module \em Preferences.
   *
   * Module de manipulation des préférences de l'application.
   * @author Alexis BRENON in STELLODY TEAM

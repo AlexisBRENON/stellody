@@ -1727,7 +1727,7 @@ static void sceneDraw(gpointer* pData)
 
 	printSelectedStar(& sStar) ;
 	DrawStar(& sStar) ;
-	
+
 	glPopMatrix() ;
 }
 
@@ -1738,135 +1738,10 @@ static void sceneDraw(gpointer* pData)
 /*                                                                       */
 /* ********************************************************************* */
 
-gboolean drawingButtonMouse (GtkWidget * psWidget,
-							 GdkEventAny * psEvent,
-							 gpointer * pData)
+
+int drawingGlInit (OpenGLData* pData)
 {
-	switch (psEvent->type)
-	{
-		case GDK_SCROLL :
-			printf("Scroll ") ;
-			switch (((GdkEventScroll*)psEvent)->direction)
-			{
-				case GDK_SCROLL_DOWN :
-					printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
-					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
-					break ;
-				case GDK_SCROLL_UP :
-					printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
-					((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
-					if (((OpenGLData*)pData[OPENGLDATA])->fEyeZ < 1) ((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 1 ;
-					break ;
-				default:
-					break ;
-			}
-			break ;
-		case GDK_BUTTON_RELEASE :
-			printf("Relache !\n") ;
-			break ;
-		default :
-			break ;
-	}
-	return TRUE ;
-}
-
-gboolean drawingMotionMouse (GtkWidget * psWidget,
-							 GdkDragContext * psDragContext,
-							 gint iPostionX,
-							 gint iPostionY,
-							 guint iTime,
-							 gpointer * pData)
-{
-	printf ("Drag souris !\n");
-
-	return TRUE ;
-}
-
-gboolean drawingKeyboard (GtkWidget * psWidget,
-						  GdkEventKey * psEvent,
-						  gpointer * pData)
-{
-	printf("State : %d\n", psEvent->state) ;
-	
-	switch (psEvent->state)
-	{
-		case 4 :		/* Contrôle. */
-			
-			break;
-		case 1 :		/* Majuscule. */
-		switch (psEvent->keyval)
-		{
-			case 0xff54 :		/* Flèche basse */
-				printf("Touche appuyée : Maj + bas\n") ;
-				printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ + 1 ;
-				break ;
-			case 0xff52 :		/* Flèche haute */
-				printf("Touche appuyée : Maj + haut\n") ;
-				printf ("Position z de la caméra : %f\n", ((OpenGLData*)pData[OPENGLDATA])->fEyeZ) ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeZ = ((OpenGLData*)pData[OPENGLDATA])->fEyeZ - 1 ;
-				if (((OpenGLData*)pData[OPENGLDATA])->fEyeZ < 1) ((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 1 ;
-				break ;
-			default :
-				printf("Touche appuyée : %x\n", psEvent->keyval) ;
-				break;
-		}	
-			break;
-		default :
-		switch (psEvent->keyval)
-		{
-			case 0xff51 :		/* Flèche gauche */
-				printf("Touche appuyée : gauche\n") ;
-				((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData *)pData[OPENGLDATA])->fCenterX - 1 ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX - 1 ;
-				break ;
-			case 0xff53 :		/* Flèche droite */
-				printf("Touche appuyée : droite\n") ;
-				((OpenGLData*)pData[OPENGLDATA])->fCenterX = ((OpenGLData*)pData[OPENGLDATA])->fCenterX + 1 ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeX = ((OpenGLData*)pData[OPENGLDATA])->fEyeX + 1 ;
-				break ;
-			case 0xff54 :		/* Flèche basse */
-				printf("Touche appuyée : bas\n") ;
-				((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY - 1 ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY - 1 ;
-				break ;
-			case 0xff52 :		/* Flèche haute */
-				printf("Touche appuyée : haut\n") ;
-				((OpenGLData*)pData[OPENGLDATA])->fCenterY = ((OpenGLData*)pData[OPENGLDATA])->fCenterY + 1 ;
-				((OpenGLData*)pData[OPENGLDATA])->fEyeY = ((OpenGLData*)pData[OPENGLDATA])->fEyeY + 1 ;
-				break ;
-			default :
-				printf("Touche appuyée : %x\n", psEvent->keyval) ;
-				break;
-		}
-		break ;
-	}
-
-	gtk_widget_queue_draw(psWidget) ;
-
-	return TRUE ;
-}
-
-int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
-{
-	GdkGLContext * contexte = NULL;
-	GdkGLDrawable * surface = NULL;
-
-	printf("Fonction d'initialisation Open_GL\n");
-
-	contexte = gtk_widget_get_gl_context(psWidget);
-	surface = gtk_widget_get_gl_drawable(psWidget);
-
-	pData[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
-
-	printf("\tContexte et surface récupérés.\n");
-
-	if(gdk_gl_drawable_gl_begin(surface,contexte))
-	{
 		/* appels OpenGL */
-
-		printf("\tOuverture de la surface OK\n");
-
 		/* Début de l'initialisation. */
 
 		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
@@ -1877,116 +1752,71 @@ int drawingGlInit (GtkWidget* psWidget, gpointer* pData)
 
 		glEnable(GL_NORMALIZE);
 
-		((OpenGLData*)pData[OPENGLDATA])->fCenterX = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fCenterY = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fCenterZ = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fEyeX = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fEyeY = 0 ;
-		((OpenGLData*)pData[OPENGLDATA])->fEyeZ = 10 ;
+		pData->fCenterX = 0 ;
+		pData->fCenterY = 0 ;
+		pData->fCenterZ = 0 ;
+		pData->fEyeX = 0 ;
+		pData->fEyeY = 0 ;
+		pData->fEyeZ = 10 ;
 
 		/* Fin de l'initialisation. */
 
-		gdk_gl_drawable_swap_buffers(surface) ;	/* permutation des tampons */
-		gdk_gl_drawable_gl_end(surface) ;		/* désactivation du contexte */
-	}
+	return EXIT_SUCCESS;
+}
 
-	g_timeout_add(40,
-				  (GSourceFunc) gtk_widget_queue_draw,
-				  psWidget);
+int drawingGlResize (int width, int height)
+{
+	glViewport(0, 0, width, height) ;
+
+	glMatrixMode(GL_PROJECTION) ;
+	glLoadIdentity() ;
+	gluPerspective(45,
+				(GLfloat) width / (GLfloat) height ,
+				0.0001, 1000000000);
+	glMatrixMode(GL_MODELVIEW) ;
 
 	return EXIT_SUCCESS;
 }
 
-int drawingGlResize (GtkWidget* psWidget,
-					 GdkEventConfigure* psEvent,
-					 gpointer* pData)
+int drawingGlDraw (gpointer* pData)
 {
-	GdkGLContext * contexte = NULL;
-	GdkGLDrawable * surface = NULL;
+	/* Début des dessins. */
 
-	printf("Fonction de redimenssionnement\n");
+	glMatrixMode(GL_MODELVIEW);
 
-	contexte = gtk_widget_get_gl_context(psWidget);
-	surface = gtk_widget_get_gl_drawable(psWidget);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if(gdk_gl_drawable_gl_begin(surface,contexte))
-	{ 		
-		glViewport(0, 0, psEvent->width, psEvent->height) ;
-		
-		glMatrixMode(GL_PROJECTION) ;
-		glLoadIdentity() ;
-		gluPerspective(45, (GLfloat) psEvent->width / (GLfloat) psEvent->height , 0.0001, 1000000000);
-		glMatrixMode(GL_MODELVIEW) ;
+	glLoadIdentity();
+	gluLookAt(((OpenGLData*)pData[OPENGLDATA])->fEyeX,
+			  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
+			  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
+			  ((OpenGLData*)pData[OPENGLDATA])->fCenterX,
+			  ((OpenGLData*)pData[OPENGLDATA])->fCenterY,
+			  ((OpenGLData*)pData[OPENGLDATA])->fCenterZ,
+			  0, 1, 0) ;
 
-		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
-	}
 
-	return EXIT_SUCCESS;
-}
 
-int drawingGlDraw (GtkWidget* psWidget,
-				GdkEventExpose* psEvent,
-				gpointer* pData)
-{
-	GdkGLContext * contexte = NULL;
-	GdkGLDrawable * surface = NULL;
+	sceneDraw(pData) ;
 
-	contexte = gtk_widget_get_gl_context(psWidget);
-	surface = gtk_widget_get_gl_drawable(psWidget);
+	glLineWidth(5);
+	glBegin( GL_LINES );
 
-	if(gdk_gl_drawable_gl_begin(surface,contexte))
-	{
-		/* appels OpenGL */
+	glColor3f( 1.f, 0.f, 0.f);
+	glVertex3f( 0.f, 0.f, 0.f);
+	glVertex3f( 1.f, 0.f, 0.f);
 
-		/* Début des dessins. */
+	glColor3f( 0.f, 1.f, 0.f);
+	glVertex3f( 0.f, 0.f, 0.f);
+	glVertex3f( 0.f, 1.f, 0.f);
 
-		glMatrixMode(GL_MODELVIEW);
+	glColor3f( 0.f, 0.f, 1.f);
+	glVertex3f( 0.f, 0.f, 0.f);
+	glVertex3f( 0.f, 0.f, 1.f);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glLoadIdentity();
-		gluLookAt(((OpenGLData*)pData[OPENGLDATA])->fEyeX,
-				  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
-				  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
-				  ((OpenGLData*)pData[OPENGLDATA])->fCenterX,
-				  ((OpenGLData*)pData[OPENGLDATA])->fCenterY,
-				  ((OpenGLData*)pData[OPENGLDATA])->fCenterZ,
-				  0, 1, 0) ;
-
-		
-		
-		sceneDraw(pData) ;
-
-		glLineWidth(5);
-		glBegin( GL_LINES );
-
-		glColor3f( 1.f, 0.f, 0.f);
-		glVertex3f( 0.f, 0.f, 0.f);
-		glVertex3f( 1.f, 0.f, 0.f);
-
-		glColor3f( 0.f, 1.f, 0.f);
-		glVertex3f( 0.f, 0.f, 0.f);
-		glVertex3f( 0.f, 1.f, 0.f);
-
-		glColor3f( 0.f, 0.f, 1.f);
-		glVertex3f( 0.f, 0.f, 0.f);
-		glVertex3f( 0.f, 0.f, 1.f);
-
-		glEnd();
+	glEnd();
 
 		/* Fin des dessins. */
-		
-
-		
-		
-
-
-
-
-
-		gdk_gl_drawable_swap_buffers(surface); /* permutation des tampons */
-		gdk_gl_drawable_gl_end(surface); /* désactivation du contexte */
-	}
 
 	return EXIT_SUCCESS;
 }

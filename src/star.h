@@ -1,5 +1,5 @@
 /**
- * @brief Fichier d'entête du module \em OpenGLDrawing.
+ * @brief Fichier d'entête du module \em Star.
  *
  * @author Matthieu VIDAL in STELLODY TEAM
  * @file star.h
@@ -59,14 +59,14 @@ typedef struct sStar Star ;
 /* ********************************************************************* */
 
 /**
- * @fn int starCreate (Star * pStar, AnalyzedTrack* pTrack)
+ * @fn int starCreate (Star * pStar, const AnalyzedTrack* pTrack)
  * @brief Initialise une étoile avec les données issues d'un morceau analysé.
  *
  * @param[in] pStar Pointeur sur l'étoile à initialiser.
- * @param[in,out] pAnalysedTrack Pointeur sur l'analyse.
+ * @param[in] pTrack Pointeur sur l'analyse.
  * @return 0 si tout s'est bien passé.
  */
-int starCreate(Star * pStar, const AnalyzedTrack * pAnalyzedTrack) ;
+int starCreate(Star * pStar, const AnalyzedTrack * pTrack) ;
 
 /**
  * @fn float starGetSize (const Star * pStar)

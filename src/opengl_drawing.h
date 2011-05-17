@@ -65,30 +65,33 @@ typedef struct sOpenGLData OpenGLData;
 /*                                                                       */
 /* ********************************************************************* */
 
-gboolean drawingButtonMouse (GtkWidget * psWidget,
-							 GdkEventAny * psEvent,
-							 gpointer * pData) ;
+/**
+  * @fn int drawingGlInit (OpenGLData* pData)
+  * @brief Initialise les paramètres OpenGL (caméra, lumière...).
+  *
+  * @param[in,out] pData Données utilisées par OpenGL
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int drawingGlInit (OpenGLData* pData);
 
-gboolean drawingMotionMouse (GtkWidget * psWidget,
-							 GdkDragContext * psDragContext,
-							 gint iPostionX,
-							 gint iPostionY,
-							 guint iTime,
-							 gpointer * pData) ;
+/**
+  * @fn int drawingGlResize (int width, int height)
+  * @brief Redimenssionne la scene
+  *
+  * @param[in] width Nouvelle largeur du widget
+  * @param[in] height Nouvelle hauteur du widget
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int drawingGlResize (int width, int height);
 
-gboolean drawingKeyboard (GtkWidget * psWidget,
-						  GdkEventKey * psEvent,
-						  gpointer * pData) ;
-
-int drawingGlInit (GtkWidget* psWidget, gpointer* pData);
-
-int drawingGlDraw (GtkWidget* psWidget,
-				GdkEventExpose* psEvent,
-				gpointer* pData);
-
-int drawingGlResize (GtkWidget* psWidget,
-					GdkEventConfigure* psEvent,
-					gpointer* pData);
+/**
+  * @fn int drawingGlDraw (gpointer* pData);
+  * @brief Rafraichit la scene.
+  *
+  * @param[in,out] pData Données de l'application
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int drawingGlDraw (gpointer* pData);
 
 /* ********************************************************************* */
 /*                                                                       */
