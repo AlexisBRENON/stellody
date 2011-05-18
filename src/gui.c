@@ -828,7 +828,7 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGlDraw(pData);
+		drawingGlDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA]);
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
