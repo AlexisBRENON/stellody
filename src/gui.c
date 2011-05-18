@@ -71,27 +71,37 @@ fichier. */
 
 
 /**
-  * @fn static int guiUnparent (gpointer* pData)
+  * @fn static int guiUnparent (GtkBuilder* pMainBuilder,
+						GtkBuilder* pPreferencesBuilder,
+						GtkBuilder* pAboutBuilder,
+						GtkBuilder* pStellariumBuilder)
   * @brief Déparente toutes les fenêtres variables.
   *
-  * @param[in,out] pData Le tableau de données général
+  * @param[in,out] pMainBuilder Builder principal
+  * @param[in,out] pPreferencesBuilder Builder de la fenêtre de préférences
+  * @param[in,out] pAboutBuilder Builder de la fenêtre APropos
+  * @param[in,out] pStellariumBuilder Builder du Stellarium
   * @return EXIT_SUCCESS si tout est OK
   */
-static int guiUnparent (gpointer* pData)
+static int guiUnparent (GtkBuilder* pMainBuilder,
+						GtkBuilder* pPreferencesBuilder,
+						GtkBuilder* pAboutBuilder,
+						GtkBuilder* pStellariumBuilder)
 {
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psPreference = NULL;
 	GtkWidget* psAbout = NULL;
 	GtkWidget* psContainer = NULL;
 
-	psContainer = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
+	psContainer = GTK_WIDGET(gtk_builder_get_object(
+										pMainBuilder,
 										GUI_MAIN_CONTAINER));
 
 	/* Récupération des potentiels widgets fils et obturation du widget */
-	if (pData[PREFERENCES_BUILDER] != NULL)
+	if (pPreferencesBuilder != NULL)
 	{
 		psPreference = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										pPreferencesBuilder,
 										GUI_PREFERENCES_WIN));
 		gtk_widget_hide_all(psPreference);
 
@@ -101,9 +111,10 @@ static int guiUnparent (gpointer* pData)
 		}
 	}
 
-	if (pData[ABOUT_BUILDER] != NULL)
+	if (pAboutBuilder != NULL)
 	{
-		psAbout = GTK_WIDGET(gtk_builder_get_object(pData[ABOUT_BUILDER],
+		psAbout = GTK_WIDGET(gtk_builder_get_object(
+												pAboutBuilder,
 												GUI_ABOUT_WIN));
 		gtk_widget_hide_all(psAbout);
 
@@ -113,10 +124,10 @@ static int guiUnparent (gpointer* pData)
 		}
 	}
 
-	if (pData[STELLARIUM_BUILDER] != NULL)
+	if (pStellariumBuilder != NULL)
 	{
 		psStellarium = GTK_WIDGET(gtk_builder_get_object(
-											pData[STELLARIUM_BUILDER],
+											pStellariumBuilder,
 											GUI_STELLARIUM_WIN));
 		gtk_widget_hide_all(psStellarium);
 
@@ -280,8 +291,7 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
 													i);
 				i++;
-			} while ((psTrack == NULL && i <= iTIDMax) ||
-					analyzedTrackGetAnalyzed(psTrack) == 0);;
+			} while ((psTrack == NULL && i <= iTIDMax));
 
 			if (psTrack == NULL)
 			{
@@ -602,7 +612,10 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psContainer = NULL;
 
-	guiUnparent(pData);
+	guiUnparent(pData[MAIN_BUILDER],
+				pData[PREFERENCES_BUILDER],
+				pData[ABOUT_BUILDER],
+				pData[STELLARIUM_BUILDER]);
 
 	if (pData[STELLARIUM_BUILDER] == NULL)
 	{
@@ -652,7 +665,10 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psContainer = NULL;
 	GtkWidget* psScale = NULL;
 
-	guiUnparent(pData);
+	guiUnparent(pData[MAIN_BUILDER],
+				pData[PREFERENCES_BUILDER],
+				pData[ABOUT_BUILDER],
+				pData[STELLARIUM_BUILDER]);
 
 	/* Si la fenêtre n'a jamais été créée. */
 	if (pData[PREFERENCES_BUILDER] == NULL)
@@ -693,7 +709,10 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psAbout = NULL;
 	GtkWidget* psContainer = NULL;
 
-	guiUnparent(pData);
+	guiUnparent(pData[MAIN_BUILDER],
+				pData[PREFERENCES_BUILDER],
+				pData[ABOUT_BUILDER],
+				pData[STELLARIUM_BUILDER]);
 
 	if (pData[ABOUT_BUILDER] == NULL)
 	{
@@ -756,9 +775,11 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	return EXIT_SUCCESS;
 }
 
+
 /* ********************************************************************* */
 /*                           FENÊTRE STELLARIUM                          */
 /* ********************************************************************* */
+
 
 int on_Stellarium_DrawingArea_realize(
 								GtkWidget* psWidget,
@@ -855,7 +876,17 @@ int on_Stellarium_DrawingArea_button_release_event (
 	switch (psEvent->type)
 	{
 		case GDK_SCROLL:
-			printf("Appel de la fonction de scroll\n");
+			switch (((GdkEventScroll*)psEvent)->direction)
+			{
+				case GDK_SCROLL_UP:
+					drawingRotate(pData[OPENGLDATA], 0, 0, 0.1);
+					break;
+				case GDK_SCROLL_DOWN:
+					drawingRotate(pData[OPENGLDATA], 0, 0, -0.1);
+					break;
+				default:
+					break;
+			}
 			break;
 		case GDK_BUTTON_RELEASE:
 			printf("Appel de la fonction de click\n");
@@ -868,7 +899,26 @@ int on_Stellarium_DrawingArea_button_release_event (
 }
 
 
+int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
+												GdkEventMotion* psEvent,
+												gpointer* pData)
+{
+	float iStepX = 0;
+	float iStepY = 0;
 
+	if (((psEvent->state)>>9)%2 == 1)
+	{
+		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
+		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
+
+		drawingRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20, 0);
+	}
+
+	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;
+	*((float*) pData[MOUSEPOSITION_Y]) = (float) psEvent->y;
+
+	return EXIT_SUCCESS;
+}
 
 
 

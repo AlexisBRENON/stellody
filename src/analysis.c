@@ -28,10 +28,6 @@
 #include "analysis.h"
 
 
-
-#define iNUMVALUES 512 /**< Nombre de valeur récupérées à chaque analyse.*/
-
-
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Fonctions privées                           */

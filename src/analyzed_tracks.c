@@ -37,6 +37,8 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 	char bAnalyzed = 0;
 	char* strPath = NULL;
 	float fAverage = 0, fMedian = 0;
+	float* pfValues = NULL;
+	gsize iSize = 0; /* Inutilisé... */
 	AnalyzedTrack* psTrack = NULL;
 
 	int i;
@@ -63,13 +65,19 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 										strGroups[i], "fAverage", NULL);
 		fMedian = (float) g_key_file_get_double(ppsContext[DATA],
 										strGroups[i], "fMedian", NULL);
+		pfValues = (float*) g_key_file_get_double_list(ppsContext[DATA],
+										strGroups[i], "fValues", &iSize,
+										NULL);
 		/* On initialise le morceau avec les bonnes valeurs */
 		analyzedTrackInitWithData(psTrack, iTID, strPath,
-									fAverage, fMedian);
+									fAverage, fMedian, pfValues);
 		analyzedTrackSetAnalyzed(psTrack, bAnalyzed);
 
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
+
+		free(strPath); strPath = NULL;
+		free(pfValues); pfValues = NULL;
 	}
 
 	return EXIT_SUCCESS;
@@ -246,8 +254,8 @@ int analyzedTracksRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Ajout de morceaux à l'arbre...\n");
-	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0.0, 0.0);
-	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0.0, 0.0);
+	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0.0, 0.0, NULL);
+	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0.0, 0.0, NULL);
 	printf("\t\tLes deux identifiants sont à 1...\n");
 	assert (psTrack1 != NULL &&
 			psTrack2 != NULL);

@@ -1720,13 +1720,13 @@ static void drawCubeMap(OpenGLData * pData)
 	int iPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) ;
 	int iPosY = pData->fRadius * sin(pData->fAlpha) ;
 	int iPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) ;
-	
+
 	glPushMatrix() ;
-	
+
 	glTranslatef(iPosX, iPosY, iPosZ) ;
-	
+
 	/* Faire le CubeMap. */
-	
+
 	glPopMatrix() ;
 }
 
@@ -1734,12 +1734,12 @@ static void drawScene(const AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	Star sStar ;
 	AnalyzedTrack *psTrack = NULL ;
-	psTrack = analyzedTrackCreateWithData(100, NULL, 0, 0) ;
+	psTrack = analyzedTrackCreateWithData(100, NULL, 0, 0,NULL) ;
 
 	starCreate(& sStar, psTrack) ;
 
 	drawCubeMap(pData) ;
-	
+
 	glPushMatrix() ;
 
 	drawSelectedStar(& sStar) ;
@@ -1787,9 +1787,9 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 	if (pData->fAlpha < -M_PI/2) pData->fAlpha = -M_PI/2 ;
 
 	pData->fBeta = pData->fBeta - fTranslateX ;
-	
-	pData->fRadius = pData->fRadius - fMovedRadius ;
-	
+
+	pData->fRadius = pData->fRadius - (fMovedRadius*pData->fRadius) ;
+
 	return EXIT_SUCCESS;
 }
 
@@ -1804,7 +1804,7 @@ int drawingGlInit (OpenGLData* pData)
 		glShadeModel(GL_SMOOTH) ;
 
 		glEnable(GL_NORMALIZE) ;
-	
+
 		pData->fRadius = 2 ;
 		pData->fAlpha = 0 ;
 		pData->fBeta = 3*M_PI/2 ;
@@ -1813,7 +1813,7 @@ int drawingGlInit (OpenGLData* pData)
 		pData->fCenterZ = 0 ;
 		pData->fPositionX = 0 ;
 		pData->fPositionY = 0 ;
-		pData->fPositionZ = 0 ;	
+		pData->fPositionZ = 0 ;
 		/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;

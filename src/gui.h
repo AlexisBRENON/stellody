@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 13 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 15 /**< Nombre de cases aux tableaux de données */
 /**
   * @enum eGUI_DATA
   * @brief Enumération permettant de retrouver les différentes données dans
@@ -38,7 +38,9 @@ enum eGUI_DATA
 	PLAYLIST			= 9,	/**< Liste des morceaux à lire */
 	ANALYZELIST			= 10,	/**< Liste des morceau à analyser */
 	CHECKANALYZE		= 11,	/**< ID du timer de vérification d'analyse */
-	OPENGLDATA			= 12	/**< Structure de données OpenGL */
+	MOUSEPOSITION_X		= 12, 	/**< Coordonnées en x de la souris */
+	MOUSEPOSITION_Y		= 13,	/**< Coordonnées en y de la souris */
+	OPENGLDATA			= 14	/**< Structure de données OpenGL */
 };
 /**
   * @typedef GUI_DATA
@@ -291,6 +293,10 @@ int on_Stellarium_DrawingArea_button_release_event (
 								GtkWidget * psWidget,
 								GdkEventAny * psEvent,
 								gpointer * pData);
+
+int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
+												GdkEventMotion* psEvent,
+												gpointer* pData);
 
 
 /* ********************************************************************* */
