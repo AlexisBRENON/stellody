@@ -27,7 +27,7 @@
 	#include <openGL/glu.h>
 #endif
 
-#include <gtk/gtk.h>
+#include "analyzed_tracks.h"
 
 
 /* ********************************************************************* */
@@ -46,12 +46,15 @@
  */
 struct sOpenGLData
 {
-	float fCenterX ; /**< Position en x de la direction de la caméra */
-	float fCenterY ; /**< Position en y de la direction de la caméra */
-	float fCenterZ ; /**< Position en z de la direction de la caméra */
-	float fEyeX ;	 /**< Position en x de la caméra */
-	float fEyeY ;	 /**< Position en y de la caméra */
-	float fEyeZ ;	 /**< Position en z de la caméra */
+	float fRadius ;		/**< Rayon de la sphère de vision de la caméra */
+	float fAlpha ;		/**< Angle de vision latitudinal de la caméra */
+	float fBeta ;		/**< Angle de vision longitudinal de la caméra */	
+	float fCenterX ;	/**< Position en x de la direction de la caméra */
+	float fCenterY ;	/**< Position en y de la direction de la caméra */
+	float fCenterZ ;	/**< Position en z de la direction de la caméra */
+	float fPositionX ;	/**< Position en x de la caméra */
+	float fPositionY ;	/**< Position en y de la caméra */
+	float fPositionZ ;	/**< Position en z de la caméra */
 } ;
 /**
  * @typedef OpenGLData
@@ -64,6 +67,30 @@ typedef struct sOpenGLData OpenGLData;
 /*                   Fonctions relatives à OpenGL                        */
 /*                                                                       */
 /* ********************************************************************* */
+
+/**
+ * @fn drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
+ * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
+ * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
+ * @param[in] fTranslateZ Translation effectuée par l'utilisateur en Z
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
+
+/**
+ * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
+ * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
+ * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
 
 /**
   * @fn int drawingGlInit (OpenGLData* pData)
@@ -88,10 +115,11 @@ int drawingGlResize (int width, int height);
   * @fn int drawingGlDraw (gpointer* pData);
   * @brief Rafraichit la scene.
   *
-  * @param[in,out] pData Données de l'application
+  * @param[in] pTracks Données des chansons
+ * @param[in,out] pData Données OpenGL
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlDraw (gpointer* pData);
+int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData);
 
 /* ********************************************************************* */
 /*                                                                       */

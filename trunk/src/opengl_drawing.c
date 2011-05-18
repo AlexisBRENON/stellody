@@ -1678,7 +1678,7 @@ static void DrawAWing(int Armes)
 /*                                                                       */
 /* ********************************************************************* */
 
-static void printSelectedStar(Star * pStar)
+static void drawSelectedStar(Star * pStar)
 {
 	int iRotations = 4 ;
 	float fRotationAngle = 360/iRotations ;
@@ -1701,7 +1701,7 @@ static void printSelectedStar(Star * pStar)
 
 }
 
-static int DrawStar(Star * psStar)
+static int drawStar(Star * psStar)
 {
 	assert(psStar != NULL) ;
 
@@ -1715,7 +1715,22 @@ static int DrawStar(Star * psStar)
 	return 0 ;
 }
 
-static void sceneDraw(gpointer* pData)
+static void drawCubeMap(OpenGLData * pData)
+{
+	int iPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) ;
+	int iPosY = pData->fRadius * sin(pData->fAlpha) ;
+	int iPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) ;
+	
+	glPushMatrix() ;
+	
+	glTranslatef(iPosX, iPosY, iPosZ) ;
+	
+	/* Faire le CubeMap. */
+	
+	glPopMatrix() ;
+}
+
+static void drawScene(const AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	Star sStar ;
 	AnalyzedTrack *psTrack = NULL ;
@@ -1723,10 +1738,12 @@ static void sceneDraw(gpointer* pData)
 
 	starCreate(& sStar, psTrack) ;
 
+	drawCubeMap(pData) ;
+	
 	glPushMatrix() ;
 
-	printSelectedStar(& sStar) ;
-	DrawStar(& sStar) ;
+	drawSelectedStar(& sStar) ;
+	drawStar(& sStar) ;
 
 	glPopMatrix() ;
 }
@@ -1738,10 +1755,46 @@ static void sceneDraw(gpointer* pData)
 /*                                                                       */
 /* ********************************************************************* */
 
+/**
+ * @fn drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
+ * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
+ * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
+ * @param[in] fTranslateZ Translation effectuée par l'utilisateur en Z
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ)
+{
+	return EXIT_SUCCESS;
+}
+
+/**
+ * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
+ * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
+ * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius)
+{
+	pData->fAlpha = pData->fAlpha - fTranslateY ;
+	if (pData->fAlpha > M_PI/2) pData->fAlpha = M_PI/2 ;
+	if (pData->fAlpha < -M_PI/2) pData->fAlpha = -M_PI/2 ;
+
+	pData->fBeta = pData->fBeta - fTranslateX ;
+	
+	pData->fRadius = pData->fRadius - fMovedRadius ;
+	
+	return EXIT_SUCCESS;
+}
 
 int drawingGlInit (OpenGLData* pData)
 {
-		/* appels OpenGL */
 		/* Début de l'initialisation. */
 
 		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
@@ -1750,15 +1803,17 @@ int drawingGlInit (OpenGLData* pData)
 		glEnable(GL_DEPTH_TEST) ;
 		glShadeModel(GL_SMOOTH) ;
 
-		glEnable(GL_NORMALIZE);
-
+		glEnable(GL_NORMALIZE) ;
+	
+		pData->fRadius = 2 ;
+		pData->fAlpha = 0 ;
+		pData->fBeta = 3*M_PI/2 ;
 		pData->fCenterX = 0 ;
 		pData->fCenterY = 0 ;
 		pData->fCenterZ = 0 ;
-		pData->fEyeX = 0 ;
-		pData->fEyeY = 0 ;
-		pData->fEyeZ = 10 ;
-
+		pData->fPositionX = 0 ;
+		pData->fPositionY = 0 ;
+		pData->fPositionZ = 0 ;	
 		/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;
@@ -1778,7 +1833,7 @@ int drawingGlResize (int width, int height)
 	return EXIT_SUCCESS;
 }
 
-int drawingGlDraw (gpointer* pData)
+int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	/* Début des dessins. */
 
@@ -1787,17 +1842,15 @@ int drawingGlDraw (gpointer* pData)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(((OpenGLData*)pData[OPENGLDATA])->fEyeX,
-			  ((OpenGLData*)pData[OPENGLDATA])->fEyeY,
-			  ((OpenGLData*)pData[OPENGLDATA])->fEyeZ,
-			  ((OpenGLData*)pData[OPENGLDATA])->fCenterX,
-			  ((OpenGLData*)pData[OPENGLDATA])->fCenterY,
-			  ((OpenGLData*)pData[OPENGLDATA])->fCenterZ,
+	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) + pData->fPositionX,
+			  pData->fRadius * sin(pData->fAlpha) + pData->fPositionY,
+			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) + pData->fPositionZ,
+			  pData->fCenterX,
+			  pData->fCenterY,
+			  pData->fCenterZ,
 			  0, 1, 0) ;
 
-
-
-	sceneDraw(pData) ;
+	drawScene(pTracks, pData) ;
 
 	glLineWidth(5);
 	glBegin( GL_LINES );
@@ -1820,7 +1873,6 @@ int drawingGlDraw (gpointer* pData)
 
 	return EXIT_SUCCESS;
 }
-
 
 /* ********************************************************************* */
 /*                                                                       */
