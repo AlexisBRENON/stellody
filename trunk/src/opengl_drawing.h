@@ -52,9 +52,9 @@ struct sOpenGLData
 	float fCenterX ;	/**< Position en x de la direction de la caméra */
 	float fCenterY ;	/**< Position en y de la direction de la caméra */
 	float fCenterZ ;	/**< Position en z de la direction de la caméra */
-	float fPositionX ;	/**< Position en x de la caméra */
-	float fPositionY ;	/**< Position en y de la caméra */
-	float fPositionZ ;	/**< Position en z de la caméra */
+	float fTranslateX ;	/**< Translation en x de la caméra */
+	float fTranslateY ;	/**< Translation en y de la caméra */
+	float fTranslateZ ;	/**< Translation en z de la caméra */
 } ;
 /**
  * @typedef OpenGLData
@@ -137,7 +137,7 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData);
  *
  * @return EXIT_SUCCESS si tout est OK
  */
-int OpenGLDrawingRegressionTest(int * argc, char * argv[]) ;
+int drawingRegressionTest(int * argc, char * argv[]) ;
 
 
 #endif

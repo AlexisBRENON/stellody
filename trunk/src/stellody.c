@@ -100,7 +100,7 @@ int regressionTests(int argc, char* argv[])
 			break;
 		case 5:
 			printf("Returned value : %d\n",
-               OpenGLDrawingRegressionTest(&argc, argv));
+				   drawingRegressionTest(&argc, argv));
 			break;
 		default:
 			break;

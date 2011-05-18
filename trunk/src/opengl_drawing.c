@@ -1717,9 +1717,9 @@ static int drawStar(Star * psStar)
 
 static void drawCubeMap(OpenGLData * pData)
 {
-	int iPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) ;
-	int iPosY = pData->fRadius * sin(pData->fAlpha) ;
-	int iPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
 
 	glPushMatrix() ;
 
@@ -1767,19 +1767,17 @@ static void drawScene(const AnalyzedTracks * pTracks, OpenGLData * pData)
  */
 int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ)
 {
+	float pfVectorX[3] = {0, 0, 0} ;
+	float pfVectorY[3] = {0, 0, 0} ;
+	float pfVectorZ[3] = {0, 0, 0} ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	
+	
 	return EXIT_SUCCESS;
 }
 
-/**
- * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
- * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
- *
- * @param[in,out] pData Données utilisées par OpenGL
- * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
- * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
- * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
- * @return EXIT_SUCCESS si tout est OK
- */
 int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius)
 {
 	pData->fAlpha = pData->fAlpha - fTranslateY ;
@@ -1797,7 +1795,7 @@ int drawingGlInit (OpenGLData* pData)
 {
 		/* Début de l'initialisation. */
 
-		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
+		glClearColor(0.0f, 0.0f, 0.2f, 1.0f) ;
 		glClearDepth(1.0) ;
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
@@ -1842,9 +1840,9 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) + pData->fPositionX,
-			  pData->fRadius * sin(pData->fAlpha) + pData->fPositionY,
-			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) + pData->fPositionZ,
+	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) + pData->fTranslateX,
+			  pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY,
+			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) + pData->fTranslateZ,
 			  pData->fCenterX,
 			  pData->fCenterY,
 			  pData->fCenterZ,
@@ -1880,7 +1878,7 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 /*                                                                       */
 /* ********************************************************************* */
 
-int OpenGLDrawingRegressionTest(int * argc, char * argv[])
+int drawingRegressionTest(int * argc, char * argv[])
 {
 	return EXIT_SUCCESS;
 }
