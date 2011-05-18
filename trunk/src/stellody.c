@@ -122,9 +122,13 @@ int regressionTests(int argc, char* argv[])
   */
 int stellody(int argc, char* argv[])
 {
+	/* Déclaration des variables. */
 	gpointer pDatas[NB_DATA];
 	GKeyFile** pFileContext;
+
 	int i;
+
+	/* Initialisation des variables */
 
 	srand(time(NULL));
 
@@ -132,15 +136,25 @@ int stellody(int argc, char* argv[])
 	{
 		pDatas[i] = NULL;
 	}
+
 	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
 	*((int*) pDatas[CHECKANALYZE]) = 0;
+	pDatas[MOUSEPOSITION_X] = (float*) malloc(sizeof(float));
+	*((float*) pDatas[CHECKANALYZE]) = 0;
+	pDatas[MOUSEPOSITION_Y] = (float*) malloc(sizeof(float));
+	*((float*) pDatas[CHECKANALYZE]) = 0;
 
 	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
 	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
 					2, FMOD_INIT_NORMAL, NULL);
 	pDatas[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
+
+	/* Initialisation des bibliothèques tierces. */
+
 	gtk_init(&argc, &argv);
 	gtk_gl_init(&argc, &argv);
+
+	/* Création de l'interface et chargement des données */
 
 	pDatas[MAIN_BUILDER] = guiLoad(pDatas);
 
@@ -152,21 +166,30 @@ int stellody(int argc, char* argv[])
 					(GTraverseFunc) analyzedTracksRemoveForAnalyze,
 					pDatas);
 
+	/* Lancement de la boucle d'évenements */
+
 	gtk_main();
+
+	/* Libération de la mémoire */
 
 	filesCloseAndSave(&pFileContext,
 					pDatas[PREFERENCES],
 					pDatas[ANALYZED_TRACKS]);
+
 	preferencesDestroy((Preferences**) &(pDatas[PREFERENCES]));
+
 	analyzedTracksDestroy((AnalyzedTracks**)&(pDatas[ANALYZED_TRACKS]));
 
 	FMOD_System_Release((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT]);
 
-	free(pDatas[CHECKANALYZE]);
-	pDatas[CHECKANALYZE] = NULL;
+	free(pDatas[CHECKANALYZE]); pDatas[CHECKANALYZE] = NULL;
 
-	free(pDatas[OPENGLDATA]);
-	pDatas[OPENGLDATA] = NULL;
+	free(pDatas[MOUSEPOSITION_X]); pDatas[MOUSEPOSITION_X] = NULL;
+	free(pDatas[MOUSEPOSITION_Y]); pDatas[MOUSEPOSITION_Y] = NULL;
+
+	free(pDatas[OPENGLDATA]); pDatas[OPENGLDATA] = NULL;
+
+	/* All is alright ! ;p */
 
 	return EXIT_SUCCESS;
 }

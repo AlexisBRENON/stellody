@@ -10,6 +10,10 @@
 
 #include <gtk/gtk.h>
 
+
+#define iNUMVALUES 512 /**< Nombre de valeur récupérées à chaque analyse.*/
+#define iSAVEDVALUES 128 /**< Nombre de valeurs sauvegardées pour traintement.*/
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                        Définitions de types                           */
@@ -34,6 +38,8 @@ struct sAnalyzedTrack
 	float fFrequenciesAverage; /**< Réel codant la moyenne des
 	fréquences du morceau */
 	float fFrequenciesMedian; /**< Réel codant la médiane des fréquences */
+	float fValues[iSAVEDVALUES]; /**< Tableau contenant les moyennes des
+	amplitudes des harmoniques, du do 0 au do 5 par plage de ~40Hz.*/
 };
 /**
   * @typedef AnalyzedTrack
@@ -97,7 +103,7 @@ int analyzedTrackDataCompare(const int* iTID1,
   */
 int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 							const char* strPath, float fAverage,
-							float fMedian);
+							float fMedian,float fValues[]);
 /**
   * @fn int analyzedTrackInit(AnalyzedTrack* psTrack)
   * @brief Initialise un morceau avec des valeurs pas défauts.
@@ -147,7 +153,8 @@ gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
   * @return Pointeur sur AnalyzedTrack nouvellement allouée.
   */
 AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
-										float fAverage, float fMedian);
+										float fAverage, float fMedian,
+										float fValues[]);
 /**
   * @fn AnalyzedTrack* analyzedTrackCreate(void)
   * @brief Crée un morceau avec des valeurs par défauts.
@@ -269,6 +276,53 @@ float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack);
 int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack,
 									float fValue);
 
+/**
+  * @fn const float* analyzedTrackGetFrequenciesValues (
+											const AnalyzedTrack* psTrack)
+  * @brief Accesseur sur le tableau de fréquences.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @return Le tableau de fréquences
+  */
+const float* analyzedTrackGetFrequenciesValues (
+									const AnalyzedTrack* psTrack);
+
+/**
+  * @fn int analyzedTrackSetFrequenciesValues (AnalyzedTrack* psTrack,
+									fValues[])
+  * @brief Mutateur sur l'ensemble du tableau.
+  *
+  * @param[in,out] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @param[in] fValues Le tableau de réels à copier.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int analyzedTrackSetFrequenciesValues (AnalyzedTrack* psTrack,
+									const float fValues[]);
+
+/**
+  * @fn float analyzedTrackGetIemeFrequenciesValues (
+										const AnalyzedTrack* psTrack,
+										int i);
+  * @brief Accesseur sur une unique case du tableau de fréquences.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @param[in] i Indice de la case à accéder (0 -> 127)
+  * @return La valeur de la case indexée.
+  */
+float analyzedTrackGetIemeFrequenciesValues (const AnalyzedTrack* psTrack,
+										int i);
+/**
+  * @fn int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
+										int i, float fValue);
+  * @brief Mutateur sur une unique case du tableau de fréquences.
+  *
+  * @param[in,out] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @param[in] i Indice de la case à accéder (0 -> 127)
+  * @param[in] fValue Réel à stocker
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
+										int i, float fValue);
 
 /* ********************************************************************* */
 /*                                                                       */

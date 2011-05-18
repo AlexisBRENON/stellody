@@ -59,8 +59,10 @@ int analyzedTrackDataCompare(const int* iTID1,
 
 int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 							const char* strPath, float fAverage,
-							float fMedian)
+							float fMedian, float fValues[])
 {
+	int i;
+
 	assert (psTrack != NULL);
 	assert (iTID >= 0);
 
@@ -78,26 +80,45 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 	psTrack->bAnalyzed = 1;
 	psTrack->fFrequenciesAverage = fAverage;
 	psTrack->fFrequenciesMedian = fMedian;
-
+	if (fValues != NULL)
+	{
+		for (i = 0; i < iSAVEDVALUES; i++)
+		{
+			psTrack->fValues[i] = fValues[i];
+		}
+	}
+	else
+	{
+		for (i = 0; i < iSAVEDVALUES; i++)
+		{
+			psTrack->fValues[i] = 0;
+		}
+	}
 	return EXIT_SUCCESS;
 }
 int analyzedTrackInit(AnalyzedTrack* psTrack)
 {
 	assert (psTrack != NULL);
 
-	analyzedTrackInitWithData(psTrack, 0, NULL, 0.0, 0.0);
+	analyzedTrackInitWithData(psTrack, 0, NULL, 0.0, 0.0, NULL);
 	analyzedTrackSetAnalyzed(psTrack, 0);
 
 	return EXIT_SUCCESS;
 }
 int analyzedTrackRelease(AnalyzedTrack* psTrack)
 {
+	int i;
+
 	assert (psTrack != NULL);
 
 	psTrack->iTID = 0;
 	psTrack->bAnalyzed = 0;
 	psTrack->fFrequenciesAverage = 0;
 	psTrack->fFrequenciesMedian = 0;
+	for (i = 0; i < iSAVEDVALUES; i++)
+	{
+		psTrack->fValues[i] = 0;
+	}
 	if (psTrack->strPath != NULL)
 	{
 		free(psTrack->strPath);
@@ -118,19 +139,21 @@ gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
 
 
 AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
-								float fAverage,	float fMedian)
+								float fAverage,	float fMedian,
+								float fValues[])
 {
 	AnalyzedTrack* psTrack = NULL;
 
 	psTrack = (AnalyzedTrack*) malloc (sizeof(AnalyzedTrack));
-	analyzedTrackInitWithData(psTrack, iTID, strPath, fAverage, fMedian);
+	analyzedTrackInitWithData(psTrack, iTID, strPath,
+							fAverage, fMedian, fValues);
 
 	return psTrack;
 }
 AnalyzedTrack* analyzedTrackCreate (void)
 {
 	AnalyzedTrack* psTrack = NULL;
-	psTrack = analyzedTrackCreateWithData(0, NULL, 0.0, 0.0);
+	psTrack = analyzedTrackCreateWithData(0, NULL, 0.0, 0.0, NULL);
 	analyzedTrackSetAnalyzed(psTrack, 0);
 
 	return psTrack;
@@ -234,6 +257,52 @@ int analyzedTrackSetFrequenciesMedian (AnalyzedTrack *psTrack, float fValue)
 }
 
 
+const float* analyzedTrackGetFrequenciesValues(
+									const AnalyzedTrack* psTrack)
+{
+	assert (psTrack != NULL);
+
+	return psTrack->fValues;
+}
+
+int analyzedTrackSetFrequenciesValues(AnalyzedTrack* psTrack,
+									const float fValues[])
+{
+	int i;
+
+	assert(psTrack != NULL);
+
+	for (i = 0; i < iSAVEDVALUES; i++)
+	{
+		psTrack->fValues[i] = fValues[i];
+	}
+
+	return EXIT_SUCCESS;
+}
+
+float analyzedTrackGetIemeFrequenciesValues (const AnalyzedTrack* psTrack,
+										int i)
+{
+	assert (psTrack != NULL);
+	assert (i >= 0 && i < iSAVEDVALUES);
+
+	return psTrack->fValues[i];
+}
+
+int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
+										int i, float fValue)
+{
+	assert (psTrack != NULL);
+	assert (i >= 0 && i < iSAVEDVALUES);
+	assert (fValue > -150 && fValue < 0);
+
+	psTrack->fValues[i] = fValue;
+
+	return EXIT_SUCCESS;
+}
+
+
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                          Tests de regressions                         */
@@ -249,7 +318,7 @@ int analyzedTrackRegressionTest(void)
 	printf("\n\t -- MODULE ANALYZED_TRACK --\n\n");
 
 	printf("Création d'un morceau...\n");
-	psTrack = analyzedTrackCreateWithData(100, NULL, 0, 0);
+	psTrack = analyzedTrackCreateWithData(100, NULL, 0, 0, NULL);
 	assert (psTrack != NULL &&
 			psTrack->iTID == 100 &&
 			psTrack->strPath == NULL &&
@@ -258,7 +327,7 @@ int analyzedTrackRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Initialisation d'un morceau...\n");
-	analyzedTrackInitWithData(&sTrack2, 50, "test", 0.5, 0.5);
+	analyzedTrackInitWithData(&sTrack2, 50, "test", 0.5, 0.5, NULL);
 	assert (sTrack2.iTID == 50 &&
 			sTrack2.fFrequenciesAverage == 0.5 &&
 			sTrack2.fFrequenciesMedian == 0.5 &&
