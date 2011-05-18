@@ -125,7 +125,7 @@ lin : check $(OBJS_LIN)
 	@echo
 	@echo "======================================="
 	@echo
-	@echo "Stellody construit avec sucès !"
+	@echo "Stellody construit avec succès !"
 	@echo
 
 $(OBJ_DIR)/%_mac.o : $(SRC_DIR)/%.c

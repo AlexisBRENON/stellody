@@ -1717,13 +1717,17 @@ static int drawStar(Star * psStar)
 
 static void drawCubeMap(OpenGLData * pData)
 {
-	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
-	float fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
-	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	float fPosX = 0 ;
+	float fPosY = 0 ;
+	float fPosZ = 0 ;
+	
+	fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
+	fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
 
 	glPushMatrix() ;
 
-	glTranslatef(iPosX, iPosY, iPosZ) ;
+	glTranslatef(fPosX, fPosY, fPosZ) ;
 
 	/* Faire le CubeMap. */
 
@@ -1767,22 +1771,79 @@ static void drawScene(const AnalyzedTracks * pTracks, OpenGLData * pData)
  */
 int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ)
 {
+	float fTemp = 0 ;
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
 	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
-	float fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
+	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
 	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
 	
+
+	/* Calcul du Vecteur Z = Destination - Origine. */
+	pfVectorZ[0] = (pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX) - pData->fCenterX ;
+	pfVectorZ[1] = (pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY) - pData->fCenterY ;
+	pfVectorZ[2] = (pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ) - pData->fCenterZ ;
+	/* Normalisation de Z. */
+	fTemp = sqrt(pfVectorZ[0]*pfVectorZ[0] + pfVectorZ[1]*pfVectorZ[1] + pfVectorZ[2]*pfVectorZ[2]) ;
+	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
+	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
+	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
 	
-	return EXIT_SUCCESS;
+	/* Calcul du Vecteur Y = Destination - Origine. */
+	pfVectorY[0] = (pData->fRadius * cos(pData->fAlpha + M_PI/2) * cos(pData->fBeta)  + pData->fTranslateX) - pData->fCenterX ;
+	pfVectorY[1] = (pData->fRadius * sin(pData->fAlpha + M_PI/2) + pData->fTranslateY) - pData->fCenterY ;
+	pfVectorY[2] = (pData->fRadius * cos(pData->fAlpha + M_PI/2) * -1*sin(pData->fBeta)  + pData->fTranslateZ) - pData->fCenterZ ;
+	/* Normalisation de Y. */
+	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
+	pfVectorY[0] = pfVectorY[0] / fTemp ;
+	pfVectorY[1] = pfVectorY[1] / fTemp ;
+	pfVectorY[2] = pfVectorY[2] / fTemp ; 
+	
+	
+	
+	
+	/* Calcul du Vecteur X = Destination - Origine. */
+	pfVectorX[0] = (pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta + M_PI/2)  + pData->fTranslateX) - pData->fCenterX ;
+	pfVectorX[1] = (pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY) - pData->fCenterY ;
+	pfVectorX[2] = (pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta + M_PI/2)  + pData->fTranslateZ) - pData->fCenterZ ;
+	/* Normalisation de X. */
+	fTemp = sqrt(pfVectorX[0]*pfVectorX[0] + pfVectorX[1]*pfVectorX[1] + pfVectorX[2]*pfVectorX[2]) ;
+	pfVectorX[0] = pfVectorX[0] / fTemp ;
+	pfVectorX[1] = pfVectorX[1] / fTemp ;
+	pfVectorX[2] = pfVectorX[2] / fTemp ;	
+	
+
+	
+	pData->pfVectorX[0] = pfVectorX[0] ;
+	pData->pfVectorX[1] = pfVectorX[1] ;
+	pData->pfVectorX[2] = pfVectorX[2] ;
+	
+	pData->pfVectorY[0] = pfVectorY[0] ;
+	pData->pfVectorY[1] = pfVectorY[1] ;
+	pData->pfVectorY[2] = pfVectorY[2] ;
+	
+	pData->pfVectorZ[0] = pfVectorZ[0] ;
+	pData->pfVectorZ[1] = pfVectorZ[1] ;
+	pData->pfVectorZ[2] = pfVectorZ[2] ;
+	
+	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	/*
+	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	*/
+	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	
+	return EXIT_SUCCESS ;
 }
 
 int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius)
 {
 	pData->fAlpha = pData->fAlpha - fTranslateY ;
-	if (pData->fAlpha > M_PI/2) pData->fAlpha = M_PI/2 ;
-	if (pData->fAlpha < -M_PI/2) pData->fAlpha = -M_PI/2 ;
+	if (pData->fAlpha >= M_PI/2) pData->fAlpha = M_PI/2 - 0.001 ;
+	if (pData->fAlpha <= -M_PI/2) pData->fAlpha = -M_PI/2 + 0.001 ;
 
 	pData->fBeta = pData->fBeta - fTranslateX ;
 
@@ -1795,7 +1856,7 @@ int drawingGlInit (OpenGLData* pData)
 {
 		/* Début de l'initialisation. */
 
-		glClearColor(0.0f, 0.0f, 0.2f, 1.0f) ;
+		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 		glClearDepth(1.0) ;
 		glDepthFunc(GL_LESS) ;
 		glEnable(GL_DEPTH_TEST) ;
@@ -1809,9 +1870,9 @@ int drawingGlInit (OpenGLData* pData)
 		pData->fCenterX = 0 ;
 		pData->fCenterY = 0 ;
 		pData->fCenterZ = 0 ;
-		pData->fPositionX = 0 ;
-		pData->fPositionY = 0 ;
-		pData->fPositionZ = 0 ;
+		pData->fTranslateX = 0 ;
+		pData->fTranslateY = 0 ;
+		pData->fTranslateZ = 0 ;
 		/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;
@@ -1847,9 +1908,11 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 			  pData->fCenterY,
 			  pData->fCenterZ,
 			  0, 1, 0) ;
-
+	
 	drawScene(pTracks, pData) ;
 
+	glPushMatrix() ;
+	
 	glLineWidth(5);
 	glBegin( GL_LINES );
 
@@ -1865,7 +1928,23 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 	glVertex3f( 0.f, 0.f, 0.f);
 	glVertex3f( 0.f, 0.f, 1.f);
 
+	/* Axe de translation
+		
+	glColor3f( 1, 1, 0);
+	glVertex3f(pData->fCenterX, pData->fCenterY, pData->fCenterZ);
+	glVertex3f(pData->pfVectorX[0], pData->pfVectorX[1], pData->pfVectorX[2]) ;
+
+	glColor3f( 0, 1, 1);
+	glVertex3f(pData->fCenterX, pData->fCenterY, pData->fCenterZ);
+	glVertex3f(pData->pfVectorY[0], pData->pfVectorY[1], pData->pfVectorY[2]) ;
+	
+	glColor3f( 1, 0, 1);
+	glVertex3f(pData->fCenterX, pData->fCenterY, pData->fCenterZ);
+	glVertex3f(pData->pfVectorZ[0], pData->pfVectorZ[1], pData->pfVectorZ[2]) ; */
+	
 	glEnd();
+	
+	glPopMatrix() ;
 
 		/* Fin des dessins. */
 
@@ -1880,5 +1959,5 @@ int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData)
 
 int drawingRegressionTest(int * argc, char * argv[])
 {
-	return EXIT_SUCCESS;
+	return EXIT_SUCCESS ;
 }
