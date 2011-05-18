@@ -34,8 +34,8 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack)
 
 	pStar->fSize = 0.5 ;
 	pStar->fColourR = 1 ;
-	pStar->fColourG = 0.5 ;
-	pStar->fColourB = 0 ;
+	pStar->fColourG = 1 ;
+	pStar->fColourB = 1 ;
 	pStar->fPositionX = 0 ;
 	pStar->fPositionY = 0 ;
 	pStar->fPositionZ = 0 ;

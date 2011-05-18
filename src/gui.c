@@ -906,13 +906,19 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 	float iStepX = 0;
 	float iStepY = 0;
 
-	if (((psEvent->state)>>9)%2 == 1)
+	if (((psEvent->state)>>9)%2 == 1 || ((psEvent->state)>>10)%2 == 1)
 	{
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
 
 		drawingRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20, 0);
 	}
+	else if (((psEvent->state)>>8)%2 == 1)
+	{
+		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
+		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
+		
+		drawingTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);	}
 
 	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;
 	*((float*) pData[MOUSEPOSITION_Y]) = (float) psEvent->y;

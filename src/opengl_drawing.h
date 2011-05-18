@@ -55,7 +55,11 @@ struct sOpenGLData
 	float fTranslateX ;	/**< Translation en x de la caméra */
 	float fTranslateY ;	/**< Translation en y de la caméra */
 	float fTranslateZ ;	/**< Translation en z de la caméra */
+	float pfVectorX[3] ;
+	float pfVectorY[3] ;
+	float pfVectorZ[3] ;
 } ;
+
 /**
  * @typedef OpenGLData
  * @brief Redéfinit la structure sOpenGLData.
