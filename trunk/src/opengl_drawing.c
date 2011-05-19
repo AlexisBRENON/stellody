@@ -1024,7 +1024,7 @@ static void DrawAWingMiddle()
 
 		/* Remplissage. */
 	glPushMatrix() ;
-	glScalef(0.65, 0.7, 0.6) ;
+	glScalef(0.65, 0.7, 0.66) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.40, 0.80, 1.00) ;					/* Couleur réacteur central de l'A-Wing. */
 	DrawCylinder() ;
@@ -1734,7 +1734,7 @@ static void drawCubeMap(OpenGLData * pData)
 	glPopMatrix() ;
 }
 
-static gboolean drawTraverse(int * piKey, AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
+static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
 {
 	Star sStar ;
 	starCreate(& sStar, pTrack, psExistingStars) ;
@@ -1750,9 +1750,19 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
+	glDisable(GL_LIGHTING) ;
+	
 	drawCubeMap(pData) ;
 	
-	g_tree_foreach(pTracks, (GTraverseFunc) drawTraverse, pData->psExistingStars) ;
+	glPushMatrix() ;
+	glScalef(2, 2, 2) ;
+	glColor3f(1, 1, 1) ;
+	DrawSphere() ;
+	glPopMatrix() ;
+	
+	glEnable(GL_LIGHTING) ;
+	
+	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData->psExistingStars) ;
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
@@ -1806,20 +1816,6 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	pfVectorY[1] = pfVectorY[1] / fTemp ;
 	pfVectorY[2] = pfVectorY[2] / fTemp ;
 	
-	
-	pData->pfVectorX[0] = pfVectorX[0] ;
-	pData->pfVectorX[1] = pfVectorX[1] ;
-	pData->pfVectorX[2] = pfVectorX[2] ;
-	
-	pData->pfVectorY[0] = pfVectorY[0] ;
-	pData->pfVectorY[1] = pfVectorY[1] ;
-	pData->pfVectorY[2] = pfVectorY[2] ;
-	
-	pData->pfVectorZ[0] = pfVectorZ[0] ;
-	pData->pfVectorZ[1] = pfVectorZ[1] ;
-	pData->pfVectorZ[2] = pfVectorZ[2] ;
-	
-	
 	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 	
@@ -1847,27 +1843,66 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 
 int drawingGlInit (OpenGLData* pData)
 {
-		/* Début de l'initialisation. */
+	/* Début de l'initialisation. */
 
-		glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
-		glClearDepth(1.0) ;
-		glDepthFunc(GL_LESS) ;
-		glEnable(GL_DEPTH_TEST) ;
-		glShadeModel(GL_SMOOTH) ;
+	int i = 0 ;
+	float fAmbiantLight = 0 ;
+	float fDiffuseLight = 0 ;
+	float fSpecularLight = 0 ;
+	float pfAmbiantLight[4] = {0, 0, 0, 0} ;
+	float pfDiffuseLight[4] = {0, 0, 0, 0} ;
+	float pfSpecularLight[4] = {0, 0, 0, 0} ;
+	float pfPositionLight[4] = {0, 0, 0, 0} ;
+	
+	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
+	glClearDepth(1.0) ;
+	glDepthFunc(GL_LESS) ;
+	glEnable(GL_DEPTH_TEST) ;
+	glShadeModel(GL_SMOOTH) ;
+	glEnable(GL_LIGHTING) ;
+	
+	/* Fiat lux. */
 
-		glEnable(GL_NORMALIZE) ;
+	fAmbiantLight = 0.02 ;
+	fDiffuseLight = 0.98 ;
+	fSpecularLight = 0.5 ;
+	
+	for (i = 0 ; i < 3 ; i ++)
+	{
+		pfAmbiantLight[i] = fAmbiantLight ;
+		pfDiffuseLight[i] =  fDiffuseLight ;
+		pfSpecularLight[i] = fSpecularLight ;
+		pfPositionLight[i] = 0 ;
+	}
+	pfAmbiantLight[3] = 1 ;
+	pfDiffuseLight[3] = 1 ;
+	pfSpecularLight[3] = 1 ;
+	pfPositionLight[3] = 1 ;
+	
+	glLightfv(GL_LIGHT1, GL_AMBIENT, pfAmbiantLight);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, pfDiffuseLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, pfSpecularLight);
+    glLightfv(GL_LIGHT1, GL_POSITION, pfPositionLight);
+    glEnable(GL_LIGHT1);
+	
+	/* Lux fit. */
 
-		pData->fRadius = 2 ;
-		pData->fAlpha = 0 ;
-		pData->fBeta = 3*M_PI/2 ;
-		pData->fCenterX = 0 ;
-		pData->fCenterY = 0 ;
-		pData->fCenterZ = 0 ;
-		pData->fTranslateX = 0 ;
-		pData->fTranslateY = 0 ;
-		pData->fTranslateZ = 0 ;
+	glEnable(GL_NORMALIZE) ;
+
+	pData->fRadius = 5 ;
+	pData->fAlpha = 0 ;
+	pData->fBeta = 3*M_PI/2 ;
+	pData->fCenterX = 0 ;
+	pData->fCenterY = 0 ;
+	pData->fCenterZ = 0 ;
+	pData->fTranslateX = 0 ;
+	pData->fTranslateY = 0 ;
+	pData->fTranslateZ = 0 ;
 		
-		/* Fin de l'initialisation. */
+	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable( GL_COLOR_MATERIAL );
+	
+	/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;
 }
@@ -1880,7 +1915,7 @@ int drawingGlResize (int width, int height)
 	glLoadIdentity() ;
 	gluPerspective(45,
 				(GLfloat) width / (GLfloat) height ,
-				0.0001, 1000000000);
+				0.001, 1000000);
 	glMatrixMode(GL_MODELVIEW) ;
 
 	return EXIT_SUCCESS;
@@ -1904,6 +1939,11 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData)
 			  0, 1, 0) ;
 	
 	drawScene(pTracks, pData) ;
+	
+	glPushMatrix() ;
+	glTranslatef(0, 0, -10) ;
+	DrawAWing(1) ;
+	glPopMatrix() ;
 
 		/* Fin des dessins. */
 
