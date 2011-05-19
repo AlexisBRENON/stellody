@@ -7,55 +7,130 @@
     <child>
       <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
+        <property name="spacing">5</property>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
-            <property name="spacing">80</property>
             <child>
-              <object class="GtkLabel" id="label2">
+              <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Analyse Rapide</property>
+                <property name="spacing">80</property>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Analyse Rapide</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Taux d'analyse</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label3">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Analyse Longue</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
+                <property name="expand">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkHScale" id="AnalysisRate_Scale">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Taux d'analyse</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">AnalysisRate_Adjustement</property>
+                <property name="digits">0</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox2">
+            <property name="visible">True</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkButton" id="FlushData_But">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="related_action">FlushData_Action</property>
+                <property name="use_action_appearance">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Flusher les fichiers</property>
+              </object>
+              <packing>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label3">
+              <object class="GtkButton" id="FlushConfig_But">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Analyse Longue</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="related_action">FlushConfig_Action</property>
+                <property name="use_action_appearance">True</property>
               </object>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="position">0</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHScale" id="AnalysisRate_Scale">
+          <object class="GtkHSeparator" id="hseparator2">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">AnalysisRate_Adjustement</property>
-            <property name="digits">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
@@ -119,5 +194,17 @@
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAction" id="FlushData_Action">
+    <property name="label">Vider le fichier de données</property>
+    <property name="short_label">Données</property>
+    <property name="tooltip">Vide le fichier de donner</property>
+    <signal name="activate" handler="on_FlushData_Action_activate"/>
+  </object>
+  <object class="GtkAction" id="FlushConfig_Action">
+    <property name="label">Vider le fichier de configuration</property>
+    <property name="short_label">Configuration</property>
+    <property name="tooltip">Vider le fichier de configuration</property>
+    <signal name="activate" handler="on_FlushConfig_Action_activate"/>
   </object>
 </interface>

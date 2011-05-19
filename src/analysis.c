@@ -109,17 +109,13 @@ static gboolean analysisSetValues (gpointer pData[])
 		/* On regarde les valeurs retournées (on ignore les bords) */
 		for (i = 1; i < 129; i++)
 		{
-			/* On uniformise les valeurs en passant aux décibels */
-			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
-			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
-
-			if (pfSpectrumValue[i] <= -150)
-			{
-				pfSpectrumValue[i] = -149;
-			}
 			pfAnalyzedValues[i-1] = pfSpectrumValue[i];
 			pfAnalyzedValues[i-1] =
 				(pfAnalyzedValues[i-1]+pfOldAnalyzedValues[i-1])/2;
+
+			/* On uniformise les valeurs en passant aux décibels */
+			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
+			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
 			fAverage = fAverage + pfSpectrumValue[i];
 		}

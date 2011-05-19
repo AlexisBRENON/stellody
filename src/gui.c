@@ -857,6 +857,26 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	return EXIT_SUCCESS;
 }
 
+int on_FlushData_Action_activate (GtkWidget* psWidget, gpointer* pData)
+{
+	GtkWidget* pDialog = NULL;
+
+	analyzedTracksRelease((AnalyzedTracks*) pData[ANALYZED_TRACKS]);
+
+	pDialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+									GTK_MESSAGE_WARNING,
+									GTK_BUTTONS_CLOSE,
+	"Stellody va se fermer pour prendre en compte ce changement...");
+
+	gtk_dialog_run(GTK_DIALOG(pDialog));
+	gtk_widget_hide_all(pDialog);
+
+	on_Quit_Action_activate(NULL, pData);
+
+	return EXIT_SUCCESS;
+}
+
+
 
 /* ********************************************************************* */
 /*                           FENÊTRE STELLARIUM                          */
