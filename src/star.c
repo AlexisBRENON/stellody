@@ -42,8 +42,8 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
 	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
 	
-	pStar->fPositionX = (int) 2 * fAverage * (fAverage - fMedian) ;
-	pStar->fPositionY = (int) 2 * fMedian * (fMedian - fAverage) ;	
+	pStar->fPositionX = (int) fAverage * (fAverage - fMedian) ;
+	pStar->fPositionY = (int) fMedian * (fMedian - fAverage) ;	
 	pStar->fPositionZ = 0 ;
 	
 	/* Vérifie que les coordonnées ne sont pas encore prises. */
@@ -55,7 +55,8 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 		{
 			fTemp = g_ptr_array_index(psExistingStars, i) ;
 		
-			if (pStar->fPositionX == fTemp[0] && pStar->fPositionY == fTemp[1] && pStar->fPositionZ == fTemp[2])
+			if ((pStar->fPositionX == fTemp[0] && pStar->fPositionY == fTemp[1] && pStar->fPositionZ == fTemp[2])
+				|| ((pStar->fPositionX < 5 && pStar->fPositionX > -5) && (pStar->fPositionY < 5 && pStar->fPositionY > -5) && (pStar->fPositionZ < 5 && pStar->fPositionZ > -5)))
 			{
 				iTest = 0 ;
 				if (iCounter%3 == 0)
@@ -94,7 +95,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 0) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 7) ;
 	
-	pStar->fSize = 0.5 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
+	pStar->fSize = 0.4 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
 	
 	/* Définition des couleurs. */
 	
