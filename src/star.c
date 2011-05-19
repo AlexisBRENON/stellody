@@ -42,8 +42,8 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
 	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
 	
-	pStar->fPositionX = (int) fAverage ;
-	pStar->fPositionY = (int) fMedian ;	
+	pStar->fPositionX = (int) 2 * fAverage * (fAverage - fMedian) ;
+	pStar->fPositionY = (int) 2 * fMedian * (fMedian - fAverage) ;	
 	pStar->fPositionZ = 0 ;
 	
 	/* Vérifie que les coordonnées ne sont pas encore prises. */
@@ -60,12 +60,12 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 				iTest = 0 ;
 				if (iCounter%3 == 0)
 				{
-					pStar->fPositionX = pStar->fPositionX + 1 ;
+					pStar->fPositionX = pStar->fPositionX + 2 ;
 
 				}
 				else if (iCounter%3 == 1)
 				{
-					pStar->fPositionY = pStar->fPositionY + 1 ;
+					pStar->fPositionY = pStar->fPositionY + 2 ;
 
 				}
 				else
