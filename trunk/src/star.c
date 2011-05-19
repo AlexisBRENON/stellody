@@ -47,6 +47,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	pStar->fPositionZ = 0 ;
 	
 	/* Vérifie que les coordonnées ne sont pas encore prises. */
+	
 	while (iTest == 0)
 	{
 		iTest = 1 ;
@@ -70,6 +71,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 				else
 				{
 					/* Incrément du z, quand il sera mobile. */
+	
 				}
 
 				iCounter = iCounter + 1 ;

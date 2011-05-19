@@ -1748,10 +1748,14 @@ static gboolean drawTraverse(int * piKey, AnalyzedTrack * pTrack, GPtrArray * ps
 
 static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
+	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
+
 	drawCubeMap(pData) ;
 	
 	g_tree_foreach(pTracks, (GTraverseFunc) drawTraverse, pData->psExistingStars) ;
 
+	g_ptr_array_free(pData->psExistingStars, TRUE) ;
+	pData->psExistingStars = NULL ;
 }
 
 
@@ -1875,9 +1879,7 @@ int drawingGlInit (OpenGLData* pData)
 		pData->fTranslateX = 0 ;
 		pData->fTranslateY = 0 ;
 		pData->fTranslateZ = 0 ;
-	
-		pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
-	
+		
 		/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;
