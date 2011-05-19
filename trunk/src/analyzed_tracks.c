@@ -205,7 +205,7 @@ AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
 }
 
 
-gboolean analyzedTracksRemoveForAnalyze(int* piKey,
+gboolean analyzedTracksCheckForAnalyze(int* piKey,
 										AnalyzedTrack* psTrack,
 										gpointer* pData)
 {
@@ -215,11 +215,11 @@ gboolean analyzedTracksRemoveForAnalyze(int* piKey,
 
 	if (bAnalyzed == 0)
 	{
+		analyzedTrackSetFrequenciesAverage(psTrack, 0);
+		analyzedTrackSetFrequenciesMedian(psTrack, 0);
+		analyzedTrackSetFrequenciesValues(psTrack, NULL);
 		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
 											psTrack);
-		g_tree_steal(pData[ANALYZED_TRACKS], piKey);
-		free(piKey);
-		piKey = NULL;
 
 		if (*((int*) pData[CHECKANALYZE]) == 0)
 		{
