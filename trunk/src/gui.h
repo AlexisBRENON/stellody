@@ -213,6 +213,17 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
   */
 int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData);
 
+/**
+  * @fn int on_FlushData_Action_activate (GtkWidget* psWidget,
+										gpointer* pData);
+  * @brief Vide le fichier de données.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int on_FlushData_Action_activate (GtkWidget* psWidget, gpointer* pData);
+
 
 /* ********************************************************************* */
 /*                           FENÊTRE STELLARIUM                          */

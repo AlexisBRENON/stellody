@@ -133,6 +133,7 @@ gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
 	assert (pValue != NULL);
 
 	analyzedTrackRelease(pValue);
+	free(pKey);
 
 	return FALSE;
 }
