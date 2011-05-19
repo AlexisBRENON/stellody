@@ -213,13 +213,13 @@ char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack);
 int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bValue);
 
 /**
-  * @fn const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
+  * @fn char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir l'emplacement du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
   * @return Le chemin vers le morceau (chaine de caractères).
   */
-const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
+char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
 /**
   * @fn int analyzedTrackSetPath (AnalyzedTrack* psTrack,
 									const char* strNewPath)

@@ -46,6 +46,8 @@ static gboolean analysisSetValues (gpointer pData[])
 	float fOldMedian = 0;
 	float fAverage = 0;
 	float fMedian = 0;
+	const float* pfOldAnalyzedValues = NULL;
+	float pfAnalyzedValues[iSAVEDVALUES];
 	GtkWidget* psStatusBar = NULL;
 	const char* strConstFileName = NULL;
 	char* strFileName = NULL;
@@ -102,12 +104,22 @@ static gboolean analysisSetValues (gpointer pData[])
 								pfSpectrumValue, iNUMVALUES,
 								1, FMOD_DSP_FFT_WINDOW_RECT);
 
+		pfOldAnalyzedValues = analyzedTrackGetFrequenciesValues(psTrack);
+
 		/* On regarde les valeurs retournées (on ignore les bords) */
 		for (i = 1; i < 129; i++)
 		{
 			/* On uniformise les valeurs en passant aux décibels */
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
+
+			if (pfSpectrumValue[i] <= -150)
+			{
+				pfSpectrumValue[i] = -149;
+			}
+			pfAnalyzedValues[i-1] = pfSpectrumValue[i];
+			pfAnalyzedValues[i-1] =
+				(pfAnalyzedValues[i-1]+pfOldAnalyzedValues[i-1])/2;
 
 			fAverage = fAverage + pfSpectrumValue[i];
 		}
@@ -117,14 +129,16 @@ static gboolean analysisSetValues (gpointer pData[])
 		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
 		fOldMedian = analyzedTrackGetFrequenciesMedian(psTrack);
 
+
 		if (fAverage > -150 && fMedian > -150)
 		{
-			printf("Moyenne : %f, Mediane : %f\n", fAverage, fMedian);
 			analyzedTrackSetFrequenciesAverage(psTrack,
 												fOldAverage+fAverage);
 			analyzedTrackSetFrequenciesMedian(psTrack,
 												fOldMedian+fMedian);
 		}
+		analyzedTrackSetFrequenciesValues(psTrack, pfAnalyzedValues);
+
 	}
 	else /* Si ça ne joue plus, c'est que l'analyse est finie. */
 	{

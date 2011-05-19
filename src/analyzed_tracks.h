@@ -149,7 +149,7 @@ AnalyzedTrack* analyzedTracksGetTrack(
 
 
 /**
-  * @fn gboolean analyzedTracksRemoveForAnalyze (int* piKey,
+  * @fn gboolean analyzedTracksCheckForAnalyze (int* piKey,
 										AnalyzedTrack* psTrack,
 										gpointer* pData)
   * @brief Enlève tous les morceau de l'arbre qui ne sont pas encore
@@ -160,7 +160,7 @@ AnalyzedTrack* analyzedTracksGetTrack(
   * @param[in,out] pData Tableau des données utilisées
   * @return FALSE pour continuer la traversée
   */
-gboolean analyzedTracksRemoveForAnalyze (int* piKey,
+gboolean analyzedTracksCheckForAnalyze (int* piKey,
 										AnalyzedTrack* psTrack,
 										gpointer* pData);
 

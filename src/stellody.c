@@ -156,18 +156,18 @@ int stellody(int argc, char* argv[])
 
 	/* Création de l'interface et chargement des données */
 
-	pDatas[MAIN_BUILDER] = guiLoad(pDatas);
+	guiLoad(pDatas);
 
 	pFileContext = filesOpen();
 	pDatas[PREFERENCES] = preferencesCreateFromFile(pFileContext);
 	pDatas[ANALYZED_TRACKS] = analyzedTracksCreateFromFile(pFileContext);
 
 	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
-					(GTraverseFunc) analyzedTracksRemoveForAnalyze,
+					(GTraverseFunc) analyzedTracksCheckForAnalyze,
 					pDatas);
 
 	/* Lancement de la boucle d'évenements */
-
+	on_Stellarium_Action_activate(NULL, pDatas);
 	gtk_main();
 
 	/* Libération de la mémoire */

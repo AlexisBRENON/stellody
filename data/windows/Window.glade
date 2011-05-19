@@ -4,7 +4,7 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkListStore" id="PlayList_ListStore">
     <columns>
-      <!-- column-name TrackTitle -->
+      <!-- column-name Track_infos -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -110,6 +110,14 @@
                         <property name="related_action">Pause_Action</property>
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="Next_Item">
+                        <property name="visible">True</property>
+                        <property name="related_action">Next_Action</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -226,6 +234,20 @@
                     <property name="position">2</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkButton" id="Next_But">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="related_action">Next_Action</property>
+                    <property name="use_action_appearance">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -285,10 +307,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">PlayList_ListStore</property>
-                    <property name="headers_visible">False</property>
-                    <property name="headers_clickable">False</property>
-                    <property name="reorderable">True</property>
-                    <property name="search_column">0</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -457,5 +475,13 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
     <property name="page_size">1</property>
+  </object>
+  <object class="GtkAction" id="Next_Action">
+    <property name="label">Suivant</property>
+    <property name="short_label">&gt;&gt;|</property>
+    <property name="tooltip">Passe à la chanson suivante</property>
+    <property name="stock_id">gtk-media-next</property>
+    <property name="icon_name">media-skip-forward</property>
+    <signal name="activate" handler="on_Next_Action_activate"/>
   </object>
 </interface>

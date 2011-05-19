@@ -150,6 +150,7 @@ static int guiUnparent (GtkBuilder* pMainBuilder,
 static gboolean guiTrackScaleIncrement (gpointer* pData)
 {
 	GtkWidget* pScale = NULL;
+	GtkAction* pStopAction = NULL;
 	GtkObject* pAdjustment = NULL;
 	double dTrackPosition = 0;
 	double dLength = 0;
@@ -176,12 +177,101 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 
 	if (dTrackPosition+1 >= dLength || bIsPlaying == FALSE)
 	{
-		on_Stop_Action_activate(NULL, pData);
+		pStopAction = GTK_ACTION(gtk_builder_get_object
+								(pData[MAIN_BUILDER], "Stop_Action"));
+		g_signal_emit_by_name(pStopAction, "activate");
 	}
 
 	return bIsPlaying;
 }
 
+
+static int guiPlayTrack (char* strPath,
+						GtkBuilder* pMainBuilder,
+						FMOD_SYSTEM* pFmodContext,
+						FMOD_CHANNEL** ppPlayingChannel)
+{
+	GtkWidget* pScale = NULL;
+	GtkWidget* pLabel = NULL;
+	unsigned int uiTrackPosition = 0;
+	unsigned int uiTrackLength = 0;
+	GtkObject* pAdjustment = NULL;
+	FMOD_SOUND* pSound = NULL;
+	FMOD_TAG Tag;
+	char* strTitle = NULL;
+	char* strSinger = NULL;
+	char* strTrackInfo = NULL;
+
+
+	/* On récupère à partir de quelle partie commencer le morceau */
+	pScale = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
+												"Track_Scale"));
+	uiTrackPosition = (unsigned int)
+					gtk_range_get_value(GTK_RANGE(pScale));
+
+	pAdjustment = GTK_OBJECT(gtk_builder_get_object(
+											pMainBuilder,
+											"Track_Adjustment"));
+/* *************** */
+
+	/* On met à l'échelle la barre de lecture */
+	FMOD_System_CreateSound(pFmodContext,
+							strPath,
+							FMOD_CREATESTREAM | FMOD_SOFTWARE,
+							NULL,
+							&pSound);
+
+	FMOD_Sound_GetLength(pSound, &uiTrackLength, FMOD_TIMEUNIT_MS);
+	uiTrackPosition = (uiTrackPosition*uiTrackLength)/100;
+
+	gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment),
+							(double) uiTrackLength/1000);
+	gtk_range_set_value(GTK_RANGE(pScale),
+						(double) uiTrackPosition/1000);
+/* *************** */
+
+	/* On récupère les tags */
+/*	FMOD_Sound_GetNumTags(pSound, &nbTag, NULL);
+	for (i = 0; i < nbTag; i++)
+	{
+		FMOD_Sound_GetTag(pSound, NULL, i, &Tag);
+		printf ("%s\n", Tag.name);
+		printf ("%s\n\n", (char*) Tag.data);
+	}*/
+	FMOD_Sound_GetTag(pSound, "TITLE", 0, &Tag);
+	strTitle = (char*)Tag.data;
+	FMOD_Sound_GetTag(pSound, "ARTIST", 0, &Tag);
+	strSinger = (char*) Tag.data;
+	/* On les concatène */
+	strTrackInfo = (char*) malloc((strlen(strTitle)+
+									3+
+									strlen(strSinger)
+									+1)*sizeof(char));
+	strcpy(strTrackInfo, strSinger);
+	strcat(strTrackInfo, " - ");
+	strcat(strTrackInfo, strTitle);
+	/* On les affiche dans le label */
+	pLabel = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
+												"TrackInfo_Label"));
+	gtk_label_set_text(GTK_LABEL(pLabel),
+						strTrackInfo);
+
+	free(strTrackInfo);
+/* *************** */
+
+	/* On lance la lecture à partir du moment choisi */
+	FMOD_System_PlaySound(pFmodContext,
+						FMOD_CHANNEL_FREE, pSound, TRUE,
+						ppPlayingChannel);
+	FMOD_Channel_SetPosition(*ppPlayingChannel,
+					uiTrackPosition, FMOD_TIMEUNIT_MS);
+	FMOD_Channel_SetPaused(*ppPlayingChannel,
+							FALSE);
+/* *************** */
+
+	return EXIT_SUCCESS;
+
+}
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -193,7 +283,7 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 /*                           FENÊTRE PRINCIPALE                          */
 /* ********************************************************************* */
 
-GtkBuilder* guiLoad (const gpointer pData)
+int guiLoad (gpointer* pData)
 {
 	GtkBuilder* psBuilder = NULL;
 	GtkWidget* psWin = NULL;
@@ -205,7 +295,9 @@ GtkBuilder* guiLoad (const gpointer pData)
 											GUI_MAIN_WIN));
 	gtk_widget_show_all(psWin);
 
-	return psBuilder;
+	pData[MAIN_BUILDER] = psBuilder;
+
+	return EXIT_SUCCESS;
 }
 
 int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
@@ -243,20 +335,10 @@ int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
 
 int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	FMOD_SOUND* pSound = NULL;
 	FMOD_BOOL bIsPlaying = FALSE;
-	const char* strPath;
+	char* strPath;
 	AnalyzedTrack* psTrack = NULL;
-	GtkWidget* pScale = NULL;
-	GtkWidget* pLabel = NULL;
-	GtkObject* pAdjustment = NULL;
 	int i = 1;
-	unsigned int uiTrackPosition = 0;
-	unsigned int uiTrackLength = 0;
-	FMOD_TAG Tag;
-	char* strTitle;
-	char* strSinger;
-	char* strTrackInfo;
 
 
 	if (pData[PLAYING_CHANNEL] != NULL)
@@ -266,16 +348,6 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	}
 	if (bIsPlaying == FALSE)
 	{
-		/* On récupère à partir de quelle partie commencer le morceau */
-		pScale = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
-													"Track_Scale"));
-		uiTrackPosition = (unsigned int)
-						gtk_range_get_value(GTK_RANGE(pScale));
-
-		pAdjustment = GTK_OBJECT(gtk_builder_get_object(
-												pData[MAIN_BUILDER],
-												"Track_Adjustment"));
-
 		/* Si aucun morceau n'est dans la playlist... */
 		if (pData[PLAYLIST] == NULL)
 		{
@@ -311,73 +383,21 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		}
 		else
 		{
-			/* Sinon, on charge le premier morceau de la playlist et on
-			le supprime. */
+			/* Sinon, on charge le premier morceau de la playlist*/
 			AnalyzedTrack* psTrackInPlaylist;
 			psTrackInPlaylist = ((GSList*)pData[PLAYLIST])->data;
 			strPath = analyzedTrackGetPath(psTrackInPlaylist);
-			pData[PLAYLIST] = g_slist_remove((GSList*)pData[PLAYLIST],
-												psTrackInPlaylist);
 		}
 
-		FMOD_System_CreateSound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-									strPath,
-									FMOD_CREATESTREAM | FMOD_SOFTWARE,
-									NULL,
-									&pSound);
 
-		/* On met à l'échelle la barre de lecture */
-		FMOD_Sound_GetLength(pSound, &uiTrackLength, FMOD_TIMEUNIT_MS);
-		uiTrackPosition = (uiTrackPosition*uiTrackLength)/100;
-
-		gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment),
-								(double) uiTrackLength/1000);
-		gtk_range_set_value(GTK_RANGE(pScale),
-							(double) uiTrackPosition/1000);
-
-		/* On récupère les tags */
-/*		FMOD_Sound_GetNumTags(pSound, &nbTag, NULL);
-		for (i = 0; i < nbTag; i++)
-		{
-			FMOD_Sound_GetTag(pSound, NULL, i, &Tag);
-			printf ("%s\n", Tag.name);
-			printf ("%s\n\n", (char*) Tag.data);
-		}*/
-		FMOD_Sound_GetTag(pSound, "TITLE", 0, &Tag);
-		strTitle = (char*)Tag.data;
-		FMOD_Sound_GetTag(pSound, "ARTIST", 0, &Tag);
-		strSinger = (char*) Tag.data;
-
-		/* On les concatène */
-		strTrackInfo = (char*) malloc((strlen(strTitle)+
-										3+
-										strlen(strSinger)
-										+1)*sizeof(char));
-		strcpy(strTrackInfo, strSinger);
-		strcat(strTrackInfo, " - ");
-		strcat(strTrackInfo, strTitle);
-
-		/* On les affiche dans le label */
-		pLabel = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
-													"TrackInfo_Label"));
-		gtk_label_set_text(GTK_LABEL(pLabel),
-							strTrackInfo);
-
-		free(strTrackInfo);
+		guiPlayTrack(strPath, (GtkBuilder*) pData[MAIN_BUILDER],
+					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL]);
 
 		/* On joue le morceau. */
 		g_timeout_add_seconds(1,
 							(GSourceFunc) guiTrackScaleIncrement,
 							pData);
-
-		FMOD_System_PlaySound((FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-							FMOD_CHANNEL_FREE, pSound, TRUE,
-							(FMOD_CHANNEL**)&(pData[PLAYING_CHANNEL]));
-		/* A partir du moment voulu */
-		FMOD_Channel_SetPosition((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-						uiTrackPosition, FMOD_TIMEUNIT_MS);
-		FMOD_Channel_SetPaused((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-								FALSE);
 	}
 
 	return EXIT_SUCCESS;
@@ -736,6 +756,68 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	return EXIT_SUCCESS;
 }
 
+int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
+{
+	 AnalyzedTrack* pTrack = NULL;
+	 FMOD_BOOL bIsPlaying = FALSE;
+	 int i;
+
+	if (pData[PLAYLIST] != NULL)
+	{
+		pTrack = ((AnalyzedTrack*) (g_list_first(
+									(GList*)pData[PLAYLIST]))->data);
+
+		pData[PLAYLIST] = g_list_remove((GList*)pData[PLAYLIST], pTrack);
+		pData[PLAYLIST] = g_list_append((GList*)pData[PLAYLIST], pTrack);
+	}
+	else
+	{
+		if (pData[PLAYING_CHANNEL] != NULL)
+		{
+			FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
+									&bIsPlaying);
+		}
+
+		if (bIsPlaying == TRUE)
+		{
+			int iTIDMax = 0;
+
+			iTIDMax = preferencesGetMaxTID((Preferences*)
+											pData[PREFERENCES]);
+
+			/* On charge un morceau aléatoirement */
+			i = rand() % (iTIDMax+1);
+			do
+			{
+				pTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
+													i);
+				i++;
+			} while ((pTrack == NULL && i <= iTIDMax));
+
+			if (pTrack == NULL)
+			{
+				for (i = 0; pTrack == NULL && i <= iTIDMax; i++)
+				{
+					pTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
+													i);
+				}
+			}
+		}
+	}
+
+	on_Stop_Action_activate(psWidget, pData);
+
+	if (pTrack != NULL)
+	{
+		guiPlayTrack(analyzedTrackGetPath(pTrack),
+					pData[MAIN_BUILDER],
+					pData[FMOD_CONTEXT],
+					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL]);
+	}
+
+	return EXIT_SUCCESS;
+}
+
 int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								GdkEventButton* pEvent,
 								 gpointer* pData)
@@ -917,7 +999,7 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 	{
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
-		
+
 		drawingTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);	}
 
 	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;

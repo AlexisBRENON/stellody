@@ -39,12 +39,14 @@ static gboolean filesSaveTracks (int* pKey,
 	const char* strPath = NULL;
 	float fAverage = 0;
 	float fMedian = 0;
+	const float* fValues = NULL;
 
 	iTID = analyzedTrackGetTID(pValue);
 	bAnalyzed = analyzedTrackGetAnalyzed(pValue);
 	strPath = analyzedTrackGetPath(pValue);
 	fAverage = analyzedTrackGetFrequenciesAverage(pValue);
 	fMedian = analyzedTrackGetFrequenciesMedian(pValue);
+	fValues = analyzedTrackGetFrequenciesValues(pValue);
 
 	g_key_file_set_integer(pData,
 							strPath,
@@ -66,6 +68,11 @@ static gboolean filesSaveTracks (int* pKey,
 						strPath,
 						"fMedian",
 						fMedian);
+	g_key_file_set_double_list(pData,
+								strPath,
+								"fValues",
+								(double*) fValues,
+								iSAVEDVALUES);
 
 	return FALSE;
 }

@@ -56,14 +56,14 @@ typedef enum eGUI_DATA GUI_DATA;
 /* ********************************************************************* */
 
 /**
-  * @fn GtkBuilder* guiLoad (const gpointer pData)
+  * @fn int guiLoad (gpointer* pData)
   * @brief Charge et affiche l'interface homme machine (GUI).
   *
-  * @param[in] pData Pointeur sur un tableau qui sera envoyée à tous les
+  * @param[in,out] pData Pointeur sur un tableau qui sera envoyée à tous les
   callbacks
   * @return Le builder créé.
   */
-GtkBuilder* guiLoad (const gpointer pData);
+int guiLoad (gpointer* pData);
 
 
 /* ********************************************************************* */
@@ -170,6 +170,16 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData);
   * @return EXIT_SUCCESS si tout est OK.
   */
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData);
+
+/**
+  * @fn int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
+  * @brief Passe au morceau suivant.
+  *
+  * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData);
 
 /**
   * @fn int on_Track_Scale_value_changed (GtkWidget* psWidget,

@@ -204,7 +204,7 @@ int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bValue)
 }
 
 
-const char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
+char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
 {
 	assert (psTrack != NULL);
 
@@ -272,9 +272,19 @@ int analyzedTrackSetFrequenciesValues(AnalyzedTrack* psTrack,
 
 	assert(psTrack != NULL);
 
-	for (i = 0; i < iSAVEDVALUES; i++)
+	if (fValues == NULL)
 	{
-		psTrack->fValues[i] = fValues[i];
+		for (i = 0; i < iSAVEDVALUES; i++)
+		{
+			psTrack->fValues[i] = 0;
+		}
+	}
+	else
+	{
+		for (i = 0; i < iSAVEDVALUES; i++)
+		{
+			psTrack->fValues[i] = fValues[i];
+		}
 	}
 
 	return EXIT_SUCCESS;

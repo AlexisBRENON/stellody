@@ -87,11 +87,17 @@ help :
 		
 check :
 	@echo
+	@echo "  Vérification de l'arborescence\n"
 	@if [ ! -e bin ]; then mkdir bin; fi
 	@if [ ! -e obj ]; then mkdir obj; fi
 	@if [ ! -e data ]; then	echo "Dossiers de données inexistants..."; exit 1;fi
-	@if [ ! -e .stellody_data ]; then echo "# Fichier de données" >.stellody_data; fi
-	@if [ ! -e .stellody_config ]; then echo "# Fichier de configuration" >.stellody_data; fi
+	@if [ ! -e data/.stellody_data ]; then echo "# Fichier de données" >data/.stellody_data; fi
+	@if [ ! -e data/.stellody_config ]; then echo "# Fichier de configuration" >data/.stellody_config; fi
+	@echo "======================================="
+	@echo
+	@echo "Début des messages compilateur (syntaxe)."
+	@echo
+	
 	
 		
 mac : check $(OBJS_MAC)
