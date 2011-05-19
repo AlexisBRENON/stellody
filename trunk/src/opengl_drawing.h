@@ -55,6 +55,9 @@ struct sOpenGLData
 	float fTranslateX ;	/**< Translation en x de la caméra */
 	float fTranslateY ;	/**< Translation en y de la caméra */
 	float fTranslateZ ;	/**< Translation en z de la caméra */
+	GPtrArray * psExistingStars ; /**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
+	
+	
 	float pfVectorX[3] ;
 	float pfVectorY[3] ;
 	float pfVectorZ[3] ;
@@ -119,11 +122,11 @@ int drawingGlResize (int width, int height);
   * @fn int drawingGlDraw (gpointer* pData);
   * @brief Rafraichit la scene.
   *
-  * @param[in] pTracks Données des chansons
+  * @param[in, out] pTracks Données des chansons
  * @param[in,out] pData Données OpenGL
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlDraw (const AnalyzedTracks * pTracks, OpenGLData * pData);
+int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData);
 
 /* ********************************************************************* */
 /*                                                                       */
