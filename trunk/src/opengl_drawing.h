@@ -57,6 +57,7 @@ struct sOpenGLData
 	float fTranslateZ ;	/**< Translation en z de la caméra */
 	GPtrArray * psExistingStars ; /**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
 	int iPrecision ;	/**< Precision choisie en préférence pour la qualité des dessins. */
+	float pfTransfertMatrix[9] ; /**< Matrice de passage de la base du monde à la base caméra. */
 } ;
 
 /**
