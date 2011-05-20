@@ -142,15 +142,15 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 1) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 6) ;
-	pStar->fColourR = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/5 ;
+	pStar->fColourR = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
 	
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 2) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 5) ;
-	pStar->fColourG = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/5 ;
+	pStar->fColourG = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
 	
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 3) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 4) ;
-	pStar->fColourB = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/10 ;
+	pStar->fColourB = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/4 ;
 	
 	return (0) ;
 }

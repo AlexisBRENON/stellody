@@ -1820,7 +1820,7 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	
 	/* Remplissage de la matrice de passage. */
 	
-	for (i = 0 ; i < 3 ; i = i++)
+	for (i = 0 ; i < 3 ; i++)
 	{
 		pData->pfTransfertMatrix[3 * i] = pfVectorX[i] ;
 		pData->pfTransfertMatrix[3 * i + 1] = pfVectorY[i] ;
