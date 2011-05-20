@@ -1741,6 +1741,7 @@ static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData *
 
 	glPushMatrix() ;
 	drawStar(& sStar, pData->iPrecision) ;
+	drawSelectedStar(& sStar) ;
 	glPopMatrix() ;
 	
 	return FALSE ;
