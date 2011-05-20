@@ -981,10 +981,10 @@ int on_Stellarium_DrawingArea_button_release_event (
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
-					drawingRotate(pData[OPENGLDATA], 0, 0, 0.1);
+					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), 0.1);
 					break;
 				case GDK_SCROLL_DOWN:
-					drawingRotate(pData[OPENGLDATA], 0, 0, -0.1);
+					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), -0.1);
 					break;
 				default:
 					break;
@@ -1020,26 +1020,11 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
 
-		drawingTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);	}
+		drawingTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);
+	}
 
 	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;
 	*((float*) pData[MOUSEPOSITION_Y]) = (float) psEvent->y;
 
 	return EXIT_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -56,6 +56,7 @@ struct sOpenGLData
 	float fTranslateY ;	/**< Translation en y de la caméra */
 	float fTranslateZ ;	/**< Translation en z de la caméra */
 	GPtrArray * psExistingStars ; /**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
+	int iPrecision ;	/**< Precision choisie en préférence pour la qualité des dessins. */
 } ;
 
 /**
@@ -84,7 +85,7 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 
 /**
  * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
- * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ * @brief Permet de gérer le positionnement latitudinal et longitudinal de la caméra.
  *
  * @param[in,out] pData Données utilisées par OpenGL
  * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
@@ -93,6 +94,18 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
+
+/**
+ * @fn drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @brief Permet de gérer le lzoomde la caméra.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @param[in] fTranslateX Position de la souris en X
+ * @param[in] fTranslateY Position de la souris en Y
+ * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
 
 /**
   * @fn int drawingGlInit (OpenGLData* pData)

@@ -114,7 +114,7 @@ mac : check $(OBJS_MAC)
 	@echo
 	@echo "======================================="
 	@echo
-	@echo "Stellody construit avec sucès !"
+	@echo "Stellody construit avec succès !"
 	@echo
 	
 lin : check $(OBJS_LIN)

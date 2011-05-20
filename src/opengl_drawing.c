@@ -45,7 +45,7 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-static void DrawCube()
+static void drawCube()
 {
 	int i = 0 ;
 	int j = 0 ;
@@ -106,7 +106,7 @@ static void DrawCube()
 	glEnd() ;
 }
 
-static void DrawTriangle(void)
+static void drawTriangle(void)
 {
 	int i = 0 ;
 	int j = 0 ;
@@ -164,7 +164,7 @@ static void DrawTriangle(void)
 	glEnd() ;
 }
 
-static void DrawSphere()
+static void drawSphere(int iPrecision)
 {
 	float alpha = -90 ;
 	float beta = 0 ;
@@ -178,7 +178,7 @@ static void DrawSphere()
 	float z2 = 0 ;
 	int i = 0 ;
 	int j = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 
@@ -215,7 +215,7 @@ static void DrawSphere()
 	}
 }
 
-static void DrawCutCone(float Longueur)
+static void drawCutCone(float Longueur, int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -226,7 +226,7 @@ static void DrawCutCone(float Longueur)
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_FAN) ;
@@ -285,7 +285,7 @@ static void DrawCutCone(float Longueur)
 	glEnd() ;
 }
 
-static void DrawCylinder()
+static void drawCylinder(int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -296,7 +296,7 @@ static void DrawCylinder()
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_FAN) ;
@@ -356,7 +356,7 @@ static void DrawCylinder()
 }
 
 /* Angle compris entre 1 et 64 ; 64 pour un cylindre complet. */
-static void DrawPartialCylinder(int Angle)
+static void drawPartialCylinder(int Angle, int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -367,7 +367,7 @@ static void DrawPartialCylinder(int Angle)
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_FAN) ;
@@ -442,14 +442,14 @@ static void DrawPartialCylinder(int Angle)
 	glEnd() ;
 }
 
-static void DrawCone()
+static void drawCone(int iPrecision)
 {
 	float beta = 0 ;
 	float x = 0 ;
 	float y = 0 ;
 	float z = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_FAN) ;
@@ -486,7 +486,7 @@ static void DrawCone()
 
 }
 
-static void DrawRing(void)
+static void drawRing(int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -497,7 +497,7 @@ static void DrawRing(void)
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_STRIP) ;
@@ -598,7 +598,7 @@ static void DrawRing(void)
 
 }
 
-static void DrawHalfRing(void)
+static void drawHalfRing(int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -609,7 +609,7 @@ static void DrawHalfRing(void)
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_STRIP) ;
@@ -726,7 +726,7 @@ static void DrawHalfRing(void)
 }
 
 /* Angle compris entre 1 et 64 ; 64 pour un anneau complet. */
-static void DrawPartialRing(int Angle)
+static void drawPartialRing(int Angle, int iPrecision)
 {
 	float beta = 0 ;
 	float betaS = 0 ;
@@ -737,7 +737,7 @@ static void DrawPartialRing(int Angle)
 	float y2 = 0 ;
 	float z2 = 0 ;
 	int i = 0 ;
-	int n = 64 ;
+	int n = iPrecision ;
 	double step = 2*M_PI / (n) ;
 
 	glBegin(GL_TRIANGLE_STRIP) ;
@@ -853,7 +853,7 @@ static void DrawPartialRing(int Angle)
 	glEnd() ;
 }
 
-static void DrawAWingMiddle()
+static void drawAWingMiddle()
 {
 	float z1 = 0.75 ;
 	float z2 = 0.01 ;
@@ -873,7 +873,7 @@ static void DrawAWingMiddle()
 	glScalef(0.2, 0.276, 1) ;
 	glRotatef(45, 1, 0, 0) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* Fuselage haut. */
@@ -882,7 +882,7 @@ static void DrawAWingMiddle()
 	glRotatef(-7, 1, 0, 0) ;
 	glScalef(0.2, 0.05, 3.6) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* Fuselage bas. */
@@ -892,7 +892,7 @@ static void DrawAWingMiddle()
 	glTranslatef(0, 0, 0.6) ;
 	glScalef(0.2, 0.05, 4.8) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -911,14 +911,14 @@ static void DrawAWingMiddle()
 	glTranslatef(0, -0.1, -1.15) ;
 	glScalef(0.2, 0.33, 0.2*2) ;
 	glColor3f(0, 0, 0) ;
-	DrawSphere() ;
+	drawSphere(64) ;
 	glPopMatrix() ;
 
 		/* Habitacle amovible. */
 	glPushMatrix();
 	glScalef(0.5, 0.5, 1.5) ;
 	glColor3f(0.75, 0.85, 1) ;
-	DrawSphere() ;
+	drawSphere(64) ;
 	glPopMatrix() ;
 
 		/* Anneau horizontal. */
@@ -928,7 +928,7 @@ static void DrawAWingMiddle()
 	glRotatef(-7, 1, 0, 0) ;
 	glScalef(0.52, 0.2, 1.5) ;
 	glColor3f(0, 0, 0) ;
-	DrawHalfRing() ;
+	drawHalfRing(64) ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -938,7 +938,7 @@ static void DrawAWingMiddle()
 	glScalef(0.52, 0.52, 0.1) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0, 0, 0) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 		/* Habitacle. */
@@ -947,7 +947,7 @@ static void DrawAWingMiddle()
 	glScalef(0.51, 0.51, 0.6) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.75, 0.85, 1) ;
-	DrawCylinder();
+	drawCylinder(64);
 	glPopMatrix() ;
 
 		/* Anneau horizontal. */
@@ -955,7 +955,7 @@ static void DrawAWingMiddle()
 	glTranslatef(0, 0, 0.3) ;
 	glScalef(1.04, 0.2, 0.6) ;
 	glColor3f(0, 0, 0) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* Anneau. */
@@ -964,7 +964,7 @@ static void DrawAWingMiddle()
 	glScalef(0.53, 0.53, 0.1) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0, 0, 0) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 		/* Structure. */
@@ -974,7 +974,7 @@ static void DrawAWingMiddle()
 	glScalef(0.5, 0.5, 1.4) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCylinder() ;
+	drawCylinder(64) ;
 	glPopMatrix() ;
 
 		/* Remplissage. */
@@ -984,7 +984,7 @@ static void DrawAWingMiddle()
 	glScalef(0.47, 0.47, 1.5) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.1, 0.1, 0.1) ;
-	DrawCylinder() ;
+	drawCylinder(64) ;
 	glPopMatrix() ;
 
 		/* Bout. */
@@ -995,7 +995,7 @@ static void DrawAWingMiddle()
 	glRotatef(90, 1, 0, 0) ;
 	glTranslatef(0, 0, 0.14) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1010,7 +1010,7 @@ static void DrawAWingMiddle()
 	glScalef(0.7, 0.7, 1.4) ;
 	glRotatef(80, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawHalfRing() ;
+	drawHalfRing(64) ;
 	glPopMatrix () ;
 
 		/* Réacteur Bas. */
@@ -1019,7 +1019,7 @@ static void DrawAWingMiddle()
 	glScalef(0.7, 0.7, 1.4) ;
 	glRotatef(80, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawHalfRing() ;
+	drawHalfRing(64) ;
 	glPopMatrix () ;
 
 		/* Remplissage. */
@@ -1027,14 +1027,14 @@ static void DrawAWingMiddle()
 	glScalef(0.65, 0.7, 0.66) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.40, 0.80, 1.00) ;					/* Couleur réacteur central de l'A-Wing. */
-	DrawCylinder() ;
+	drawCylinder(64) ;
 	glPopMatrix () ;
 
 		/* Séparation. */
 	glPushMatrix() ;
 	glScalef(1.41, 0.12, 1.385) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1045,7 +1045,7 @@ static void DrawAWingMiddle()
 	glTranslatef(0, -0.56+0.0085/2, 1.81915) ;
 	glScalef(1.41, 0.0585, 2.0167) ;
 	glColor3f(0.60, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* Fin. */
@@ -1053,7 +1053,7 @@ static void DrawAWingMiddle()
 
 }
 
-static void DrawAWingRight(int Armes)
+static void drawAWingRight(int Armes)
 {
 	float x = -0.025 ;
 	float z1 = 0.75 ;
@@ -1078,7 +1078,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.8, 0.0695, 0.2) ;
 	glRotatef(45, 1, 0, 0) ;
 	glColor3f(0.60, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 0ABbis : Remplissage avant. */
@@ -1087,7 +1087,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.8, 0.26, 2.2) ;
 	glRotatef(45, 1, 0, 0) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 1A : Structure rouge descendante. */
@@ -1099,7 +1099,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.8, 0.05, 6-(0.00155*2)) ;
 
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 1B : Structure rouge montante. */
@@ -1108,7 +1108,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(7, 1, 0, 0) ;
 	glScalef(0.8, 0.05, 6) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1119,7 +1119,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.3736, 0.05, 0.625) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 3 : Triangle blanc haut. */
@@ -1129,7 +1129,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(-90, 1, 0, 0) ;
 	glRotatef(180, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 3bis : Complément rouge haut. */
@@ -1137,7 +1137,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.4768, 0.7549, 0.336) ;
 	glScalef(0.0064, 0.05, 0.625) ;
 	glColor3f(0.60, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 4 : Triangle rouge bas. */
@@ -1146,7 +1146,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.3346, 0.05, 0.625) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.6, 0.20, 0.20) ;
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 4bis : Triangle blanc bas. */
@@ -1156,7 +1156,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(-90, 1, 0, 0) ;
 	glRotatef(180, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 4ter : Complément rouge bas. */
@@ -1164,7 +1164,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.74, -0.7549, 0.336) ;
 	glScalef(0.52+0.0454*2, 0.05, 0.625) ;
 	glColor3f(0.60, 0.20, 0.20) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix () ;
@@ -1185,7 +1185,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.04916*2, 0.04916, 0.1414) ;
 	glRotatef(-90, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCone() ;
+	drawCone(64) ;
 	glPopMatrix() ;
 
 		/* 2 : Aile avant. */
@@ -1194,7 +1194,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.78*2, 0.78, 5.9523) ;
 	glRotatef(-90, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCutCone(0.937) ;
+	drawCutCone(0.937, 64) ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1212,7 +1212,7 @@ static void DrawAWingRight(int Armes)
 		glRotatef(-90, 1, 0, 0) ;
 		glRotatef(270, 0, 1, 0) ;
 		glColor3f(0.90, 0.90, 0.90) ;
-		DrawPartialRing(15) ;
+		drawPartialRing(15, 64) ;
 		glPopMatrix() ;
 
 		glPushMatrix() ;
@@ -1222,7 +1222,7 @@ static void DrawAWingRight(int Armes)
 		glRotatef(-90, 1, 0, 0) ;
 		glRotatef(270, 0, 1, 0) ;
 		glColor3f(0.90, 0.90, 0.90) ;
-		DrawPartialRing(15) ;
+		drawPartialRing(15, 64) ;
 		glPopMatrix() ;
 	}
 	else
@@ -1232,7 +1232,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.78*2, 0.78, 0.625) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.90, 0.90, 0.90) ;
-		DrawRing() ;
+		drawRing(64) ;
 		glPopMatrix() ;
 	}
 
@@ -1242,7 +1242,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.77*2, 0.77, 0.5) ;
 	glRotatef(-90, 1, 0, 0) ;
 	glColor3f(0.1, 0.1, 0.1) ;
-	DrawCylinder() ;
+	drawCylinder(64) ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1261,7 +1261,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.6, 0.05, 0.05) ;
 		glRotatef(-90, 0, 0, 1) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 2 - 1 : Laser principal - tube arrière. */
@@ -1270,7 +1270,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.06, 0.06, 0.60) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 2 - 2 : Laser principal - tube principal. */
@@ -1279,7 +1279,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.05, 0.05, 1) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 2 - 3 : Laser principal - tube blanc. */
@@ -1288,7 +1288,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.04, 0.04, 0.80) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.90, 0.90, 0.90) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 2 - 4 : Laser principal - pointe rouge. */
@@ -1297,7 +1297,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.05, 0.05, 0.1) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.60, 0.20, 0.20) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 2 - 5 : Laser principal - fin de la pointe. */
@@ -1305,7 +1305,7 @@ static void DrawAWingRight(int Armes)
 		glTranslatef(0, 0, -1.4) ;
 		glScalef(0.05, 0.05, 0.05) ;
 		glColor3f(0.60, 0.20, 0.20) ;
-		DrawSphere() ;
+		drawSphere(64) ;
 		glPopMatrix() ;
 
 			/* 3 - 1 : Cylindre de raccord entre les deux lasers 1. */
@@ -1313,7 +1313,7 @@ static void DrawAWingRight(int Armes)
 		glTranslatef(0, 0.075, -0.15) ;
 		glScalef(0.01, 0.05, 0.01) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 3 - 2 : Cylindre de raccord entre les deux lasers 2. */
@@ -1321,7 +1321,7 @@ static void DrawAWingRight(int Armes)
 		glTranslatef(0, 0.075, 0.15) ;
 		glScalef(0.01, 0.05, 0.01) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 1 : Laser secondaire - tube arrière. */
@@ -1330,7 +1330,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.03, 0.03, 0.05) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 2 : Laser secondaire - tube principal. */
@@ -1339,7 +1339,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.02, 0.02, 1.15) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 2bis : Laser secondaire - tube principal. */
@@ -1348,7 +1348,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.02, 0.02, 0.1) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCone() ;
+		drawCone(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 3 : Laser secondaire - tube fin. */
@@ -1357,7 +1357,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.015, 0.015, 0.35) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCylinder() ;
+		drawCylinder(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 4 : Laser secondaire - lien. */
@@ -1366,7 +1366,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.02, 0.02, 0.05) ;
 		glRotatef(90, 1, 0, 0) ;
 		glColor3f(0.10, 0.10, 0.10) ;
-		DrawCone() ;
+		drawCone(64) ;
 		glPopMatrix() ;
 
 			/* 4 - 5 : Laser secondaire - pointe. */
@@ -1375,7 +1375,7 @@ static void DrawAWingRight(int Armes)
 		glScalef(0.02, 0.02, 0.05) ;
 		glRotatef(-90, 1, 0, 0) ;
 		glColor3f(0.60, 0.20, 0.20) ;
-		DrawCone() ;
+		drawCone(64) ;
 		glPopMatrix() ;
 
 		glPopMatrix() ;
@@ -1390,7 +1390,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.55, 0.56, 1.45532) ;
 	glScalef(0.90, 0.05, 1.61336) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 1bis : Rectangle blanc bas. */
@@ -1398,7 +1398,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.268, -0.56+0.0085/2, 1.45532) ;
 	glScalef(0.336, 0.0585, 1.61336) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 1ter : Remplissage arrière. */
@@ -1406,7 +1406,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.55, 0, 1.41) ;
 	glScalef(0.90, 1.1, 1.61336) ;
 	glColor3f(0.1, 0.1, 0.1) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 2 : Structure basse complémentaire. */
@@ -1417,7 +1417,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(90, 0, 1, 0) ;
 	glScalef(1, 1, -1) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialRing(2) ;
+	drawPartialRing(2, 64) ;
 	glPopMatrix() ;
 
 		/* 2bis : Remplissage. */
@@ -1428,7 +1428,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(90, 0, 1, 0) ;
 	glScalef(1, 1, -1) ;
 	glColor3f(0.10, 0.10, 0.10) ;
-	DrawPartialCylinder(2) ;
+	drawPartialCylinder(2, 64) ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1443,7 +1443,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.4, 0.4, 2) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.60, 0.20, 0.20) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 		/* 2 : Lien avec le réacteur central. */
@@ -1451,7 +1451,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(-0.5, 0, 2.51) ;
 	glScalef(0.2, 0.01, 0.01) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 3 : Anneau réacteur. */
@@ -1460,7 +1460,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.4, 0.4, 0.2) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 		/* 4 : Réacteur. */
@@ -1469,7 +1469,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.4, 0.4, 2) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(1.00, 1.00, 0.70) ;					/* Couleur réacteurs secondaires de l'A-Wing. */
-	DrawCylinder() ;
+	drawCylinder(64) ;
 	glPopMatrix() ;
 
 		/* 5 : Anneau fin. */
@@ -1478,7 +1478,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.4, 0.4, 0.1) ;
 	glRotatef(90, 1, 0, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawRing() ;
+	drawRing(64) ;
 	glPopMatrix() ;
 
 	glPopMatrix () ;
@@ -1493,7 +1493,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.48, 1.95);
 	glScalef(0.05, 0.24, 2.6);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 2 : Cylindre partiel avant. */
@@ -1502,7 +1502,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.1, 0.1);
 	glRotatef(90, 0, 0, 1) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(16) ;
+	drawPartialCylinder(16, 64) ;
 	glPopMatrix() ;
 
 		/* 3 : Rectangle milieu bas. */
@@ -1510,7 +1510,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.65, 2);
 	glScalef(0.05, 0.1, 2.5);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 4 : Triangle milieu. */
@@ -1519,7 +1519,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.6, 0.2);
 	glRotatef(90, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90);
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 5 : Cylindre partiel milieu. */
@@ -1528,7 +1528,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.1, 0.1);
 	glRotatef(90, 0, 0, 1) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(13) ;
+	drawPartialCylinder(13, 64) ;
 	glPopMatrix() ;
 
 		/* 6 : Rectangle milieu. */
@@ -1536,7 +1536,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 1, 2.325);
 	glScalef(0.05, 0.6, 1.45);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 7 : Rectangle milieu haut. */
@@ -1544,7 +1544,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 1.335, 2.373);
 	glScalef(0.05, 0.07, 1.354);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 8 : Cylindre partiel haut. */
@@ -1554,7 +1554,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(90, 0, 0, 1) ;
 	glRotatef(-90, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(16) ;
+	drawPartialCylinder(16, 64) ;
 	glPopMatrix() ;
 
 		/* 9 : Rectangle arrière. */
@@ -1562,7 +1562,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.935, 3.15);
 	glScalef(0.05, 0.47, 0.2);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix() ;
@@ -1578,7 +1578,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.48, 1.95);
 	glScalef(0.05, 0.24, 2.6);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 2 : Cylindre partiel avant. */
@@ -1587,7 +1587,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.1, 0.1);
 	glRotatef(90, 0, 0, 1) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(16) ;
+	drawPartialCylinder(16, 64) ;
 	glPopMatrix() ;
 
 		/* 3 : Rectangle milieu bas. */
@@ -1595,7 +1595,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.65, 2);
 	glScalef(0.05, 0.1, 2.5);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 4 : Triangle milieu. */
@@ -1604,7 +1604,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.6, 0.2);
 	glRotatef(90, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90);
-	DrawTriangle() ;
+	drawTriangle() ;
 	glPopMatrix() ;
 
 		/* 5 : Cylindre partiel milieu. */
@@ -1613,7 +1613,7 @@ static void DrawAWingRight(int Armes)
 	glScalef(0.05, 0.1, 0.1);
 	glRotatef(90, 0, 0, 1) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(13) ;
+	drawPartialCylinder(13, 64) ;
 	glPopMatrix() ;
 
 		/* 6 : Rectangle milieu. */
@@ -1621,7 +1621,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 1, 2.325);
 	glScalef(0.05, 0.6, 1.45);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 7 : Rectangle milieu haut. */
@@ -1629,7 +1629,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 1.335, 2.373);
 	glScalef(0.05, 0.07, 1.354);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 		/* 8 : Cylindre partiel haut. */
@@ -1639,7 +1639,7 @@ static void DrawAWingRight(int Armes)
 	glRotatef(90, 0, 0, 1) ;
 	glRotatef(-90, 0, 1, 0) ;
 	glColor3f(0.90, 0.90, 0.90) ;
-	DrawPartialCylinder(16) ;
+	drawPartialCylinder(16, 64) ;
 	glPopMatrix() ;
 
 		/* 9 : Rectangle arrière. */
@@ -1647,7 +1647,7 @@ static void DrawAWingRight(int Armes)
 	glTranslatef(0, 0.935, 3.15);
 	glScalef(0.05, 0.47, 0.2);
 	glColor3f(0.90, 0.90, 0.90);
-	DrawCube() ;
+	drawCube() ;
 	glPopMatrix() ;
 
 	glPopMatrix () ;
@@ -1656,16 +1656,16 @@ static void DrawAWingRight(int Armes)
 	glPopMatrix() ;
 }
 
-static void DrawAWing(int Armes)
+static void drawAWing(int Armes)
 {
 		/* Initialisation. */
 	glPushMatrix() ;
 	glDisable(GL_TEXTURE_2D) ;
 
-	DrawAWingRight(Armes) ;
-	DrawAWingMiddle() ;
+	drawAWingRight(Armes) ;
+	drawAWingMiddle() ;
 	glScalef(-1, 1, 1) ;
-	DrawAWingRight(Armes) ;
+	drawAWingRight(Armes) ;
 
 		/* Fin. */
 	glPopMatrix() ;
@@ -1674,7 +1674,7 @@ static void DrawAWing(int Armes)
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                    Fonctions générales OpenGL                         */
+/*                   Fonctions d'affichage OpenGL                        */
 /*                                                                       */
 /* ********************************************************************* */
 
@@ -1691,17 +1691,17 @@ static void drawSelectedStar(Star * pStar)
 	glTranslatef(starGetX(pStar), starGetY(pStar), starGetZ(pStar)) ;
 	glRotatef(15, 0, 0, 1) ;
 	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
-	glTranslatef(0.75, 0, 0) ;
+	glTranslatef(0.5, 0, 0) ;
 	glRotatef(-90, 0, 0, 1) ;
-	glScalef(0.025, 0.025, 0.025) ;
-	DrawAWing(1) ;
+	glScalef(pStar->fSize*0.05, pStar->fSize*0.05, pStar->fSize*0.05) ;
+	drawAWing(1) ;
 
 	glPopMatrix() ;
 
 
 }
 
-static int drawStar(Star * psStar)
+static int drawStar(Star * psStar, int iPrecision)
 {
 	assert(psStar != NULL) ;
 
@@ -1709,7 +1709,7 @@ static int drawStar(Star * psStar)
 	glTranslatef(starGetX(psStar), starGetY(psStar), starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
 	glColor3f(starGetColourR(psStar), starGetColourG(psStar), starGetColourB(psStar)) ;
-	DrawSphere() ;
+	drawSphere(iPrecision) ;
 	glPopMatrix() ;
 
 	return 0 ;
@@ -1734,13 +1734,13 @@ static void drawCubeMap(OpenGLData * pData)
 	glPopMatrix() ;
 }
 
-static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
+static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData * pData)
 {
 	Star sStar ;
-	starCreate(& sStar, pTrack, psExistingStars) ;
+	starCreate(& sStar, pTrack, pData->psExistingStars) ;
 
 	glPushMatrix() ;
-	drawStar(& sStar) ;
+	drawStar(& sStar, pData->iPrecision) ;
 	glPopMatrix() ;
 	
 	return FALSE ;
@@ -1757,12 +1757,12 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	glPushMatrix() ;
 	glScalef(2, 2, 2) ;
 	glColor3f(1, 1, 1) ;
-	DrawSphere() ;
+	drawSphere(pData->iPrecision) ;
 	glPopMatrix() ;
 	
 	glEnable(GL_LIGHTING) ;
 	
-	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData->psExistingStars) ;
+	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
@@ -1771,7 +1771,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                   Fonctions d'affichage OpenGL                        */
+/*                    Fonctions générales OpenGL                         */
 /*                                                                       */
 /* ********************************************************************* */
 
@@ -1785,7 +1785,6 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
 	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
 	
-
 	/* Calcul du Vecteur Z = Destination - Origine. */
 	pfVectorZ[0] = (fPosX) - pData->fCenterX ;
 	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
@@ -1836,8 +1835,83 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 
 	pData->fBeta = pData->fBeta - fTranslateX ;
 
-	pData->fRadius = pData->fRadius - (fMovedRadius*pData->fRadius) ;
+	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
+	return EXIT_SUCCESS ;
+}
+
+int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fMovedRadius)
+{
+	float fTemp = 0 ;
+	float pfVectorX[3] = {0, 0, 0} ;
+	float pfVectorY[3] = {0, 0, 0} ;
+	float pfVectorZ[3] = {0, 0, 0} ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	float fTranslateX = 0 ;
+	float fTranslateY = 0 ;
+	float fTranslateZ = 0 ;
+	
+	/* Réglage de la translation de la caméra lors du zoom. */
+	
+	fTranslateX = 0.01 * fPositionX * fMovedRadius ;
+	fTranslateY = 0.01 * fPositionY * fMovedRadius ;	
+	
+	/* Calcul du Vecteur Z = Destination - Origine. */
+	pfVectorZ[0] = (fPosX) - pData->fCenterX ;
+	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
+	pfVectorZ[2] = (fPosZ) - pData->fCenterZ ;
+	/* Normalisation de Z. */
+	fTemp = sqrt(pfVectorZ[0]*pfVectorZ[0] + pfVectorZ[1]*pfVectorZ[1] + pfVectorZ[2]*pfVectorZ[2]) ;
+	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
+	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
+	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
+	
+	/* pfVectorX = Y(Monde) (produit vectoriel) pfVectorZ */
+	pfVectorX[0] = 1*pfVectorZ[2] - 0*pfVectorZ[1] ;
+	pfVectorX[1] = 0*pfVectorZ[0] - 0*pfVectorZ[2] ;
+	pfVectorX[2] = 0*pfVectorZ[1] - 1*pfVectorZ[0] ;
+	/* Normalisation de X. */
+	fTemp = sqrt(pfVectorX[0]*pfVectorX[0] + pfVectorX[1]*pfVectorX[1] + pfVectorX[2]*pfVectorX[2]) ;
+	pfVectorX[0] = pfVectorX[0] / fTemp ;
+	pfVectorX[1] = pfVectorX[1] / fTemp ;
+	pfVectorX[2] = pfVectorX[2] / fTemp ;
+	
+	/* pfVectorY = pfVectorZ (produit vectoriel) pfVectorX */
+	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
+	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;	
+	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
+	/* Normalisation de Y. */
+	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
+	pfVectorY[0] = pfVectorY[0] / fTemp ;
+	pfVectorY[1] = pfVectorY[1] / fTemp ;
+	pfVectorY[2] = pfVectorY[2] / fTemp ;
+	
+	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	
+	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	
+	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	
+	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
+	
+	return EXIT_SUCCESS ;}
+
+int drawingGlResize (int width, int height)
+{
+	glViewport(0, 0, width, height) ;
+	
+	glMatrixMode(GL_PROJECTION) ;
+	glLoadIdentity() ;
+	gluPerspective(45,
+				   (GLfloat) width / (GLfloat) height ,
+				   0.001, 1000000000);
+	glMatrixMode(GL_MODELVIEW) ;
+	
 	return EXIT_SUCCESS;
 }
 
@@ -1853,6 +1927,18 @@ int drawingGlInit (OpenGLData* pData)
 	float pfDiffuseLight[4] = {0, 0, 0, 0} ;
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
+	
+	pData->fRadius = 100 ;
+	pData->fAlpha = 0 ;
+	pData->fBeta = 3*M_PI/2 ;
+	pData->fCenterX = 0 ;
+	pData->fCenterY = 0 ;
+	pData->fCenterZ = 0 ;
+	pData->fTranslateX = 0 ;
+	pData->fTranslateY = 0 ;
+	pData->fTranslateZ = 0 ;
+	
+	pData->iPrecision = 64 ;
 	
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 	glClearDepth(1.0) ;
@@ -1888,16 +1974,6 @@ int drawingGlInit (OpenGLData* pData)
 	/* Lux fit. */
 
 	glEnable(GL_NORMALIZE) ;
-
-	pData->fRadius = 5 ;
-	pData->fAlpha = 0 ;
-	pData->fBeta = 3*M_PI/2 ;
-	pData->fCenterX = 0 ;
-	pData->fCenterY = 0 ;
-	pData->fCenterZ = 0 ;
-	pData->fTranslateX = 0 ;
-	pData->fTranslateY = 0 ;
-	pData->fTranslateZ = 0 ;
 		
 	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable( GL_COLOR_MATERIAL );
@@ -1907,24 +1983,10 @@ int drawingGlInit (OpenGLData* pData)
 	return EXIT_SUCCESS;
 }
 
-int drawingGlResize (int width, int height)
-{
-	glViewport(0, 0, width, height) ;
-
-	glMatrixMode(GL_PROJECTION) ;
-	glLoadIdentity() ;
-	gluPerspective(45,
-				(GLfloat) width / (GLfloat) height ,
-				0.001, 1000000);
-	glMatrixMode(GL_MODELVIEW) ;
-
-	return EXIT_SUCCESS;
-}
-
 int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData)
 {
-	/* Début des dessins. */
-
+	/* Gestion de la vision. */
+	
 	glMatrixMode(GL_MODELVIEW);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1937,15 +1999,14 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData)
 			  pData->fCenterY,
 			  pData->fCenterZ,
 			  0, 1, 0) ;
+
+	/* Fin de la gestion de la vision. */
+	
+	/* Début des dessins. */
 	
 	drawScene(pTracks, pData) ;
 	
-	glPushMatrix() ;
-	glTranslatef(0, 0, -10) ;
-	DrawAWing(1) ;
-	glPopMatrix() ;
-
-		/* Fin des dessins. */
+	/* Fin des dessins. */
 
 	return EXIT_SUCCESS;
 }

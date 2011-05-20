@@ -41,9 +41,9 @@ struct sStar
 	float fColourR ;	/**< Couleur rouge  de l'étoile */
 	float fColourG ;	/**< Couleur verte  de l'étoile */
 	float fColourB ;	/**< Couleur bleue  de l'étoile */
-	float fPositionX ;	/**< Position en x de l'étoile */
-	float fPositionY ;	/**< Position en y de l'étoile */
-	float fPositionZ ;	/**< Position en z de l'étoile */
+	int iPositionX ;	/**< Position en x de l'étoile */
+	int iPositionY ;	/**< Position en y de l'étoile */
+	int iPositionZ ;	/**< Position en z de l'étoile */
 } ;
 /**
  * @typedef Star
