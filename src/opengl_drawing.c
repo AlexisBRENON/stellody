@@ -33,6 +33,7 @@
 #include "star.h"
 #include "opengl_drawing.h"
 #include "gui.h"
+#include "image.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159 /**< Défini la constante PI si elle ne l'est pas.*/
@@ -1717,21 +1718,52 @@ static int drawStar(Star * psStar, int iPrecision)
 
 static void drawCubeMap(OpenGLData * pData)
 {
-	float fPosX = 0 ;
-	float fPosY = 0 ;
-	float fPosZ = 0 ;
-
-	fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
-	fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
-	fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
-
+	int i = 0 ;
+	float ppfVertexCube[8][9] =
+	{
+		{-0.5, -0.5, -0.5, 1, 1, 1},
+		{-0.5, -0.5, 0.5, 1, 1, 1},
+		{-0.5, 0.5, -0.5, 1, 0, 0},
+		{-0.5, 0.5, 0.5, 1, 0, 0},
+		{0.5, -0.5, -0.5, 0, 1, 0},
+		{0.5, -0.5, 0.5, 0, 1, 0},
+		{0.5, 0.5, -0.5, 0, 0, 1},
+		{0.5, 0.5, 0.5, 0, 0, 1}
+	} ;
+	
+	int piFacesCube[6][4] =
+	{
+		{0, 1, 3, 2},
+		{4, 5, 7, 6},
+		{0, 1, 5, 4},
+		{2, 3, 7, 6},
+		{0, 2, 6, 4},
+		{1, 3, 7, 5}
+	} ;
+	
+	glEnable(GL_TEXTURE_2D) ;
+	glColor3f(1, 1, 1) ;
+	
 	glPushMatrix() ;
+	
+	glScalef(200, 200, 200) ;
+	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
 
-	glTranslatef(fPosX, fPosY, fPosZ) ;
-
-	/* Faire le CubeMap. */
-
+	for(i = 0 ; i < 6 ; i++)
+	{
+		glBegin(GL_QUADS) ;
+		glTexCoord2f(0, 1) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][0]][0], ppfVertexCube[piFacesCube[i][0]][1], ppfVertexCube[piFacesCube[i][0]][2]) ;
+		glTexCoord2f(1, 1) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][1]][0], ppfVertexCube[piFacesCube[i][1]][1], ppfVertexCube[piFacesCube[i][1]][2]) ;
+		glTexCoord2f(1, 0) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][2]][0], ppfVertexCube[piFacesCube[i][2]][1], ppfVertexCube[piFacesCube[i][2]][2]) ;
+		glTexCoord2f(0, 0) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][3]][0], ppfVertexCube[piFacesCube[i][3]][1], ppfVertexCube[piFacesCube[i][3]][2]) ;	
+		glEnd() ;
+	}
 	glPopMatrix() ;
+	glDisable(GL_TEXTURE_2D) ;	
 }
 
 static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData * pData)
@@ -1774,6 +1806,44 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 /*                    Fonctions générales OpenGL                         */
 /*                                                                       */
 /* ********************************************************************* */
+
+static unsigned int drawingLoadTexture(const char * pcFileName)
+{
+	/* Fonction fournie par nos professeurs d'informatique. */
+
+    Image iImage ;
+    unsigned int iTexture ;
+
+	imInitPPM(& iImage, pcFileName) ;
+
+	/* Creation de la texture */
+    glGenTextures(1, & iTexture) ;
+	
+	/* Texture mipmappé */
+    glBindTexture(GL_TEXTURE_2D, iTexture) ;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) ;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST) ;
+	
+    switch (imGetDimC(& iImage))
+    {
+		case 1:
+			gluBuild2DMipmaps(GL_TEXTURE_2D, 1, imGetDimX(& iImage), imGetDimY(& iImage), GL_LUMINANCE, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			break;
+		case 3:
+			gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imGetDimX(& iImage), imGetDimY(& iImage), GL_RGB, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			break;
+		case 4:
+			gluBuild2DMipmaps(GL_TEXTURE_2D, 4, imGetDimX(& iImage), imGetDimY(& iImage), GL_RGBA, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			break;
+		default:
+			printf("LoadGLTexture: can not load GL texture! dimColor is not managed!\n");
+			break;
+    }
+	
+    imFree(& iImage);
+	
+    return iTexture;
+}
 
 static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 {
@@ -1836,43 +1906,6 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
-	/*
-
-	float fTemp = 0 ;
-	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
-	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
-	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
-
-	Calcul du Vecteur Z = Destination - Origine.
-	pfVectorZ[0] = (fPosX) - pData->fCenterX ;
-	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
-	pfVectorZ[2] = (fPosZ) - pData->fCenterZ ;
-	Normalisation de Z.
-	fTemp = sqrt(pfVectorZ[0]*pfVectorZ[0] + pfVectorZ[1]*pfVectorZ[1] + pfVectorZ[2]*pfVectorZ[2]) ;
-	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
-	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
-	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
-
-	pfVectorX = Y(Monde) (produit vectoriel) pfVectorZ
-	pfVectorX[0] = 1*pfVectorZ[2] - 0*pfVectorZ[1] ;
-	pfVectorX[1] = 0*pfVectorZ[0] - 0*pfVectorZ[2] ;
-	pfVectorX[2] = 0*pfVectorZ[1] - 1*pfVectorZ[0] ;
-	Normalisation de X.
-	fTemp = sqrt(pfVectorX[0]*pfVectorX[0] + pfVectorX[1]*pfVectorX[1] + pfVectorX[2]*pfVectorX[2]) ;
-	pfVectorX[0] = pfVectorX[0] / fTemp ;
-	pfVectorX[1] = pfVectorX[1] / fTemp ;
-	pfVectorX[2] = pfVectorX[2] / fTemp ;
-
-	pfVectorY = pfVectorZ (produit vectoriel) pfVectorX
-	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
-	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
-	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
-	Normalisation de Y.
-	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
-	pfVectorY[0] = pfVectorY[0] / fTemp ;
-	pfVectorY[1] = pfVectorY[1] / fTemp ;
-	pfVectorY[2] = pfVectorY[2] / fTemp ;
-	*/
 
 	/* Récupération des vecteurs unitaires du repère caméra. */
 
@@ -1994,9 +2027,11 @@ int drawingGlInit (OpenGLData* pData)
 	pData->fTranslateY = 0 ;
 	pData->fTranslateZ = 0 ;
 
-	drawingUpdateTransfertMatrix(pData) ;
-
 	pData->iPrecision = 0 ;
+	pData->uiTexture = drawingLoadTexture("data/images/cubemap.ppm") ;
+	glDisable(GL_TEXTURE_2D) ;
+	
+	drawingUpdateTransfertMatrix(pData) ;
 
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 	glClearDepth(1.0) ;

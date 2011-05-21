@@ -55,6 +55,7 @@ struct sOpenGLData
 	float fTranslateX ;				/**< Translation en x de la caméra */
 	float fTranslateY ;				/**< Translation en y de la caméra */
 	float fTranslateZ ;				/**< Translation en z de la caméra */
+	unsigned int uiTexture ;		/**< Numéro de la texture du cubemap */
 	int iWidth ;					/**< Largeur de la fenêtre */
 	int iHeight ;					/**< Hauteur de la fenêtre */
 	int iPrecision ;				/**< Precision choisie en préférence pour la qualité des dessins. */
