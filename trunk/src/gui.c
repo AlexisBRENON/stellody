@@ -988,16 +988,26 @@ int on_Stellarium_DrawingArea_button_release_event (
 								GdkEventAny * psEvent,
 								gpointer * pData)
 {
+	GtkAllocation sAllocation;
+
 	switch (psEvent->type)
 	{
 		case GDK_SCROLL:
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
-					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), 0.1);
+					drawingZoom(pData[OPENGLDATA],
+								(*(float*) pData[MOUSEPOSITION_X]),
+								(*(float*) pData[MOUSEPOSITION_Y]),
+								0.1);
 					break;
 				case GDK_SCROLL_DOWN:
-					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), -0.1);
+					gtk_widget_get_allocation(psWidget,
+												&sAllocation);
+					drawingZoom(pData[OPENGLDATA],
+				sAllocation.width - (*(float*) pData[MOUSEPOSITION_X]),
+				sAllocation.height - (*(float*) pData[MOUSEPOSITION_Y]),
+							-0.1);
 					break;
 				default:
 					break;
