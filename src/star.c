@@ -30,13 +30,12 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
+int starCreate(Star * pStar,
+			   const AnalyzedTrack * pTrack,
+			   GPtrArray * psExistingStars)
 {
 	int i = 0 ;
 	int iTest = 0 ;
-	/*
-	int iCounter = 0 ;
-	*/
 	int iArraySize = 0 ;
 	float fAverage = 0 ;
 	float fMedian = 0 ;
@@ -60,46 +59,34 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
 	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
 
+	/* Définition des coordonnées en fonction de l'analyse. */
+	
 	pStar->iPositionX = (int) fAverage * (fAverage - fMedian) ;
 	pStar->iPositionY = (int) fMedian * (fMedian - fAverage) ;
 	pStar->iPositionZ = 0 ;
 
-	/* Vérifie que les coordonnées ne sont pas encore prises. */
+	/* Début de la vérification des coordonnées
+	 (vérifie qu'elles ne sont pas encore prises). */
 
 	iOldX = pStar->iPositionX ;
 	iOldY = pStar->iPositionY ;
 	iOldZ = pStar->iPositionZ ;
 
+	/* Boucle tant que la vérification est à faire. */
 	while (iTest == 0)
 	{
-		iTest = 1 ;
-		for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
-		{
-			fTemp = g_ptr_array_index(psExistingStars, i) ;
-
-			while ((pStar->iPositionX == fTemp[0] && pStar->iPositionY == fTemp[1] && pStar->iPositionZ == fTemp[2])
-				|| ((pStar->iPositionX < 5 && pStar->iPositionX > -5) && (pStar->iPositionY < 5 && pStar->iPositionY > -5) && (pStar->iPositionZ < 5 && pStar->iPositionZ > -5)))
+		iTest = 1 ; /* A priori, après ces tests, la vérification ne sera pas à refaire. */
+		if (iArraySize == 0)
+		{	
+			/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
+			while ((pStar->iPositionX < 3 && pStar->iPositionX > -3) &&
+				   (pStar->iPositionY < 3 && pStar->iPositionY > -3) &&
+				   (pStar->iPositionZ < 3 && pStar->iPositionZ > -3))
 			{
-				iTest = 0 ;
-
-				/*
-				 if (iCounter%3 == 0)
-				{
-					pStar->fPositionX = pStar->fPositionX + 2 ;
-
-				}
-				else if (iCounter%3 == 1)
-				{
-					pStar->fPositionY = pStar->fPositionY + 2 ;
-
-				}
-				else
-				{
-				}
-				iCounter = iCounter + 1 ;
-				 */
-
-				while ((pStar->iPositionX == iOldX + iTranslateX) && (pStar->iPositionY == iOldY + iTranslateY) && (pStar->iPositionZ == iOldZ + iTranslateZ))
+				/* Boucle tant que les coordonnées n'ont pas été modifiées. */
+				while ((pStar->iPositionX == iOldX + iTranslateX) &&
+					   (pStar->iPositionY == iOldY + iTranslateY) &&
+					   (pStar->iPositionZ == iOldZ + iTranslateZ))
 				{
 					fBeta = fBeta + fStep ;
 					if (fBeta >= 2 * M_PI)
@@ -112,16 +99,66 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 						fAlpha = -M_PI/2 ;
 						fRadius = fRadius + 1 ;
 					}
-
+					
 					iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
 					iTranslateY = (int) (fRadius * sin(fAlpha)) ;
 					iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
 				}
-
+				
 				pStar->iPositionX = iOldX + iTranslateX ;
 				pStar->iPositionY = iOldY + iTranslateY ;
 				pStar->iPositionZ = iOldZ + iTranslateZ ;
 			}
+		}
+		else
+		{
+			/* Vérifie les coordonnées de toutes les étoiles déjà placées
+			 mais s'arrête si les coordonnées en cours de test ont été modifiées
+			 (puisque que de toutes façons, il faudra refaire le test depuis le début).*/
+			for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
+			{
+				fTemp = g_ptr_array_index(psExistingStars, i) ;
+				
+				/*Boucle tant que les coordonnées sont prises
+				 ou tant qu'elles sont trop proche du bulbe central. */
+				while ((pStar->iPositionX == fTemp[0] &&
+						pStar->iPositionY == fTemp[1] &&
+						pStar->iPositionZ == fTemp[2])
+					   ||
+					   (pStar->iPositionX < 3 && pStar->iPositionX > -3 &&
+						pStar->iPositionY < 3 && pStar->iPositionY > -3 &&
+						pStar->iPositionZ < 3 && pStar->iPositionZ > -3))
+				{
+					iTest = 0 ; /* Puisqu'on modifie les coordonnées,
+								 le test est à refaire depuis le début. */
+					
+					/* Boucle tant que les coordonnées n'ont pas été modifiées. */
+					while ((pStar->iPositionX == iOldX + iTranslateX) &&
+						   (pStar->iPositionY == iOldY + iTranslateY) &&
+						   (pStar->iPositionZ == iOldZ + iTranslateZ))
+					{
+						fBeta = fBeta + fStep ;
+						if (fBeta >= 2 * M_PI)
+						{
+							fBeta = 0 ;
+							fAlpha = fAlpha + fStep ;
+						}
+						if (fAlpha > M_PI/2)
+						{
+							fAlpha = -M_PI/2 ;
+							fRadius = fRadius + 1 ;
+						}
+						
+						iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
+						iTranslateY = (int) (fRadius * sin(fAlpha)) ;
+						iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
+					}
+					
+					pStar->iPositionX = iOldX + iTranslateX ;
+					pStar->iPositionY = iOldY + iTranslateY ;
+					pStar->iPositionZ = iOldZ + iTranslateZ ;
+				}
+			}			
 		}
 	}
 
@@ -140,7 +177,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 0) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 7) ;
 
-	pStar->fSize = 0.4 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
+	pStar->fSize = 0.2 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
 
 	/* Définition des couleurs. */
 
