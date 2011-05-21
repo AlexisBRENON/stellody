@@ -1924,9 +1924,12 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 
 	/* Réglage de la translation de la caméra lors du zoom. */
 
-	fTranslateX = 0.01 * fPositionX * fMovedRadius ;
-	fTranslateY = 0.01 * fPositionY * fMovedRadius ;
-
+	fPositionX = -fPositionX + (float) pData->iWidth / 2 ;
+	fPositionY = fPositionY - (float) pData->iHeight / 2 ;
+	
+	fTranslateX = 0.002 * fPositionX * fMovedRadius ;
+	fTranslateY = 0.002 * fPositionY * fMovedRadius ;	
+	
 	/* Récupération des vecteurs unitaires du repère caméra. */
 
 	for (i = 0 ; i < 3 ; i++)
@@ -1951,17 +1954,20 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 
 	return EXIT_SUCCESS ;}
 
-int drawingGlResize (int width, int height)
+int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
 {
-	glViewport(0, 0, width, height) ;
+	glViewport(0, 0, iWidth, iHeight) ;
 
 	glMatrixMode(GL_PROJECTION) ;
 	glLoadIdentity() ;
 	gluPerspective(45,
-				   (GLfloat) width / (GLfloat) height ,
+				   (GLfloat) iWidth / (GLfloat) iHeight ,
 				   0.001, 1000000000);
 	glMatrixMode(GL_MODELVIEW) ;
 
+	pData->iWidth = iWidth ;
+	pData->iHeight = iHeight ;
+	
 	return EXIT_SUCCESS;
 }
 
