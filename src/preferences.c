@@ -29,6 +29,7 @@ int preferencesInit (Preferences* psPref)
 	psPref->iAnalysisRate = 0;
 	psPref->iWindowXSize = 0;
 	psPref->iWindowYSize = 0;
+	psPref->i3DQuality = 0;
 	psPref->iMaxTID = 0;
 	psPref->iMinTID = 0;
 	psPref->iNbPath = 0;
@@ -54,6 +55,9 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iWindowYSize = g_key_file_get_integer(ppsContext[CONFIG],
 												"DEFAULT",
 												"iWindowYSize", NULL);
+	psPref->i3DQuality = g_key_file_get_integer(ppsContext[CONFIG],
+												"DEFAULT",
+												"i3DQuality", NULL);
 	psPref->iMaxTID = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
 											"iTIDMax", NULL);
@@ -92,6 +96,7 @@ int preferencesRelease (Preferences* psPref)
 
 	psPref->iAnalysisRate = -1;
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
+	psPref->i3DQuality = -1;
 	psPref->iNbPath = -1;
 	for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
 	{
@@ -307,6 +312,24 @@ int preferencesAddFilesPath(Preferences* psPref, const char* strPath)
 
 	return EXIT_SUCCESS;
 }
+
+int preferencesGet3DQuality(const Preferences* psPref)
+{
+	assert (psPref != NULL);
+
+	return psPref->i3DQuality;
+}
+
+int preferencesSet3DQuality(Preferences* psPref, int iValue)
+{
+	assert (psPref != NULL);
+	assert (iValue > 0 && iValue <= 100);
+
+	psPref->i3DQuality = iValue;
+
+	return EXIT_SUCCESS;
+}
+
 
 /* ********************************************************************* */
 /*                                                                       */

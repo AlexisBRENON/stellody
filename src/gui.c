@@ -357,7 +357,8 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 											pData[PREFERENCES]);
 
 			/* On charge un morceau aléatoirement */
-			i = rand() % (iTIDMax+1);
+			/*i = rand() % (iTIDMax+1);*/
+			i = 0;
 			do
 			{
 				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
@@ -706,11 +707,16 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	psScale = GTK_WIDGET(gtk_builder_get_object(
 										pData[PREFERENCES_BUILDER],
 										"AnalysisRate_Scale"));
-	preferencesGetAnalysisRate(pData[PREFERENCES]);
 	gtk_range_set_value((GtkRange*)psScale,
 					(double) preferencesGetAnalysisRate(
 												pData[PREFERENCES]));
 
+	psScale = GTK_WIDGET(gtk_builder_get_object(
+										pData[PREFERENCES_BUILDER],
+										"3DQuality_Scale"));
+	gtk_range_set_value((GtkRange*)psScale,
+					(double) preferencesGet3DQuality(
+												pData[PREFERENCES]));
 
 	psContainer = GTK_WIDGET(
 						gtk_builder_get_object(pData[MAIN_BUILDER],
@@ -848,8 +854,13 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	psScale = GTK_WIDGET(gtk_builder_get_object(
 										pData[PREFERENCES_BUILDER],
 										"AnalysisRate_Scale"));
-
 	preferencesSetAnalysisRate(pData[PREFERENCES],
+						(int) gtk_range_get_value((GtkRange*)psScale));
+
+	psScale = GTK_WIDGET(gtk_builder_get_object(
+										pData[PREFERENCES_BUILDER],
+										"3DQuality_Scale"));
+	preferencesSet3DQuality(pData[PREFERENCES],
 						(int) gtk_range_get_value((GtkRange*)psScale));
 
 	on_Stellarium_Action_activate(psWidget, pData);
@@ -951,7 +962,9 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGlDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA]);
+		drawingGlDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA],
+						preferencesGet3DQuality(
+								(Preferences*) pData[PREFERENCES]));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}

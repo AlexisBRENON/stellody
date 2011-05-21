@@ -133,6 +133,36 @@
             <property name="position">3</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkVBox" id="vbox3">
+            <property name="visible">True</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Qualité de la représentation 3D</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHScale" id="3DQuality_Scale">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">3DQuality_Adjustment</property>
+                <property name="digits">0</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="position">0</property>
@@ -199,12 +229,20 @@
     <property name="label">Vider le fichier de données</property>
     <property name="short_label">Données</property>
     <property name="tooltip">Vide le fichier de donner</property>
+    <property name="sensitive">False</property>
     <signal name="activate" handler="on_FlushData_Action_activate"/>
   </object>
   <object class="GtkAction" id="FlushConfig_Action">
     <property name="label">Vider le fichier de configuration</property>
     <property name="short_label">Configuration</property>
     <property name="tooltip">Vider le fichier de configuration</property>
+    <property name="sensitive">False</property>
     <signal name="activate" handler="on_FlushConfig_Action_activate"/>
+  </object>
+  <object class="GtkAdjustment" id="3DQuality_Adjustment">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>

@@ -39,7 +39,7 @@ static gboolean analysisSetValues (gpointer pData[])
 	gboolean bIsPlaying = FALSE;
 	AnalyzedTrack* psTrack = NULL;
 	float pfSpectrumValue[iNUMVALUES];
-	int i;
+	int i, j;
 	float fAnalysisRate;
 	unsigned int uiPosition;
 	float fOldAverage = 0;
@@ -96,9 +96,15 @@ static gboolean analysisSetValues (gpointer pData[])
 		FMOD_Channel_GetPosition((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								&uiPosition,
 								FMOD_TIMEUNIT_MS);
+		printf("Temps : %ds\n", uiPosition/1000);
 		FMOD_Channel_SetPosition((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								uiPosition+fAnalysisRate,
 								FMOD_TIMEUNIT_MS);
+		FMOD_Channel_GetPosition((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
+								&uiPosition,
+								FMOD_TIMEUNIT_MS);
+
+		printf("Temps : %ds\n", uiPosition/1000);
 
 		FMOD_Channel_GetSpectrum((FMOD_CHANNEL*)pData[ANALYZING_CHANNEL],
 								pfSpectrumValue, iNUMVALUES,
@@ -107,19 +113,26 @@ static gboolean analysisSetValues (gpointer pData[])
 		pfOldAnalyzedValues = analyzedTrackGetFrequenciesValues(psTrack);
 
 		/* On regarde les valeurs retournées (on ignore les bords) */
-		for (i = 1; i < 129; i++)
+		for (i = 0; i < 512; i=i+16)
 		{
-			pfAnalyzedValues[i-1] = pfSpectrumValue[i];
-			pfAnalyzedValues[i-1] =
-				(pfAnalyzedValues[i-1]+pfOldAnalyzedValues[i-1])/2;
-
+			if (pfOldAnalyzedValues[i/16] == 0)
+			{
+				for (j=0; j<16; j++)
+				{
+					pfAnalyzedValues[i/16] = pfAnalyzedValues[i/16] +
+											pfSpectrumValue[i+j];
+				}
+				pfAnalyzedValues[i/16] = pfAnalyzedValues[i/16]/16;
+				analyzedTrackSetIemeFrequenciesValues(psTrack, i/16,
+												pfAnalyzedValues[i/16]);
+			}
 			/* On uniformise les valeurs en passant aux décibels */
 			pfSpectrumValue[i] = (float) log10(pfSpectrumValue[i]);
 			pfSpectrumValue[i] = 10.0*pfSpectrumValue[i]*2.0;
 
 			fAverage = fAverage + pfSpectrumValue[i];
 		}
-		fAverage = fAverage/128;
+		fAverage = fAverage/9;
 		fMedian = pfSpectrumValue[63];
 
 		fOldAverage = analyzedTrackGetFrequenciesAverage(psTrack);
@@ -133,7 +146,6 @@ static gboolean analysisSetValues (gpointer pData[])
 			analyzedTrackSetFrequenciesMedian(psTrack,
 												fOldMedian+fMedian);
 		}
-		analyzedTrackSetFrequenciesValues(psTrack, pfAnalyzedValues);
 
 	}
 	else /* Si ça ne joue plus, c'est que l'analyse est finie. */

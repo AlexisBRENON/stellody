@@ -141,6 +141,9 @@ int filesSave(GKeyFile** ppsContext,
 								"DEFAULT", "iWindowYSize",
 								preferencesGetWindowYSize(psPref));
 		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "i3DQuality",
+								preferencesGet3DQuality(psPref));
+		g_key_file_set_integer(ppsContext[CONFIG],
 								"DEFAULT", "iTIDMax",
 								preferencesGetMaxTID(psPref));
 		g_key_file_set_integer(ppsContext[CONFIG],

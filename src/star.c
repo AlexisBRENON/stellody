@@ -20,6 +20,10 @@
 #include "analyzed_track.h"
 
 
+#ifndef M_PI
+	#define M_PI 3.14159 /**< Défini la constante PI si elle ne l'est pas.*/
+#endif
+
 /* ********************************************************************* */
 /*                                                                       */
 /*              Fonctions relatives à la structure Star                  */
@@ -39,7 +43,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	float fValue1 = 0 ;
 	float fValue2 = 0 ;
 	float * fTemp ;
-	
+
 	float fStep = 2*M_PI/64 ;
 	float fAlpha = -M_PI/2 ;
 	float fBeta = -fStep ;
@@ -50,34 +54,34 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 	int iTranslateX = 0 ;
 	int iTranslateY = 0 ;
 	int iTranslateZ = 0 ;
-	
+
 	iArraySize = psExistingStars->len ;
 
 	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
 	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
-	
+
 	pStar->iPositionX = (int) fAverage * (fAverage - fMedian) ;
-	pStar->iPositionY = (int) fMedian * (fMedian - fAverage) ;	
+	pStar->iPositionY = (int) fMedian * (fMedian - fAverage) ;
 	pStar->iPositionZ = 0 ;
-	
+
 	/* Vérifie que les coordonnées ne sont pas encore prises. */
 
 	iOldX = pStar->iPositionX ;
 	iOldY = pStar->iPositionY ;
 	iOldZ = pStar->iPositionZ ;
-	
+
 	while (iTest == 0)
 	{
 		iTest = 1 ;
 		for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
 		{
 			fTemp = g_ptr_array_index(psExistingStars, i) ;
-		
+
 			while ((pStar->iPositionX == fTemp[0] && pStar->iPositionY == fTemp[1] && pStar->iPositionZ == fTemp[2])
 				|| ((pStar->iPositionX < 5 && pStar->iPositionX > -5) && (pStar->iPositionY < 5 && pStar->iPositionY > -5) && (pStar->iPositionZ < 5 && pStar->iPositionZ > -5)))
 			{
 				iTest = 0 ;
-				
+
 				/*
 				 if (iCounter%3 == 0)
 				{
@@ -90,7 +94,7 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 
 				}
 				else
-				{	
+				{
 				}
 				iCounter = iCounter + 1 ;
 				 */
@@ -108,50 +112,50 @@ int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistin
 						fAlpha = -M_PI/2 ;
 						fRadius = fRadius + 1 ;
 					}
-				
+
 					iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
 					iTranslateY = (int) (fRadius * sin(fAlpha)) ;
 					iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
 				}
-				
+
 				pStar->iPositionX = iOldX + iTranslateX ;
 				pStar->iPositionY = iOldY + iTranslateY ;
-				pStar->iPositionZ = iOldZ + iTranslateZ ;				
+				pStar->iPositionZ = iOldZ + iTranslateZ ;
 			}
 		}
 	}
-	
+
 	/* Ajoute les nouvelles coordonnées aux données existantes. */
-	
+
 	fTemp = (float *) malloc(3*sizeof(float)) ;
 	fTemp[0] = pStar->iPositionX ;
 	fTemp[1] = pStar->iPositionY ;
 	fTemp[2] = pStar->iPositionZ ;
-	
+
 	g_ptr_array_add(psExistingStars, fTemp) ;
-	
+
 
 	/* Définition de la taille. */
-	
+
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 0) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 7) ;
-	
+
 	pStar->fSize = 0.4 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
-	
+
 	/* Définition des couleurs. */
-	
+
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 1) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 6) ;
 	pStar->fColourR = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
-	
+
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 2) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 5) ;
 	pStar->fColourG = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
-	
+
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 3) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 4) ;
 	pStar->fColourB = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/4 ;
-	
+
 	return (0) ;
 }
 

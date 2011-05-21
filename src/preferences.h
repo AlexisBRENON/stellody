@@ -30,6 +30,7 @@ struct sPreferences
 	int iWindowXSize;		/**< Largeur de la fenêtre en pixels */
 	int iWindowYSize; 		/**< Hauteur de la fenêtre en pixels */
 	int iAnalysisRate; 		/**< Taux d'analyse (1 - 100) */
+	int i3DQuality;			/**< Qualité de la représentation 3D */
 	int iMinTID;			/**< Plus petit identifiant dans l'arbre */
 	int iMaxTID;			/**< Plus grand identifiant dans l'arbre */
 	int iNbPath; 			/**< Nombre de chemin/taille du tableau pstrFilesPath */
@@ -242,6 +243,25 @@ int preferencesSetFilesPath (Preferences* psPref, int iSize,
   * @return EXIT_SUCCESS si tout est OK
   */
 int preferencesAddFilesPath (Preferences* psPref, const char* strPath);
+
+
+/**
+  * @fn int preferencesGet3DQuality (const Preferences* psPref)
+  * @brief Accesseur sur la qualité 3D.
+  *
+  * @param[in] psPref Pointeur sur la structure à accéder
+  * @return Le taux de la qualité 3D
+  */
+int preferencesGet3DQuality (const Preferences* psPref);
+/**
+  * @fn int preferencesSet3DQuality (Preferences* psPref, int iValue)
+  * @brief Mutateur sur la qualité 3D.
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier.
+  * @param[in] iValue Valeur à assigner
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesSet3DQuality (Preferences* psPref, int iValue);
 
 
 

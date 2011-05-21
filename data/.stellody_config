@@ -1,1 +1,15 @@
 # Fichier de configuration
+
+[DEFAULT]
+iAnalysisRate=1
+iWindowXSize=0
+iWindowYSize=0
+iTIDMax=0
+iTIDMin=0
+pstrPath=
+
+
+
+
+i3DQuality=100
+
