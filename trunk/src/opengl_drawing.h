@@ -45,19 +45,21 @@
  sans l'utilisation de variables globales.
  */
 struct sOpenGLData
-{
-	float fRadius ;		/**< Rayon de la sphère de vision de la caméra */
-	float fAlpha ;		/**< Angle de vision latitudinal de la caméra */
-	float fBeta ;		/**< Angle de vision longitudinal de la caméra */
-	float fCenterX ;	/**< Position en x de la direction de la caméra */
-	float fCenterY ;	/**< Position en y de la direction de la caméra */
-	float fCenterZ ;	/**< Position en z de la direction de la caméra */
-	float fTranslateX ;	/**< Translation en x de la caméra */
-	float fTranslateY ;	/**< Translation en y de la caméra */
-	float fTranslateZ ;	/**< Translation en z de la caméra */
-	GPtrArray * psExistingStars ; /**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
-	int iPrecision ;	/**< Precision choisie en préférence pour la qualité des dessins. */
-	float pfTransfertMatrix[9] ; /**< Matrice de passage de la base du monde à la base caméra. */
+{	
+	float fRadius ;					/**< Rayon de la sphère de vision de la caméra */
+	float fAlpha ;					/**< Angle de vision latitudinal de la caméra */
+	float fBeta ;					/**< Angle de vision longitudinal de la caméra */	
+	float fCenterX ;				/**< Position en x de la direction de la caméra */
+	float fCenterY ;				/**< Position en y de la direction de la caméra */
+	float fCenterZ ;				/**< Position en z de la direction de la caméra */
+	float fTranslateX ;				/**< Translation en x de la caméra */
+	float fTranslateY ;				/**< Translation en y de la caméra */
+	float fTranslateZ ;				/**< Translation en z de la caméra */
+	int iWidth ;					/**< Largeur de la fenêtre */
+	int iHeight ;					/**< Hauteur de la fenêtre */
+	int iPrecision ;				/**< Precision choisie en préférence pour la qualité des dessins. */
+	float pfTransfertMatrix[9] ;	/**< Matrice de passage de la base du monde à la base caméra. */
+	GPtrArray * psExistingStars ;	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
 } ;
 
 /**
@@ -116,17 +118,18 @@ int drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float 
   * @param[in] iPrecision Valeur de la précision 3D
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlInit (OpenGLData* pData);
+int drawingGlInit (OpenGLData* pData) ;
 
 /**
   * @fn int drawingGlResize (int width, int height)
   * @brief Redimenssionne la scene
   *
-  * @param[in] width Nouvelle largeur du widget
-  * @param[in] height Nouvelle hauteur du widget
+  * @param[in,out] pData Données utilisées par OpenGL
+  * @param[in] iWidth Nouvelle largeur du widget
+  * @param[in] iHeight Nouvelle hauteur du widget
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlResize (int width, int height);
+int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight) ;
 
 /**
   * @fn int drawingGlDraw (gpointer* pData);
@@ -136,8 +139,7 @@ int drawingGlResize (int width, int height);
  * @param[in,out] pData Données OpenGL
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
-				int iPrecision);
+int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData) ;
 
 /* ********************************************************************* */
 /*                                                                       */

@@ -938,7 +938,7 @@ int on_Stellarium_DrawingArea_configure_event(
 
 	if (bActivate == TRUE)
 	{
-		drawingGlResize(psEvent->width, psEvent->height);
+		drawingGlResize(pData[OPENGLDATA], psEvent->width, psEvent->height);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
 
@@ -994,10 +994,10 @@ int on_Stellarium_DrawingArea_button_release_event (
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
-					drawingZoom(pData[OPENGLDATA], 0, 0, 0.1);
+					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), 0.1);
 					break;
 				case GDK_SCROLL_DOWN:
-					drawingZoom(pData[OPENGLDATA], 0, 0, -0.1);
+					drawingZoom(pData[OPENGLDATA], (*(float*) pData[MOUSEPOSITION_X]), (*(float*) pData[MOUSEPOSITION_Y]), -0.1);
 					break;
 				default:
 					break;
