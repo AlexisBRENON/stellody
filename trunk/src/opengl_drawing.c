@@ -1936,19 +1936,6 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
 	}
 
-<<<<<<< .mine
-	/* pfVectorY = pfVectorZ (produit vectoriel) pfVectorX */
-	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
-	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
-	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
-	/* Normalisation de Y. */
-	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
-	pfVectorY[0] = pfVectorY[0] / fTemp ;
-	pfVectorY[1] = pfVectorY[1] / fTemp ;
-	pfVectorY[2] = pfVectorY[2] / fTemp ;
-
-=======
->>>>>>> .r131
 	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 

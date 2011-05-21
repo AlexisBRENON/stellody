@@ -304,7 +304,7 @@ int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
 {
 	assert (psTrack != NULL);
 	assert (i >= 0 && i < iSAVEDVALUES);
-	assert (fValue > -150 && fValue < 0);
+	/*assert (fValue > -150 && fValue < 0);*/
 
 	psTrack->fValues[i] = fValue;
 
