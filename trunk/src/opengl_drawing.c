@@ -1720,7 +1720,7 @@ static void drawCubeMap(OpenGLData * pData)
 	float fPosX = 0 ;
 	float fPosY = 0 ;
 	float fPosZ = 0 ;
-	
+
 	fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
 	fPosY = pData->fRadius * sin(pData->fAlpha)  + pData->fTranslateY ;
 	fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
@@ -1742,7 +1742,7 @@ static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData *
 	glPushMatrix() ;
 	drawStar(& sStar, pData->iPrecision) ;
 	glPopMatrix() ;
-	
+
 	return FALSE ;
 }
 
@@ -1751,17 +1751,17 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
 	glDisable(GL_LIGHTING) ;
-	
+
 	drawCubeMap(pData) ;
-	
+
 	glPushMatrix() ;
 	glScalef(2, 2, 2) ;
 	glColor3f(1, 1, 1) ;
 	drawSphere(pData->iPrecision) ;
 	glPopMatrix() ;
-	
+
 	glEnable(GL_LIGHTING) ;
-	
+
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
@@ -1785,9 +1785,9 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
 	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
 	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
-	
+
 	/* Calcul des vecteurs unitaires du repère de la caméra. */
-	
+
 	/* Calcul du Vecteur Z = Destination - Origine. */
 	pfVectorZ[0] = (fPosX) - pData->fCenterX ;
 	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
@@ -1797,7 +1797,7 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
 	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
 	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
-	
+
 	/* pfVectorX = Y(Monde) (produit vectoriel) pfVectorZ */
 	pfVectorX[0] = 1*pfVectorZ[2] - 0*pfVectorZ[1] ;
 	pfVectorX[1] = 0*pfVectorZ[0] - 0*pfVectorZ[2] ;
@@ -1807,24 +1807,24 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	pfVectorX[0] = pfVectorX[0] / fTemp ;
 	pfVectorX[1] = pfVectorX[1] / fTemp ;
 	pfVectorX[2] = pfVectorX[2] / fTemp ;
-	
+
 	/* pfVectorY = pfVectorZ (produit vectoriel) pfVectorX */
 	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
-	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;	
+	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
 	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
 	/* Normalisation de Y. */
 	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
 	pfVectorY[0] = pfVectorY[0] / fTemp ;
 	pfVectorY[1] = pfVectorY[1] / fTemp ;
 	pfVectorY[2] = pfVectorY[2] / fTemp ;
-	
+
 	/* Remplissage de la matrice de passage. */
-	
+
 	for (i = 0 ; i < 3 ; i++)
 	{
 		pData->pfTransfertMatrix[3 * i] = pfVectorX[i] ;
 		pData->pfTransfertMatrix[3 * i + 1] = pfVectorY[i] ;
-		pData->pfTransfertMatrix[3 * i + 2] = pfVectorZ[i] ;		
+		pData->pfTransfertMatrix[3 * i + 2] = pfVectorZ[i] ;
 	}
 
 	return EXIT_SUCCESS ;
@@ -1836,13 +1836,13 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
-	/* 
-	
+	/*
+
 	float fTemp = 0 ;
 	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
 	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
 	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
-	
+
 	Calcul du Vecteur Z = Destination - Origine.
 	pfVectorZ[0] = (fPosX) - pData->fCenterX ;
 	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
@@ -1852,7 +1852,7 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
 	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
 	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
-	
+
 	pfVectorX = Y(Monde) (produit vectoriel) pfVectorZ
 	pfVectorX[0] = 1*pfVectorZ[2] - 0*pfVectorZ[1] ;
 	pfVectorX[1] = 0*pfVectorZ[0] - 0*pfVectorZ[2] ;
@@ -1862,10 +1862,10 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	pfVectorX[0] = pfVectorX[0] / fTemp ;
 	pfVectorX[1] = pfVectorX[1] / fTemp ;
 	pfVectorX[2] = pfVectorX[2] / fTemp ;
-	
+
 	pfVectorY = pfVectorZ (produit vectoriel) pfVectorX
 	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
-	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;	
+	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
 	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
 	Normalisation de Y.
 	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
@@ -1873,27 +1873,27 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	pfVectorY[1] = pfVectorY[1] / fTemp ;
 	pfVectorY[2] = pfVectorY[2] / fTemp ;
 	*/
-	
+
 	/* Récupération des vecteurs unitaires du repère caméra. */
-	
+
 	for (i = 0 ; i < 3 ; i++)
 	{
 		pfVectorX[i] = pData->pfTransfertMatrix[3 * i] ;
 		pfVectorY[i] = pData->pfTransfertMatrix[3 * i + 1] ;
-		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;		
-	}	
-	
+		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
+	}
+
 	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	
+
 	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
 	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	
+
 	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
 	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	
+
 	drawingUpdateTransfertMatrix(pData) ;
-	
+
 	return EXIT_SUCCESS ;
 }
 
@@ -1908,7 +1908,7 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
 	drawingUpdateTransfertMatrix(pData) ;
-	
+
 	return EXIT_SUCCESS ;
 }
 
@@ -1921,47 +1921,60 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 	float fTranslateX = 0 ;
 	float fTranslateY = 0 ;
 	float fTranslateZ = 0 ;
-	
+
 	/* Réglage de la translation de la caméra lors du zoom. */
-	
+
 	fTranslateX = 0.01 * fPositionX * fMovedRadius ;
-	fTranslateY = 0.01 * fPositionY * fMovedRadius ;	
-	
+	fTranslateY = 0.01 * fPositionY * fMovedRadius ;
+
 	/* Récupération des vecteurs unitaires du repère caméra. */
-	
+
 	for (i = 0 ; i < 3 ; i++)
 	{
 		pfVectorX[i] = pData->pfTransfertMatrix[3 * i] ;
 		pfVectorY[i] = pData->pfTransfertMatrix[3 * i + 1] ;
-		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;		
-	}	
-	
+		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
+	}
+
+<<<<<<< .mine
+	/* pfVectorY = pfVectorZ (produit vectoriel) pfVectorX */
+	pfVectorY[0] = pfVectorZ[1]*pfVectorX[2] - pfVectorZ[2]*pfVectorX[1] ;
+	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
+	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
+	/* Normalisation de Y. */
+	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
+	pfVectorY[0] = pfVectorY[0] / fTemp ;
+	pfVectorY[1] = pfVectorY[1] / fTemp ;
+	pfVectorY[2] = pfVectorY[2] / fTemp ;
+
+=======
+>>>>>>> .r131
 	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
 	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	
+
 	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
 	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	
+
 	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
 	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	
+
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
-	
+
 	drawingUpdateTransfertMatrix(pData) ;
-	
+
 	return EXIT_SUCCESS ;}
 
 int drawingGlResize (int width, int height)
 {
 	glViewport(0, 0, width, height) ;
-	
+
 	glMatrixMode(GL_PROJECTION) ;
 	glLoadIdentity() ;
 	gluPerspective(45,
 				   (GLfloat) width / (GLfloat) height ,
 				   0.001, 1000000000);
 	glMatrixMode(GL_MODELVIEW) ;
-	
+
 	return EXIT_SUCCESS;
 }
 
@@ -1977,7 +1990,7 @@ int drawingGlInit (OpenGLData* pData)
 	float pfDiffuseLight[4] = {0, 0, 0, 0} ;
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
-	
+
 	pData->fRadius = 100 ;
 	pData->fAlpha = 0 ;
 	pData->fBeta = 3*M_PI/2 ;
@@ -1987,24 +2000,24 @@ int drawingGlInit (OpenGLData* pData)
 	pData->fTranslateX = 0 ;
 	pData->fTranslateY = 0 ;
 	pData->fTranslateZ = 0 ;
-	
+
 	drawingUpdateTransfertMatrix(pData) ;
-	
-	pData->iPrecision = 64 ;
-	
+
+	pData->iPrecision = 0 ;
+
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 	glClearDepth(1.0) ;
 	glDepthFunc(GL_LESS) ;
 	glEnable(GL_DEPTH_TEST) ;
 	glShadeModel(GL_SMOOTH) ;
 	glEnable(GL_LIGHTING) ;
-	
+
 	/* Fiat lux. */
 
 	fAmbiantLight = 0.02 ;
 	fDiffuseLight = 0.98 ;
 	fSpecularLight = 0.5 ;
-	
+
 	for (i = 0 ; i < 3 ; i ++)
 	{
 		pfAmbiantLight[i] = fAmbiantLight ;
@@ -2016,29 +2029,30 @@ int drawingGlInit (OpenGLData* pData)
 	pfDiffuseLight[3] = 1 ;
 	pfSpecularLight[3] = 1 ;
 	pfPositionLight[3] = 1 ;
-	
+
 	glLightfv(GL_LIGHT1, GL_AMBIENT, pfAmbiantLight);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, pfDiffuseLight);
     glLightfv(GL_LIGHT1, GL_SPECULAR, pfSpecularLight);
     glLightfv(GL_LIGHT1, GL_POSITION, pfPositionLight);
     glEnable(GL_LIGHT1);
-	
+
 	/* Lux fit. */
 
 	glEnable(GL_NORMALIZE) ;
-		
+
 	glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable( GL_COLOR_MATERIAL );
-	
+
 	/* Fin de l'initialisation. */
-	
+
 	return EXIT_SUCCESS;
 }
 
-int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData)
-{	
+int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
+					int iPrecision)
+{
 	/* Gestion de la vision. */
-	
+
 	glMatrixMode(GL_MODELVIEW);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -2051,13 +2065,15 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData)
 			  pData->fCenterY,
 			  pData->fCenterZ,
 			  0, 1, 0) ;
-	
+
 	/* Fin de la gestion de la vision. */
-	
+
 	/* Début des dessins. */
-	
+
+	pData->iPrecision = iPrecision ;
+
 	drawScene(pTracks, pData) ;
-	
+
 	/* Fin des dessins. */
 
 	return EXIT_SUCCESS;

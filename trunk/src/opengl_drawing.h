@@ -48,7 +48,7 @@ struct sOpenGLData
 {
 	float fRadius ;		/**< Rayon de la sphère de vision de la caméra */
 	float fAlpha ;		/**< Angle de vision latitudinal de la caméra */
-	float fBeta ;		/**< Angle de vision longitudinal de la caméra */	
+	float fBeta ;		/**< Angle de vision longitudinal de la caméra */
 	float fCenterX ;	/**< Position en x de la direction de la caméra */
 	float fCenterY ;	/**< Position en y de la direction de la caméra */
 	float fCenterZ ;	/**< Position en z de la direction de la caméra */
@@ -109,10 +109,11 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 int drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
 
 /**
-  * @fn int drawingGlInit (OpenGLData* pData)
+;  * @fn int drawingGlInit (OpenGLData* pData, int iPrecision)
   * @brief Initialise les paramètres OpenGL (caméra, lumière...).
   *
   * @param[in,out] pData Données utilisées par OpenGL
+  * @param[in] iPrecision Valeur de la précision 3D
   * @return EXIT_SUCCESS si tout est OK
   */
 int drawingGlInit (OpenGLData* pData);
@@ -135,7 +136,8 @@ int drawingGlResize (int width, int height);
  * @param[in,out] pData Données OpenGL
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData);
+int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
+				int iPrecision);
 
 /* ********************************************************************* */
 /*                                                                       */
