@@ -136,10 +136,11 @@ int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight) ;
   * @brief Rafraichit la scene.
   *
   * @param[in, out] pTracks Données des chansons
- * @param[in,out] pData Données OpenGL
+  * @param[in,out] pData Données OpenGL
+  * @param[in] iPrecision Precision des dessins
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData) ;
+int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
 
 /* ********************************************************************* */
 /*                                                                       */
