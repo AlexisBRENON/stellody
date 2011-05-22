@@ -2131,7 +2131,7 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 
 	/* Début des dessins. */
 
-	pData->iPrecision = 2*iPrecision + 2 ;
+	pData->iPrecision = 2*iPrecision + 6 ;
 
 	drawScene(pTracks, pData) ;
 
