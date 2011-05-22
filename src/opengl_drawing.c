@@ -1719,6 +1719,10 @@ static int drawStar(Star * psStar, int iPrecision)
 static void drawCubeMap(OpenGLData * pData)
 {
 	int i = 0 ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	
 	float ppfVertexCube[8][9] =
 	{
 		{-0.5, -0.5, -0.5, 1, 1, 1},
@@ -1741,13 +1745,14 @@ static void drawCubeMap(OpenGLData * pData)
 		{1, 3, 7, 5}
 	} ;
 	
-	glEnable(GL_TEXTURE_2D) ;
-	glColor3f(1, 1, 1) ;
-	
+	glEnable(GL_TEXTURE_2D) ;	
 	glPushMatrix() ;
-	
+	/*
+	glTranslatef(fPosX, fPosY, fPosZ) ;
+	*/
 	glScalef(1200, 1200, 1200) ;
 	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
+	glColor3f(1, 1, 1) ;
 
 	for(i = 0 ; i < 6 ; i++)
 	{
@@ -1762,8 +1767,9 @@ static void drawCubeMap(OpenGLData * pData)
 		glVertex3f(ppfVertexCube[piFacesCube[i][3]][0], ppfVertexCube[piFacesCube[i][3]][1], ppfVertexCube[piFacesCube[i][3]][2]) ;	
 		glEnd() ;
 	}
+
 	glPopMatrix() ;
-	glDisable(GL_TEXTURE_2D) ;	
+	glDisable(GL_TEXTURE_2D) ;
 }
 
 static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData * pData)
@@ -1783,9 +1789,9 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
 	glDisable(GL_LIGHTING) ;
-
+	
 	drawCubeMap(pData) ;
-
+	
 	glPushMatrix() ;
 	glScalef(2, 2, 2) ;
 	glColor3f(1, 1, 1) ;
@@ -1954,7 +1960,7 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 1) pData->fRadius = 1 ;
+	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
 	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;	
 	
 	drawingUpdateTransfertMatrix(pData) ;
@@ -1973,52 +1979,61 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 	float fTranslateY = 0 ;
 	float fTranslateZ = 0 ;
 
-	/* Réglage de la translation de la caméra lors du zoom. */
-
-	fPositionX = -fPositionX + (float) pData->iWidth / 2 ;
-	fPositionY = fPositionY - (float) pData->iHeight / 2 ;
-	
-	fTranslateX = 0.002 * fPositionX * fMovedRadius ;
-	fTranslateY = 0.002 * fPositionY * fMovedRadius ;	
-	
-	/* Récupération des vecteurs unitaires du repère caméra. */
-
-	for (i = 0 ; i < 3 ; i++)
-	{
-		pfVectorX[i] = pData->pfTransfertMatrix[3 * i] ;
-		pfVectorY[i] = pData->pfTransfertMatrix[3 * i + 1] ;
-		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
-	}
-
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
-	{
-		pData->fCenterX = pData->fCenterX + fTranslation ;
-		pData->fTranslateX = pData->fTranslateX + fTranslation ;
-	}
-	
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
-	{
-		pData->fCenterY = pData->fCenterY + fTranslation ;
-		pData->fTranslateY = pData->fTranslateY + fTranslation ;
-	}
-	
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
-	{
-		pData->fCenterZ = pData->fCenterZ + fTranslation ;
-		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
-	}
-
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
-
-	if (pData->fRadius < 1) pData->fRadius = 1 ;
-	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;
 	
-	drawingUpdateTransfertMatrix(pData) ;
+	if (pData->fRadius < 0.01)
+	{
+		pData->fRadius = 0.01 ;
+	}
+	else if (pData->fRadius > 2 * 150)
+	{
+		pData->fRadius = 2 * 150 ;
+	}
+	else
+	{
+		/* Réglage de la translation de la caméra lors du zoom. */
+		
+		fPositionX = -fPositionX + (float) pData->iWidth / 2 ;
+		fPositionY = fPositionY - (float) pData->iHeight / 2 ;
+		
+		fTranslateX = 0.002 * fPositionX * fMovedRadius ;
+		fTranslateY = 0.002 * fPositionY * fMovedRadius ;	
+		
+		/* Récupération des vecteurs unitaires du repère caméra. */
+		
+		for (i = 0 ; i < 3 ; i++)
+		{
+			pfVectorX[i] = pData->pfTransfertMatrix[3 * i] ;
+			pfVectorY[i] = pData->pfTransfertMatrix[3 * i + 1] ;
+			pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
+		}
+		
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+		if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
+		{
+			pData->fCenterX = pData->fCenterX + fTranslation ;
+			pData->fTranslateX = pData->fTranslateX + fTranslation ;
+		}
+		
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+		if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
+		{
+			pData->fCenterY = pData->fCenterY + fTranslation ;
+			pData->fTranslateY = pData->fTranslateY + fTranslation ;
+		}
+		
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+		if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
+		{
+			pData->fCenterZ = pData->fCenterZ + fTranslation ;
+			pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
+		}
+		
+		drawingUpdateTransfertMatrix(pData) ;
+	}
 
-	return EXIT_SUCCESS ;}
+	return EXIT_SUCCESS ;
+}
 
 int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
 {
