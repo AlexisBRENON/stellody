@@ -137,12 +137,14 @@ int stellody(int argc, char* argv[])
 		pDatas[i] = NULL;
 	}
 
+	pDatas[ANALYZING_COUNTER] = (int*) malloc(sizeof(int));
+	*((int*) pDatas[ANALYZING_COUNTER]) = 0;
 	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
 	*((int*) pDatas[CHECKANALYZE]) = 0;
 	pDatas[MOUSEPOSITION_X] = (float*) malloc(sizeof(float));
-	*((float*) pDatas[CHECKANALYZE]) = 0;
+	*((float*) pDatas[MOUSEPOSITION_X]) = 0;
 	pDatas[MOUSEPOSITION_Y] = (float*) malloc(sizeof(float));
-	*((float*) pDatas[CHECKANALYZE]) = 0;
+	*((float*) pDatas[MOUSEPOSITION_Y]) = 0;
 
 	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
 	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],

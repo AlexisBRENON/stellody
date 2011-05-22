@@ -18,36 +18,24 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 15 /**< Nombre de cases aux tableaux de données */
-/**
-  * @enum eGUI_DATA
-  * @brief Enumération permettant de retrouver les différentes données dans
-  le tableau de données passé aux callbacks.
-  */
-enum eGUI_DATA
-{
-	PREFERENCES 		= 0,	/**< Structure de préférences. */
-	ANALYZED_TRACKS		= 1,	/**< Arbre des morceaux analysés. */
-	MAIN_BUILDER		= 2,	/**< Builder de la fenêtre principale. */
-	STELLARIUM_BUILDER	= 3,	/**< Builder du Stellarium */
-	PREFERENCES_BUILDER = 4,	/**< Builder des préférences. */
-	ABOUT_BUILDER		= 5,	/**< Builder du A Propos. */
-	FMOD_CONTEXT		= 6,	/**< Contexte Fmod. */
-	PLAYING_CHANNEL		= 7,	/**< Canal FMod de lecture. */
-	ANALYZING_CHANNEL	= 8,	/**< Canal FMod d'analyse. */
-	PLAYLIST			= 9,	/**< Liste des morceaux à lire */
-	ANALYZELIST			= 10,	/**< Liste des morceau à analyser */
-	CHECKANALYZE		= 11,	/**< ID du timer de vérification d'analyse */
-	MOUSEPOSITION_X		= 12, 	/**< Coordonnées en x de la souris */
-	MOUSEPOSITION_Y		= 13,	/**< Coordonnées en y de la souris */
-	OPENGLDATA			= 14	/**< Structure de données OpenGL */
-};
-/**
-  * @typedef GUI_DATA
-  * @brief Redéfini l'énumération.
-  */
-typedef enum eGUI_DATA GUI_DATA;
+#define NB_DATA 16 /**< Nombre de cases aux tableaux de données */
 
+#define PREFERENCES 		0	/**< Structure de préférences. */
+#define ANALYZED_TRACKS		1	/**< Arbre des morceaux analysés. */
+#define	MAIN_BUILDER		2	/**< Builder de la fenêtre principale. */
+#define	STELLARIUM_BUILDER	3	/**< Builder du Stellarium */
+#define	PREFERENCES_BUILDER 4	/**< Builder des préférences. */
+#define	ABOUT_BUILDER		5	/**< Builder du A Propos. */
+#define	FMOD_CONTEXT		6	/**< Contexte Fmod. */
+#define	PLAYING_CHANNEL		7	/**< Canal FMod de lecture. */
+#define	ANALYZING_CHANNEL	8	/**< Canal FMod d'analyse. */
+#define	ANALYZING_COUNTER	9	/**< Nobre de tour d'analyse. */
+#define	PLAYLIST			10	/**< Liste des morceaux à lire */
+#define	ANALYZELIST			11	/**< Liste des morceau à analyser */
+#define	CHECKANALYZE		12	/**< ID du timer de vérification d'analyse */
+#define	MOUSEPOSITION_X		13	/**< Coordonnées en x de la souris */
+#define	MOUSEPOSITION_Y		14	/**< Coordonnées en y de la souris */
+#define	OPENGLDATA			15	/**< Structure de données OpenGL */
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -195,6 +183,30 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData);
 int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								GdkEventButton* pEvent,
 								gpointer* pData);
+
+/* ********************************************************************* */
+/*                            FONCTIONS TIMEOUT                          */
+/* ********************************************************************* */
+
+/**
+  * @fn gboolean guiTimeoutAnalyze (gpointer* pData)
+  * @brief Fonction mettant à jour l'affichage et analysant un morceau.
+  *
+  * @param[in,out] pData Tableau de données du programme
+  * @return TRUE si le canal d'analyse joue toujours, FALSE sinon.
+  */
+gboolean guiTimeoutAnalyze (gpointer* pData);
+
+/**
+  * @fn gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
+  * @brief Vérifie si un morceau doit être analysé ou pas.
+  *
+  * @param[in,out] pData Tableau de données du programme
+  * @return TRUE s'il reste un morceau à analyser, FALSE sinon.
+  */
+gboolean guiTimeoutCheckForAnalyze (gpointer* pData);
+
+
 
 
 /* ********************************************************************* */

@@ -7,7 +7,7 @@
 
 
 # Définition des cibles particulières
-.PHONY: clean mrproper help mac lin
+.PHONY: flush clean mrproper help mac lin
 
 
 # Définition de variables :
@@ -38,6 +38,7 @@ SRCS = 			stellody.c \
 			gui.c \
 			analysis.c \
 			star.c \
+			player.c \
 			image.c
 
 	# Noms des fichiers objets (génération dynamique)
@@ -80,80 +81,87 @@ help :
 	@echo "                    <-=  AIDE  =->"
 	@echo
 	@echo "Voici les cibles que vous pouvez appeler :"
-	@echo "    - make mac        Construit l'exécutable pour MAC OS X"
-	@echo "    - make lin        Construit l'exécutable pour Ubuntu"
-	@echo "    - make clean      Détruit les fichiers objets"
-	@echo "    - make mrproper   Détruit tout ce qui peut être reconstruit"
-	@echo "    - make [help]     Affiche cette page d'aide"
+	@echo "    - make \033[1mmac\033[0m        Construit l'exécutable pour MAC OS X"
+	@echo "    - make \033[1mlin\033[0m        Construit l'exécutable pour Ubuntu"
+	@echo "    - make \033[1mclean\033[0m      Détruit les fichiers objets"
+	@echo "    - make \033[1mflush\033[0m      Vide les fichiers de données et de configuration"
+	@echo "    - make \033[1mmrproper\033[0m   Détruit tout ce qui peut être reconstruit"
+	@echo "    - make \033[1m[help]\033[0m     Affiche cette page d'aide"
 	@echo
 		
 check :
 	@echo
-	@echo "  Vérification de l'arborescence\n"
+	@echo "\033[1;33m  Vérification de l'arborescence\n"
 	@if [ ! -e bin ]; then mkdir bin; fi
 	@if [ ! -e obj ]; then mkdir obj; fi
-	@if [ ! -e data ]; then	echo "Dossiers de données inexistants..."; exit 1;fi
+	@if [ ! -e data ]; then	echo "\033[1;31mDossiers de données inexistants...\033[0m"; exit 1;fi
 	@if [ ! -e data/.stellody_data ]; then echo "# Fichier de données" >data/.stellody_data; fi
 	@if [ ! -e data/.stellody_config ]; then echo "# Fichier de configuration" >data/.stellody_config; fi
-	@echo "======================================="
-	@echo
+	@echo "\033[1;32m======================================="
+	@echo "\033[1;33m"
 	@echo "Début des messages compilateur (syntaxe)."
 	@echo
 	
 	
 		
 mac : check $(OBJS_MAC)
-	@echo
+	@echo "\033[1;32m"
 	@echo "Fin des messages compilateur (syntaxe)."
 	@echo
 	@echo "======================================="
-	@echo
+	@echo "\033[1;33m"
 	@echo "Début des messages linker."
-	@echo
+	@echo "\033[0m"
 	@$(CC) $(MAC_LDFLAGS) $(OBJS_MAC) -o $(BIN_DIR)/$(EXEC)
-	@echo
+	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
 	@echo
 	@echo "======================================="
 	@echo
 	@echo "Stellody construit avec succès !"
-	@echo
+	@echo "\033[0m"
 	
 lin : check $(OBJS_LIN)
-	@echo
+	@echo "\033[1;32m"
 	@echo "Fin des messages compilateur (syntaxe)."
 	@echo
 	@echo "======================================="
-	@echo
+	@echo "\033[1;33m"
 	@echo "Début des messages linker."
-	@echo
+	@echo "\033[0m"
 	@$(CC) $(LIN_LDFLAGS) $(OBJS_LIN) -o $(BIN_DIR)/$(EXEC)
-	@echo
+	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
 	@echo
 	@echo "======================================="
-	@echo
+	@echo 
 	@echo "Stellody construit avec succès !"
-	@echo
+	@echo "\033[0m"
 
 $(OBJ_DIR)/%_mac.o : $(SRC_DIR)/%.c
-	@echo "  $<\n"
+	@echo "\033[1;33m  $<\n\033[1;31m"
 	@$(CC) -c $(MAC_CFLAGS) $< -o $@
-	@echo "------------------------"
+	@echo "\033[1;32m------------------------"
 
 $(OBJ_DIR)/%_lin.o : $(SRC_DIR)/%.c
-	@echo "  $<\n"
+	@echo "\033[1;33m  $<\n\033[1;31m"
 	@$(CC) -c $(LIN_CFLAGS) $< -o $@
-	@echo "------------------------"
+	@echo "\033[1;32m------------------------"
 
 clean :
-	@echo
+	@echo "\033[1;33m"
 	@rm -fv $(OBJ_DIR)/*.o
-	@echo
+	@echo "\033[0m"
+	
+flush :
+	@echo "\033[1;33mVidage des fichiers...\n"
+	@echo "# Fichier de données de l'application Stellody" >data/.stellody_data
+	@echo "# Fichier de configuration" >data/.stellody_config
+	@echo "=======================================\033[0m"
 
 mrproper :
-	@echo
+	@echo "\033[1;33m"
 	@rm -fv $(OBJ_DIR)/*.o
 	@rm -fv $(BIN_DIR)/$(EXEC)
-	@echo
+	@echo "\033[0m"
 	
