@@ -8,9 +8,21 @@
 #ifndef __ANALYSIS_H__
 #define __ANALYSIS_H__
 
+#if defined(__linux)
+#include <fmodex/fmod.h>
+#endif
+#if defined (__APPLE__) || defined (_WIN32)
+#include <fmod.h>
+#endif
 
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
+
+
+int analysisAnalyze (FMOD_CHANNEL* pChannel,
+					float fAnalysisRate,
+					AnalyzedTrack* pTrack,
+					int* piAnalyzingCounter);
 
 
 /**
@@ -22,17 +34,5 @@
   * @return EXIT_SUCCESS si tout est OK
   */
 int analysisTrack (const char* strPath, gpointer* pData);
-
-
-/**
-  * @fn gboolean analysisCheckNewAnalyze (gpointer pData[])
-  * @brief Un timeout qui vérifie la présence ou non de morceaux à
-  analyser.
-  *
-  * @param[in,out] pData Le tableau de donnée
-  * @return TRUE pour continuer la vérification, FALSE lorsque qu'il n'y a
-  plus à vérifier.
-  */
-gboolean analysisCheckNewAnalyze (gpointer pData[]);
 
 #endif /* __ANALYSIS_H__ */

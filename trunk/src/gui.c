@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <time.h>
+#include <math.h>
 
 #if defined(__linux) || defined (__APPLE__)
 	#include <dirent.h>
@@ -32,6 +33,7 @@
 #include "analyzed_track.h"
 #include "analysis.h"
 #include "opengl_drawing.h"
+#include "player.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -140,13 +142,7 @@ static int guiUnparent (GtkBuilder* pMainBuilder,
 	return EXIT_SUCCESS;
 }
 
-/**
-  * @fn static gboolean guiTrackScaleIncrement (gpointer* pData)
-  * @brief Déplace le curseur durant la lecture d'un morceau.
-  *
-  * @param pData Le tableau de données.
-  * @return TRUE si le morceau est encore en lecture, FALSE sinon
-  */
+
 static gboolean guiTrackScaleIncrement (gpointer* pData)
 {
 	GtkWidget* pScale = NULL;
@@ -191,87 +187,86 @@ static int guiPlayTrack (char* strPath,
 						FMOD_SYSTEM* pFmodContext,
 						FMOD_CHANNEL** ppPlayingChannel)
 {
+	unsigned int uiTrackPerCent = 0;
+	unsigned int uiTrackLength = 0;
+	char* strSinger = NULL;
+	char* strTitle = NULL;
+	char* strTrackInfo = NULL;
 	GtkWidget* pScale = NULL;
 	GtkWidget* pLabel = NULL;
-	unsigned int uiTrackPosition = 0;
-	unsigned int uiTrackLength = 0;
 	GtkObject* pAdjustment = NULL;
-	FMOD_SOUND* pSound = NULL;
-	FMOD_TAG Tag;
-	char* strTitle = NULL;
-	char* strSinger = NULL;
-	char* strTrackInfo = NULL;
 
+/* ********************************************************************* */
+/* ********************************************************************* */
 
-	/* On récupère à partir de quelle partie commencer le morceau */
+	/* On récupère à partir de quelle partie commencer le morceau (%) */
+
 	pScale = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
 												"Track_Scale"));
-	uiTrackPosition = (unsigned int)
+	uiTrackPerCent = (unsigned int)
 					gtk_range_get_value(GTK_RANGE(pScale));
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* On lance la lecture */
+
+	playerPlayTrack(strPath,
+					pFmodContext,
+					ppPlayingChannel,
+					0 /* FALSE */,
+					uiTrackPerCent,
+					&uiTrackLength,
+					&strSinger, &strTitle);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* On met à l'échelle la barre de progression du morceau */
 
 	pAdjustment = GTK_OBJECT(gtk_builder_get_object(
 											pMainBuilder,
 											"Track_Adjustment"));
-/* *************** */
 
-	/* On met à l'échelle la barre de lecture */
-	FMOD_System_CreateSound(pFmodContext,
-							strPath,
-							FMOD_CREATESTREAM | FMOD_SOFTWARE,
-							NULL,
-							&pSound);
-
-	FMOD_Sound_GetLength(pSound, &uiTrackLength, FMOD_TIMEUNIT_MS);
-	uiTrackPosition = (uiTrackPosition*uiTrackLength)/100;
+	uiTrackPerCent = (uiTrackPerCent*uiTrackLength)/100;
 
 	gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment),
 							(double) uiTrackLength/1000);
 	gtk_range_set_value(GTK_RANGE(pScale),
-						(double) uiTrackPosition/1000);
-/* *************** */
+						(double) uiTrackPerCent/1000);
 
-	/* On récupère les tags */
-/*	FMOD_Sound_GetNumTags(pSound, &nbTag, NULL);
-	for (i = 0; i < nbTag; i++)
-	{
-		FMOD_Sound_GetTag(pSound, NULL, i, &Tag);
-		printf ("%s\n", Tag.name);
-		printf ("%s\n\n", (char*) Tag.data);
-	}*/
-	FMOD_Sound_GetTag(pSound, "TITLE", 0, &Tag);
-	strTitle = (char*)Tag.data;
-	FMOD_Sound_GetTag(pSound, "ARTIST", 0, &Tag);
-	strSinger = (char*) Tag.data;
-	/* On les concatène */
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* On concatène artiste et morceau */
+
 	strTrackInfo = (char*) malloc((strlen(strTitle)+
-									3+
+									strlen(" - ") +
 									strlen(strSinger)
-									+1)*sizeof(char));
+									+1)
+									*sizeof(char));
 	strcpy(strTrackInfo, strSinger);
 	strcat(strTrackInfo, " - ");
 	strcat(strTrackInfo, strTitle);
+
 	/* On les affiche dans le label */
+
 	pLabel = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
 												"TrackInfo_Label"));
 	gtk_label_set_text(GTK_LABEL(pLabel),
 						strTrackInfo);
 
-	free(strTrackInfo);
-/* *************** */
+	/* On libère la chaine */
 
-	/* On lance la lecture à partir du moment choisi */
-	FMOD_System_PlaySound(pFmodContext,
-						FMOD_CHANNEL_FREE, pSound, TRUE,
-						ppPlayingChannel);
-	FMOD_Channel_SetPosition(*ppPlayingChannel,
-					uiTrackPosition, FMOD_TIMEUNIT_MS);
-	FMOD_Channel_SetPaused(*ppPlayingChannel,
-							FALSE);
-/* *************** */
+	free(strTrackInfo);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 	return EXIT_SUCCESS;
 
 }
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -357,8 +352,8 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 											pData[PREFERENCES]);
 
 			/* On charge un morceau aléatoirement */
-			/*i = rand() % (iTIDMax+1);*/
-			i = 0;
+			i = rand() % (iTIDMax+1);
+			/*i = 0;*/
 			do
 			{
 				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
@@ -842,6 +837,247 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 }
 
 
+/* ********************************************************************* */
+/*                            FONCTIONS TIMEOUT                          */
+/* ********************************************************************* */
+
+gboolean guiTimeoutAnalyze (gpointer* pData)
+{
+	gboolean bIsPlaying = FALSE;
+	AnalyzedTrack* psTrack = NULL;
+
+	/* On cherche à savoir si l'analyse est finie ou non */
+	bIsPlaying = (gboolean) playerIsPlaying(
+							(FMOD_CHANNEL*)pData[ANALYZING_CHANNEL]);
+
+	/* On récupère le morceau en cours d'analyse */
+	psTrack = (AnalyzedTrack*) (g_list_first(
+								(GList*) pData[ANALYZELIST]))->data;
+
+	if (bIsPlaying == TRUE)
+	{
+		float fAnalysisRate = 0;
+
+		/* On récupère le taux d'analyse */
+
+		fAnalysisRate = (float) preferencesGetAnalysisRate(
+								(Preferences*) pData[PREFERENCES]);
+
+		/* Au maximum (100%) on analysera toutes les 25ms le morceau en
+		vitesse normale.
+		Au quart (25%) on analysera toutes les 25ms le morceau en vitesse
+		x4. */
+
+		fAnalysisRate = 25/(fAnalysisRate/100.0);
+
+		analysisAnalyze ((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+						fAnalysisRate,
+						psTrack,
+						(int*) pData[ANALYZING_COUNTER]);
+
+	}
+	else
+	{
+		float fAverage = 0;
+		int iTIDMax = 0;
+		int iTIDMin = 0;
+		int iTID = 0;
+		char* strConstFileName = NULL;
+		char* strFileName = NULL;
+		char* strStatusBarMessage = NULL;
+		GtkWidget* psStatusBar = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* On récupère le TID actuel pour enlever le morceau de l'arbre */
+
+		iTID = analyzedTrackGetTID(psTrack);
+		g_tree_steal((GTree*) pData[ANALYZED_TRACKS],
+					&iTID);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* On calcul le nouveau TID, et changeons le status du morceau
+		(analysé) */
+
+		fAverage = analyzedTrackGetFrequenciesAverage(psTrack);
+
+		analyzedTrackSetTID(psTrack,
+							(int) fabs(2000*log10(fabs(fAverage))));
+		analyzedTrackSetAnalyzed(psTrack, 1);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* On ajoute le morceau à l'arbre avec son nouveau TID */
+
+		analyzedTracksInsertTrack((AnalyzedTracks*) pData[ANALYZED_TRACKS],
+									psTrack);
+
+		/* On le supprime de la liste d'analyse */
+
+		pData[ANALYZELIST] = g_list_remove((GList*) pData[ANALYZELIST],
+											psTrack);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* Il se peut que le TID ai changé à l'insertion, on le récupère */
+
+		iTID = analyzedTrackGetTID(psTrack);
+		iTIDMax = preferencesGetMaxTID((Preferences*) pData[PREFERENCES]);
+		iTIDMin = preferencesGetMinTID((Preferences*) pData[PREFERENCES]);
+
+		/* On vérifie que les bornes sont tjs correctes */
+
+		if (iTID > iTIDMax)
+		{
+			preferencesSetMaxTID((Preferences*) pData[PREFERENCES], iTID);
+		}
+		else if (iTID < iTIDMin)
+		{
+			preferencesSetMinTID((Preferences*) pData[PREFERENCES], iTID);
+		}
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* On raffraichit la barre d'état */
+
+		strConstFileName = analyzedTrackGetPath(psTrack);
+		strFileName = strrchr(strConstFileName, '/');
+
+		strStatusBarMessage = (char*) malloc((
+									strlen("Le fichier ")+
+									strlen(&(strFileName[1]))+
+									strlen(" vient d'être analysé.")+1)
+											*sizeof(char));
+		sprintf(strStatusBarMessage,
+				"Le fichier %s vient d'être analysé.", &(strFileName[1]));
+		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+									(GtkBuilder*) pData[MAIN_BUILDER],
+												"Stellody_StatusBar"));
+		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+		gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
+						 strStatusBarMessage);
+		free(strStatusBarMessage);
+		strStatusBarMessage = NULL;
+
+	}
+
+	return bIsPlaying;
+}
+
+
+
+gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
+{
+	if (pData[ANALYZELIST] == NULL)
+	{
+		/* Si la liste d'analyse est vide */
+
+		GtkWidget* psStatusBar = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* On efface le message de la barre d'état */
+
+		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+									(GtkBuilder*) pData[MAIN_BUILDER],
+									"Stellody_StatusBar"));
+		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* C'est fonction n'a plus lieu d'être appelée */
+
+		return FALSE;
+	}
+	else
+	{
+		if (playerIsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL]))
+		{
+			/* Si le canal d'analyse est déja en train d'analysé,
+			on attend */
+
+			return TRUE;
+		}
+		else
+		{
+			unsigned int uiTrackLength = 0;
+			char* strSinger = NULL; /* Not Use */
+			char* strTitle = NULL; /* Not Use */
+			char* strConstFileName = NULL;
+			char* strFileName = NULL;
+			char* strStatusBarMessage = NULL;
+			AnalyzedTrack* psTrack = NULL;
+			GtkWidget* psStatusBar = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+			/* On charge le morceau dans le canal d'analyse */
+
+			psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
+
+			playerPlayTrack(analyzedTrackGetPath(psTrack),
+							(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+							(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL],
+							1 /* TRUE */,
+							0,
+							&uiTrackLength,
+							&strSinger,
+							&strTitle);
+			/* On coupe le son, le morceau doit être joué mais pas entendu */
+			playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+							0.0);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+			/* On indique le début de l'analyse */
+
+			strConstFileName = analyzedTrackGetPath(psTrack);
+			strFileName = strrchr(strConstFileName, '/');
+
+			strStatusBarMessage = (char*) malloc((
+									strlen("Analyse de ")+
+									strlen(&(strFileName[1]))+
+									strlen(" en cours..."))
+											*sizeof(char));
+			sprintf(strStatusBarMessage,
+				"Analyse de %s en cours...", &(strFileName[1]));
+			psStatusBar = GTK_WIDGET(gtk_builder_get_object(
+										(GtkBuilder*) pData[MAIN_BUILDER],
+										"Stellody_StatusBar"));
+			gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
+			gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
+								strStatusBarMessage);
+			free(strStatusBarMessage);
+			strStatusBarMessage = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+			/* On crée un time_out sur la fonction qui analysera et stockera
+			les données d'analyse */
+
+			g_idle_add((GSourceFunc) guiTimeoutAnalyze,
+						pData);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+			return TRUE;
+		}
+	}
+
+	return TRUE;
+}
 
 /* ********************************************************************* */
 /*                           FENÊTRE PREFERENCES                         */

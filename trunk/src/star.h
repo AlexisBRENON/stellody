@@ -67,7 +67,7 @@ typedef struct sStar Star ;
  * @param[in, out] psExistingStars Pointeur sur un arbre contenant toutes les coordonées des étoiles déjà placées.
  * @return 0 si tout s'est bien passé.
  */
-int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
+int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
 
 /**
  * @fn float starGetSize (const Star * pStar)

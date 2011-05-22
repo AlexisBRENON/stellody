@@ -38,6 +38,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 	char* strPath = NULL;
 	float fAverage = 0, fMedian = 0;
 	float* pfValues = NULL;
+	int iX, iY, iZ;
 	gsize iSize = 0; /* Inutilisé... */
 	AnalyzedTrack* psTrack = NULL;
 
@@ -68,10 +69,18 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		pfValues = (float*) g_key_file_get_double_list(ppsContext[DATA],
 										strGroups[i], "fValues", &iSize,
 										NULL);
+		iX = g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "iX", NULL);
+		iY = g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "iY", NULL);
+		iZ = g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "iZ", NULL);
+
 		/* On initialise le morceau avec les bonnes valeurs */
 		analyzedTrackInitWithData(psTrack, iTID, strPath,
 									fAverage, fMedian, pfValues);
 		analyzedTrackSetAnalyzed(psTrack, bAnalyzed);
+		analyzedTrackSetCoord(psTrack, iX, iY, iZ);
 
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
@@ -224,7 +233,7 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 		if (*((int*) pData[CHECKANALYZE]) == 0)
 		{
 			*((int*) pData[CHECKANALYZE]) = g_timeout_add_seconds(2,
-									(GSourceFunc) analysisCheckNewAnalyze,
+									(GSourceFunc) guiTimeoutAnalyze,
 									pData);
 		}
 	}

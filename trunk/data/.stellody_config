@@ -4,15 +4,8 @@
 iAnalysisRate=1
 iWindowXSize=0
 iWindowYSize=0
-iTIDMax=7
+i3DQuality=11
+iTIDMax=5781
 iTIDMin=0
 pstrPath=
-i3DQuality=20
-
-
-
-
-
-
-
 

@@ -31,14 +31,15 @@
 /* ********************************************************************* */
 
 int starCreate(Star * pStar,
-			   const AnalyzedTrack * pTrack,
-			   GPtrArray * psExistingStars)
+				AnalyzedTrack * pTrack,
+				GPtrArray * psExistingStars)
 {
 	int i = 0 ;
 	int iTest = 0 ;
 	int iArraySize = 0 ;
 	float fAverage = 0 ;
 	float fMedian = 0 ;
+	int* piCoord = NULL ;
 	float fValue1 = 0 ;
 	float fValue2 = 0 ;
 	float * fTemp ;
@@ -60,10 +61,19 @@ int starCreate(Star * pStar,
 	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
 
 	/* Définition des coordonnées en fonction de l'analyse. */
-	
-	pStar->iPositionX = (int) fAverage * (fAverage - fMedian) ;
-	pStar->iPositionY = (int) fMedian * (fMedian - fAverage) ;
-	pStar->iPositionZ = 0 ;
+	piCoord = analyzedTrackGetCoord(pTrack);
+	if (piCoord[0] == 0 && piCoord[1] == 0 && piCoord[2] == 0)
+	{
+		analyzedTrackSetCoord(pTrack,
+							(int) 100*(fAverage * (fAverage - fMedian)),
+							(int) 100*(fMedian * (fMedian - fAverage)),
+								0);
+
+		piCoord = analyzedTrackGetCoord(pTrack);
+	}
+	pStar->iPositionX = piCoord[0];
+	pStar->iPositionY = piCoord[1];
+	pStar->iPositionZ = piCoord[2] ;
 
 	/* Début de la vérification des coordonnées
 	 (vérifie qu'elles ne sont pas encore prises). */
@@ -77,7 +87,7 @@ int starCreate(Star * pStar,
 	{
 		iTest = 1 ; /* A priori, après ces tests, la vérification ne sera pas à refaire. */
 		if (iArraySize == 0)
-		{	
+		{
 			/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
 			while ((pStar->iPositionX < 3 && pStar->iPositionX > -3) &&
 				   (pStar->iPositionY < 3 && pStar->iPositionY > -3) &&
@@ -99,12 +109,12 @@ int starCreate(Star * pStar,
 						fAlpha = -M_PI/2 ;
 						fRadius = fRadius + 1 ;
 					}
-					
+
 					iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
 					iTranslateY = (int) (fRadius * sin(fAlpha)) ;
 					iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
 				}
-				
+
 				pStar->iPositionX = iOldX + iTranslateX ;
 				pStar->iPositionY = iOldY + iTranslateY ;
 				pStar->iPositionZ = iOldZ + iTranslateZ ;
@@ -118,7 +128,7 @@ int starCreate(Star * pStar,
 			for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
 			{
 				fTemp = g_ptr_array_index(psExistingStars, i) ;
-				
+
 				/*Boucle tant que les coordonnées sont prises
 				 ou tant qu'elles sont trop proche du bulbe central. */
 				while ((pStar->iPositionX == fTemp[0] &&
@@ -131,7 +141,7 @@ int starCreate(Star * pStar,
 				{
 					iTest = 0 ; /* Puisqu'on modifie les coordonnées,
 								 le test est à refaire depuis le début. */
-					
+
 					/* Boucle tant que les coordonnées n'ont pas été modifiées. */
 					while ((pStar->iPositionX == iOldX + iTranslateX) &&
 						   (pStar->iPositionY == iOldY + iTranslateY) &&
@@ -148,17 +158,17 @@ int starCreate(Star * pStar,
 							fAlpha = -M_PI/2 ;
 							fRadius = fRadius + 1 ;
 						}
-						
+
 						iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
 						iTranslateY = (int) (fRadius * sin(fAlpha)) ;
 						iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
 					}
-					
+
 					pStar->iPositionX = iOldX + iTranslateX ;
 					pStar->iPositionY = iOldY + iTranslateY ;
 					pStar->iPositionZ = iOldZ + iTranslateZ ;
 				}
-			}			
+			}
 		}
 	}
 

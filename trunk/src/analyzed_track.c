@@ -80,6 +80,7 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 	psTrack->bAnalyzed = 1;
 	psTrack->fFrequenciesAverage = fAverage;
 	psTrack->fFrequenciesMedian = fMedian;
+	psTrack->piCoord[0] = psTrack->piCoord[1] = psTrack->piCoord[2] = 0;
 	if (fValues != NULL)
 	{
 		for (i = 0; i < iSAVEDVALUES; i++)
@@ -115,6 +116,7 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack)
 	psTrack->bAnalyzed = 0;
 	psTrack->fFrequenciesAverage = 0;
 	psTrack->fFrequenciesMedian = 0;
+	psTrack->piCoord[0] = psTrack->piCoord[1] = psTrack->piCoord[2] = 0;
 	for (i = 0; i < iSAVEDVALUES; i++)
 	{
 		psTrack->fValues[i] = 0;
@@ -307,6 +309,25 @@ int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
 	/*assert (fValue > -150 && fValue < 0);*/
 
 	psTrack->fValues[i] = fValue;
+
+	return EXIT_SUCCESS;
+}
+
+
+int* analyzedTrackGetCoord (const AnalyzedTrack* psTrack)
+{
+	assert (psTrack != NULL);
+
+	return (int*) (psTrack->piCoord);
+}
+
+int analyzedTrackSetCoord(AnalyzedTrack* psTrack, int iX, int iY, int iZ)
+{
+	assert (psTrack != NULL);
+
+	psTrack->piCoord[0] = iX;
+	psTrack->piCoord[1] = iY;
+	psTrack->piCoord[2] = iZ;
 
 	return EXIT_SUCCESS;
 }
