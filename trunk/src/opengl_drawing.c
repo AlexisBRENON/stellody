@@ -88,20 +88,25 @@ static void drawCube()
 	glBegin(GL_QUADS) ;
 	for(i = 0 ; i < 6 ; i++)
 	{
-		glNormal3f(piNormalesCube[i][0],piNormalesCube[i][1],piNormalesCube[i][2]) ;
+		glNormal3f(piNormalesCube[i][0],
+				   piNormalesCube[i][1],
+				   piNormalesCube[i][2]) ;
+		
 		for(j = 0 ; j < 4 ; j ++)
 		{
 			switch (Colour)
 			{
 				case 0 :
-					glColor3f(ppfVertexCube[piFacesCube[i][j]][3], ppfVertexCube[piFacesCube[i][j]][4], ppfVertexCube[piFacesCube[i][j]][5]) ;
+					glColor3f(ppfVertexCube[piFacesCube[i][j]][3],
+							  ppfVertexCube[piFacesCube[i][j]][4],
+							  ppfVertexCube[piFacesCube[i][j]][5]) ;
 					break ;
 				default :
 					break ;
 			}
-
-			/* glNormal3f(2*ppfVertexCube[piFacesCube[i][j]][0], 2*ppfVertexCube[piFacesCube[i][j]][1], 2*ppfVertexCube[piFacesCube[i][j]][2]) ; */
-			glVertex3f(ppfVertexCube[piFacesCube[i][j]][0], ppfVertexCube[piFacesCube[i][j]][1], ppfVertexCube[piFacesCube[i][j]][2]) ;
+			glVertex3f(ppfVertexCube[piFacesCube[i][j]][0],
+					   ppfVertexCube[piFacesCube[i][j]][1],
+					   ppfVertexCube[piFacesCube[i][j]][2]) ;
 		}
 	}
 	glEnd() ;
@@ -139,10 +144,15 @@ static void drawTriangle(void)
 	glBegin(GL_QUADS) ;
 	for(i = 0 ; i < 3 ; i++)
 	{
-		glNormal3f(piNormalesTriangle[i][0],piNormalesTriangle[i][1],piNormalesTriangle[i][2]) ;
+		glNormal3f(piNormalesTriangle[i][0],
+				   piNormalesTriangle[i][1],
+				   piNormalesTriangle[i][2]) ;
+		
 		for(j = 0 ; j < 4 ; j ++)
 		{
-			glVertex3f(ppfVertexTriangle[piFacesTriangle[i][j]][0], ppfVertexTriangle[piFacesTriangle[i][j]][1], ppfVertexTriangle[piFacesTriangle[i][j]][2]) ;
+			glVertex3f(ppfVertexTriangle[piFacesTriangle[i][j]][0],
+					   ppfVertexTriangle[piFacesTriangle[i][j]][1],
+					   ppfVertexTriangle[piFacesTriangle[i][j]][2]) ;
 		}
 	}
 	glEnd() ;
@@ -151,7 +161,9 @@ static void drawTriangle(void)
 	glBegin(GL_TRIANGLES) ;
 	for(i = 0 ; i < 3 ; i++)
 	{
-		glVertex3f(ppfVertexTriangle[2*i+1][0], ppfVertexTriangle[2*i+1][1], ppfVertexTriangle[2*i+1][2]) ;
+		glVertex3f(ppfVertexTriangle[2*i+1][0],
+				   ppfVertexTriangle[2*i+1][1],
+				   ppfVertexTriangle[2*i+1][2]) ;
 	}
 	glEnd() ;
 
@@ -160,7 +172,9 @@ static void drawTriangle(void)
 	glBegin(GL_TRIANGLES) ;
 	for(i = 0 ; i < 3 ; i++)
 	{
-		glVertex3f(ppfVertexTriangle[2*i][0], ppfVertexTriangle[2*i][1], ppfVertexTriangle[2*i][2]) ;
+		glVertex3f(ppfVertexTriangle[2*i][0],
+				   ppfVertexTriangle[2*i][1],
+				   ppfVertexTriangle[2*i][2]) ;
 	}
 	glEnd() ;
 }
@@ -1027,7 +1041,7 @@ static void drawAWingMiddle()
 	glPushMatrix() ;
 	glScalef(0.65, 0.7, 0.66) ;
 	glRotatef(90, 1, 0, 0) ;
-	glColor3f(0.40, 0.80, 1.00) ;					/* Couleur réacteur central de l'A-Wing. */
+	glColor3f(0.40, 0.80, 1.00) ;
 	drawCylinder(64) ;
 	glPopMatrix () ;
 
@@ -1469,7 +1483,7 @@ static void drawAWingRight(int Armes)
 	glTranslatef(0, 0, 1.5) ;
 	glScalef(0.4, 0.4, 2) ;
 	glRotatef(90, 1, 0, 0) ;
-	glColor3f(1.00, 1.00, 0.70) ;					/* Couleur réacteurs secondaires de l'A-Wing. */
+	glColor3f(1.00, 1.00, 0.70) ;
 	drawCylinder(64) ;
 	glPopMatrix() ;
 
@@ -1692,7 +1706,7 @@ static void drawSelectedStar(Star * pStar)
 	glTranslatef(starGetX(pStar), starGetY(pStar), starGetZ(pStar)) ;
 	glRotatef(15, 0, 0, 1) ;
 	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
-	glTranslatef(0.25, 0, 0) ;
+	glTranslatef(pStar->fSize * 1.2, 0, 0) ;
 	glRotatef(-90, 0, 0, 1) ;
 	glScalef(pStar->fSize*0.05, pStar->fSize*0.05, pStar->fSize*0.05) ;
 	drawAWing(1) ;
@@ -1709,7 +1723,9 @@ static int drawStar(Star * psStar, int iPrecision)
 	glPushMatrix() ;
 	glTranslatef(starGetX(psStar), starGetY(psStar), starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
-	glColor3f(starGetColourR(psStar), starGetColourG(psStar), starGetColourB(psStar)) ;
+	glColor3f(starGetColourR(psStar),
+			  starGetColourG(psStar),
+			  starGetColourB(psStar)) ;
 	drawSphere(iPrecision) ;
 	glPopMatrix() ;
 
@@ -1719,9 +1735,11 @@ static int drawStar(Star * psStar, int iPrecision)
 static void drawCubeMap(OpenGLData * pData)
 {
 	int i = 0 ;
-	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
+					+ pData->fTranslateX ;
 	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
-	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)
+					+ pData->fTranslateZ ;
 	
 	float ppfVertexCube[8][9] =
 	{
@@ -1750,7 +1768,7 @@ static void drawCubeMap(OpenGLData * pData)
 	/*
 	glTranslatef(fPosX, fPosY, fPosZ) ;
 	*/
-	glScalef(1200, 1200, 1200) ;
+	glScalef(5000, 5000, 5000) ;
 	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
 	glColor3f(1, 1, 1) ;
 
@@ -1758,13 +1776,21 @@ static void drawCubeMap(OpenGLData * pData)
 	{
 		glBegin(GL_QUADS) ;
 		glTexCoord2f(0, 1) ;
-		glVertex3f(ppfVertexCube[piFacesCube[i][0]][0], ppfVertexCube[piFacesCube[i][0]][1], ppfVertexCube[piFacesCube[i][0]][2]) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][0]][0],
+				   ppfVertexCube[piFacesCube[i][0]][1],
+				   ppfVertexCube[piFacesCube[i][0]][2]) ;
 		glTexCoord2f(1, 1) ;
-		glVertex3f(ppfVertexCube[piFacesCube[i][1]][0], ppfVertexCube[piFacesCube[i][1]][1], ppfVertexCube[piFacesCube[i][1]][2]) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][1]][0],
+				   ppfVertexCube[piFacesCube[i][1]][1],
+				   ppfVertexCube[piFacesCube[i][1]][2]) ;
 		glTexCoord2f(1, 0) ;
-		glVertex3f(ppfVertexCube[piFacesCube[i][2]][0], ppfVertexCube[piFacesCube[i][2]][1], ppfVertexCube[piFacesCube[i][2]][2]) ;
+		glVertex3f(ppfVertexCube[piFacesCube[i][2]][0],
+				   ppfVertexCube[piFacesCube[i][2]][1],
+				   ppfVertexCube[piFacesCube[i][2]][2]) ;
 		glTexCoord2f(0, 0) ;
-		glVertex3f(ppfVertexCube[piFacesCube[i][3]][0], ppfVertexCube[piFacesCube[i][3]][1], ppfVertexCube[piFacesCube[i][3]][2]) ;	
+		glVertex3f(ppfVertexCube[piFacesCube[i][3]][0],
+				   ppfVertexCube[piFacesCube[i][3]][1],
+				   ppfVertexCube[piFacesCube[i][3]][2]) ;	
 		glEnd() ;
 	}
 
@@ -1772,7 +1798,9 @@ static void drawCubeMap(OpenGLData * pData)
 	glDisable(GL_TEXTURE_2D) ;
 }
 
-static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData * pData)
+static gboolean drawStellarium(int * piKey,
+							   AnalyzedTrack * pTrack,
+							   OpenGLData * pData)
 {
 	Star sStar ;
 	starCreate(& sStar, pTrack, pData->psExistingStars) ;
@@ -1786,8 +1814,16 @@ static gboolean drawStellarium(int * piKey, AnalyzedTrack * pTrack, OpenGLData *
 
 static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
+	Star sSelectedStar ;
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
+	if (pData->pPlayedTrack != NULL)
+	{
+		starCreate(& sSelectedStar,
+				   pData->pPlayedTrack,
+				   pData->psExistingStars) ;
+	}
+	
 	glDisable(GL_LIGHTING) ;
 	
 	drawCubeMap(pData) ;
@@ -1802,6 +1838,8 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
+	drawSelectedStar(& sSelectedStar) ;
+	
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
 }
@@ -1827,22 +1865,43 @@ static unsigned int drawingLoadTexture(const char * pcFileName)
 	
 	/* Texture mipmappé */
     glBindTexture(GL_TEXTURE_2D, iTexture) ;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) ;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST) ;
+    glTexParameteri(GL_TEXTURE_2D,
+					GL_TEXTURE_MAG_FILTER, GL_LINEAR) ;
+    glTexParameteri(GL_TEXTURE_2D,
+					GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST) ;
 	
     switch (imGetDimC(& iImage))
     {
 		case 1:
-			gluBuild2DMipmaps(GL_TEXTURE_2D, 1, imGetDimX(& iImage), imGetDimY(& iImage), GL_LUMINANCE, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			gluBuild2DMipmaps(GL_TEXTURE_2D,
+							  1,
+							  imGetDimX(& iImage),
+							  imGetDimY(& iImage),
+							  GL_LUMINANCE,
+							  GL_UNSIGNED_BYTE,
+							  imGetData(& iImage)) ;
 			break;
 		case 3:
-			gluBuild2DMipmaps(GL_TEXTURE_2D, 3, imGetDimX(& iImage), imGetDimY(& iImage), GL_RGB, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			gluBuild2DMipmaps(GL_TEXTURE_2D,
+							  3,
+							  imGetDimX(& iImage),
+							  imGetDimY(& iImage),
+							  GL_RGB,
+							  GL_UNSIGNED_BYTE,
+							  imGetData(& iImage)) ;
 			break;
 		case 4:
-			gluBuild2DMipmaps(GL_TEXTURE_2D, 4, imGetDimX(& iImage), imGetDimY(& iImage), GL_RGBA, GL_UNSIGNED_BYTE, imGetData(& iImage)) ;
+			gluBuild2DMipmaps(GL_TEXTURE_2D,
+							  4,
+							  imGetDimX(& iImage),
+							  imGetDimY(& iImage),
+							  GL_RGBA,
+							  GL_UNSIGNED_BYTE,
+							  imGetData(& iImage)) ;
 			break;
 		default:
-			printf("LoadGLTexture: can not load GL texture! dimColor is not managed!\n");
+			printf("drawingLoadTexture : impossible de charger l'image,\
+				   nombre de couleur non géré!\n");
 			break;
     }
 	
@@ -1858,9 +1917,11 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
-	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)  + pData->fTranslateX ;
+	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
+					+ pData->fTranslateX ;
 	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
-	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)  + pData->fTranslateZ ;
+	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)
+					+ pData->fTranslateZ ;
 
 	/* Calcul des vecteurs unitaires du repère de la caméra. */
 
@@ -1869,7 +1930,9 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	pfVectorZ[1] = (fPosY) - pData->fCenterY ;
 	pfVectorZ[2] = (fPosZ) - pData->fCenterZ ;
 	/* Normalisation de Z. */
-	fTemp = sqrt(pfVectorZ[0]*pfVectorZ[0] + pfVectorZ[1]*pfVectorZ[1] + pfVectorZ[2]*pfVectorZ[2]) ;
+	fTemp = sqrt(pfVectorZ[0]*pfVectorZ[0] +
+				 pfVectorZ[1]*pfVectorZ[1] +
+				 pfVectorZ[2]*pfVectorZ[2]) ;
 	pfVectorZ[0] = pfVectorZ[0] / fTemp ;
 	pfVectorZ[1] = pfVectorZ[1] / fTemp ;
 	pfVectorZ[2] = pfVectorZ[2] / fTemp ;
@@ -1879,7 +1942,9 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	pfVectorX[1] = 0*pfVectorZ[0] - 0*pfVectorZ[2] ;
 	pfVectorX[2] = 0*pfVectorZ[1] - 1*pfVectorZ[0] ;
 	/* Normalisation de X. */
-	fTemp = sqrt(pfVectorX[0]*pfVectorX[0] + pfVectorX[1]*pfVectorX[1] + pfVectorX[2]*pfVectorX[2]) ;
+	fTemp = sqrt(pfVectorX[0]*pfVectorX[0] +
+				 pfVectorX[1]*pfVectorX[1] +
+				 pfVectorX[2]*pfVectorX[2]) ;
 	pfVectorX[0] = pfVectorX[0] / fTemp ;
 	pfVectorX[1] = pfVectorX[1] / fTemp ;
 	pfVectorX[2] = pfVectorX[2] / fTemp ;
@@ -1889,7 +1954,9 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	pfVectorY[1] = pfVectorZ[2]*pfVectorX[0] - pfVectorZ[0]*pfVectorX[2] ;
 	pfVectorY[2] = pfVectorZ[0]*pfVectorX[1] - pfVectorZ[1]*pfVectorX[0] ;
 	/* Normalisation de Y. */
-	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] + pfVectorY[1]*pfVectorY[1] + pfVectorY[2]*pfVectorY[2]) ;
+	fTemp = sqrt(pfVectorY[0]*pfVectorY[0] +
+				 pfVectorY[1]*pfVectorY[1] +
+				 pfVectorY[2]*pfVectorY[2]) ;
 	pfVectorY[0] = pfVectorY[0] / fTemp ;
 	pfVectorY[1] = pfVectorY[1] / fTemp ;
 	pfVectorY[2] = pfVectorY[2] / fTemp ;
@@ -1906,7 +1973,10 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	return EXIT_SUCCESS ;
 }
 
-int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ)
+int drawingTranslate (OpenGLData* pData,
+					  float fTranslateX,
+					  float fTranslateY,
+					  float fTranslateZ)
 {
 	int i = 0 ;
 	float fTranslation = 0 ;
@@ -1924,22 +1994,31 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	}
 
 	
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
+										   fTranslateY * pfVectorY[0] +
+										   fTranslateZ * pfVectorZ[0])) ;
+	if ((pData->fCenterX + fTranslation) < 2 * 300 &&
+		(pData->fCenterX + fTranslation) > -2 * 300)
 	{
 		pData->fCenterX = pData->fCenterX + fTranslation ;
 		pData->fTranslateX = pData->fTranslateX + fTranslation ;
 	}
 
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
+										   fTranslateY * pfVectorY[1] +
+										   fTranslateZ * pfVectorZ[1])) ;
+	if ((pData->fCenterY + fTranslation) < 2 * 300 &&
+		(pData->fCenterY + fTranslation) > -2 * 300)
 	{
 		pData->fCenterY = pData->fCenterY + fTranslation ;
 		pData->fTranslateY = pData->fTranslateY + fTranslation ;
 	}
 
-	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
+										   fTranslateY * pfVectorY[2] +
+										   fTranslateZ * pfVectorZ[2])) ;
+	if ((pData->fCenterZ + fTranslation) < 2 * 300 &&
+		(pData->fCenterZ + fTranslation) > -2 * 300)
 	{
 		pData->fCenterZ = pData->fCenterZ + fTranslation ;
 		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -1950,7 +2029,10 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 	return EXIT_SUCCESS ;
 }
 
-int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius)
+int drawingRotate (OpenGLData* pData,
+				   float fTranslateX,
+				   float fTranslateY,
+				   float fMovedRadius)
 {
 	pData->fAlpha = pData->fAlpha - fTranslateY ;
 	if (pData->fAlpha >= M_PI/2) pData->fAlpha = M_PI/2 - 0.001 ;
@@ -1961,14 +2043,17 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
 	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
-	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;	
+	if (pData->fRadius > 2 * 300) pData->fRadius = 2 * 300 ;	
 	
 	drawingUpdateTransfertMatrix(pData) ;
 
 	return EXIT_SUCCESS ;
 }
 
-int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fMovedRadius)
+int drawingZoom (OpenGLData* pData,
+				 float fPositionX,
+				 float fPositionY,
+				 float fMovedRadius)
 {
 	int i = 0 ;
 	float fTranslation = 0 ;
@@ -1985,9 +2070,9 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 	{
 		pData->fRadius = 0.01 ;
 	}
-	else if (pData->fRadius > 2 * 150)
+	else if (pData->fRadius > 2 * 300)
 	{
-		pData->fRadius = 2 * 150 ;
+		pData->fRadius = 2 * 300 ;
 	}
 	else
 	{
@@ -2008,22 +2093,31 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 			pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
 		}
 		
-		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-		if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
+											   fTranslateY * pfVectorY[0] +
+											   fTranslateZ * pfVectorZ[0])) ;
+		if ((pData->fCenterX + fTranslation) < 2 * 300 &&
+			(pData->fCenterX + fTranslation) > -2 * 300)
 		{
 			pData->fCenterX = pData->fCenterX + fTranslation ;
 			pData->fTranslateX = pData->fTranslateX + fTranslation ;
 		}
 		
-		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-		if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
+											   fTranslateY * pfVectorY[1] +
+											   fTranslateZ * pfVectorZ[1])) ;
+		if ((pData->fCenterY + fTranslation) < 2 * 300 &&
+			(pData->fCenterY + fTranslation) > -2 * 300)
 		{
 			pData->fCenterY = pData->fCenterY + fTranslation ;
 			pData->fTranslateY = pData->fTranslateY + fTranslation ;
 		}
 		
-		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-		if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
+		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
+											   fTranslateY * pfVectorY[2] +
+											   fTranslateZ * pfVectorZ[2])) ;
+		if ((pData->fCenterZ + fTranslation) < 2 * 300 &&
+			(pData->fCenterZ + fTranslation) > -2 * 300)
 		{
 			pData->fCenterZ = pData->fCenterZ + fTranslation ;
 			pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -2043,13 +2137,13 @@ int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
 	glLoadIdentity() ;
 	gluPerspective(45,
 				   (GLfloat) iWidth / (GLfloat) iHeight ,
-				   0.001, 1000000000);
+				   0.001, 100000);
 	glMatrixMode(GL_MODELVIEW) ;
 
 	pData->iWidth = iWidth ;
 	pData->iHeight = iHeight ;
 	
-	return EXIT_SUCCESS;
+	return EXIT_SUCCESS ;
 }
 
 int drawingGlInit (OpenGLData* pData)
@@ -2065,7 +2159,7 @@ int drawingGlInit (OpenGLData* pData)
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
 
-	pData->fRadius = 100 ;
+	pData->fRadius = 300 ;
 	pData->fAlpha = 0 ;
 	pData->fBeta = 3*M_PI/2 ;
 	pData->fCenterX = 0 ;
@@ -2075,8 +2169,9 @@ int drawingGlInit (OpenGLData* pData)
 	pData->fTranslateY = 0 ;
 	pData->fTranslateZ = 0 ;
 
+	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
-	pData->uiTexture = drawingLoadTexture("data/images/cubemap.ppm") ;
+	pData->uiTexture = drawingLoadTexture("data/images/cubemap2.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
 	
 	drawingUpdateTransfertMatrix(pData) ;
@@ -2134,9 +2229,12 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta) + pData->fTranslateX,
-			  pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY,
-			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta) + pData->fTranslateZ,
+	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
+			  + pData->fTranslateX,
+			  pData->fRadius * sin(pData->fAlpha)
+			  + pData->fTranslateY,
+			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)
+			  + pData->fTranslateZ,
 			  pData->fCenterX,
 			  pData->fCenterY,
 			  pData->fCenterZ,

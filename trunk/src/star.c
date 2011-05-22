@@ -39,7 +39,7 @@ int starCreate(Star * pStar,
 	int iArraySize = 0 ;
 	float fAverage = 0 ;
 	float fMedian = 0 ;
-	int* piCoord = NULL ;
+	int * piCoord = NULL ;
 	float fValue1 = 0 ;
 	float fValue2 = 0 ;
 	float * fTemp ;
@@ -187,7 +187,7 @@ int starCreate(Star * pStar,
 	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 0) ;
 	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 7) ;
 
-	pStar->fSize = 0.2 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
+	pStar->fSize = 0.4 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
 
 	/* Définition des couleurs. */
 

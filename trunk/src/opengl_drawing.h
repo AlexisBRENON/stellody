@@ -60,6 +60,7 @@ struct sOpenGLData
 	int iHeight ;					/**< Hauteur de la fenêtre */
 	int iPrecision ;				/**< Precision choisie en préférence pour la qualité des dessins. */
 	float pfTransfertMatrix[9] ;	/**< Matrice de passage de la base du monde à la base caméra. */
+	AnalyzedTrack * pPlayedTrack ;	/**< Analyse du morceau en train d'être lu. */
 	GPtrArray * psExistingStars ;	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
 } ;
 

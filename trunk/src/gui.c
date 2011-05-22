@@ -1137,12 +1137,11 @@ int on_Stellarium_DrawingArea_realize(
 	GdkGLContext * psContext = NULL;
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
-
+	
 	psContext = gtk_widget_get_gl_context(psWidget);
 	psSurface = gtk_widget_get_gl_drawable(psWidget);
 
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
-
 	if (bActivate == TRUE)
 	{
 		drawingGlInit((OpenGLData*)pData[OPENGLDATA]);
@@ -1167,17 +1166,15 @@ int on_Stellarium_DrawingArea_configure_event(
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
 
-	psContext = gtk_widget_get_gl_context(psWidget);
-	psSurface = gtk_widget_get_gl_drawable(psWidget);
-
+	psContext = gtk_widget_get_gl_context(psWidget) ;
+	psSurface = gtk_widget_get_gl_drawable(psWidget) ;
+	
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
-
 	if (bActivate == TRUE)
 	{
 		drawingGlResize(pData[OPENGLDATA], psEvent->width, psEvent->height);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
-
 	return EXIT_SUCCESS;
 }
 
