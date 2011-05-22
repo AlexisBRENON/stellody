@@ -58,13 +58,13 @@ MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
 				-I/Developer/sw/include/gtkglext-1.0 \
 				-I/Developer/sw/lib/gtkglext-1.0/include \
 				-I/Developer/FMOD\ Programmers\ API\ Mac/api/inc \
-				$(GTK_CFLAGS)	$(GL_CFLAGS)
+				$(GTK_CFLAGS) $(GL_CFLAGS)
 MAC_LDFLAGS =		-m32 -lfmodex -lgtkglext-x11-1.0.0 -lgdkglext-x11-1.0.0 \
 				-framework OpenGL -framework Cocoa \
 				-L/Developer/FMOD\ Programmers\ API\ Mac/api/lib \
 				-L/Developer/sw/ \
 				-L/Developer/sw/lib \
-				$(GTK_LDFLAGS)	$(GL_LDFLAGS)
+				$(GTK_LDFLAGS) 	$(GL_LDFLAGS)
 				
 # Fin de définition de variables
 
