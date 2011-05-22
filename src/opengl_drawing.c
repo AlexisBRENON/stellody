@@ -1746,7 +1746,7 @@ static void drawCubeMap(OpenGLData * pData)
 	
 	glPushMatrix() ;
 	
-	glScalef(200, 200, 200) ;
+	glScalef(1200, 1200, 1200) ;
 	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
 
 	for(i = 0 ; i < 6 ; i++)
@@ -1903,6 +1903,7 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ)
 {
 	int i = 0 ;
+	float fTranslation = 0 ;
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
@@ -1916,14 +1917,27 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
 	}
 
-	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
+	{
+		pData->fCenterX = pData->fCenterX + fTranslation ;
+		pData->fTranslateX = pData->fTranslateX + fTranslation ;
+	}
 
-	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
+	{
+		pData->fCenterY = pData->fCenterY + fTranslation ;
+		pData->fTranslateY = pData->fTranslateY + fTranslation ;
+	}
 
-	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
+	{
+		pData->fCenterZ = pData->fCenterZ + fTranslation ;
+		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
+	}
 
 	drawingUpdateTransfertMatrix(pData) ;
 
@@ -1940,6 +1954,9 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
+	if (pData->fRadius < 1) pData->fRadius = 1 ;
+	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;	
+	
 	drawingUpdateTransfertMatrix(pData) ;
 
 	return EXIT_SUCCESS ;
@@ -1948,6 +1965,7 @@ int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, floa
 int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fMovedRadius)
 {
 	int i = 0 ;
+	float fTranslation = 0 ;
 	float pfVectorX[3] = {0, 0, 0} ;
 	float pfVectorY[3] = {0, 0, 0} ;
 	float pfVectorZ[3] = {0, 0, 0} ;
@@ -1972,17 +1990,32 @@ int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fM
 		pfVectorZ[i] = pData->pfTransfertMatrix[3 * i + 2] ;
 	}
 
-	pData->fCenterX = pData->fCenterX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-	pData->fTranslateX = pData->fTranslateX - (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
-
-	pData->fCenterY = pData->fCenterY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-	pData->fTranslateY = pData->fTranslateY - (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
-
-	pData->fCenterZ = pData->fCenterZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
-	pData->fTranslateZ = pData->fTranslateZ - (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] + fTranslateY * pfVectorY[0] + fTranslateZ * pfVectorZ[0])) ;
+	if ((pData->fCenterX + fTranslation) < 2 * 150 && (pData->fCenterX + fTranslation) > -2 * 150)
+	{
+		pData->fCenterX = pData->fCenterX + fTranslation ;
+		pData->fTranslateX = pData->fTranslateX + fTranslation ;
+	}
+	
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] + fTranslateY * pfVectorY[1] + fTranslateZ * pfVectorZ[1])) ;
+	if ((pData->fCenterY + fTranslation) < 2 * 150 && (pData->fCenterY + fTranslation) > -2 * 150)
+	{
+		pData->fCenterY = pData->fCenterY + fTranslation ;
+		pData->fTranslateY = pData->fTranslateY + fTranslation ;
+	}
+	
+	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] + fTranslateY * pfVectorY[2] + fTranslateZ * pfVectorZ[2])) ;
+	if ((pData->fCenterZ + fTranslation) < 2 * 150 && (pData->fCenterZ + fTranslation) > -2 * 150)
+	{
+		pData->fCenterZ = pData->fCenterZ + fTranslation ;
+		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
+	}
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
+	if (pData->fRadius < 1) pData->fRadius = 1 ;
+	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;
+	
 	drawingUpdateTransfertMatrix(pData) ;
 
 	return EXIT_SUCCESS ;}
