@@ -114,15 +114,6 @@ int drawingGLRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, fl
 int drawingGLZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
 
 /**
-  * @fn int drawingGLInit (OpenGLData* pData)
-  * @brief Initialise les paramètres OpenGL (caméra, lumière...).
-  *
-  * @param[in,out] pData Données utilisées par OpenGL
-  * @return EXIT_SUCCESS si tout est OK
-  */
-int drawingGLInit (OpenGLData* pData) ;
-
-/**
   * @fn int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
   * @brief Redimenssionne la scene
   *
@@ -132,6 +123,15 @@ int drawingGLInit (OpenGLData* pData) ;
   * @return EXIT_SUCCESS si tout est OK
   */
 int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
+
+/**
+ * @fn int drawingGLInit (OpenGLData* pData)
+ * @brief Initialise les paramètres OpenGL (caméra, lumière...).
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingGLInit (OpenGLData* pData) ;
 
 /**
   * @fn int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
@@ -277,15 +277,12 @@ int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack) ;
 /* ********************************************************************* */
 
 /**
- * @fn drawingGLRegressionTest(int * argc, char * argv[])
+ * @fn drawingGLRegressionTest()
  * @brief Teste toutes les fonctions du module opengl_drawing.h
- *
- * @param [in] argc pointeur vers argc
- * @param [in] argv pointeur vers argv[]
  *
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLRegressionTest(int * argc, char * argv[]) ;
+int drawingGLRegressionTest(void) ;
 
 
 #endif

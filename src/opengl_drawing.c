@@ -2245,8 +2245,6 @@ int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 /*                                                                       */
 /* ********************************************************************* */
 
-
-
 float drawingGLGetRadius(const OpenGLData * pData)
 {
 	assert(pData != NULL) ;
@@ -2335,7 +2333,7 @@ int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
 /*                                                                       */
 /* ********************************************************************* */
 
-int drawingGLRegressionTest(int * argc, char * argv[])
+int drawingGLRegressionTest()
 {
 	/* Après discution avec l'enseignant, cette fonction de test de regression
 	 ne testera que les fonction "testables".*/
