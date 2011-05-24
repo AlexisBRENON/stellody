@@ -68,11 +68,11 @@ int starCreate(Star * pStar,
 	if (piCoord[0] == 0 && piCoord[1] == 0 && piCoord[2] == 0)
 	{
 		/* Si non, calcul et attribution des coordonnées. */
-		
+
 		pStar->iPositionX = (int) 10000 * fAverage ;
 		pStar->iPositionY = (int) 10 * fMedian ;
 		pStar->iPositionZ = 0 ;
-		
+
 		/* Début de la vérification des coordonnées
 		 (vérifie qu'elles ne sont pas encore prises). */
 
@@ -167,7 +167,7 @@ int starCreate(Star * pStar,
 		}
 
 		/* Mise à jour des coordonnées dans l'analyse. */
-	
+
 		analyzedTrackSetCoord(pTrack,
 							  pStar->iPositionX,
 							  pStar->iPositionY,
@@ -177,19 +177,19 @@ int starCreate(Star * pStar,
 	{
 		/* Si les coordonnées ont déjà été calculées pour le morceau,
 		 on met à jour l'étoile correspondante. */
-		
+
 		pStar->iPositionX = piCoord[0] ;
 		pStar->iPositionY = piCoord[1] ;
 		pStar->iPositionZ = piCoord[2] ;
 	}
 
 	/* Ajoute les nouvelles coordonnées aux données existantes. */
-	
+
 	fTemp = (float *) malloc(3*sizeof(float)) ;
 	fTemp[0] = pStar->iPositionX ;
 	fTemp[1] = pStar->iPositionY ;
 	fTemp[2] = pStar->iPositionZ ;
-	
+
 	g_ptr_array_add(psExistingStars, fTemp) ;
 
 
@@ -234,40 +234,40 @@ float starGetSize (const Star * pStar)
 float starGetColourR (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourR ;
 }
 
 float starGetColourG (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourG ;
 }
 
 float starGetColourB (const Star * pStar)
 {
 	assert(pStar != NULL) ;
-	
+
 	return pStar->fColourB ;
 }
 
 
-float starGetX (const Star * pStar)
+int starGetX (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
 	return pStar->iPositionX ;
 }
 
-float starGetY (const Star * pStar)
+int starGetY (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
 	return pStar->iPositionY ;
 }
 
-float starGetZ (const Star * pStar)
+int starGetZ (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
