@@ -287,6 +287,9 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 
 	fDiameter = 0.4;
 
+	printf("TrackCoord : (%d,%d,%d)\n",piTrackCoord[0],piTrackCoord[1],piTrackCoord[2]);
+	printf("CompareCoord : (%d,%d,%d)\n",piCompareCoord[0],piCompareCoord[1],piCompareCoord[2]);
+
 	if (piTrackCoord[0] <= piCompareCoord[0]+fDiameter &&
 		piTrackCoord[0] >= piCompareCoord[0]-fDiameter &&
 		piTrackCoord[1] <= piCompareCoord[1]+fDiameter &&
@@ -316,7 +319,7 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 									int iMousePositionY,
 									const OpenGLData* pGLData)
 {
-	int* piSpaceCoord/*[9]*/ = NULL;
+	int piSpaceCoord[3] = {0,0,0};
 	const float* pfTransferMatrix/*[9]*/ = NULL;
 	float fCamXCoord = 0;
 	float fCamYCoord = 0;
@@ -369,7 +372,7 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 
 	/* Pour tous les Z visibles (en partant du plus proche), on calcule
 	les coordonnées du click de souris dans le repère de l'espace */
-	for (f = fCamZCoord; f > -100; f = f-0.5)
+	for (f = fCamZCoord; f > -100 && f < 100; f = f-pfTransferMatrix[8])
 	{
 		piSpaceCoord[0] = iMousePositionX*pfTransferMatrix[0]+
 						iMousePositionY*pfTransferMatrix[1]+
@@ -399,15 +402,16 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 
 		if (playerIsPlaying(*ppPlayingChannel) == TRUE)
 		{
-			fCamZCoord = -200;
+			return EXIT_SUCCESS;
 		}
 	}
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	return EXIT_SUCCESS;
+	return EXIT_FAILURE;
 }
+
 
 
 /* ********************************************************************* */
@@ -419,6 +423,10 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 /* ********************************************************************* */
 /*                           FENÊTRE PRINCIPALE                          */
 /* ********************************************************************* */
+
+
+
+
 
 int guiLoad (gpointer* pData)
 {
@@ -550,6 +558,8 @@ int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[PLAYING_CHANNEL]);
 	pData[PLAYING_CHANNEL] = NULL;
+
+	/*drawingGLSetPlayedTrack(pData[OPENGLDATA], NULL);*/
 
 	pAdjustment = GTK_OBJECT(gtk_builder_get_object(
 											pData[MAIN_BUILDER],
@@ -981,9 +991,15 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 }
 
 
+
+
+
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
 /* ********************************************************************* */
+
+
+
 
 gboolean guiTimeoutAnalyze (gpointer* pData)
 {
@@ -1223,9 +1239,14 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 	return TRUE;
 }
 
+
+
+
 /* ********************************************************************* */
 /*                           FENÊTRE PREFERENCES                         */
 /* ********************************************************************* */
+
+
 
 int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
@@ -1272,6 +1293,7 @@ int on_FlushData_Action_activate (GtkWidget* psWidget, gpointer* pData)
 /* ********************************************************************* */
 /*                           FENÊTRE STELLARIUM                          */
 /* ********************************************************************* */
+
 
 
 int on_Stellarium_DrawingArea_realize(
@@ -1393,14 +1415,22 @@ int on_Stellarium_DrawingArea_button_release_event (
 		case GDK_BUTTON_RELEASE: /* Si on relache un bouton */
 			if (((GdkEventButton*)psEvent)->button == 1)
 			{
-				guiPlayTrackFromStellarium(
+				int iResult;
+				iResult = guiPlayTrackFromStellarium(
 								(GtkBuilder*) pData[MAIN_BUILDER],
 								(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-								(FMOD_CHANNEL**) pData[PLAYING_CHANNEL],
+								(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
 								(AnalyzedTracks*) pData[ANALYZED_TRACKS],
 								((GdkEventButton*)psEvent)->x,
 								((GdkEventButton*)psEvent)->y,
 								(OpenGLData*) pData[OPENGLDATA]);
+				if (iResult == EXIT_SUCCESS)
+				{
+					/* On joue le morceau. */
+					g_timeout_add_seconds(1,
+								(GSourceFunc) guiTrackScaleIncrement,
+								pData);
+				}
 			}
 			break;
 		default:

@@ -87,7 +87,11 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	{
 		fAverage = fAverage+pfSpectrumValueLeft[i];
 	}
-	fAverage = fabs(20*log10(fAverage/iNUMVALUES));
+	if (fAverage != 0)
+	{
+		fAverage = fabs(20*log10(fAverage/iNUMVALUES));
+	}
+
 
 	/* Calcul de la moyenne totale */
 
