@@ -41,7 +41,7 @@ struct sAnalyzedTrack
 	float fValues[iSAVEDVALUES]; /**< Tableau contenant les moyennes des
 	amplitudes des harmoniques, du do 0 au do 5 par plage de ~40Hz.*/
 	int piCoord[3]; /**< Coordonnées du morceau une fois représenté. */
-};
+} ;
 /**
   * @typedef AnalyzedTrack
   * @brief Redéfinit la structure sAnalyzedTrack.

@@ -5,10 +5,24 @@
  * @author Professeurs de LIF7/LIFO41 simplifié/adapté par Matthieu VIDAL in STELLODY TEAM
  */
 
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                        Librairies de l'image                          */
+/*                                                                       */
+/* ********************************************************************* */
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 #include "image.h"
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                 Fonctions relatives aux images                        */
+/*                                                                       */
+/* ********************************************************************* */
 
 int imInit (Image * piImage, const int iDimX, const int iDimY, const int iDimC)
 {
@@ -113,6 +127,13 @@ int imFree (Image * piImage)
 	return EXIT_SUCCESS ;
 }
 
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                 Accesseurs de la structure Image                      */
+/*                                                                       */
+/* ********************************************************************* */
+
 int imGetDimX (const Image * piImage)
 {
 	assert(piImage != NULL) ;
@@ -135,4 +156,16 @@ const unsigned char * imGetData (const Image * piImage)
 {
 	assert(piImage != NULL) ;
 	return piImage->pData ;
+}
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                           Test de regression                          */
+/*                                                                       */
+/* ********************************************************************* */
+
+int ImRegressionTest(void)
+{
+	return EXIT_SUCCESS ;
 }
