@@ -12,7 +12,7 @@
  * @struct sImage
  * @brief Structure utilisée pour la gestion d'une image.
  *
- * Cette structure est utilisée pour gérer une image. 
+ * Cette structure est utilisée pour gérer une image.
  Les champs de cette structures doivent être modifiés ou lus
  par les accesseurs et mutateurs.
  */
@@ -72,7 +72,7 @@ int imFree (Image * piImage) ;
 int imGetDimX (const Image * piImage) ;
 
 /**
- * @fn int imGetDimy (const Image * piImage)
+ * @fn int imGetDimY (const Image * piImage)
  * @brief Renvoie la hauteur d'une image.
  *
  * @param[in] piImage Pointeur vers l'image.

@@ -59,7 +59,7 @@ typedef struct sStar Star ;
 /* ********************************************************************* */
 
 /**
- * @fn int starCreate(Star * pStar, const AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
+ * @fn int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
  * @brief Initialise une étoile avec les données issues d'un morceau analysé.
  *
  * @param[in, out] pStar Pointeur sur l'étoile à initialiser.

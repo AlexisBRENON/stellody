@@ -182,10 +182,11 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 }
 
 
-static int guiPlayTrack (char* strPath,
+static int guiPlayTrack (AnalyzedTrack* pTrack,
 						GtkBuilder* pMainBuilder,
 						FMOD_SYSTEM* pFmodContext,
-						FMOD_CHANNEL** ppPlayingChannel)
+						FMOD_CHANNEL** ppPlayingChannel
+						OpenGLData* pGLData)
 {
 	unsigned int uiTrackPerCent = 0;
 	unsigned int uiTrackLength = 0;
@@ -211,13 +212,19 @@ static int guiPlayTrack (char* strPath,
 
 	/* On lance la lecture */
 
-	playerPlayTrack(strPath,
+	playerPlayTrack(analyzedTrackGetPath(pTrack),
 					pFmodContext,
 					ppPlayingChannel,
 					0 /* FALSE */,
 					uiTrackPerCent,
 					&uiTrackLength,
 					&strSinger, &strTitle);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	drawingGLSetPlayedTrack(pData, pTrack);
+
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -265,6 +272,134 @@ static int guiPlayTrack (char* strPath,
 
 	return EXIT_SUCCESS;
 
+}
+
+static guiPlayTrackFromCoord (int* piKey,
+							AnalyzedTrack* pTrack,
+							GPtrArray* pData)
+{
+	int piCompareCoord[3] = NULL;
+	int piTrackCoord[3] = NULL;
+	float fDiameter = 0;
+
+	piCompareCoord = g_ptr_array_index(pData, 4);
+	piTrackCoord = analyzedTrackGetCoord(pTrack);
+
+	fDiameter = 0.4;
+
+	if (piTrackCoor[0] <= piCompareCoord[0]+fDiameter &&
+		piTrackCoor[0] >= piCompareCoord[0]-fDiameter &&
+		piTrackCoor[1] <= piCompareCoord[1]+fDiameter &&
+		piTrackCoor[1] >= piCompareCoord[1]-fDiameter &&
+		piTrackCoor[2] <= piCompareCoord[2]+fDiameter &&
+		piTrackCoor[2] >= piCompareCoord[2]-fDiameter)
+	{
+		guiPlayTrack(pTrack,
+					g_ptr_array_index(pData,2),
+					g_ptr_array_index(pData,0),
+					g_ptr_array_index(pData,1)
+					g_ptr_array_index(pData,3));
+
+		return TRUE;
+	}
+
+	return FALSE;
+
+}
+
+
+static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
+									FMOD_SYSTEM* pFmodContext,
+									FMOD_CHANNEL** ppPlayingChannel,
+									AnalyzedTracks* pTracks,
+									int iMousePositionX,
+									int iMousePositionY,
+									const OpenGLData* pGLData)
+{
+	int piSpaceCoord[9] = NULL;
+	const float pfTransferMatrix[9] = NULL;
+	float fCamZCoord = 0;
+	float f = 0;
+	GPtrArray* ppDataArray = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* Passage du repère de la fenêtre (origine en haut à gauche) au
+	repère OpenGL (origine au centre). */
+
+	iMousePositionX = iMousePositionX - (drawingGLGetWidth(pGLData)/2);
+	iMousePositionY = iMousePositionY - (drawingGLGetHeight(pGLData)/2);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* On détermine les coordonnées en Z de la caméra, car l'utilisateur ne
+	peut pas sélectionner une étoile située derrière la caméra. */
+
+	fCamZCoord = drawingGLGetRadius(pGLData)*
+				cos(drawingGLGetAlpha(pGLData))*
+				(-1)*sin(drawingGLGetBeta(pGLData))+
+				drawingGLGetTranslateZ(pGLData)-0.001;
+
+	/* On initialise le tableau de pointeurs qui sera utilisé pour la
+	traversée de l'arbre */
+
+	ppDataArray = g_ptr_array_new();
+	g_ptr_array_add(ppDataArray, pFmodContext);
+	g_ptr_array_add(ppDataArray, ppPlayingChannel);
+	g_ptr_array_add(ppDataArray, pMainBuilder);
+	g_ptr_array_add(ppDataArray, pGLData);
+	g_ptr_array_add(ppDataArray, piSpaceCoord);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* Les coordonnées de la souris sont dans le repère de la caméra,
+	on passe au repère de l'espace. */
+
+	pfTransferMatrix = drawingGLGetTransfertMatrix(pGLData);
+
+	/* Pour tous les Z visibles (en partant du plus proche), on calcule
+	les coordonnées du click de souris dans le repère de l'espace */
+	for (f = fCamZCoord; f > -100; f = f-0.5)
+	{
+		piSpaceCoord[0] = iMousePositionX*pfTransferMatrix[0]+
+						iMousePositionY*pfTransferMatrix[1]
+						f*pfTransferMatrix[2];
+		piSpaceCoord[1] = iMousePositionX*pfTransferMatrix[3]+
+						iMousePositionY*pfTransferMatrix[4]
+						f*pfTransferMatrix[5];
+		piSpaceCoord[2] = iMousePositionX*pfTransferMatrix[6]+
+						iMousePositionY*pfTransferMatrix[7]
+						f*pfTransferMatrix[8];
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* On cherche dans l'ensemble des morceau s'il existe un morceau ayant
+	ces coordonnées */
+
+		g_tree_foreach((GTree*) pTracks,
+						(GTraverseFunc) guiPlayTrackFromCoord,
+						ppDataArray);
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+		/* Si un morceau a été trouvé, le canal est en lecture, et on peut
+		arrêter de chercher */
+
+		if (playerIsPlaying(*ppPlayingChannel) == TRUE)
+		{
+			fCamZCoord = -200;
+		}
+	}
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	return EXIT_SUCCESS;
 }
 
 
@@ -386,9 +521,11 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		}
 
 
-		guiPlayTrack(strPath, (GtkBuilder*) pData[MAIN_BUILDER],
+		guiPlayTrack(psTrackInPlaylist,
+					(GtkBuilder*) pData[MAIN_BUILDER],
 					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL]);
+					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+					(OpenGLData*) pData[OPENGLDATA]);
 
 		/* On joue le morceau. */
 		g_timeout_add_seconds(1,
@@ -810,10 +947,11 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	if (pTrack != NULL)
 	{
-		guiPlayTrack(analyzedTrackGetPath(pTrack),
+		guiPlayTrack(pTrack,
 					pData[MAIN_BUILDER],
 					pData[FMOD_CONTEXT],
-					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL]);
+					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+					pData[OPENGLDATA]);
 	}
 
 	return EXIT_SUCCESS;
@@ -1137,14 +1275,14 @@ int on_Stellarium_DrawingArea_realize(
 	GdkGLContext * psContext = NULL;
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
-	
+
 	psContext = gtk_widget_get_gl_context(psWidget);
 	psSurface = gtk_widget_get_gl_drawable(psWidget);
 
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
 	if (bActivate == TRUE)
 	{
-		drawingGlInit((OpenGLData*)pData[OPENGLDATA]);
+		drawingGLInit((OpenGLData*)pData[OPENGLDATA]);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 
 		g_timeout_add(40,
@@ -1168,11 +1306,11 @@ int on_Stellarium_DrawingArea_configure_event(
 
 	psContext = gtk_widget_get_gl_context(psWidget) ;
 	psSurface = gtk_widget_get_gl_drawable(psWidget) ;
-	
+
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
 	if (bActivate == TRUE)
 	{
-		drawingGlResize(pData[OPENGLDATA], psEvent->width, psEvent->height);
+		drawingGLResize(pData[OPENGLDATA], psEvent->width, psEvent->height);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
 	return EXIT_SUCCESS;
@@ -1195,7 +1333,7 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGlDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA],
+		drawingGLDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA],
 						preferencesGet3DQuality(
 								(Preferences*) pData[PREFERENCES]));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
@@ -1225,11 +1363,11 @@ int on_Stellarium_DrawingArea_button_release_event (
 
 	switch (psEvent->type)
 	{
-		case GDK_SCROLL:
+		case GDK_SCROLL: // Si on scroll avec la molette
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
-					drawingZoom(pData[OPENGLDATA],
+					drawingGLZoom(pData[OPENGLDATA],
 								(*(float*) pData[MOUSEPOSITION_X]),
 								(*(float*) pData[MOUSEPOSITION_Y]),
 								0.1);
@@ -1237,7 +1375,7 @@ int on_Stellarium_DrawingArea_button_release_event (
 				case GDK_SCROLL_DOWN:
 					gtk_widget_get_allocation(psWidget,
 												&sAllocation);
-					drawingZoom(pData[OPENGLDATA],
+					drawingGLZoom(pData[OPENGLDATA],
 				sAllocation.width - (*(float*) pData[MOUSEPOSITION_X]),
 				sAllocation.height - (*(float*) pData[MOUSEPOSITION_Y]),
 							-0.1);
@@ -1246,8 +1384,18 @@ int on_Stellarium_DrawingArea_button_release_event (
 					break;
 			}
 			break;
-		case GDK_BUTTON_RELEASE:
-			printf("Appel de la fonction de click\n");
+		case GDK_BUTTON_RELEASE: // Si on relache un bouton
+			if (((GdkEventButton*)psEvent)->button == 1)
+			{
+				guiPlayTrackFromStellarium(
+								(GtkBuilder*) pData[MAIN_BUILDER],
+								(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+								(FMOD_CHANNEL**) pData[PLAYING_CHANNEL],
+								(AnalyzedTracks*) pData[ANALYZED_TRACKS],
+								((GdkEventButton*)psEvent)->x,
+								((GdkEventButton*)psEvent)->y,
+								(OpenGLData*) pData[OPENGLDATA]);
+			}
 			break;
 		default:
 			break;
@@ -1269,14 +1417,14 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
 
-		drawingRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20, 0);
+		drawingGLRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20, 0);
 	}
 	else if (((psEvent->state)>>8)%2 == 1)
 	{
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
 
-		drawingTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);
+		drawingGLTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);
 	}
 
 	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;
@@ -1284,3 +1432,4 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 
 	return EXIT_SUCCESS;
 }
+

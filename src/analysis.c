@@ -87,7 +87,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	{
 		fAverage = fAverage+pfSpectrumValueLeft[i];
 	}
-	fAverage = fAverage/iNUMVALUES;
+	fAverage = fabs(20*log10(fAverage/iNUMVALUES));
 
 	/* Calcul de la moyenne totale */
 
@@ -101,7 +101,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 
 	/* Calcul de la médiane immédiate */
 
-	fMedian = pfSpectrumValueLeft[iNUMVALUES/2];
+	fMedian = fabs(20*log10(pfSpectrumValueLeft[iNUMVALUES/2]));
 
 	/* Calcul de la médiane totale */
 

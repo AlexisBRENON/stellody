@@ -19,6 +19,19 @@
 #include "analyzed_tracks.h"
 
 
+/**
+  * @fn int analysisAnalyze (FMOD_CHANNEL* pChannel,
+					float fAnalysisRate,
+					AnalyzedTrack* pTrack,
+					int* piAnalyzingCounter)
+  * @brief Récupère les amplitudes des fréquences et les stockent.
+  *
+  * @param[in,out] pChannel Canal sur lequel analyser
+  * @param[in] fAnalysisRate Taux d'analyse
+  * @param[in,out] pTrack Morceau en cours d'analyse
+  * @param[in,out] piAnalyzingCounter Conpteur de boucle pour calculer les moyennes
+  * @return EXIT_SUCCESS si tout est OK
+  */
 int analysisAnalyze (FMOD_CHANNEL* pChannel,
 					float fAnalysisRate,
 					AnalyzedTrack* pTrack,
