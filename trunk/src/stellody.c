@@ -27,7 +27,7 @@
 #include "gui.h"
 
 
-int regressionTests (int argc, char* argv[]);
+int regressionTests ();
 int stellody (int argc, char* argv[]);
 
 /**
@@ -48,7 +48,7 @@ int main (int argc, char* argv[])
 
 	if (argc == 2 && strcmp(argv[1], "--tests") == 0)
 	{
-		regressionTests(argc, argv);
+		regressionTests();
 	}
 
     return 0;
@@ -58,12 +58,9 @@ int main (int argc, char* argv[])
   * @fn int regressionTests(int argc, char* argv[])
   * @brief Fonction regroupant les tests de regressions dans un menu.
   *
-  * @param[in] argc Nombre d'argument donnés au programme (>0)
-  * @param[in,out] argv Tableau de chaine de caractères contenant les
-  arguments.
   * @return 0 si tout est OK.
   */
-int regressionTests(int argc, char* argv[])
+int regressionTests()
 {
 	int iAnswer = -1;
 
@@ -100,7 +97,7 @@ int regressionTests(int argc, char* argv[])
 			break;
 		case 5:
 			printf("Returned value : %d\n",
-				   drawingRegressionTest(&argc, argv));
+				   drawingGLRegressionTest());
 			break;
 		default:
 			break;
@@ -195,17 +192,3 @@ int stellody(int argc, char* argv[])
 
 	return EXIT_SUCCESS;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
