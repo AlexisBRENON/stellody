@@ -5,8 +5,16 @@
  * @author Professeurs de LIF7/LIFO41 simplifié/adapté par Matthieu VIDAL in STELLODY TEAM
  */
 
+
 #ifndef IMAGE_H_INCLUDED
 #define IMAGE_H_INCLUDED
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                        Définitions de types                           */
+/*                                                                       */
+/* ********************************************************************* */
 
 /**
  * @struct sImage
@@ -30,6 +38,12 @@ struct sImage
  */
 typedef struct sImage Image ;
 
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                 Fonctions relatives aux images                        */
+/*                                                                       */
+/* ********************************************************************* */
 
 /**
  * @fn int imInit (Image * piImage, const int iDimX, const int iDimY, const int iDimC)
@@ -61,6 +75,13 @@ int imInitPPM (Image * piImage, const char * pcFileName) ;
  * @return EXIT_SUCCESS si tout est OK
  */
 int imFree (Image * piImage) ;
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                 Accesseurs de la structure Image                      */
+/*                                                                       */
+/* ********************************************************************* */
 
 /**
  * @fn int imGetDimX (const Image * piImage)
@@ -97,5 +118,21 @@ int imGetDimC (const Image * piImage) ;
  * @return Un pointeur vers les données de l'image.
  */
 const unsigned char * imGetData (const Image * piImage) ;
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                           Test de regression                          */
+/*                                                                       */
+/* ********************************************************************* */
+
+/**
+ * @fn int ImRegressionTest(void)
+ * @brief Teste toutes les fonctions du module image.h
+ *
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int ImRegressionTest(void) ;
+
 
 #endif

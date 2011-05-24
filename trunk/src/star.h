@@ -12,7 +12,7 @@
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                          Librairies OpenGL                            */
+/*                      Librairies d'une étoile                          */
 /*                                                                       */
 /* ********************************************************************* */
 
@@ -32,8 +32,7 @@
  morceau.
  *
  * Cette structure contient les données permettant l'afichage de chaque
- morceau analysé. On accède aux données de l'étoile par des accesseurs ou
- des mutateurs.
+ morceau analysé. On accède aux données de l'étoile par des accesseurs.
  */
 struct sStar
 {
@@ -45,6 +44,7 @@ struct sStar
 	int iPositionY ;	/**< Position en y de l'étoile */
 	int iPositionZ ;	/**< Position en z de l'étoile */
 } ;
+
 /**
  * @typedef Star
  * @brief Redéfinit la structure sStar.
@@ -68,6 +68,13 @@ typedef struct sStar Star ;
  * @return 0 si tout s'est bien passé.
  */
 int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                 Accesseurs de la structure Star                       */
+/*                                                                       */
+/* ********************************************************************* */
 
 /**
  * @fn float starGetSize (const Star * pStar)
@@ -106,31 +113,31 @@ float starGetColourG (const Star * pStar) ;
 float starGetColourB (const Star * pStar) ;
 
 /**
- * @fn float starGetX (const Star * pStar)
+ * @fn int starGetX (const Star * pStar)
  * @brief Accesseur de la position x d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
  * @return fPositionX de l'étoile
  */
-float starGetX (const Star * pStar) ;
+int starGetX (const Star * pStar) ;
 
 /**
- * @fn float starGetY (const Star * pStar)
+ * @fn int starGetY (const Star * pStar)
  * @brief Accesseur de la position y d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
  * @return fPositionY de l'étoile
  */
-float starGetY (const Star * pStar) ;
+int starGetY (const Star * pStar) ;
 
 /**
- * @fn float starGetZ (const Star * pStar)
+ * @fn int starGetZ (const Star * pStar)
  * @brief Accesseur de la position z d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
  * @return fPositionZ de l'étoile
  */
-float starGetZ (const Star * pStar) ;
+int starGetZ (const Star * pStar) ;
 
 
 /* ********************************************************************* */
@@ -139,9 +146,8 @@ float starGetZ (const Star * pStar) ;
 /*                                                                       */
 /* ********************************************************************* */
 
-
 /**
- * @fn StarRegressionTest(void)
+ * @fn int StarRegressionTest(void)
  * @brief Teste toutes les fonctions du module star.h
  *
  * @return EXIT_SUCCESS si tout est OK

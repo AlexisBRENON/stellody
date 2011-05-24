@@ -12,28 +12,18 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-#if defined(__linux)
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-#if defined(__APPLE__)
-#include <openGL/gl.h>
-#include <openGL/glu.h>
-#endif
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkgl.h>
+#include <gdk/gdkkeysyms.h>
 
-#include "star.h"
-#include "opengl_drawing.h"
 #include "gui.h"
+#include "star.h"
 #include "image.h"
+#include "opengl_drawing.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159 /**< Défini la constante PI si elle ne l'est pas.*/
@@ -1735,11 +1725,6 @@ static int drawStar(Star * psStar, int iPrecision)
 static void drawCubeMap(OpenGLData * pData)
 {
 	int i = 0 ;
-	float fPosX = pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
-					+ pData->fTranslateX ;
-	float fPosY = pData->fRadius * sin(pData->fAlpha) + pData->fTranslateY ;
-	float fPosZ = pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)
-					+ pData->fTranslateZ ;
 	
 	float ppfVertexCube[8][9] =
 	{
@@ -1851,7 +1836,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 /*                                                                       */
 /* ********************************************************************* */
 
-static unsigned int drawingLoadTexture(const char * pcFileName)
+static unsigned int drawingGLLoadTexture(const char * pcFileName)
 {
 	/* Fonction fournie par nos professeurs d'informatique. */
 
@@ -1900,7 +1885,7 @@ static unsigned int drawingLoadTexture(const char * pcFileName)
 							  imGetData(& iImage)) ;
 			break;
 		default:
-			printf("drawingLoadTexture : impossible de charger l'image,\
+			printf("drawingGLLoadTexture : impossible de charger l'image,\
 				   nombre de couleur non géré!\n");
 			break;
     }
@@ -1910,7 +1895,7 @@ static unsigned int drawingLoadTexture(const char * pcFileName)
     return iTexture;
 }
 
-static int drawingUpdateTransfertMatrix (OpenGLData* pData)
+static int drawingGLUpdateTransfertMatrix (OpenGLData* pData)
 {
 	int i = 0 ;
 	float fTemp = 0 ;
@@ -1973,7 +1958,7 @@ static int drawingUpdateTransfertMatrix (OpenGLData* pData)
 	return EXIT_SUCCESS ;
 }
 
-int drawingTranslate (OpenGLData* pData,
+int drawingGLTranslate (OpenGLData* pData,
 					  float fTranslateX,
 					  float fTranslateY,
 					  float fTranslateZ)
@@ -1997,8 +1982,8 @@ int drawingTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 										   fTranslateY * pfVectorY[0] +
 										   fTranslateZ * pfVectorZ[0])) ;
-	if ((pData->fCenterX + fTranslation) < 2 * 300 &&
-		(pData->fCenterX + fTranslation) > -2 * 300)
+	if ((pData->fCenterX + fTranslation) < 2 * 150 &&
+		(pData->fCenterX + fTranslation) > -2 * 150)
 	{
 		pData->fCenterX = pData->fCenterX + fTranslation ;
 		pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -2007,8 +1992,8 @@ int drawingTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 										   fTranslateY * pfVectorY[1] +
 										   fTranslateZ * pfVectorZ[1])) ;
-	if ((pData->fCenterY + fTranslation) < 2 * 300 &&
-		(pData->fCenterY + fTranslation) > -2 * 300)
+	if ((pData->fCenterY + fTranslation) < 2 * 150 &&
+		(pData->fCenterY + fTranslation) > -2 * 150)
 	{
 		pData->fCenterY = pData->fCenterY + fTranslation ;
 		pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2017,19 +2002,19 @@ int drawingTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 										   fTranslateY * pfVectorY[2] +
 										   fTranslateZ * pfVectorZ[2])) ;
-	if ((pData->fCenterZ + fTranslation) < 2 * 300 &&
-		(pData->fCenterZ + fTranslation) > -2 * 300)
+	if ((pData->fCenterZ + fTranslation) < 2 * 150 &&
+		(pData->fCenterZ + fTranslation) > -2 * 150)
 	{
 		pData->fCenterZ = pData->fCenterZ + fTranslation ;
 		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
 	}
 
-	drawingUpdateTransfertMatrix(pData) ;
+	drawingGLUpdateTransfertMatrix(pData) ;
 
 	return EXIT_SUCCESS ;
 }
 
-int drawingRotate (OpenGLData* pData,
+int drawingGLRotate (OpenGLData* pData,
 				   float fTranslateX,
 				   float fTranslateY,
 				   float fMovedRadius)
@@ -2043,14 +2028,14 @@ int drawingRotate (OpenGLData* pData,
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
 	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
-	if (pData->fRadius > 2 * 300) pData->fRadius = 2 * 300 ;	
+	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;	
 	
-	drawingUpdateTransfertMatrix(pData) ;
+	drawingGLUpdateTransfertMatrix(pData) ;
 
 	return EXIT_SUCCESS ;
 }
 
-int drawingZoom (OpenGLData* pData,
+int drawingGLZoom (OpenGLData* pData,
 				 float fPositionX,
 				 float fPositionY,
 				 float fMovedRadius)
@@ -2070,9 +2055,9 @@ int drawingZoom (OpenGLData* pData,
 	{
 		pData->fRadius = 0.01 ;
 	}
-	else if (pData->fRadius > 2 * 300)
+	else if (pData->fRadius > 2 * 150)
 	{
-		pData->fRadius = 2 * 300 ;
+		pData->fRadius = 2 * 150 ;
 	}
 	else
 	{
@@ -2096,8 +2081,8 @@ int drawingZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 											   fTranslateY * pfVectorY[0] +
 											   fTranslateZ * pfVectorZ[0])) ;
-		if ((pData->fCenterX + fTranslation) < 2 * 300 &&
-			(pData->fCenterX + fTranslation) > -2 * 300)
+		if ((pData->fCenterX + fTranslation) < 2 * 150 &&
+			(pData->fCenterX + fTranslation) > -2 * 150)
 		{
 			pData->fCenterX = pData->fCenterX + fTranslation ;
 			pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -2106,8 +2091,8 @@ int drawingZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 											   fTranslateY * pfVectorY[1] +
 											   fTranslateZ * pfVectorZ[1])) ;
-		if ((pData->fCenterY + fTranslation) < 2 * 300 &&
-			(pData->fCenterY + fTranslation) > -2 * 300)
+		if ((pData->fCenterY + fTranslation) < 2 * 150 &&
+			(pData->fCenterY + fTranslation) > -2 * 150)
 		{
 			pData->fCenterY = pData->fCenterY + fTranslation ;
 			pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2116,20 +2101,20 @@ int drawingZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 											   fTranslateY * pfVectorY[2] +
 											   fTranslateZ * pfVectorZ[2])) ;
-		if ((pData->fCenterZ + fTranslation) < 2 * 300 &&
-			(pData->fCenterZ + fTranslation) > -2 * 300)
+		if ((pData->fCenterZ + fTranslation) < 2 * 150 &&
+			(pData->fCenterZ + fTranslation) > -2 * 150)
 		{
 			pData->fCenterZ = pData->fCenterZ + fTranslation ;
 			pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
 		}
 		
-		drawingUpdateTransfertMatrix(pData) ;
+		drawingGLUpdateTransfertMatrix(pData) ;
 	}
 
 	return EXIT_SUCCESS ;
 }
 
-int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
+int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
 {
 	glViewport(0, 0, iWidth, iHeight) ;
 
@@ -2146,7 +2131,7 @@ int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
 	return EXIT_SUCCESS ;
 }
 
-int drawingGlInit (OpenGLData* pData)
+int drawingGLInit (OpenGLData* pData)
 {
 	/* Début de l'initialisation. */
 
@@ -2159,7 +2144,7 @@ int drawingGlInit (OpenGLData* pData)
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
 
-	pData->fRadius = 300 ;
+	pData->fRadius = 150 ;
 	pData->fAlpha = 0 ;
 	pData->fBeta = 3*M_PI/2 ;
 	pData->fCenterX = 0 ;
@@ -2171,10 +2156,10 @@ int drawingGlInit (OpenGLData* pData)
 
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
-	pData->uiTexture = drawingLoadTexture("data/images/cubemap2.ppm") ;
+	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap1.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
 	
-	drawingUpdateTransfertMatrix(pData) ;
+	drawingGLUpdateTransfertMatrix(pData) ;
 
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
 	glClearDepth(1.0) ;
@@ -2219,7 +2204,7 @@ int drawingGlInit (OpenGLData* pData)
 	return EXIT_SUCCESS;
 }
 
-int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
+int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 					int iPrecision)
 {
 	/* Gestion de la vision. */
@@ -2256,11 +2241,104 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 
 /* ********************************************************************* */
 /*                                                                       */
+/*              Accesseurs et mutateurs d'OpenGLData                     */
+/*                                                                       */
+/* ********************************************************************* */
+
+
+
+float drawingGLGetRadius(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fRadius ;
+}
+
+float drawingGLGetAlpha(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fAlpha ;	
+}
+
+float drawingGLGetBeta(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fBeta ;
+}
+
+float drawingGLGetCenterX(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fCenterX ;	
+}
+
+float drawingGLGetCenterY(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fCenterY ;
+}
+
+float drawingGLGetCenterZ(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fCenterZ ;
+}
+
+float drawingGLGetTranslateX(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fTranslateX ;
+}
+
+float drawingGLGetTranslateY(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fTranslateY ;
+}
+
+float drawingGLGetTranslateZ(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->fTranslateZ ;
+}
+
+int drawingGLGetWidth(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->iWidth ;
+}
+
+int drawingGLGetHeight(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->iHeight ;
+}
+
+const float * drawingGLGetTransfertMatrix(const OpenGLData * pData)
+{
+	assert(pData != NULL) ;
+	return pData->pfTransfertMatrix ;
+}
+
+int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
+{
+	assert(pData != NULL || pTrack != NULL) ;
+	
+	pData->pPlayedTrack = pTrack ;
+	
+	return EXIT_SUCCESS ;
+}
+
+
+/* ********************************************************************* */
+/*                                                                       */
 /*                           Test de regression                          */
 /*                                                                       */
 /* ********************************************************************* */
 
-int drawingRegressionTest(int * argc, char * argv[])
+int drawingGLRegressionTest(int * argc, char * argv[])
 {
+	/* Après discution avec l'enseignant, cette fonction de test de regression
+	 ne testera que les fonction "testables".*/
+	
 	return EXIT_SUCCESS ;
 }
