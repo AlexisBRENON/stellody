@@ -185,7 +185,7 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 static int guiPlayTrack (AnalyzedTrack* pTrack,
 						GtkBuilder* pMainBuilder,
 						FMOD_SYSTEM* pFmodContext,
-						FMOD_CHANNEL** ppPlayingChannel
+						FMOD_CHANNEL** ppPlayingChannel,
 						OpenGLData* pGLData)
 {
 	unsigned int uiTrackPerCent = 0;
@@ -223,7 +223,7 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	drawingGLSetPlayedTrack(pData, pTrack);
+	drawingGLSetPlayedTrack(pGLData, pTrack);
 
 
 /* ********************************************************************* */
@@ -274,12 +274,12 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 
 }
 
-static guiPlayTrackFromCoord (int* piKey,
+static gboolean guiPlayTrackFromCoord (int* piKey,
 							AnalyzedTrack* pTrack,
 							GPtrArray* pData)
 {
-	int piCompareCoord[3] = NULL;
-	int piTrackCoord[3] = NULL;
+	int* piCompareCoord/* [3] */ = NULL  ;
+	int* piTrackCoord/* [3] */ = NULL;
 	float fDiameter = 0;
 
 	piCompareCoord = g_ptr_array_index(pData, 4);
@@ -287,17 +287,17 @@ static guiPlayTrackFromCoord (int* piKey,
 
 	fDiameter = 0.4;
 
-	if (piTrackCoor[0] <= piCompareCoord[0]+fDiameter &&
-		piTrackCoor[0] >= piCompareCoord[0]-fDiameter &&
-		piTrackCoor[1] <= piCompareCoord[1]+fDiameter &&
-		piTrackCoor[1] >= piCompareCoord[1]-fDiameter &&
-		piTrackCoor[2] <= piCompareCoord[2]+fDiameter &&
-		piTrackCoor[2] >= piCompareCoord[2]-fDiameter)
+	if (piTrackCoord[0] <= piCompareCoord[0]+fDiameter &&
+		piTrackCoord[0] >= piCompareCoord[0]-fDiameter &&
+		piTrackCoord[1] <= piCompareCoord[1]+fDiameter &&
+		piTrackCoord[1] >= piCompareCoord[1]-fDiameter &&
+		piTrackCoord[2] <= piCompareCoord[2]+fDiameter &&
+		piTrackCoord[2] >= piCompareCoord[2]-fDiameter)
 	{
 		guiPlayTrack(pTrack,
 					g_ptr_array_index(pData,2),
 					g_ptr_array_index(pData,0),
-					g_ptr_array_index(pData,1)
+					g_ptr_array_index(pData,1),
 					g_ptr_array_index(pData,3));
 
 		return TRUE;
@@ -316,8 +316,10 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 									int iMousePositionY,
 									const OpenGLData* pGLData)
 {
-	int piSpaceCoord[9] = NULL;
-	const float pfTransferMatrix[9] = NULL;
+	int* piSpaceCoord/*[9]*/ = NULL;
+	const float* pfTransferMatrix/*[9]*/ = NULL;
+	float fCamXCoord = 0;
+	float fCamYCoord = 0;
 	float fCamZCoord = 0;
 	float f = 0;
 	GPtrArray* ppDataArray = NULL;
@@ -334,13 +336,18 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	/* On détermine les coordonnées en Z de la caméra, car l'utilisateur ne
-	peut pas sélectionner une étoile située derrière la caméra. */
-
+	/* On détermine les coordonées de la caméra dans le repère Monde */
+	fCamXCoord = drawingGLGetRadius(pGLData)*
+				cos(drawingGLGetAlpha(pGLData))*
+				cos(drawingGLGetBeta(pGLData))+
+				drawingGLGetTranslateX(pGLData);
+	fCamYCoord = drawingGLGetRadius(pGLData)*
+				sin(drawingGLGetAlpha(pGLData))+
+				drawingGLGetTranslateY(pGLData);
 	fCamZCoord = drawingGLGetRadius(pGLData)*
 				cos(drawingGLGetAlpha(pGLData))*
 				(-1)*sin(drawingGLGetBeta(pGLData))+
-				drawingGLGetTranslateZ(pGLData)-0.001;
+				drawingGLGetTranslateZ(pGLData);
 
 	/* On initialise le tableau de pointeurs qui sera utilisé pour la
 	traversée de l'arbre */
@@ -349,7 +356,7 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 	g_ptr_array_add(ppDataArray, pFmodContext);
 	g_ptr_array_add(ppDataArray, ppPlayingChannel);
 	g_ptr_array_add(ppDataArray, pMainBuilder);
-	g_ptr_array_add(ppDataArray, pGLData);
+	g_ptr_array_add(ppDataArray, (gpointer*) pGLData);
 	g_ptr_array_add(ppDataArray, piSpaceCoord);
 
 /* ********************************************************************* */
@@ -365,13 +372,13 @@ static int guiPlayTrackFromStellarium (GtkBuilder* pMainBuilder,
 	for (f = fCamZCoord; f > -100; f = f-0.5)
 	{
 		piSpaceCoord[0] = iMousePositionX*pfTransferMatrix[0]+
-						iMousePositionY*pfTransferMatrix[1]
+						iMousePositionY*pfTransferMatrix[1]+
 						f*pfTransferMatrix[2];
 		piSpaceCoord[1] = iMousePositionX*pfTransferMatrix[3]+
-						iMousePositionY*pfTransferMatrix[4]
+						iMousePositionY*pfTransferMatrix[4]+
 						f*pfTransferMatrix[5];
 		piSpaceCoord[2] = iMousePositionX*pfTransferMatrix[6]+
-						iMousePositionY*pfTransferMatrix[7]
+						iMousePositionY*pfTransferMatrix[7]+
 						f*pfTransferMatrix[8];
 
 /* ********************************************************************* */
@@ -515,13 +522,12 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		else
 		{
 			/* Sinon, on charge le premier morceau de la playlist*/
-			AnalyzedTrack* psTrackInPlaylist;
-			psTrackInPlaylist = ((GSList*)pData[PLAYLIST])->data;
-			strPath = analyzedTrackGetPath(psTrackInPlaylist);
+			psTrack = ((GSList*)pData[PLAYLIST])->data;
+			strPath = analyzedTrackGetPath(psTrack);
 		}
 
 
-		guiPlayTrack(psTrackInPlaylist,
+		guiPlayTrack(psTrack,
 					(GtkBuilder*) pData[MAIN_BUILDER],
 					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
@@ -1363,7 +1369,7 @@ int on_Stellarium_DrawingArea_button_release_event (
 
 	switch (psEvent->type)
 	{
-		case GDK_SCROLL: // Si on scroll avec la molette
+		case GDK_SCROLL: /* Si on scroll avec la molette */
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
@@ -1384,7 +1390,7 @@ int on_Stellarium_DrawingArea_button_release_event (
 					break;
 			}
 			break;
-		case GDK_BUTTON_RELEASE: // Si on relache un bouton
+		case GDK_BUTTON_RELEASE: /* Si on relache un bouton */
 			if (((GdkEventButton*)psEvent)->button == 1)
 			{
 				guiPlayTrackFromStellarium(
