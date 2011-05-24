@@ -327,6 +327,18 @@ int on_Stellarium_DrawingArea_button_release_event (
 								GdkEventAny * psEvent,
 								gpointer * pData);
 
+/**
+  * @fn int on_Stellarium_DrawingArea_motion_notify_event (
+								GtkWidget * psWidget,
+								GdkEventMotion * psEvent,
+								gpointer * pData)
+  * @brief Fonction appelée lorsque la souris est déplacée.
+  *
+  * @param[in,out] psWidget Widget appelant ce callback
+  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] pData Données tierces
+  * @return EXIT_SUCCESS si tout est OK
+  */
 int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 												GdkEventMotion* psEvent,
 												gpointer* pData);

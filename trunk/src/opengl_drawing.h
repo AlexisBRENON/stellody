@@ -45,10 +45,10 @@
  sans l'utilisation de variables globales.
  */
 struct sOpenGLData
-{	
+{
 	float fRadius ;					/**< Rayon de la sphère de vision de la caméra */
 	float fAlpha ;					/**< Angle de vision latitudinal de la caméra */
-	float fBeta ;					/**< Angle de vision longitudinal de la caméra */	
+	float fBeta ;					/**< Angle de vision longitudinal de la caméra */
 	float fCenterX ;				/**< Position en x de la direction de la caméra */
 	float fCenterY ;				/**< Position en y de la direction de la caméra */
 	float fCenterZ ;				/**< Position en z de la direction de la caméra */
@@ -89,7 +89,7 @@ typedef struct sOpenGLData OpenGLData;
 int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
 
 /**
- * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @fn drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
  * @brief Permet de gérer le positionnement latitudinal et longitudinal de la caméra.
  *
  * @param[in,out] pData Données utilisées par OpenGL
@@ -101,29 +101,28 @@ int drawingTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, f
 int drawingRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
 
 /**
- * @fn drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @fn int drawingZoom (OpenGLData* pData, float fPositionX, float fPositionY, float fMovedRadius) ;
  * @brief Permet de gérer le lzoomde la caméra.
  *
  * @param[in,out] pData Données utilisées par OpenGL
- * @param[in] fTranslateX Position de la souris en X
- * @param[in] fTranslateY Position de la souris en Y
+ * @param[in] fPositionX Position de la souris en X
+ * @param[in] fPositionY Position de la souris en Y
  * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
+int drawingZoom (OpenGLData* pData, float fPoistionX, float fPositionY, float fMovedRadius) ;
 
 /**
-;  * @fn int drawingGlInit (OpenGLData* pData, int iPrecision)
+  * @fn int drawingGlInit (OpenGLData* pData)
   * @brief Initialise les paramètres OpenGL (caméra, lumière...).
   *
   * @param[in,out] pData Données utilisées par OpenGL
-  * @param[in] iPrecision Valeur de la précision 3D
   * @return EXIT_SUCCESS si tout est OK
   */
 int drawingGlInit (OpenGLData* pData) ;
 
 /**
-  * @fn int drawingGlResize (int width, int height)
+  * @fn int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight)
   * @brief Redimenssionne la scene
   *
   * @param[in,out] pData Données utilisées par OpenGL
@@ -134,7 +133,7 @@ int drawingGlInit (OpenGLData* pData) ;
 int drawingGlResize (OpenGLData* pData, int iWidth, int iHeight) ;
 
 /**
-  * @fn int drawingGlDraw (gpointer* pData);
+  * @fn int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
   * @brief Rafraichit la scene.
   *
   * @param[in, out] pTracks Données des chansons
@@ -152,7 +151,7 @@ int drawingGlDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision)
 
 
 /**
- * @fn OpenGLDrawingRegressionTest(int * argc, char * argv[])
+ * @fn drawingRegressionTest(int * argc, char * argv[])
  * @brief Teste toutes les fonctions du module opengl_drawing.h
  *
  * @param [in] argc pointeur vers argc

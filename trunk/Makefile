@@ -111,7 +111,7 @@ mac : check $(OBJS_MAC)
 	@echo "======================================="
 	@echo "\033[1;33m"
 	@echo "Début des messages linker."
-	@echo "\033[0m"
+	@echo "\033[1;31m"
 	@$(CC) $(MAC_LDFLAGS) $(OBJS_MAC) -o $(BIN_DIR)/$(EXEC)
 	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
@@ -128,7 +128,7 @@ lin : check $(OBJS_LIN)
 	@echo "======================================="
 	@echo "\033[1;33m"
 	@echo "Début des messages linker."
-	@echo "\033[0m"
+	@echo "\033[1;31m"
 	@$(CC) $(LIN_LDFLAGS) $(OBJS_LIN) -o $(BIN_DIR)/$(EXEC)
 	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
