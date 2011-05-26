@@ -320,6 +320,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 									const OpenGLData* pGLData)
 {
 	int pfSpaceCoord[3] = {0,0,0};
+	int iFind = 0;
 	const float* pfTransferMatrix/*[9]*/ = NULL;
 	float fMouseXCoord = 0;
 	float fMouseYCoord = 0;
@@ -361,10 +362,12 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	OpenGL dépendant de la distance de la caméra */
 
 	fCamRadius = drawingGLGetRadius(pGLData);
-	fMouseXCoord = (float) ((iMousePositionX*(fCamRadius/600))+
-							drawingGLGetTranslateX(pGLData));
-	fMouseYCoord = (float) ((iMousePositionY*(fCamRadius/600))+
-							drawingGLGetTranslateY(pGLData));
+	fMouseXCoord = (float) ((iMousePositionX+
+							drawingGLGetTranslateX(pGLData))*
+							(fCamRadius/600));
+	fMouseYCoord = (float) ((iMousePositionY+
+							drawingGLGetTranslateY(pGLData))*
+							(fCamRadius/600));
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -388,7 +391,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 
 	/* Pour tous les Z visibles (en partant du plus proche), on calcule
 	les coordonnées du click de souris dans le repère de l'espace */
-	for (f = fCamRadius+0.001; f >= -300 && f <= 300; f = f-0.5)
+	for (f = fCamRadius+0.001; f >= -300 && f <= 300 && iFind == 0; f = f-0.5)
 	{
 		pfSpaceCoord[0] = fMouseXCoord*pfTransferMatrix[0]+
 						fMouseYCoord*pfTransferMatrix[1]+
@@ -418,14 +421,14 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 
 		if (g_ptr_array_index(ppDataArray, 2) != NULL)
 		{
-			return g_ptr_array_index(ppDataArray, 2);
+			iFind = 1;
 		}
 	}
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	return NULL;
+	return g_ptr_array_index(ppDataArray, 2);
 }
 
 
