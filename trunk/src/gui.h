@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 16 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 15 /**< Nombre de cases aux tableaux de données */
 
 #define PREFERENCES 		0	/**< Structure de préférences. */
 #define ANALYZED_TRACKS		1	/**< Arbre des morceaux analysés. */
