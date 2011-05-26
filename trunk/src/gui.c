@@ -853,6 +853,7 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psPrefWin = NULL;
 	GtkWidget* psContainer = NULL;
 	GtkWidget* psScale = NULL;
+	GtkWidget* psCheckBut = NULL;
 
 	guiUnparent(pData[MAIN_BUILDER],
 				pData[PREFERENCES_BUILDER],
@@ -885,6 +886,13 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	gtk_range_set_value((GtkRange*)psScale,
 					(double) preferencesGet3DQuality(
 												pData[PREFERENCES]));
+
+	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
+										pData[PREFERENCES_BUILDER],
+										"MoveCamera_Check"));
+	gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(psCheckBut),
+					(gboolean) preferencesGetMoveCam(pData[PREFERENCES]));
 
 	psContainer = GTK_WIDGET(
 						gtk_builder_get_object(pData[MAIN_BUILDER],
@@ -1271,6 +1279,7 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
 	GtkWidget* psScale = NULL;
+	GtkWidget* psCheckBut = NULL;
 
 	psScale = GTK_WIDGET(gtk_builder_get_object(
 										pData[PREFERENCES_BUILDER],
@@ -1283,6 +1292,13 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 										"3DQuality_Scale"));
 	preferencesSet3DQuality(pData[PREFERENCES],
 						(int) gtk_range_get_value((GtkRange*)psScale));
+
+	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
+										pData[PREFERENCES_BUILDER],
+										"MoveCamera_Check"));
+	preferencesSetMoveCam(pData[PREFERENCES],
+						(int) gtk_toggle_button_get_active(
+										GTK_TOGGLE_BUTTON(psCheckBut)));
 
 	on_Stellarium_Action_activate(psWidget, pData);
 

@@ -215,14 +215,14 @@ char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
 int analyzedTrackSetPath (AnalyzedTrack* psTrack, const char* strNewPath)
 {
 	assert (psTrack != NULL);
-	assert (strNewPath != NULL);
 
-	if (psTrack->strPath != NULL)
+	free(psTrack->strPath);
+	psTrack->strPath = NULL;
+	if (strNewPath != NULL)
 	{
-		free(psTrack->strPath);
+		psTrack->strPath = malloc((strlen(strNewPath)+1)*sizeof(char));
+		strcpy(psTrack->strPath, strNewPath);
 	}
-	psTrack->strPath = malloc((strlen(strNewPath)+1)*sizeof(char));
-	strcpy(psTrack->strPath, strNewPath);
 
 	return EXIT_SUCCESS;
 }

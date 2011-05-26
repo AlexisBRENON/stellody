@@ -34,6 +34,7 @@ struct sPreferences
 	int iMinTID;			/**< Plus petit identifiant dans l'arbre */
 	int iMaxTID;			/**< Plus grand identifiant dans l'arbre */
 	int iNbPath; 			/**< Nombre de chemin/taille du tableau pstrFilesPath */
+	int iMoveCam;			/**< 1 S'il faut bouger la caméra lorsque l'on clique sur une étoile */
 	char** pstrFilesPath;	/**< Chemins des dossiers contenant les
 	morceaux */
 };
@@ -263,7 +264,23 @@ int preferencesGet3DQuality (const Preferences* psPref);
   */
 int preferencesSet3DQuality (Preferences* psPref, int iValue);
 
-
+/**
+  * @fn int preferencesGetMoveCam (const Preferences* psPref)
+  * @brief Accesseur sur l'option de déplacement.
+  *
+  * @param[in] psPref Pointeur sur la structure à accéder
+  * @return 0 s'il ne faut pas se déplacer, 1 sinon.
+  */
+int preferencesGetMoveCam (const Preferences* psPref);
+/**
+  * @fn int preferencesSetMoveCam (Preferences* psPref, int iValue)
+  * @brief Mutateur sur l'option de déplacement.
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier.
+  * @param[in] iValue Valeur à assigner
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesSetMoveCam (Preferences* psPref, int iValue);
 
 
 /* ********************************************************************* */

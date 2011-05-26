@@ -99,11 +99,11 @@ GKeyFile** filesOpen(void)
 
 	ppsContext[CONFIG] = g_key_file_new();
 	g_key_file_load_from_file(ppsContext[CONFIG], CONFIG_FILE,
-							G_KEY_FILE_KEEP_COMMENTS, NULL);
+							G_KEY_FILE_NONE, NULL);
 
 	ppsContext[DATA] = g_key_file_new();
 	g_key_file_load_from_file(ppsContext[DATA], DATA_FILE,
-									G_KEY_FILE_KEEP_COMMENTS, NULL);
+									G_KEY_FILE_NONE, NULL);
 
 	return ppsContext;
 }
@@ -163,6 +163,9 @@ int filesSave(GKeyFile** ppsContext,
 		g_key_file_set_integer(ppsContext[CONFIG],
 								"DEFAULT", "iTIDMin",
 								preferencesGetMinTID(psPref));
+		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "iMoveCam",
+								preferencesGetMoveCam(psPref));
 		g_key_file_set_string_list(ppsContext[CONFIG],
 									"DEFAULT", "pstrPath",
 			(const gchar* const*) preferencesGetFilesPath(psPref, &iSize),
