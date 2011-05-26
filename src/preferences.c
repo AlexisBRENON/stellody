@@ -33,6 +33,7 @@ int preferencesInit (Preferences* psPref)
 	psPref->iMaxTID = 0;
 	psPref->iMinTID = 0;
 	psPref->iNbPath = 0;
+	psPref->iMoveCam = 0;
 	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
@@ -64,6 +65,9 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iMinTID = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
 											"iTIDMin", NULL);
+	psPref->iMoveCam = g_key_file_get_integer(ppsContext[CONFIG],
+											"DEFAULT",
+											"iMoveCam", NULL);
 	pstrTemp = g_key_file_get_string_list(ppsContext[CONFIG],
 											"DEFAULT",
 											"pstrPath",
@@ -98,6 +102,7 @@ int preferencesRelease (Preferences* psPref)
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
 	psPref->i3DQuality = -1;
 	psPref->iNbPath = -1;
+	psPref->iMoveCam = -1;
 	for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
 	{
 		free(psPref->pstrFilesPath[i]);
@@ -326,6 +331,25 @@ int preferencesSet3DQuality(Preferences* psPref, int iValue)
 	assert (iValue > 0 && iValue <= 100);
 
 	psPref->i3DQuality = iValue;
+
+	return EXIT_SUCCESS;
+}
+
+int preferencesGetMoveCam(const Preferences* psPref)
+{
+	assert (psPref != NULL);
+
+	return psPref->iMoveCam;
+}
+
+int preferencesSetMoveCam(Preferences* psPref, int iValue)
+{
+	printf("%d\n", iValue);
+
+	assert (psPref != NULL);
+	assert (iValue == 0 || iValue == 1);
+
+	psPref->iMoveCam = iValue;
 
 	return EXIT_SUCCESS;
 }
