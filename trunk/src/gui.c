@@ -224,6 +224,7 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 /* ********************************************************************* */
 
 	drawingGLSetPlayedTrack(pGLData, pTrack);
+	drawingGLSetNewDirection(pGLData, pTrack);
 
 
 /* ********************************************************************* */
@@ -579,7 +580,7 @@ int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[PLAYING_CHANNEL]);
 	pData[PLAYING_CHANNEL] = NULL;
 
-	/*drawingGLSetPlayedTrack(pData[OPENGLDATA], NULL);*/
+	drawingGLSetPlayedTrack(pData[OPENGLDATA], NULL);
 
 	pAdjustment = GTK_OBJECT(gtk_builder_get_object(
 											pData[MAIN_BUILDER],
@@ -1066,7 +1067,6 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 	}
 	else
 	{
-		float fAverage = 0;
 		int iTIDMax = 0;
 		int iTIDMin = 0;
 		int iTID = 0;
