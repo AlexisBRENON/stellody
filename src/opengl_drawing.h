@@ -42,7 +42,7 @@
  * Cette structure est utilisée pour passer des données en paramètres via
  pData. Elle contient les données nécessaires à la bonne utilisation d'OpenGL
  sans l'utilisation de variables globales. On accède aux données de cette
- structure par des accesseurs.
+ structure par des accesseurs et des mutateurs.
  */
 struct sOpenGLData
 {
@@ -55,6 +55,12 @@ struct sOpenGLData
 	float fTranslateX ;				/**< Translation en x de la caméra */
 	float fTranslateY ;				/**< Translation en y de la caméra */
 	float fTranslateZ ;				/**< Translation en z de la caméra */
+	int iDirectionX ;				/**< Direction en x de la caméra lors d'une translation automatique */
+	int iDirectionY ;				/**< Direction en y de la caméra lors d'une translation automatique */
+	int iDirectionZ ;				/**< Direction en z de la caméra lors d'une translation automatique */
+	float fMoveX ;					/**< Mouvement unitaire en x lors d'une translation automatique */
+	float fMoveY ;					/**< Mouvement unitaire en x lors d'une translation automatique */
+	float fMoveZ ;					/**< Mouvement unitaire en x lors d'une translation automatique */
 	unsigned int uiTexture ;		/**< Numéro de la texture du cubemap */
 	int iWidth ;					/**< Largeur de la fenêtre */
 	int iHeight ;					/**< Hauteur de la fenêtre */
@@ -132,6 +138,16 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLInit (OpenGLData* pData) ;
+
+/**
+ * @fn float drawingGLGetRadius(OpenGLData * pData) ;
+ * @brief Indique une nouvelle direction de la caméra.
+ *
+ * @param[in, out] pData Données OpenGL.
+ * @param[in] pTrack Analyse du morceau vers lequel se diriger.
+ * @return EXIT_SUCCESS si tout s'est bien passé.
+ */
+int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
 
 /**
   * @fn int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
@@ -260,12 +276,12 @@ int drawingGLGetHeight(const OpenGLData * pData) ;
 const float * drawingGLGetTransfertMatrix(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetRadius(OpenGLData * pData) ;
- * @brief Accesseur de l'angle Alpha de la caméra.
+ * @fn int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
+ * @brief Mutateur du champ PlayedTrack de la structure OpenGLData.
  *
  * @param[in, out] pData Données OpenGL.
- * @param[in] pTrack Analyse du morceau lu.
- * @return EXIT_SUCCESS si tout s'est bien passé.
+ * @param[in, out] pTranck Chanson lue. 
+ * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack) ;
 
