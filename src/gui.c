@@ -362,12 +362,12 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	OpenGL dépendant de la distance de la caméra */
 
 	fCamRadius = drawingGLGetRadius(pGLData);
-	fMouseXCoord = (float) ((iMousePositionX+
-							drawingGLGetTranslateX(pGLData))*
-							(fCamRadius/600));
-	fMouseYCoord = (float) ((iMousePositionY+
-							drawingGLGetTranslateY(pGLData))*
-							(fCamRadius/600));
+	fMouseXCoord = (float) ((iMousePositionX*
+							(fCamRadius/600))+
+							drawingGLGetTranslateX(pGLData));
+	fMouseYCoord = (float) ((iMousePositionY*
+							(fCamRadius/600))+
+							drawingGLGetTranslateY(pGLData));
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1090,10 +1090,8 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 		/* On calcul le nouveau TID, et changeons le status du morceau
 		(analysé) */
 
-		fAverage = analyzedTrackGetFrequenciesAverage(psTrack);
-
 		analyzedTrackSetTID(psTrack,
-							(int) fabs(2000*log10(fabs(fAverage))));
+							0);
 		analyzedTrackSetAnalyzed(psTrack, 1);
 
 /* ********************************************************************* */
