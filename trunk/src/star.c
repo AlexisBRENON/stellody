@@ -252,7 +252,6 @@ float starGetColourB (const Star * pStar)
 	return pStar->fColourB ;
 }
 
-
 int starGetX (const Star * pStar)
 {
 	assert(pStar != NULL) ;

@@ -19,6 +19,14 @@
 #include <gtk/gtk.h>
 #include "analyzed_track.h"
 
+#if defined(__linux)
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+#if defined(__APPLE__)
+#include <openGL/gl.h>
+#include <openGL/glu.h>
+#endif
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -59,7 +67,7 @@ typedef struct sStar Star ;
 /* ********************************************************************* */
 
 /**
- * @fn int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
+ * @fn int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
  * @brief Initialise une étoile avec les données issues d'un morceau analysé.
  *
  * @param[in, out] pStar Pointeur sur l'étoile à initialiser.

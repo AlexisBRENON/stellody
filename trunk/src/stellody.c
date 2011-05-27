@@ -171,6 +171,8 @@ int stellody(int argc, char* argv[])
 
 	/* Libération de la mémoire */
 
+	printf("\n");
+	
 	filesCloseAndSave(&pFileContext,
 					pDatas[PREFERENCES],
 					pDatas[ANALYZED_TRACKS]);

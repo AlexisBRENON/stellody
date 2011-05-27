@@ -23,6 +23,7 @@
 #include "gui.h"
 #include "star.h"
 #include "image.h"
+#include "analyzed_track.h"
 #include "opengl_drawing.h"
 
 #ifndef M_PI
@@ -1702,14 +1703,12 @@ static void drawSelectedStar(Star * pStar)
 	drawAWing(1) ;
 
 	glPopMatrix() ;
-
-
 }
 
 static int drawStar(Star * psStar, int iPrecision)
 {
 	assert(psStar != NULL) ;
-
+	
 	glPushMatrix() ;
 	glTranslatef(starGetX(psStar), starGetY(psStar), starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
@@ -1718,7 +1717,7 @@ static int drawStar(Star * psStar, int iPrecision)
 			  starGetColourB(psStar)) ;
 	drawSphere(iPrecision) ;
 	glPopMatrix() ;
-
+	
 	return 0 ;
 }
 
@@ -1807,6 +1806,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 		starCreate(& sSelectedStar,
 				   pData->pPlayedTrack,
 				   pData->psExistingStars) ;
+		drawSelectedStar(& sSelectedStar) ;
 	}
 	
 	glDisable(GL_LIGHTING) ;
@@ -1822,8 +1822,6 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	glEnable(GL_LIGHTING) ;
 
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
-
-	drawSelectedStar(& sSelectedStar) ;
 	
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
@@ -2153,7 +2151,13 @@ int drawingGLInit (OpenGLData* pData)
 	pData->fTranslateX = 0 ;
 	pData->fTranslateY = 0 ;
 	pData->fTranslateZ = 0 ;
-
+	pData->iDirectionX = 0 ;
+	pData->iDirectionY = 0 ;
+	pData->iDirectionZ = 0 ;
+	pData->fMoveX = 0 ;
+	pData->fMoveY = 0 ;
+	pData->fMoveZ = 0 ;
+	
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
 	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap1.ppm") ;
@@ -2204,10 +2208,120 @@ int drawingGLInit (OpenGLData* pData)
 	return EXIT_SUCCESS;
 }
 
+static int drawingGLMoveDirection(OpenGLData * pData)
+{	
+	if (pData->fMoveX != 0)
+	{		
+		if (pData->fCenterX < pData->iDirectionX)
+		{
+			if (pData->fCenterX + pData->fMoveX >= pData->iDirectionX)
+			{
+				pData->fCenterX = pData->iDirectionX ;
+				pData->iDirectionX = 0 ;
+				pData->fMoveX = 0 ;
+			}
+		}
+		else if (pData->fCenterX > pData->iDirectionX)
+		{
+			if (pData->fCenterX + pData->fMoveX <= pData->iDirectionX)
+			{
+				pData->fCenterX = pData->iDirectionX ;
+				pData->iDirectionX = 0 ;
+				pData->fMoveX = 0 ;
+			}
+		}
+		pData->fCenterX = pData->fCenterX + pData->fMoveX ;
+		pData->fTranslateX = pData->fTranslateX + pData->fMoveX ;
+	}
+
+	if (pData->fMoveY != 0)
+	{		
+		if (pData->fCenterY < pData->iDirectionY)
+		{
+			if (pData->fCenterY + pData->fMoveY >= pData->iDirectionY)
+			{
+				pData->fCenterY = pData->iDirectionY ;
+				pData->iDirectionY = 0 ;
+				pData->fMoveY = 0 ;
+			}
+		}
+		else if (pData->fCenterY > pData->iDirectionY)
+		{
+			if (pData->fCenterY + pData->fMoveY <= pData->iDirectionY)
+			{
+				pData->fCenterY = pData->iDirectionY ;
+				pData->iDirectionY = 0 ;
+				pData->fMoveY = 0 ;
+			}
+		}
+		pData->fCenterY = pData->fCenterY + pData->fMoveY ;
+		pData->fTranslateY = pData->fTranslateY + pData->fMoveY ;
+	}
+	
+	if (pData->fMoveZ != 0)
+	{		
+		if (pData->fCenterZ < pData->iDirectionZ)
+		{
+			if (pData->fCenterZ + pData->fMoveZ >= pData->iDirectionZ)
+			{
+				pData->fCenterZ = pData->iDirectionZ ;
+				pData->iDirectionZ = 0 ;
+				pData->fMoveZ = 0 ;
+			}
+		}
+		else if (pData->fCenterZ > pData->iDirectionZ)
+		{
+			if (pData->fCenterZ + pData->fMoveZ <= pData->iDirectionZ)
+			{
+				pData->fCenterZ = pData->iDirectionZ ;
+				pData->iDirectionZ = 0 ;
+				pData->fMoveZ = 0 ;
+			}
+		}
+		pData->fCenterZ = pData->fCenterZ + pData->fMoveZ ;
+		pData->fTranslateZ = pData->fTranslateZ + pData->fMoveZ ;
+	}
+	
+	return EXIT_SUCCESS ;
+}
+
+int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
+{
+	int * piCoord = NULL ;
+	float fSpeed = 40/25 ;		/* Initialisation de la vitesse de déplacement désirée. */
+	float fDistance = 0 ;
+	float fTravelTime = 0 ;		/* en 25ème de seconde, car actualisation toutes les 40 ms. */
+	
+	piCoord = analyzedTrackGetCoord(pTrack);
+
+	/* Mise à jour des iDirectionX/Y/Z. */
+	
+	pData->iDirectionX = piCoord[0] ;
+	pData->iDirectionY = piCoord[1] ;
+	pData->iDirectionZ = piCoord[2] ;
+	
+	/* Mise à jour des fMoveX/Y/Z. */
+	
+	fDistance = sqrt((pData->iDirectionX - pData->fCenterX)*(pData->iDirectionX - pData->fCenterX) + 
+					 (pData->iDirectionY - pData->fCenterY)*(pData->iDirectionY - pData->fCenterY) +
+					 (pData->iDirectionZ - pData->fCenterZ)*(pData->iDirectionZ - pData->fCenterZ)) ;
+	
+	fTravelTime = fDistance / fSpeed ;
+
+	pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
+	pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
+	pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
+	
+	return EXIT_SUCCESS ;
+}
+
+
 int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 					int iPrecision)
 {
 	/* Gestion de la vision. */
+	
+	drawingGLMoveDirection(pData) ;
 
 	glMatrixMode(GL_MODELVIEW);
 
@@ -2319,7 +2433,7 @@ const float * drawingGLGetTransfertMatrix(const OpenGLData * pData)
 
 int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
 {
-	assert(pData != NULL || pTrack != NULL) ;
+	assert(pData != NULL) ;
 	
 	pData->pPlayedTrack = pTrack ;
 	
