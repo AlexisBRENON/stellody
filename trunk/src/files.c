@@ -30,66 +30,6 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-static gboolean filesSaveTracks (int* pKey,
-								AnalyzedTrack* pValue,
-								GKeyFile* pData)
-{
-	int iTID = 0;
-	char bAnalyzed = 0;
-	const char* strPath = NULL;
-	float fAverage = 0;
-	float fMedian = 0;
-	const float* fValues = NULL;
-	int* piCoord = NULL;
-
-	iTID = analyzedTrackGetTID(pValue);
-	bAnalyzed = analyzedTrackGetAnalyzed(pValue);
-	strPath = analyzedTrackGetPath(pValue);
-	fAverage = analyzedTrackGetFrequenciesAverage(pValue);
-	fMedian = analyzedTrackGetFrequenciesMedian(pValue);
-	fValues = analyzedTrackGetFrequenciesValues(pValue);
-	piCoord = analyzedTrackGetCoord(pValue);
-
-	g_key_file_set_integer(pData,
-							strPath,
-							"iTID",
-							iTID);
-	g_key_file_set_integer(pData,
-							strPath,
-							"bAnalyzed",
-							(int) bAnalyzed);
-	g_key_file_set_string(pData,
-						strPath,
-						"strPath",
-						strPath);
-	g_key_file_set_double(pData,
-						strPath,
-						"fAverage",
-						fAverage);
-	g_key_file_set_double(pData,
-						strPath,
-						"fMedian",
-						fMedian);
-	g_key_file_set_double_list(pData,
-								strPath,
-								"fValues",
-								(double*) fValues,
-								iSAVEDVALUES);
-	g_key_file_set_integer(pData,
-							strPath,
-							"iX",
-							piCoord[0]);
-	g_key_file_set_integer(pData,
-							strPath,
-							"iY",
-							piCoord[1]);
-	g_key_file_set_integer(pData,
-							strPath,
-							"iZ",
-							piCoord[2]);
-
-	return FALSE;
-}
 
 
 GKeyFile** filesOpen(void)
@@ -141,7 +81,7 @@ int filesSave(GKeyFile** ppsContext,
 {
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
-	int iSize;
+	int iSize = preferencesGetNbPath(psPref);
 
 	if (psPref != NULL)
 	{
@@ -181,7 +121,7 @@ int filesSave(GKeyFile** ppsContext,
 	if (psTracks != NULL)
 	{
 		g_tree_foreach((GTree*) psTracks,
-						(GTraverseFunc) filesSaveTracks,
+						(GTraverseFunc) analyzedTracksSaveTracks,
 						ppsContext[DATA]);
 		pfData = fopen(DATA_FILE, "w");
 		assert (pfData != NULL);

@@ -35,6 +35,22 @@ typedef GTree AnalyzedTracks;
 /* ********************************************************************* */
 
 /**
+  * @fn gboolean analyzedTracksSaveTracks (int* pKey,
+								AnalyzedTrack* pValue,
+								GKeyFile* pData)
+  * @brief Sauvegarde les morceau de l'arbre dans le fichier.
+  *
+  * @param[in,out] pKey Clé du morceau
+  * @param[in,out] pValue Morceau associé
+  * @param[in,out] pData Données tierces
+  * @return FALSE pour continuer
+  */
+gboolean analyzedTracksSaveTracks (int* pKey,
+								AnalyzedTrack* pValue,
+								GKeyFile* pData);
+
+
+/**
   * @fn int analyzedTracksInit(AnalyzedTracks* psTracks)
   * @brief Initialise un arbre à morceaux
   *

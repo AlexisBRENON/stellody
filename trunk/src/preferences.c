@@ -21,7 +21,6 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-
 int preferencesInit (Preferences* psPref)
 {
 	assert (psPref != NULL);
@@ -46,6 +45,8 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 
 	assert (psPref != NULL);
 	assert (ppsContext != NULL);
+
+	preferencesInit(psPref);
 
 	psPref->iAnalysisRate = g_key_file_get_integer(ppsContext[CONFIG],
 												"DEFAULT",
@@ -77,18 +78,21 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	GTK et libération manuelle (on alloue manuellement et on libère avec
 	GTK ce qui à été alloué par GTK).*/
 	iSize = psPref->iNbPath;
-	psPref->pstrFilesPath = (gchar**) malloc((iSize+1)*sizeof(gchar*));
-	for (i = 0; i < iSize; i++)
+	if (iSize > 0)
 	{
-		int len;
-		len = strlen(pstrTemp[i]);
-		(psPref->pstrFilesPath)[i] = (gchar*) malloc((len+1)*
-													sizeof(gchar));
-		strcpy((psPref->pstrFilesPath)[i], pstrTemp[i]);
+		psPref->pstrFilesPath = (gchar**) malloc((iSize+1)*sizeof(gchar*));
+		for (i = 0; i < iSize; i++)
+		{
+			int len;
+			len = strlen(pstrTemp[i]);
+			(psPref->pstrFilesPath)[i] = (gchar*) malloc((len+1)*
+														sizeof(gchar));
+			strcpy((psPref->pstrFilesPath)[i], pstrTemp[i]);
+		}
+		(psPref->pstrFilesPath)[iSize] = NULL;
 	}
-	(psPref->pstrFilesPath)[iSize] = NULL;
-
 	g_strfreev(pstrTemp);
+	pstrTemp = NULL;
 
 	return EXIT_SUCCESS;
 }
@@ -102,16 +106,19 @@ int preferencesRelease (Preferences* psPref)
 	psPref->iWindowXSize = psPref->iWindowYSize = -1;
 	psPref->i3DQuality = -1;
 	psPref->iNbPath = -1;
+	psPref->iMaxTID = -1;
+	psPref->iMinTID = -1;
 	psPref->iMoveCam = -1;
-	for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
+	if (psPref->pstrFilesPath != NULL)
 	{
-		free(psPref->pstrFilesPath[i]);
-		psPref->pstrFilesPath[i] = NULL;
+		for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
+		{
+			free(psPref->pstrFilesPath[i]);
+			psPref->pstrFilesPath[i] = NULL;
+		}
+		free(psPref->pstrFilesPath);
+		psPref->pstrFilesPath = NULL;
 	}
-	free(psPref->pstrFilesPath[i]);
-	psPref->pstrFilesPath[i] = NULL;
-	psPref->pstrFilesPath = NULL;
-
 	return EXIT_SUCCESS;
 }
 
@@ -226,6 +233,13 @@ int preferencesSetMinTID(Preferences* psPref, int iValue)
 	psPref->iMinTID = iValue;
 
 	return EXIT_SUCCESS;
+}
+
+int preferencesGetNbPath (const Preferences* psPref)
+{
+	assert (psPref != NULL);
+
+	return psPref->iNbPath;
 }
 
 char** preferencesGetFilesPath(const Preferences* psPref,

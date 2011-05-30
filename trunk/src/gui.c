@@ -279,38 +279,50 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 							AnalyzedTrack* pTrack,
 							GPtrArray* pData)
 {
-	int* piCompareCoord/* [3] */ = NULL  ;
-	int* piTrackCoord/* [3] */ = NULL;
+	int* piDistance = NULL;
+	int iNewDistance = 0;
+	float* pfTrackCoord/* [3] */ = NULL;
+	float pfTrackNewCoord[3] = {0};
+	float* pfMouseCoord/*[2*/ = NULL;
+	float* pfTransfertMatrix = NULL;
 	float fDiameter = 0;
 	float fCamRadius = 0;
 	OpenGLData* pGLData = NULL;
 
-	piCompareCoord = g_ptr_array_index(pData, 0);
-	piTrackCoord = analyzedTrackGetCoord(pTrack);
+	pfTrackCoord = analyzedTrackGetCoord(pTrack);
+	pfMouseCoord = (float*) g_ptr_array_index(pData, 0);
 	pGLData = (OpenGLData*) g_ptr_array_index(pData, 1);
+	pfTransfertMatrix = (float*) g_ptr_array_index(pData, 2);
+	piDistance = (int*) g_ptr_array_index(pData, 3);
 	fCamRadius = drawingGLGetRadius(pGLData);
 
-	fDiameter = 0.4;
+	fDiameter = analyzedTrackGetLength(pTrack)/200000;
 	fDiameter = fDiameter*(fCamRadius/600);
 
-	printf("TrackCoord : (%d,%d,%d)\n",piTrackCoord[0],piTrackCoord[1],piTrackCoord[2]);
-	printf("CompareCoord : (%d,%d,%d)\n",piCompareCoord[0],piCompareCoord[1],piCompareCoord[2]);
-
-	if (piTrackCoord[0] <= piCompareCoord[0]+fDiameter &&
-		piTrackCoord[0] >= piCompareCoord[0]-fDiameter &&
-		piTrackCoord[1] <= piCompareCoord[1]+fDiameter &&
-		piTrackCoord[1] >= piCompareCoord[1]-fDiameter &&
-		piTrackCoord[2] <= piCompareCoord[2]+fDiameter &&
-		piTrackCoord[2] >= piCompareCoord[2]-fDiameter)
+	for (i = 0; i < 3; i++)
 	{
-		g_ptr_array_remove_index(pData, 2);
-		g_ptr_array_add(pData, pTrack);
+		pfTrackNewCoord[i] =
+			pfTrackCoord[0]*pfTransfertMatrix[3*i+0]+
+			pfTrackCoord[1]*pfTransfertMatrix[3*i+1]+
+			pfTrackCoord[2]*pfTransfertMatrix[3*i+2];
+	}
 
-		return TRUE;
+	if (pfTrackNewCoord[0]+fDiameter >= pfMouseCoord[0] &&
+		pfTrackNewCoord[0]-fDiameter <= pfMouseCoord[0] &&
+		pfTrackNewCoord[1]+fDiameter >= pfMouseCoord[1] &&
+		pfTrackNewCoord[1]-fDiameter <= pfMouseCoord[1] &&)
+	{
+		iNewDistance = fCamRadius-pfTrackNewCoord[2];
+
+		if (iNewDistance < *piDistance || *piDistance == -1)
+		{
+			*piDistance = iNewDistance;
+			g_ptr_array_remove_index(pData,4);
+			g_ptr_array_add(pData, pTrack);
+		}
 	}
 
 	return FALSE;
-
 }
 
 
@@ -320,36 +332,18 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 									int iMousePositionY,
 									const OpenGLData* pGLData)
 {
-	int pfSpaceCoord[3] = {0,0,0};
 	int iFind = 0;
+	int iDistance = -1;
 	const float* pfTransferMatrix/*[9]*/ = NULL;
-	float fMouseXCoord = 0;
-	float fMouseYCoord = 0;
-	float fCamXCoord = 0;
-	float fCamYCoord = 0;
-	float fCamZCoord = 0;
+	float pfMouseCoord[2] = {0};
 	float fCamRadius = 0; /* La position de la caméra sur son propre axe des Z. */
 	float f = 0;
+	float fDet = 0;
+	float pfInvertedTransfertMatrix[9] = {0};
 	AnalyzedTrack* pTrackToPlay = NULL;
 	GPtrArray* ppDataArray = NULL;
 
 
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-
-	/* On détermine les coordonées de la caméra dans le repère Monde */
-	fCamXCoord = drawingGLGetRadius(pGLData)*
-				cos(drawingGLGetAlpha(pGLData))*
-				cos(drawingGLGetBeta(pGLData))+
-				drawingGLGetTranslateX(pGLData);
-	fCamYCoord = drawingGLGetRadius(pGLData)*
-				sin(drawingGLGetAlpha(pGLData))+
-				drawingGLGetTranslateY(pGLData);
-	fCamZCoord = drawingGLGetRadius(pGLData)*
-				cos(drawingGLGetAlpha(pGLData))*
-				(-1)*sin(drawingGLGetBeta(pGLData))+
-				drawingGLGetTranslateZ(pGLData);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -363,46 +357,74 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	OpenGL dépendant de la distance de la caméra */
 
 	fCamRadius = drawingGLGetRadius(pGLData);
-	fMouseXCoord = (float) ((iMousePositionX*
+	pfMouseCoord[0] = (float) ((iMousePositionX*
 							(fCamRadius/600))+
 							drawingGLGetTranslateX(pGLData));
-	fMouseYCoord = (float) ((iMousePositionY*
+	pfMouseCoord[1] = (float) ((iMousePositionY*
 							(fCamRadius/600))+
 							drawingGLGetTranslateY(pGLData));
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
+	/* Inversion de la matrice de passage */
+
+	pfTransferMatrix = drawingGLGetTransfertMatrix(pGLData);
+
+	fDet = pfTransferMatrix[0]*pfTransferMatrix[4]*pfTransferMatrix[8]+
+			pfTransferMatrix[1]*pfTransferMatrix[5]*pfTransferMatrix[6]+
+			pfTransferMatrix[2]*pfTransferMatrix[3]*pfTransferMatrix[7]-
+			pfTransferMatrix[2]*pfTransferMatrix[4]*pfTransferMatrix[6]-
+			pfTransferMatrix[5]*pfTransferMatrix[7]*pfTransferMatrix[0]-
+			pfTransferMatrix[8]*pfTransferMatrix[1]*pfTransferMatrix[3];
+	if (fDet == 0)
+	{
+		return EXIT_FAILURE;
+	}
+	fDet = 1/fDet;
+
+	pfInvertedTransfertMatrix[0] =
+		fDet*(pfTransferMatrix[4]*pfTransferMatrix[8]-
+				pfTransferMatrix[5]*pfTransferMatrix[7]);
+	pfInvertedTransfertMatrix[1] =
+		fDet*(pfTransferMatrix[2]*pfTransferMatrix[7]-
+				pfTransferMatrix[1]*pfTransferMatrix[8]);
+	pfInvertedTransfertMatrix[2] =
+		fDet*(pfTransferMatrix[1]*pfTransferMatrix[5]-
+				pfTransferMatrix[2]*pfTransferMatrix[4]);
+	pfInvertedTransfertMatrix[3] =
+		fDet*(pfTransferMatrix[5]*pfTransferMatrix[6]-
+				pfTransferMatrix[3]*pfTransferMatrix[8]);
+	pfInvertedTransfertMatrix[4] =
+		fDet*(pfTransferMatrix[0]*pfTransferMatrix[8]-
+				pfTransferMatrix[2]*pfTransferMatrix[6]);
+	pfInvertedTransfertMatrix[5] =
+		fDet*(pfTransferMatrix[2]*pfTransferMatrix[3]-
+				pfTransferMatrix[0]*pfTransferMatrix[5]);
+	pfInvertedTransfertMatrix[6] =
+		fDet*(pfTransferMatrix[3]*pfTransferMatrix[7]-
+				pfTransferMatrix[4]*pfTransferMatrix[6]);
+	pfInvertedTransfertMatrix[7] =
+		fDet*(pfTransferMatrix[1]*pfTransferMatrix[6]-
+				pfTransferMatrix[0]*pfTransferMatrix[7]);
+	pfInvertedTransfertMatrix[8] =
+		fDet*(pfTransferMatrix[0]*pfTransferMatrix[4]-
+				pfTransferMatrix[1]*pfTransferMatrix[3]);
+
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+
 	/* On initialise le tableau de pointeurs qui sera utilisé pour la
 	traversée de l'arbre */
 
 	ppDataArray = g_ptr_array_new();
-	g_ptr_array_add(ppDataArray, pfSpaceCoord);			/* [0] */
-	g_ptr_array_add(ppDataArray, (gpointer*) pGLData);	/* [1] */
-	g_ptr_array_add(ppDataArray, pTrackToPlay);			/* [2] */
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* Les coordonnées de la souris sont dans le repère de la caméra,
-	on passe au repère de l'espace. */
-
-	pfTransferMatrix = drawingGLGetTransfertMatrix(pGLData);
-	printf("%f\n", fCamRadius);
-
-	/* Pour tous les Z visibles (en partant du plus proche), on calcule
-	les coordonnées du click de souris dans le repère de l'espace */
-	for (f = fCamRadius+0.001; f >= -300 && f <= 300 && iFind == 0; f = f-0.5)
-	{
-		pfSpaceCoord[0] = fMouseXCoord*pfTransferMatrix[0]+
-						fMouseYCoord*pfTransferMatrix[1]+
-						f*pfTransferMatrix[2];
-		pfSpaceCoord[1] = fMouseXCoord*pfTransferMatrix[3]+
-						fMouseYCoord*pfTransferMatrix[4]+
-						f*pfTransferMatrix[5];
-		pfSpaceCoord[2] = fMouseXCoord*pfTransferMatrix[6]+
-						fMouseYCoord*pfTransferMatrix[7]+
-						f*pfTransferMatrix[8];
+	g_ptr_array_add(ppDataArray, pfMouseCoord);					/* [0] */
+	g_ptr_array_add(ppDataArray, (gpointer*) pGLData);			/* [1] */
+	g_ptr_array_add(ppDataArray, pfInvertedTransfertMatrix);	/* [2] */
+	g_ptr_array_add(ppDataArray, &iDistance);					/* [3] */
+	g_ptr_array_add(ppDataArray, pTrackToPlay);					/* [4] */
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -410,21 +432,9 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	/* On cherche dans l'ensemble des morceau s'il existe un morceau ayant
 	ces coordonnées */
 
-		g_tree_foreach((GTree*) pTracks,
-						(GTraverseFunc) guiPlayTrackFromCoord,
-						ppDataArray);
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-		/* Si un morceau a été trouvé, le canal est en lecture, et on peut
-		arrêter de chercher */
-
-		if (g_ptr_array_index(ppDataArray, 2) != NULL)
-		{
-			iFind = 1;
-		}
-	}
+	g_tree_foreach((GTree*) pTracks,
+					(GTraverseFunc) guiPlayTrackFromCoord,
+					ppDataArray);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1064,16 +1074,25 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 						psTrack,
 						(int*) pData[ANALYZING_COUNTER]);
 
+		(*((int*) pData[ANALYZING_COUNTER]))++;
+
 	}
 	else
 	{
 		int iTIDMax = 0;
 		int iTIDMin = 0;
 		int iTID = 0;
+		float* pfRate = NULL;
 		char* strConstFileName = NULL;
 		char* strFileName = NULL;
 		char* strStatusBarMessage = NULL;
 		GtkWidget* psStatusBar = NULL;
+
+		pfRate = analyzedTrackGetCoord(psTrack);
+		printf("Fin d'analyse :\n");
+		printf("\tX : %f\n", pfRate[0]);
+		printf("\tY : %f\n", pfRate[1]);
+		printf("\tZ : %f\n\n", pfRate[2]);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1213,14 +1232,14 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 			playerPlayTrack(analyzedTrackGetPath(psTrack),
 							(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 							(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL],
-							1 /* TRUE */,
+							0,
 							0,
 							&uiTrackLength,
 							&strSinger,
 							&strTitle);
 			/* On coupe le son, le morceau doit être joué mais pas entendu */
-			playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-							0.0);
+			/*playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+							0.0);*/
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1248,6 +1267,9 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 
 /* ********************************************************************* */
 /* ********************************************************************* */
+
+			/* On sauvegarde la durée du morceau */
+			analyzedTrackSetLength(psTrack, uiTrackLength);
 
 			/* On crée un time_out sur la fonction qui analysera et stockera
 			les données d'analyse */
