@@ -22,6 +22,77 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+gboolean analyzedTracksSaveTracks (int* pKey,
+								AnalyzedTrack* pValue,
+								GKeyFile* pData)
+{
+	int iTID = 0;
+	char bAnalyzed = 0;
+	const char* strPath = NULL;
+	unsigned int uiLength = 0;
+	float fAverage = 0;
+	float* fRate = NULL;
+	float* fCoord = NULL;
+
+	iTID = analyzedTrackGetTID(pValue);
+	bAnalyzed = analyzedTrackGetAnalyzed(pValue);
+	strPath = analyzedTrackGetPath(pValue);
+	uiLength = analyzedTrackGetLength(pValue);
+	fAverage = analyzedTrackGetAverage(pValue);
+	fRate = analyzedTrackGetRate(pValue);
+	fCoord = analyzedTrackGetCoord(pValue);
+
+	g_key_file_set_integer(pData,
+							strPath,
+							"iTID",
+							iTID);
+	g_key_file_set_integer(pData,
+							strPath,
+							"bAnalyzed",
+							(int) bAnalyzed);
+	g_key_file_set_string(pData,
+						strPath,
+						"strPath",
+						strPath);
+	g_key_file_set_integer(pData,
+						strPath,
+						"uiLength",
+						uiLength);
+	g_key_file_set_double(pData,
+						strPath,
+						"fAverage",
+						fAverage);
+	g_key_file_set_double(pData,
+						strPath,
+						"fTreble",
+						(double) fRate[0]);
+	g_key_file_set_double(pData,
+						strPath,
+						"fMedium",
+						(double) fRate[1]);
+	g_key_file_set_double(pData,
+						strPath,
+						"fBass",
+						(double) fRate[2]);
+	g_key_file_set_double(pData,
+						strPath,
+						"fCoordX",
+						(double) fCoord[0]);
+	g_key_file_set_double(pData,
+						strPath,
+						"fCoordY",
+						(double) fCoord[1]);
+	g_key_file_set_double(pData,
+						strPath,
+						"fCoordZ",
+						(double) fCoord[2]);
+
+
+	return FALSE;
+}
+
+
+
 int analyzedTracksInit(AnalyzedTracks* psTracks)
 {
 	assert (psTracks != NULL);
@@ -36,10 +107,10 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 	int iTID = 0;
 	char bAnalyzed = 0;
 	char* strPath = NULL;
-	float fAverage = 0, fMedian = 0;
-	float* pfValues = NULL;
-	int iX, iY, iZ;
-	gsize iSize = 0; /* Inutilisé... */
+	unsigned int uiLength = 0;
+	float fAverage = 0;
+	float pfRate[3] = {0};
+	float pfCoord[3] = {0};
 	AnalyzedTrack* psTrack = NULL;
 
 	int i;
@@ -62,31 +133,32 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 										strGroups[i], "bAnalyzed", NULL);
 		strPath = g_key_file_get_string(ppsContext[DATA],
 										strGroups[i], "strPath", NULL);
+		uiLength = g_key_file_get_integer(ppsContext[DATA],
+										strGroups[i], "uiLength", NULL);
 		fAverage = (float) g_key_file_get_double(ppsContext[DATA],
 										strGroups[i], "fAverage", NULL);
-		fMedian = (float) g_key_file_get_double(ppsContext[DATA],
-										strGroups[i], "fMedian", NULL);
-		pfValues = (float*) g_key_file_get_double_list(ppsContext[DATA],
-										strGroups[i], "fValues", &iSize,
-										NULL);
-		iX = g_key_file_get_integer(ppsContext[DATA],
-										strGroups[i], "iX", NULL);
-		iY = g_key_file_get_integer(ppsContext[DATA],
-										strGroups[i], "iY", NULL);
-		iZ = g_key_file_get_integer(ppsContext[DATA],
-										strGroups[i], "iZ", NULL);
+		pfRate[0] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fTreble", NULL);
+		pfRate[1] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fMedium", NULL);
+		pfRate[2] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fBass", NULL);
+		pfCoord[0] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fCoordX", NULL);
+		pfCoord[1] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fCoordY", NULL);
+		pfCoord[2] = (float) g_key_file_get_double(ppsContext[DATA],
+										strGroups[i], "fCoordZ", NULL);
 
 		/* On initialise le morceau avec les bonnes valeurs */
-		analyzedTrackInitWithData(psTrack, iTID, strPath,
-									fAverage, fMedian, pfValues);
+		analyzedTrackInitWithData(psTrack, iTID, strPath, uiLength,
+									fAverage, pfRate, pfCoord);
 		analyzedTrackSetAnalyzed(psTrack, bAnalyzed);
-		analyzedTrackSetCoord(psTrack, iX, iY, iZ);
 
 		/* On le stocke dans l'arbre */
 		analyzedTracksInsertTrack(psTracks, psTrack);
 
 		free(strPath); strPath = NULL;
-		free(pfValues); pfValues = NULL;
 	}
 
 	return EXIT_SUCCESS;
@@ -224,9 +296,9 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 
 	if (bAnalyzed == 0)
 	{
-		analyzedTrackSetFrequenciesAverage(psTrack, 0);
-		analyzedTrackSetFrequenciesMedian(psTrack, 0);
-		analyzedTrackSetFrequenciesValues(psTrack, NULL);
+		analyzedTrackSetAverage(psTrack, 0);
+		analyzedTrackSetRate(psTrack, NULL);
+		analyzedTrackSetCoord(psTrack, NULL);
 		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
 											psTrack);
 
@@ -263,8 +335,8 @@ int analyzedTracksRegressionTest(void)
 	printf("\tFAIT !!\n");
 
 	printf("Ajout de morceaux à l'arbre...\n");
-	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0.0, 0.0, NULL);
-	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0.0, 0.0, NULL);
+	psTrack1 = analyzedTrackCreateWithData(1, "test1", 0, 0.0, NULL, NULL);
+	psTrack2 = analyzedTrackCreateWithData(1, "test2", 0, 0.0, NULL, NULL);
 	printf("\t\tLes deux identifiants sont à 1...\n");
 	assert (psTrack1 != NULL &&
 			psTrack2 != NULL);
@@ -293,8 +365,7 @@ int analyzedTracksRegressionTest(void)
 	psTrackGet = analyzedTracksGetConstTrack(psTracks, 2);
 	assert (psTrackGet != NULL);
 	assert (analyzedTrackGetTID(psTrackGet) == 2 &&
-			analyzedTrackGetFrequenciesAverage(psTrackGet) == 0.0 &&
-			analyzedTrackGetFrequenciesMedian(psTrackGet) == 0.0 &&
+			analyzedTrackGetAverage(psTrackGet) == 0.0 &&
 			strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
 	printf("\tFAIT !!\n");
 

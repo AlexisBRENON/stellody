@@ -7,6 +7,7 @@
   */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 #if defined(__linux)
@@ -66,11 +67,11 @@ int playerPlayTrack (char* strPath,
 	FMOD_SOUND* pSound = NULL;
 	FMOD_TAG Tag;
 
-	FMOD_System_CreateSound(pFmodContext,
+	assert(FMOD_System_CreateSound(pFmodContext,
 							strPath,
 							FMOD_CREATESTREAM | FMOD_SOFTWARE,
 							NULL,
-							&pSound);
+							&pSound) == FMOD_OK);
 
 	FMOD_Sound_GetLength(pSound, puiTrackLength, FMOD_TIMEUNIT_MS);
 
@@ -80,9 +81,9 @@ int playerPlayTrack (char* strPath,
 	*strSinger = (char*) Tag.data;
 
 	/* On lance la lecture à partir du moment choisi */
-	FMOD_System_PlaySound(pFmodContext,
+	assert(FMOD_System_PlaySound(pFmodContext,
 						FMOD_CHANNEL_FREE, pSound, 1 /* TRUE */,
-						ppPlayingChannel);
+						ppPlayingChannel) == FMOD_OK);
 	FMOD_Channel_SetPosition(*ppPlayingChannel,
 					*puiTrackLength*(uiStartingPerCent)/100,
 					FMOD_TIMEUNIT_MS);

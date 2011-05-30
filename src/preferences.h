@@ -208,6 +208,14 @@ int preferencesGetMinTID(const Preferences* psPref);
 int preferencesSetMinTID(Preferences* psPref, int iValue);
 
 /**
+  * @fn int preferencesGetNbPath(const Preferences* psPref)
+  * @brief Accesseur sur le nombre de dossiers indexés.
+  *
+  * @param[in] psPref Structure à accéder
+  * @return Le nombre de dossiers indexés
+  */
+int preferencesGetNbPath(const Preferences* psPref);
+/**
   * @fn const char** preferencesGetFilesPath (const Preferences* psPref,
 										int* piSize)
   * @brief Accesseur sur les chemins des dossiers.

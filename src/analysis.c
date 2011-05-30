@@ -27,6 +27,10 @@
 #include "preferences.h"
 #include "analysis.h"
 
+
+
+#define fHERTZSTEP 43.06640625 /**< Ecart entre 2 raies du spectre d'amplitude */
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                     Fonctions relatives à l'analyse                   */
@@ -39,14 +43,22 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 					AnalyzedTrack* pTrack,
 					int* piAnalyzingCounter)
 {
-	int i = 0;
+	int i = 0, j = 0;
+	float fMax = 0;
+	int iIndex = 0;
 	unsigned int uiPosition = 0;
-	float pfSpectrumValueLeft[iNUMVALUES];
-	float pfSpectrumValueRight[iNUMVALUES];
+	unsigned int uiNewPosition = 0;
 	float fAverage = 0;
 	float fOldAverage = 0;
-	float fMedian = 0;
-	float fOldMedian = 0;
+	float pfSpectrumValueLeft[iNUMVALUES] = {0};
+	float pfSpectrumValueRight[iNUMVALUES] = {0};
+	float pfRate[3] = {0};
+	float* pfOldRate = NULL;
+	float* pfSpectrumValues = NULL;
+	float pfSum[3] = {0};
+	float fTotalSum = 0;
+	FMOD_RESULT iSpectrumLeftResult = 0;
+	FMOD_RESULT iSpectrumRightResult = 0;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -59,6 +71,18 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	FMOD_Channel_SetPosition(pChannel,
 							uiPosition+fAnalysisRate,
 							FMOD_TIMEUNIT_MS);
+	FMOD_Channel_GetPosition(pChannel,
+							&uiNewPosition,
+							FMOD_TIMEUNIT_MS);
+
+	/* Si on ne peux plus incrémenter, on arrête */
+
+	if (uiNewPosition == uiPosition)
+	{
+		FMOD_Channel_Stop(pChannel);
+
+		return EXIT_SUCCESS;
+	}
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -66,63 +90,81 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	/* On récupère le spectre d'amplitude du temps passé sur chaque canal
 	et on en fait la moyenne pour la stéréo.*/
 
-	FMOD_Channel_GetSpectrum(pChannel,
+	iSpectrumLeftResult = FMOD_Channel_GetSpectrum(pChannel,
 							pfSpectrumValueLeft, iNUMVALUES,
 							1, FMOD_DSP_FFT_WINDOW_RECT);
-	FMOD_Channel_GetSpectrum(pChannel,
-							pfSpectrumValueLeft, iNUMVALUES,
-							0, FMOD_DSP_FFT_WINDOW_RECT);
+	iSpectrumRightResult = FMOD_Channel_GetSpectrum(pChannel,
+							pfSpectrumValueRight, iNUMVALUES,
+							0, FMOD_DSP_FFT_WINDOW_HAMMING);
+
+	/* Si le son était stéréo, on fait la moyenne des deux canaux */
+
+	if (iSpectrumLeftResult == FMOD_OK && iSpectrumRightResult == FMOD_OK)
+	{
+		pfSpectrumValues = (float*) malloc(iNUMVALUES*sizeof(float));
+
+		for (i = 0; i < iNUMVALUES; i++)
+		{
+			pfSpectrumValues[i] =
+				(pfSpectrumValueLeft[i] + pfSpectrumValueRight[i])/2;
+		}
+	}
+	else if (iSpectrumLeftResult != FMOD_OK)
+	{
+		pfSpectrumValues = pfSpectrumValueRight;
+	}
+	else if (iSpectrumRightResult != FMOD_OK)
+	{
+		pfSpectrumValues = pfSpectrumValueLeft;
+	}
+	else
+	{
+		return EXIT_FAILURE;
+	}
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* Calcul de la valeur maximale et son indice */
+
 	for (i = 0; i < iNUMVALUES; i++)
 	{
-		pfSpectrumValueLeft[i] =
-			(pfSpectrumValueLeft[i] + pfSpectrumValueRight[i])/2;
+		if (pfSpectrumValues[i] > fMax)
+		{
+			fMax = pfSpectrumValues[i];
+			iIndex = i;
+		}
 	}
 
+	/* On calcule la fréquence maximale moyenne */
+
+	fOldAverage = analyzedTrackGetAverage(pTrack);
+	fAverage = ((fOldAverage*(*piAnalyzingCounter))+
+							(iIndex*fHERTZSTEP))/
+							((*piAnalyzingCounter)+1);
+	analyzedTrackSetAverage(pTrack,
+							fAverage);
+
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	/* Calcul de la moyenne immédiate */
+	pfOldRate = analyzedTrackGetRate(pTrack);
 
-	for (i = 0; i < iNUMVALUES; i++)
+	for (i = 0; i < 3; i++)
 	{
-		fAverage = fAverage+pfSpectrumValueLeft[i];
+		for (j = i*(46/3); j < (i+1)*(46/3); j++)
+		{
+			pfSum[i] = pfSum[i]+pfSpectrumValues[j];
+		}
+		fTotalSum = fTotalSum+pfSum[i];
 	}
-	if (fAverage != 0)
+	for (i = 0; i < 3; i++)
 	{
-		fAverage = fabs(20*log10(fAverage/iNUMVALUES));
+		pfRate[i] = (pfOldRate[i]*(*piAnalyzingCounter)+
+							pfSum[i]/fTotalSum)/((*piAnalyzingCounter)+1);
 	}
 
-
-	/* Calcul de la moyenne totale */
-
-	fOldAverage = analyzedTrackGetFrequenciesAverage(pTrack);
-	analyzedTrackSetFrequenciesAverage(pTrack,
-									(fOldAverage*(*piAnalyzingCounter)+
-									fAverage)/((*piAnalyzingCounter)+1));
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* Calcul de la médiane immédiate */
-
-	fMedian = fabs(20*log10(pfSpectrumValueLeft[iNUMVALUES/2]));
-
-	/* Calcul de la médiane totale */
-
-	fOldMedian = analyzedTrackGetFrequenciesMedian(pTrack);
-	analyzedTrackSetFrequenciesMedian(pTrack,
-									(fOldMedian*(*piAnalyzingCounter)+
-									fMedian)/((*piAnalyzingCounter)+1));
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* Stocke l'ensemble du tableau après les premières secondes d'analyse*/
-	if ((*piAnalyzingCounter) == 10)
-	{
-		analyzedTrackSetFrequenciesValues(pTrack,
-										pfSpectrumValueLeft);
-	}
+	analyzedTrackSetRate(pTrack, pfRate);
 
 /* ********************************************************************* */
 /* ********************************************************************* */

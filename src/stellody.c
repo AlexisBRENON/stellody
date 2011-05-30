@@ -55,7 +55,7 @@ int main (int argc, char* argv[])
 }
 
 /**
-  * @fn int regressionTests(int argc, char* argv[])
+  * @fn int regressionTests()
   * @brief Fonction regroupant les tests de regressions dans un menu.
   *
   * @return 0 si tout est OK.
@@ -172,7 +172,7 @@ int stellody(int argc, char* argv[])
 	/* Libération de la mémoire */
 
 	printf("\n");
-	
+
 	filesCloseAndSave(&pFileContext,
 					pDatas[PREFERENCES],
 					pDatas[ANALYZED_TRACKS]);

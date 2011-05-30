@@ -12,7 +12,6 @@
 
 
 #define iNUMVALUES 512 /**< Nombre de valeur récupérées à chaque analyse.*/
-#define iSAVEDVALUES 128 /**< Nombre de valeurs sauvegardées pour traintement.*/
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -35,12 +34,10 @@ struct sAnalyzedTrack
 	int iTID; /**< Identifiant du morceau (dans l'abre, le Stellarium) */
 	char bAnalyzed; /**< Permet de savoir si le morceau a déjà été analysé */
 	char * strPath; /**< Emplacement du fichier sur l'ordinateur */
-	float fFrequenciesAverage; /**< Réel codant la moyenne des
-	fréquences du morceau */
-	float fFrequenciesMedian; /**< Réel codant la médiane des fréquences */
-	float fValues[iSAVEDVALUES]; /**< Tableau contenant les moyennes des
-	amplitudes des harmoniques, du do 0 au do 5 par plage de ~40Hz.*/
-	int piCoord[3]; /**< Coordonnées du morceau une fois représenté. */
+	unsigned int uiLength; /**< Durée du morceau */
+	float fAverage; /**< Fréquences moyenne */
+	float pfRate[3]; /**< Pourcentage des aigus, mediums et graves */
+	float pfCoord[3]; /**< Coordonnées du morceau une fois représenté. */
 } ;
 /**
   * @typedef AnalyzedTrack
@@ -90,22 +87,25 @@ int analyzedTrackDataCompare(const int* iTID1,
 
 /**
   * @fn int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
-									const char* strPath, float fAverage,
-									float fMedian, float fValues[])
+							const char* strPath, unsigned int uiLength,
+							float fAverage, const float fRate[],
+							const float fCoord[])
   * @brief Initialise un morceau alloué.
   Charge à l'utilisateur d'appeler la fonction analyzedTrackRelease().
   *
   * @param[in,out] psTrack Pointeur sur le morceau à initialiser
   * @param[in] iTID Identifiant du morceau
   * @param[in] strPath Chemin vers le fichier (sur le disque)
+  * @param[in] uiLength Longueur du morceau en ms
   * @param[in] fAverage Réel à stocker dans l'attribut Average (0 <= x <= 1)
-  * @param[in] fMedian Réel à stocker dans l'attribut Median (0 <= x <= 1)
-  * @param[in,out] fValues Tableau d'amplitude des fréquences
+  * @param[in] fRate Fréquence des aigus, mediums et graves
+  * @param[in] fCoord Coordonnées de l'étoile associée
   * @return EXIT_SUCCESS si tout est OK.
   */
 int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
-							const char* strPath, float fAverage,
-							float fMedian,float fValues[]);
+							const char* strPath, unsigned int uiLength,
+							float fAverage, const float fRate[],
+							const float fCoord[]);
 /**
   * @fn int analyzedTrackInit(AnalyzedTrack* psTrack)
   * @brief Initialise un morceau avec des valeurs pas défauts.
@@ -143,22 +143,24 @@ gboolean analyzedTrackReleaseFromTree(gpointer pKey, gpointer pValue,
 
 /**
   * @fn AnalyzedTrack* analyzedTrackCreateWithData(int iTID,
-												const char* strPath,
-										float fAverage, float fMedian,
-										float fValues[])
+							const char* strPath, unsigned int uiLength,
+							float fAverage, const float fRate[],
+							const float fCoord[])
   * @brief Alloue un nouveau morceau en mémoire.
   Charge à l'utilisateur d'appeler la fonction analyzedTrackDestroy().
   *
   * @param[in] iTID Identifiant du morceau
   * @param[in] strPath Chemin vers le fichier (sur le disque)
+  * @param[in] uiLength Longueur du morceau en ms
   * @param[in] fAverage Réel à stocker comme moyenne (0.0 - 1.0)
-  * @param[in] fMedian Réel à stocker comme médiane (0.0 - 1.0)
-  * @param[in,out] fValues Tableau d'amplitude des fréquences
+  * @param[in] fRate Pourcentage des aigus, mediums et graves
+  * @param[in] fCoord Coordonnées de l'étoile associée
   * @return Pointeur sur AnalyzedTrack nouvellement allouée.
   */
-AnalyzedTrack* analyzedTrackCreateWithData(int iTID, const char* strPath,
-										float fAverage, float fMedian,
-										float fValues[]);
+AnalyzedTrack* analyzedTrackCreateWithData(int iTID,
+							const char* strPath, unsigned int uiLength,
+							float fAverage, const float fRate[],
+							const float fCoord[]);
 /**
   * @fn AnalyzedTrack* analyzedTrackCreate(void)
   * @brief Crée un morceau avec des valeurs par défauts.
@@ -216,6 +218,16 @@ char analyzedTrackGetAnalyzed (const AnalyzedTrack *psTrack);
   */
 int analyzedTrackSetAnalyzed (AnalyzedTrack* psTrack, char bValue);
 
+
+/**
+  * @fn const char* analyzedTrackConstGetPath (
+											const AnalyzedTrack* psTrack)
+  * @brief Accesseur pour obtenir l'emplacement du morceau.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+  * @return Le chemin constant vers le morceau (chaine de caractères).
+  */
+const char* analyzedTrackConstGetPath (const AnalyzedTrack* psTrack);
 /**
   * @fn char* analyzedTrackGetPath (const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir l'emplacement du morceau.
@@ -236,18 +248,36 @@ char* analyzedTrackGetPath (const AnalyzedTrack* psTrack);
 int analyzedTrackSetPath (AnalyzedTrack* psTrack,
 						 const char* strNewPath);
 
-
 /**
-  * @fn float analyzedTrackGetFrequenciesAverage (
+  * @fn unsigned int analyzedTrackGetLength(const AnalyzedTrack* psTrack)
+  * @brief Accesseur sur la longueur du morceau en ms.
+  *
+  * @param[in] psTrack Morceau à accéder
+  * @return la longueur du morceau en millisecondes
+  */
+unsigned int analyzedTrackGetLength(const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetLength(AnalyzedTrack* psTrack,
+						unsigned int uiValue)
+  * @brief Mutateur sur la longueur du morceau.
+  *
+  * @param[in,out] psTrack Morceau à modifier
+  * @param[in] uiValue Longueur du morceau en ms
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackSetLength(AnalyzedTrack* psTrack,
+						unsigned int uiValue);
+/**
+  * @fn float analyzedTrackGetAverage (
 									const AnalyzedTrack* psTrack)
   * @brief Accesseur pour obtenir la fréquence moyenne du morceau.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
   * @return La valeur de la moyenne des fréquences.
   */
-float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack);
+float analyzedTrackGetAverage (const AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
+  * @fn int analyzedTrackSetAverage (AnalyzedTrack* psTrack,
 												float fValue)
   * @brief Mutateur pour modifier la valeur de la moyenne des fréquences.
   *
@@ -255,99 +285,87 @@ float analyzedTrackGetFrequenciesAverage (const AnalyzedTrack* psTrack);
   * @param[in] fValue Le réel à enregistrer.
   * @return EXIT_SUCCESS si tout s'est bien passé.
   */
-int analyzedTrackSetFrequenciesAverage (AnalyzedTrack* psTrack,
+int analyzedTrackSetAverage (AnalyzedTrack* psTrack,
 									float fValue);
 
 
 /**
-  * @fn float analyzedTrackGetFrequenciesMedian (
-										const AnalyzedTrack* psTrack)
-  * @brief Accesseur pour obtenir la fréquence médiane du morceau.
-  *
-  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @return La valeur médiane des fréquences.
-  */
-float analyzedTrackGetFrequenciesMedian (const AnalyzedTrack* psTrack);
-/**
-  * @fn int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack,
-											float fValue)
-  * @brief Mutateur pour modifier la valeur médiane des fréquences.
-  *
-  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @param[in] fValue Le réel à stocker.
-  * @return EXIT_SUCCESS si tout s'est bien passé
-  */
-int analyzedTrackSetFrequenciesMedian (AnalyzedTrack* psTrack,
-									float fValue);
-
-/**
-  * @fn const float* analyzedTrackGetFrequenciesValues (
+  * @fn const float* analyzedTrackConstGetRate (
 											const AnalyzedTrack* psTrack)
-  * @brief Accesseur sur le tableau de fréquences.
+  * @brief Accesseur sur le tableau de pourcentage de fréquences.
   *
   * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @return Le tableau de fréquences
+  * @return Le tableau de poucentage de fréquence en lecture seule
   */
-const float* analyzedTrackGetFrequenciesValues (
+const float* analyzedTrackConstGetRate (
 									const AnalyzedTrack* psTrack);
-
 /**
-  * @fn int analyzedTrackSetFrequenciesValues (AnalyzedTrack* psTrack,
-									const float fValues[])
-  * @brief Mutateur sur l'ensemble du tableau.
+  * @fn const float* analyzedTrackGetRate (
+											const AnalyzedTrack* psTrack)
+  * @brief Accesseur sur le tableau de pourcentage de fréquences.
+  *
+  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
+  * @return Le tableau de poucentage de fréquence
+  */
+float* analyzedTrackGetRate (const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetRate (AnalyzedTrack* psTrack,
+									const float fRate[])
+  * @brief Mutateur sur le tableau de poucentage.
   *
   * @param[in,out] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @param[in] fValues Le tableau de réels à copier.
+  * @param[in] fRate Le tableau de réels à copier.
   * @return EXIT_SUCCESS si tout est OK.
   */
-int analyzedTrackSetFrequenciesValues (AnalyzedTrack* psTrack,
-									const float fValues[]);
+int analyzedTrackSetRate (AnalyzedTrack* psTrack,
+									const float fRate[]);
+
 
 /**
-  * @fn float analyzedTrackGetIemeFrequenciesValues (
-										const AnalyzedTrack* psTrack,
-										int i);
-  * @brief Accesseur sur une unique case du tableau de fréquences.
-  *
-  * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @param[in] i Indice de la case à accéder (0 -> 127)
-  * @return La valeur de la case indexée.
-  */
-float analyzedTrackGetIemeFrequenciesValues (const AnalyzedTrack* psTrack,
-										int i);
-/**
-  * @fn int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
-										int i, float fValue);
-  * @brief Mutateur sur une unique case du tableau de fréquences.
-  *
-  * @param[in,out] psTrack Pointeur sur la structure AnalyzedTrack à accéder
-  * @param[in] i Indice de la case à accéder (0 -> 127)
-  * @param[in] fValue Réel à stocker
-  * @return EXIT_SUCCESS si tout est OK
-  */
-int analyzedTrackSetIemeFrequenciesValues (AnalyzedTrack* psTrack,
-										int i, float fValue);
-
-/**
-  * @fn int* analyzedTrackGetCoord (const AnalyzedTrack* psTrack)
+  * @fn const float* analyzedTrackConstGetCoord (
+											const AnalyzedTrack* psTrack)
   * @brief Accesseur sur les coordonnées du morceau
   *
   * @param[in] psTrack Morceau à accéder
-  * @return Un tableau de 3 cases représentant les coordonnées
+  * @return Les coordonnées de l'étoile en lecture seule
   */
-int* analyzedTrackGetCoord (const AnalyzedTrack* psTrack);
+const float* analyzedTrackConstGetCoord (const AnalyzedTrack* psTrack);
 /**
-  * @fn int analyzedTrackSetCoord(AnalyzedTrack* psTrack, int iX,
-								int iY, int iZ)
+  * @fn float* analyzedTrackGetCoord (const AnalyzedTrack* psTrack)
+  * @brief Accesseur sur les coordonnées du morceau
+  *
+  * @param[in] psTrack Morceau à accéder
+  * @return Les coordonnées de l'étoile
+  */
+float* analyzedTrackGetCoord (const AnalyzedTrack* psTrack);
+/**
+  * @fn int analyzedTrackSetCoord(AnalyzedTrack* psTrack,
+								const float pfCoord[])
   * @brief Mutateur sur les coordonnées du morceau.
   *
   * @param[in,out] psTrack Morceau à modifier
-  * @param[in] iX Coordonnée sur X
-  * @param[in] iY Coordonnée sur Y
-  * @param[in] iZ Coordonnée sur Z
+  * @param[in] pfCoord Coordonnées du morceau
   * @return EXIT_SUCCESS si tout est OK
   */
-int analyzedTrackSetCoord(AnalyzedTrack* psTrack, int iX, int iY, int iZ);
+int analyzedTrackSetCoord(AnalyzedTrack* psTrack,
+						const float pfCoord[]);
+/**
+  * @fn int analyzedTrackSetCoords(AnalyzedTrack* psTrack,
+									float fX,
+									float fY,
+									float fZ)
+  * @brief Mutateur sur les coordonnées du morceau.
+  *
+  * @param[in,out] psTrack Morceau à modifier
+  * @param[in] fX Coordonnée sur X
+  * @param[in] fY Coordonnée sur Y
+  * @param[in] fZ Coordonnée sur Z
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int analyzedTrackSetCoords(AnalyzedTrack* psTrack,
+						float fX,
+						float fY,
+						float fZ);
 
 /* ********************************************************************* */
 /*                                                                       */

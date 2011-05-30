@@ -38,11 +38,10 @@ int starCreate(Star * pStar,
 	int i = 0 ;
 	int iTest = 0 ;
 	int iArraySize = 0 ;
+	int iAnalyzed = 0;
 	float fAverage = 0 ;
-	float fMedian = 0 ;
-	int * piCoord = NULL ;
-	float fValue1 = 0 ;
-	float fValue2 = 0 ;
+	float * pfCoord = NULL ;
+	float * pfRate = NULL;
 	float * fTemp ;
 
 	float fStep = 2*M_PI/64 ;
@@ -58,20 +57,23 @@ int starCreate(Star * pStar,
 
 	iArraySize = psExistingStars->len ;
 
-	fAverage = analyzedTrackGetFrequenciesAverage(pTrack) ;
-	fMedian = analyzedTrackGetFrequenciesMedian(pTrack) ;
+	fAverage = analyzedTrackGetAverage(pTrack) ;
 
 	/* Définition des coordonnées en fonction de l'analyse. */
 
 	/* Vérifie que la position n'est pas déjà calculée. */
-	piCoord = analyzedTrackGetCoord(pTrack);
-	if (piCoord[0] == 0 && piCoord[1] == 0 && piCoord[2] == 0)
+	iAnalyzed = (int) analyzedTrackGetAnalyzed(pTrack);
+	pfCoord = analyzedTrackGetCoord(pTrack);
+	if (pfCoord[0] == 0 && pfCoord[1] == 0 && pfCoord[2] == 0 &&
+		iAnalyzed == 1)
 	{
 		/* Si non, calcul et attribution des coordonnées. */
 
-		pStar->iPositionX = (int) 10000 * fAverage ;
-		pStar->iPositionY = (int) 10 * fMedian ;
-		pStar->iPositionZ = 0 ;
+		pfRate = analyzedTrackGetRate(pTrack);
+
+		pStar->iPositionX = pfRate[0] ;
+		pStar->iPositionY = pfRate[1] ;
+		pStar->iPositionZ = pfRate[2] ;
 
 		/* Début de la vérification des coordonnées
 		 (vérifie qu'elles ne sont pas encore prises). */
@@ -168,7 +170,7 @@ int starCreate(Star * pStar,
 
 		/* Mise à jour des coordonnées dans l'analyse. */
 
-		analyzedTrackSetCoord(pTrack,
+		analyzedTrackSetCoords(pTrack,
 							  pStar->iPositionX,
 							  pStar->iPositionY,
 							  pStar->iPositionZ) ;
@@ -178,9 +180,9 @@ int starCreate(Star * pStar,
 		/* Si les coordonnées ont déjà été calculées pour le morceau,
 		 on met à jour l'étoile correspondante. */
 
-		pStar->iPositionX = piCoord[0] ;
-		pStar->iPositionY = piCoord[1] ;
-		pStar->iPositionZ = piCoord[2] ;
+		pStar->iPositionX = pfCoord[0] ;
+		pStar->iPositionY = pfCoord[1] ;
+		pStar->iPositionZ = pfCoord[2] ;
 	}
 
 	/* Ajoute les nouvelles coordonnées aux données existantes. */
@@ -195,24 +197,17 @@ int starCreate(Star * pStar,
 
 	/* Définition de la taille. */
 
-	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 0) ;
-	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 7) ;
-
-	pStar->fSize = 0.4 * (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2) ;
+	pStar->fSize = analyzedTrackGetLength(pTrack)/200000;
 
 	/* Définition des couleurs. */
 
-	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 1) ;
-	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 6) ;
-	pStar->fColourR = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
+	pfRate = analyzedTrackGetRate(pTrack);
 
-	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 2) ;
-	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 5) ;
-	pStar->fColourG = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/2 ;
+	pStar->fColourR = pfRate[1];
 
-	fValue1 = analyzedTrackGetIemeFrequenciesValues(pTrack, 3) ;
-	fValue2 = analyzedTrackGetIemeFrequenciesValues(pTrack, 4) ;
-	pStar->fColourB = (1 - fValue1)*(1 - fValue1)*(1 - fValue2)*(1 - fValue2)/4 ;
+	pStar->fColourG = pfRate[2];
+
+	pStar->fColourB = pfRate[0];
 
 	return (0) ;
 }
