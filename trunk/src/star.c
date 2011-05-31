@@ -219,11 +219,11 @@ int starCreate(Star * pStar,
 
 		pfRate = analyzedTrackGetRate(pTrack);
 
-		pStar->fColourR = pfRate[1] ;
+		pStar->fColourR = pfRate[0] ;
 
-		pStar->fColourG = pfRate[2] ;
+		pStar->fColourG = pfRate[1] ;
 
-		pStar->fColourB = pfRate[0] ;
+		pStar->fColourB = pfRate[2] ;
 	}
 	return (0) ;
 }
