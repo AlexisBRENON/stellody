@@ -152,7 +152,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 
 	for (i = 0; i < 3; i++)
 	{
-		for (j = i*(46/3); j < (i+1)*(46/3); j++)
+		for (j = i*(48/3); j < (i+1)*(48/3); j++)
 		{
 			pfSum[i] = pfSum[i]+pfSpectrumValues[j];
 		}
@@ -161,7 +161,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	for (i = 0; i < 3; i++)
 	{
 		pfRate[i] = (pfOldRate[i]*(*piAnalyzingCounter)+
-							pfSum[i]/fTotalSum)/((*piAnalyzingCounter)+1);
+							(pfSum[i]/fTotalSum))/((*piAnalyzingCounter)+1);
 	}
 
 	analyzedTrackSetRate(pTrack, pfRate);
