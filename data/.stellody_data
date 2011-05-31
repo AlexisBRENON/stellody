@@ -4,37 +4,1129 @@ iTID=5
 bAnalyzed=1
 strPath=data/Musics/Did You Get It.mp3
 uiLength=164937
-fAverage=7.1953701972961426
-fTreble=0.010457384400069714
-fMedium=0.0077977706678211689
-fBass=0.14144997298717499
-fCoordX=0
-fCoordY=-3
-fCoordZ=1
+fAverage=447.22799682617188
+fBass=0.59807610511779785
+fMedium=0.21516899764537811
+fTreble=0.18675503134727478
+fCoordX=2
+fCoordY=-2
+fCoordZ=-3
 
-[data/Musics/Did You Get It.mp3]
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3]
+iTID=1
+bAnalyzed=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3
+uiLength=223111
+fAverage=81.131568908691406
+fBass=0.68530476093292236
+fMedium=0.10957515984773636
+fTreble=0.097428657114505768
+fCoordX=5
+fCoordY=-8
+fCoordZ=-9
+
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
+iTID=2
+bAnalyzed=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
+uiLength=271464
+fAverage=58.890048980712891
+fBass=0.77694827318191528
+fMedium=0.083339467644691467
+fTreble=0.021489713340997696
+fCoordX=8
+fCoordY=-9
+fCoordZ=-13
+
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3]
+iTID=3
+bAnalyzed=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3
+uiLength=125466
+fAverage=67.40234375
+fBass=0.67798930406570435
+fMedium=0.048875279724597931
+fTreble=0.020849850028753281
+fCoordX=5
+fCoordY=-12
+fCoordZ=-13
+
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3]
+iTID=4
+bAnalyzed=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3
+uiLength=228466
+fAverage=40.632678985595703
+fBass=0.58544784784317017
+fMedium=0.078285515308380127
+fTreble=0.056303698569536209
+fCoordX=2
+fCoordY=-10
+fCoordZ=-11
+
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3]
+iTID=5
+bAnalyzed=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3
+uiLength=230034
+fAverage=51.162887573242188
+fBass=0.69637471437454224
+fMedium=0.041138719767332077
+fTreble=0.032685801386833191
+fCoordX=5
+fCoordY=-13
+fCoordZ=-13
+
+[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3]
 iTID=6
 bAnalyzed=1
-strPath=data/Musics/Did You Get It.mp3
-uiLength=164937
-fAverage=7.1953701972961426
-fBass=0.14144997298717499
-fMedium=0.0077977706678211689
-fTreble=0.010457384400069714
-fCoordX=0
-fCoordY=-3
-fCoordZ=1
+strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3
+uiLength=210677
+fAverage=38.722957611083984
+fBass=0.67888730764389038
+fMedium=0.049494843930006027
+fTreble=0.013843556866049767
+fCoordX=5
+fCoordY=-12
+fCoordZ=-14
 
-[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
-iTID=0
-bAnalyzed=1
-strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
-uiLength=271464
-fAverage=254.80955505371094
-fBass=0.72328227758407593
-fMedium=0.20788514614105225
-fTreble=0.068832471966743469
-fCoordX=6
-fCoordY=-8
-fCoordZ=-12
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/01 5.15 A.M..mp3]
+iTID=21
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/01 5.15 A.M..mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/02 Boom, Like That.mp3]
+iTID=22
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/02 Boom, Like That.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/03 Sucker Row.mp3]
+iTID=23
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/03 Sucker Row.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/04 The Trawlerman's Song.mp3]
+iTID=24
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/04 The Trawlerman's Song.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/05 Back To Tupelo.mp3]
+iTID=25
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/05 Back To Tupelo.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/06 Our Shangri-La.mp3]
+iTID=26
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/06 Our Shangri-La.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/07 Everybody Pays.mp3]
+iTID=27
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/07 Everybody Pays.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/08 Song For Sonny Liston.mp3]
+iTID=28
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/08 Song For Sonny Liston.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/09 Whoop De Doo.mp3]
+iTID=29
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/09 Whoop De Doo.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/10 Postcards From Paraguay.mp3]
+iTID=30
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/10 Postcards From Paraguay.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/11 All That Matters.mp3]
+iTID=31
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/11 All That Matters.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/12 Stand Up Guy.mp3]
+iTID=32
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/12 Stand Up Guy.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/13 Donegan's Gone.mp3]
+iTID=33
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/13 Donegan's Gone.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/14 Don't Crash The Ambulance.mp3]
+iTID=34
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Mark Knopfler/Shangri-La/14 Don't Crash The Ambulance.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/A l'aventure instrumental.mp3]
+iTID=35
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/A l'aventure instrumental.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/A l'aventure, compagnons.mp3]
+iTID=36
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/A l'aventure, compagnons.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Bande annonce Naheulbeuk.mp3]
+iTID=37
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Bande annonce Naheulbeuk.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Beatles Revenge.mp3]
+iTID=38
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Beatles Revenge.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Chanson Publicité Frikilax.mp3]
+iTID=39
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Chanson Publicité Frikilax.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon - Casques Lebohaum.mp3]
+iTID=40
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon - Casques Lebohaum.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon - les répondeurs cons.mp3]
+iTID=41
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon - les répondeurs cons.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon BA Couette de l'Oubli.mp3]
+iTID=42
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon BA Couette de l'Oubli.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 01.mp3]
+iTID=43
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 01.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 02.mp3]
+iTID=44
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 02.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 03.mp3]
+iTID=45
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 03.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 04.mp3]
+iTID=46
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 04.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 05.mp3]
+iTID=47
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 05.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 06.mp3]
+iTID=48
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 06.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 07.mp3]
+iTID=49
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 07.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 08.mp3]
+iTID=50
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 08.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 09.mp3]
+iTID=51
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 09.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 10.mp3]
+iTID=52
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 10.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 11.mp3]
+iTID=53
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 11.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 12.mp3]
+iTID=54
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 12.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 13.mp3]
+iTID=55
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 13.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 14.mp3]
+iTID=56
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 14.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 15.mp3]
+iTID=57
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 15.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 18.mp3]
+iTID=58
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 18.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 19.mp3]
+iTID=59
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 19.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 20.mp3]
+iTID=60
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 20.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 21-1.mp3]
+iTID=61
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 21-1.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 21-2.mp3]
+iTID=62
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 21-2.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 22.mp3]
+iTID=63
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 22.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 23.mp3]
+iTID=64
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 23.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 24.mp3]
+iTID=65
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 24.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 25.mp3]
+iTID=66
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 25.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 26-1.mp3]
+iTID=67
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 26-1.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 26-2.mp3]
+iTID=68
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 26-2.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 27-1.mp3]
+iTID=69
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 27-1.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 27-2.mp3]
+iTID=70
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 27-2.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 28.mp3]
+iTID=71
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 28.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 29.mp3]
+iTID=72
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 29.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30-1.mp3]
+iTID=73
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30-1.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30-2.mp3]
+iTID=74
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30-2.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30a - Escapade de Zangdar.mp3]
+iTID=75
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30a - Escapade de Zangdar.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30b - Gouzi Monsieur Vache.mp3]
+iTID=76
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30b - Gouzi Monsieur Vache.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30c - Le nom de la Compagnie.mp3]
+iTID=77
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30c - Le nom de la Compagnie.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30d - La Hache Durandil.mp3]
+iTID=78
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30d - La Hache Durandil.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30e - Résumé saison 3.mp3]
+iTID=79
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 30e - Résumé saison 3.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 40 - Résumé saison 4.mp3]
+iTID=80
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk 40 - Résumé saison 4.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk Elysee.mp3]
+iTID=81
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon de Naheulbeuk Elysee.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Facile pub Naheulbeuk.mp3]
+iTID=82
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Facile pub Naheulbeuk.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Naheulbeuk 01 NextGen.mp3]
+iTID=83
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Naheulbeuk 01 NextGen.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Naheulbeuk 02 NextGen.mp3]
+iTID=84
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Naheulbeuk 02 NextGen.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Pub - Chiantos.mp3]
+iTID=85
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Pub - Chiantos.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Pub - Crevetola.mp3]
+iTID=86
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Donjon Pub - Crevetola.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Epees Durandil Pub Naheulbeuk.mp3]
+iTID=87
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Epees Durandil Pub Naheulbeuk.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Gorzyne pub Naheulbeuk.mp3]
+iTID=88
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Gorzyne pub Naheulbeuk.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Gurdil instrumental.mp3]
+iTID=89
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Gurdil instrumental.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/La vie d'aventurier.mp3]
+iTID=90
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/La vie d'aventurier.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Le talent.mp3]
+iTID=91
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Le talent.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Le Vieux Gildas.mp3]
+iTID=92
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Le Vieux Gildas.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Les Chaussettes du Nain.mp3]
+iTID=93
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Les Chaussettes du Nain.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Loreliane pub Naheulbeuk.mp3]
+iTID=94
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Loreliane pub Naheulbeuk.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Naheulbeuk au Québec.mp3]
+iTID=95
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Naheulbeuk au Québec.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Naheulbeuk disque trailer.mp3]
+iTID=96
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Naheulbeuk disque trailer.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Polka du Menestrel.mp3]
+iTID=97
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Polka du Menestrel.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Publicité Frikilax.mp3]
+iTID=98
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Publicité Frikilax.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Rien à dire.mp3]
+iTID=99
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Rien à dire.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Troll farceur (Studio) V2.mp3]
+iTID=100
+bAnalyzed=0
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Pen of Chaos/Donjon de Naheulbeuk/Troll farceur (Studio) V2.mp3
+uiLength=0
+fAverage=0
+fBass=0
+fMedium=0
+fTreble=0
+fCoordX=0
+fCoordY=0
+fCoordZ=0
 

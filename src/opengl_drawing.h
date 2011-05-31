@@ -65,6 +65,7 @@ struct sOpenGLData
 	int iWidth ;					/**< Largeur de la fenêtre */
 	int iHeight ;					/**< Hauteur de la fenêtre */
 	int iPrecision ;				/**< Precision choisie en préférence pour la qualité des dessins. */
+	int bPicking ;					/**< Booléen indiquant si on est en picking ou non. */
 	float pfTransfertMatrix[9] ;	/**< Matrice de passage de la base du monde à la base caméra. */
 	AnalyzedTrack * pPlayedTrack ;	/**< Analyse du morceau en train d'être lu. */
 	GPtrArray * psExistingStars ;	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
