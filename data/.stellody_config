@@ -4,8 +4,8 @@ iAnalysisRate=1
 iWindowXSize=0
 iWindowYSize=0
 i3DQuality=25
-iTIDMax=8
+iTIDMax=7
 iTIDMin=0
-pstrPath=
 iMoveCam=1
+pstrPath=
 

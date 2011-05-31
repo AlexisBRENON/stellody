@@ -1685,7 +1685,7 @@ static void drawGrid()
     glPushMatrix() ;
     glTranslatef( -10, 0, -10) ;
 	glColor3f(1, 0, 0) ;
-    glBegin( GL_LINES ) ;
+    glBegin(GL_LINES) ;
 	
     for (i = 0 ; i <= 20 ; i+=2)
     {
@@ -1706,7 +1706,7 @@ static void drawGrid()
 	glRotatef(90, 1, 0, 0) ;
     glTranslatef(-10, 0, -10) ;
 	glColor3f(0, 1, 0) ;
-    glBegin( GL_LINES ) ;
+    glBegin(GL_LINES) ;
 	
     for (i = 0 ; i <= 20 ; i+=2)
     {
@@ -1727,7 +1727,7 @@ static void drawGrid()
 	glRotatef(90, 0, 0, 1) ;
     glTranslatef(-10, 0, -10) ;
 	glColor3f(0, 0, 1) ;
-    glBegin( GL_LINES ) ;
+    glBegin(GL_LINES) ;
 	
     for (i = 0 ; i <= 20 ; i+=2)
     {
@@ -2055,8 +2055,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 										   fTranslateY * pfVectorY[0] +
 										   fTranslateZ * pfVectorZ[0])) ;
-	if ((pData->fCenterX + fTranslation) < 150 &&
-		(pData->fCenterX + fTranslation) > -150)
+	if ((pData->fCenterX + fTranslation) < 45 &&
+		(pData->fCenterX + fTranslation) > -45)
 	{
 		pData->fCenterX = pData->fCenterX + fTranslation ;
 		pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -2065,8 +2065,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 										   fTranslateY * pfVectorY[1] +
 										   fTranslateZ * pfVectorZ[1])) ;
-	if ((pData->fCenterY + fTranslation) < 150 &&
-		(pData->fCenterY + fTranslation) > -150)
+	if ((pData->fCenterY + fTranslation) < 45 &&
+		(pData->fCenterY + fTranslation) > -45)
 	{
 		pData->fCenterY = pData->fCenterY + fTranslation ;
 		pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2075,8 +2075,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 										   fTranslateY * pfVectorY[2] +
 										   fTranslateZ * pfVectorZ[2])) ;
-	if ((pData->fCenterZ + fTranslation) < 150 &&
-		(pData->fCenterZ + fTranslation) > -150)
+	if ((pData->fCenterZ + fTranslation) < 45 &&
+		(pData->fCenterZ + fTranslation) > -45)
 	{
 		pData->fCenterZ = pData->fCenterZ + fTranslation ;
 		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -2101,7 +2101,7 @@ int drawingGLRotate (OpenGLData* pData,
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
 	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
-	if (pData->fRadius > 150) pData->fRadius = 150 ;
+	if (pData->fRadius > 45) pData->fRadius = 45 ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
 
@@ -2128,9 +2128,9 @@ int drawingGLZoom (OpenGLData* pData,
 	{
 		pData->fRadius = 0.01 ;
 	}
-	else if (pData->fRadius > 150)
+	else if (pData->fRadius > 45)
 	{
-		pData->fRadius = 150 ;
+		pData->fRadius = 45 ;
 	}
 	else
 	{
@@ -2154,8 +2154,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 											   fTranslateY * pfVectorY[0] +
 											   fTranslateZ * pfVectorZ[0])) ;
-		if ((pData->fCenterX + fTranslation) < 150 &&
-			(pData->fCenterX + fTranslation) > -150)
+		if ((pData->fCenterX + fTranslation) < 45 &&
+			(pData->fCenterX + fTranslation) > -45)
 		{
 			pData->fCenterX = pData->fCenterX + fTranslation ;
 			pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -2164,8 +2164,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 											   fTranslateY * pfVectorY[1] +
 											   fTranslateZ * pfVectorZ[1])) ;
-		if ((pData->fCenterY + fTranslation) < 150 &&
-			(pData->fCenterY + fTranslation) > -150)
+		if ((pData->fCenterY + fTranslation) < 45 &&
+			(pData->fCenterY + fTranslation) > -45)
 		{
 			pData->fCenterY = pData->fCenterY + fTranslation ;
 			pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2174,8 +2174,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 											   fTranslateY * pfVectorY[2] +
 											   fTranslateZ * pfVectorZ[2])) ;
-		if ((pData->fCenterZ + fTranslation) < 150 &&
-			(pData->fCenterZ + fTranslation) > -150)
+		if ((pData->fCenterZ + fTranslation) < 45 &&
+			(pData->fCenterZ + fTranslation) > -45)
 		{
 			pData->fCenterZ = pData->fCenterZ + fTranslation ;
 			pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -2217,7 +2217,7 @@ int drawingGLInit (OpenGLData* pData)
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
 
-	pData->fRadius = 75 ;
+	pData->fRadius = 20 ;
 	pData->fAlpha = 0 ;
 	pData->fBeta = 3*M_PI/2 ;
 	pData->fCenterX = 0 ;

@@ -76,9 +76,9 @@ int starCreate(Star * pStar,
 
 			pfRate = analyzedTrackGetRate(pTrack);
 
-			pStar->iPositionX = pfRate[0]*200 - 100 ;
-			pStar->iPositionY = pfRate[1]*200 - 100 ;
-			pStar->iPositionZ = pfRate[2]*200 - 100 ;
+			pStar->iPositionX = pfRate[0]*30 - 15 ;
+			pStar->iPositionY = pfRate[1]*30 - 15 ;
+			pStar->iPositionZ = pfRate[2]*30 - 15 ;
 
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
