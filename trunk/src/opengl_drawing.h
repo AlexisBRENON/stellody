@@ -159,8 +159,13 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
   * @param[in] iPrecision Precision des dessins
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
+int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision,
+					int bPicking) ;
 
+
+int drawingGLSelect (int iX, int iY, OpenGLData* pData,
+					AnalyzedTracks* pTracks, int iPrecision,
+					GdkGLDrawable* psSurface);
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -281,7 +286,7 @@ const float * drawingGLGetTransfertMatrix(const OpenGLData * pData) ;
  * @brief Mutateur du champ PlayedTrack de la structure OpenGLData.
  *
  * @param[in, out] pData Données OpenGL.
- * @param[in, out] pTranck Chanson lue. 
+ * @param[in, out] pTranck Chanson lue.
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack) ;

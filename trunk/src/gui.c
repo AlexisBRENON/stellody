@@ -1489,33 +1489,32 @@ int on_Stellarium_DrawingArea_button_release_event (
 		case GDK_BUTTON_RELEASE: /* Si on relache un bouton */
 			if (((GdkEventButton*)psEvent)->button == 1)
 			{
-				AnalyzedTrack* pTrackToPlay = NULL;
-				pTrackToPlay = guiPlayTrackFromStellarium(
-								(AnalyzedTracks*) pData[ANALYZED_TRACKS],
-								((GdkEventButton*)psEvent)->x,
-								((GdkEventButton*)psEvent)->y,
-								(OpenGLData*) pData[OPENGLDATA]);
-				if (pTrackToPlay != NULL)
+				int iTID = 0;
+				GdkGLContext * psContext = NULL;
+				GdkGLDrawable * psSurface = NULL;
+				gboolean bActivate = FALSE;
+
+				psContext = gtk_widget_get_gl_context(psWidget);
+				psSurface = gtk_widget_get_gl_drawable(psWidget);
+
+				bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
+
+				if (bActivate == TRUE)
 				{
-					/* On arrête le morceau en lecture */
+					iTID = drawingGLSelect(
+						((GdkEventButton*)psEvent)->x-
+								(drawingGLGetWidth((OpenGLData*)pData[OPENGLDATA])/2),
+						((GdkEventButton*)psEvent)->y-
+								(drawingGLGetHeight((OpenGLData*)pData[OPENGLDATA])/2),
+						(OpenGLData*) pData[OPENGLDATA],
+						(AnalyzedTracks*) pData[ANALYZED_TRACKS],
+						preferencesGet3DQuality((Preferences*)pData[PREFERENCES]),
+						gtk_widget_get_gl_drawable(psWidget));
 
-					on_Stop_Action_activate(psWidget, pData);
-
-					/* On lance le nouveau morceau */
-
-					guiPlayTrack(pTrackToPlay,
-								pData[MAIN_BUILDER],
-								pData[FMOD_CONTEXT],
-								(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
-								pData[OPENGLDATA]);
-
-					/* On crée le timer chargé de faire progresser la
-					barre de lecture */
-
-					g_timeout_add_seconds(1,
-							(GSourceFunc) guiTrackScaleIncrement,
-							pData);
+					gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 				}
+
+				printf ("iTID = %d\n", iTID);
 			}
 			break;
 		default:
