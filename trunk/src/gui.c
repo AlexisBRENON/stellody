@@ -279,6 +279,7 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 							AnalyzedTrack* pTrack,
 							GPtrArray* pData)
 {
+	int i = 0;
 	int* piDistance = NULL;
 	int iNewDistance = 0;
 	float* pfTrackCoord/* [3] */ = NULL;
@@ -310,7 +311,7 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 	if (pfTrackNewCoord[0]+fDiameter >= pfMouseCoord[0] &&
 		pfTrackNewCoord[0]-fDiameter <= pfMouseCoord[0] &&
 		pfTrackNewCoord[1]+fDiameter >= pfMouseCoord[1] &&
-		pfTrackNewCoord[1]-fDiameter <= pfMouseCoord[1] &&)
+		pfTrackNewCoord[1]-fDiameter <= pfMouseCoord[1])
 	{
 		iNewDistance = fCamRadius-pfTrackNewCoord[2];
 
@@ -332,12 +333,10 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 									int iMousePositionY,
 									const OpenGLData* pGLData)
 {
-	int iFind = 0;
 	int iDistance = -1;
 	const float* pfTransferMatrix/*[9]*/ = NULL;
 	float pfMouseCoord[2] = {0};
 	float fCamRadius = 0; /* La position de la caméra sur son propre axe des Z. */
-	float f = 0;
 	float fDet = 0;
 	float pfInvertedTransfertMatrix[9] = {0};
 	AnalyzedTrack* pTrackToPlay = NULL;
@@ -379,7 +378,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 			pfTransferMatrix[8]*pfTransferMatrix[1]*pfTransferMatrix[3];
 	if (fDet == 0)
 	{
-		return EXIT_FAILURE;
+		return NULL;
 	}
 	fDet = 1/fDet;
 

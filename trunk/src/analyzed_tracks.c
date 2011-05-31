@@ -64,7 +64,7 @@ gboolean analyzedTracksSaveTracks (int* pKey,
 						fAverage);
 	g_key_file_set_double(pData,
 						strPath,
-						"fTreble",
+						"fBass",
 						(double) fRate[0]);
 	g_key_file_set_double(pData,
 						strPath,
@@ -72,7 +72,7 @@ gboolean analyzedTracksSaveTracks (int* pKey,
 						(double) fRate[1]);
 	g_key_file_set_double(pData,
 						strPath,
-						"fBass",
+						"fTreble",
 						(double) fRate[2]);
 	g_key_file_set_double(pData,
 						strPath,
@@ -138,11 +138,11 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		fAverage = (float) g_key_file_get_double(ppsContext[DATA],
 										strGroups[i], "fAverage", NULL);
 		pfRate[0] = (float) g_key_file_get_double(ppsContext[DATA],
-										strGroups[i], "fTreble", NULL);
+										strGroups[i], "fBass", NULL);
 		pfRate[1] = (float) g_key_file_get_double(ppsContext[DATA],
 										strGroups[i], "fMedium", NULL);
 		pfRate[2] = (float) g_key_file_get_double(ppsContext[DATA],
-										strGroups[i], "fBass", NULL);
+										strGroups[i], "fTreble", NULL);
 		pfCoord[0] = (float) g_key_file_get_double(ppsContext[DATA],
 										strGroups[i], "fCoordX", NULL);
 		pfCoord[1] = (float) g_key_file_get_double(ppsContext[DATA],
