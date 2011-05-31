@@ -74,11 +74,15 @@ int starCreate(Star * pStar,
 		{
 			/* Si non, calcul et attribution des coordonnées. */
 
-			pfRate = analyzedTrackGetRate(pTrack);
+			pfRate = analyzedTrackGetRate(pTrack) ;
 
+			pfRate[0] = pfRate[0]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
+			pfRate[1] = pfRate[1]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
+			pfRate[2] = pfRate[2]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
+			
 			pStar->iPositionX = pfRate[0]*30 - 15 ;
-			pStar->iPositionY = pfRate[1]*30 - 15 ;
-			pStar->iPositionZ = pfRate[2]*30 - 15 ;
+			pStar->iPositionY = pfRate[1]*2*30 - 15 ;
+			pStar->iPositionZ = pfRate[2]*2*30 - 15 ;
 
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
@@ -219,11 +223,11 @@ int starCreate(Star * pStar,
 
 		pfRate = analyzedTrackGetRate(pTrack);
 
-		pStar->fColourR = pfRate[0] ;
+		pStar->fColourR = 1 - pfRate[2] ;
 
-		pStar->fColourG = pfRate[1] ;
+		pStar->fColourG = 1 - pfRate[1] ;
 
-		pStar->fColourB = pfRate[2] ;
+		pStar->fColourB = 1 - pfRate[0] ;
 	}
 	return (0) ;
 }

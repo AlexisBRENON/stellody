@@ -1863,6 +1863,10 @@ static gboolean drawStellarium(int * piKey,
 		starCreate(& sStar, pTrack, pData->psExistingStars) ;
 
 		glPushMatrix() ;
+		if (pData->bPicking == 1)
+		{
+			glLoadName(analyzedTrackGetTID(pTrack)) ;
+		}
 		drawStar(& sStar, pData->iPrecision) ;
 		glPopMatrix() ;
 	}
@@ -1875,6 +1879,12 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	Star sSelectedStar ;
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
+	if (pData->bPicking == 1)
+	{
+		(void) glRenderMode (GL_SELECT) ;
+		glInitNames() ;
+	}
+	
 	if (pData->pPlayedTrack != NULL)
 	{
 		starCreate(& sSelectedStar,
@@ -2232,6 +2242,7 @@ int drawingGLInit (OpenGLData* pData)
 	pData->fMoveX = 0 ;
 	pData->fMoveY = 0 ;
 	pData->fMoveZ = 0 ;
+	pData->bPicking = 0 ;
 
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
@@ -2369,31 +2380,37 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 
 	pfCoord = analyzedTrackGetCoord(pTrack);
 
-	/* Mise à jour des iDirectionX/Y/Z. */
+	if(pfCoord[0] != pData->fCenterX &&
+	   pfCoord[1] != pData->fCenterY &&
+	   pfCoord[2] != pData->fCenterZ)
+	{
+		/* Mise à jour des iDirectionX/Y/Z. */
 
-	pData->iDirectionX = pfCoord[0] ;
-	pData->iDirectionY = pfCoord[1] ;
-	pData->iDirectionZ = pfCoord[2] ;
+		pData->iDirectionX = pfCoord[0] ;
+		pData->iDirectionY = pfCoord[1] ;
+		pData->iDirectionZ = pfCoord[2] ;
 
-		/* Mise à jour des fMoveX/Y/Z. */
+			/* Mise à jour des fMoveX/Y/Z. */
 
-	fDistance = sqrt((pData->iDirectionX - pData->fCenterX)*(pData->iDirectionX - pData->fCenterX) +
-					 (pData->iDirectionY - pData->fCenterY)*(pData->iDirectionY - pData->fCenterY) +
-					 (pData->iDirectionZ - pData->fCenterZ)*(pData->iDirectionZ - pData->fCenterZ)) ;
+		fDistance = sqrt((pData->iDirectionX - pData->fCenterX)*(pData->iDirectionX - pData->fCenterX) +
+						 (pData->iDirectionY - pData->fCenterY)*(pData->iDirectionY - pData->fCenterY) +
+						 (pData->iDirectionZ - pData->fCenterZ)*(pData->iDirectionZ - pData->fCenterZ)) ;
 
-		fTravelTime = fDistance / fSpeed ;
+			fTravelTime = fDistance / fSpeed ;
 
-	pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
-	pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
-	pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
-
+		pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
+		pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
+		pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
+	}
 	return EXIT_SUCCESS ;
 }
 
 
 int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
-					int iPrecision)
+					int iPrecision, int bPicking)
 {
+	pData->bPicking = bPicking ;
+
 	/* Gestion de la vision. */
 
 	drawingGLMoveDirection(pData) ;
