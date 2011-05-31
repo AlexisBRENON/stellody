@@ -1502,10 +1502,8 @@ int on_Stellarium_DrawingArea_button_release_event (
 				if (bActivate == TRUE)
 				{
 					iTID = drawingGLSelect(
-						((GdkEventButton*)psEvent)->x-
-								(drawingGLGetWidth((OpenGLData*)pData[OPENGLDATA])/2),
-						((GdkEventButton*)psEvent)->y-
-								(drawingGLGetHeight((OpenGLData*)pData[OPENGLDATA])/2),
+						((GdkEventButton*)psEvent)->x,
+						((GdkEventButton*)psEvent)->y,
 						(OpenGLData*) pData[OPENGLDATA],
 						(AnalyzedTracks*) pData[ANALYZED_TRACKS],
 						preferencesGet3DQuality((Preferences*)pData[PREFERENCES]),
