@@ -1677,6 +1677,73 @@ static void drawAWing(int Armes)
 	glPopMatrix() ;
 }
 
+static void drawGrid()
+{
+    int i = 0 ;
+    glLineWidth(1) ;
+	
+    glPushMatrix() ;
+    glTranslatef( -10, 0, -10) ;
+	glColor3f(1, 0, 0) ;
+    glBegin( GL_LINES ) ;
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(i, 0, 0) ;
+        glVertex3f(i, 0, 20) ;
+    }
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(0, 0, i) ;
+        glVertex3f(20, 0, i) ;
+    }
+	
+    glEnd() ;
+    glPopMatrix() ;
+	
+    glPushMatrix() ;
+	glRotatef(90, 1, 0, 0) ;
+    glTranslatef(-10, 0, -10) ;
+	glColor3f(0, 1, 0) ;
+    glBegin( GL_LINES ) ;
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(i, 0, 0) ;
+        glVertex3f(i, 0, 20) ;
+    }
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(0, 0, i) ;
+        glVertex3f(20, 0, i) ;
+    }
+	
+    glEnd() ;
+    glPopMatrix() ;
+	
+    glPushMatrix() ;
+	glRotatef(90, 0, 0, 1) ;
+    glTranslatef(-10, 0, -10) ;
+	glColor3f(0, 0, 1) ;
+    glBegin( GL_LINES ) ;
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(i, 0, 0) ;
+        glVertex3f(i, 0, 20) ;
+    }
+	
+    for (i = 0 ; i <= 20 ; i+=2)
+    {
+        glVertex3f(0, 0, i) ;
+        glVertex3f(20, 0, i) ;
+    }
+	
+    glEnd() ;
+    glPopMatrix() ;
+}
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -1818,6 +1885,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	glDisable(GL_LIGHTING) ;
 	
+	drawGrid() ;
 	drawCubeMap(pData) ;
 	
 	glPushMatrix() ;
@@ -2149,7 +2217,7 @@ int drawingGLInit (OpenGLData* pData)
 	float pfSpecularLight[4] = {0, 0, 0, 0} ;
 	float pfPositionLight[4] = {0, 0, 0, 0} ;
 
-	pData->fRadius = 150 ;
+	pData->fRadius = 75 ;
 	pData->fAlpha = 0 ;
 	pData->fBeta = 3*M_PI/2 ;
 	pData->fCenterX = 0 ;
