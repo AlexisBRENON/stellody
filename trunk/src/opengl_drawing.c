@@ -1786,13 +1786,20 @@ static gboolean drawStellarium(int * piKey,
 							   AnalyzedTrack * pTrack,
 							   OpenGLData * pData)
 {
+	int iAnalyzed = 0 ;
 	Star sStar ;
-	starCreate(& sStar, pTrack, pData->psExistingStars) ;
+	/* Vérifie que l'analyse a bien été faite. */
+	iAnalyzed = (int) analyzedTrackGetAnalyzed(pTrack) ;
+	
+	if (iAnalyzed == 1)
+	{
+		starCreate(& sStar, pTrack, pData->psExistingStars) ;
 
-	glPushMatrix() ;
-	drawStar(& sStar, pData->iPrecision) ;
-	glPopMatrix() ;
-
+		glPushMatrix() ;
+		drawStar(& sStar, pData->iPrecision) ;
+		glPopMatrix() ;
+	}
+	
 	return FALSE ;
 }
 
@@ -1810,9 +1817,9 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	}
 
 	glDisable(GL_LIGHTING) ;
-
+	
 	drawCubeMap(pData) ;
-
+	
 	glPushMatrix() ;
 	glScalef(2, 2, 2) ;
 	glColor3f(1, 1, 1) ;
@@ -1980,8 +1987,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 										   fTranslateY * pfVectorY[0] +
 										   fTranslateZ * pfVectorZ[0])) ;
-	if ((pData->fCenterX + fTranslation) < 2 * 150 &&
-		(pData->fCenterX + fTranslation) > -2 * 150)
+	if ((pData->fCenterX + fTranslation) < 150 &&
+		(pData->fCenterX + fTranslation) > -150)
 	{
 		pData->fCenterX = pData->fCenterX + fTranslation ;
 		pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -1990,8 +1997,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 										   fTranslateY * pfVectorY[1] +
 										   fTranslateZ * pfVectorZ[1])) ;
-	if ((pData->fCenterY + fTranslation) < 2 * 150 &&
-		(pData->fCenterY + fTranslation) > -2 * 150)
+	if ((pData->fCenterY + fTranslation) < 150 &&
+		(pData->fCenterY + fTranslation) > -150)
 	{
 		pData->fCenterY = pData->fCenterY + fTranslation ;
 		pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2000,8 +2007,8 @@ int drawingGLTranslate (OpenGLData* pData,
 	fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 										   fTranslateY * pfVectorY[2] +
 										   fTranslateZ * pfVectorZ[2])) ;
-	if ((pData->fCenterZ + fTranslation) < 2 * 150 &&
-		(pData->fCenterZ + fTranslation) > -2 * 150)
+	if ((pData->fCenterZ + fTranslation) < 150 &&
+		(pData->fCenterZ + fTranslation) > -150)
 	{
 		pData->fCenterZ = pData->fCenterZ + fTranslation ;
 		pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -2026,7 +2033,7 @@ int drawingGLRotate (OpenGLData* pData,
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
 	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
-	if (pData->fRadius > 2 * 150) pData->fRadius = 2 * 150 ;
+	if (pData->fRadius > 150) pData->fRadius = 150 ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
 
@@ -2053,9 +2060,9 @@ int drawingGLZoom (OpenGLData* pData,
 	{
 		pData->fRadius = 0.01 ;
 	}
-	else if (pData->fRadius > 2 * 150)
+	else if (pData->fRadius > 150)
 	{
-		pData->fRadius = 2 * 150 ;
+		pData->fRadius = 150 ;
 	}
 	else
 	{
@@ -2079,8 +2086,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[0] +
 											   fTranslateY * pfVectorY[0] +
 											   fTranslateZ * pfVectorZ[0])) ;
-		if ((pData->fCenterX + fTranslation) < 2 * 150 &&
-			(pData->fCenterX + fTranslation) > -2 * 150)
+		if ((pData->fCenterX + fTranslation) < 150 &&
+			(pData->fCenterX + fTranslation) > -150)
 		{
 			pData->fCenterX = pData->fCenterX + fTranslation ;
 			pData->fTranslateX = pData->fTranslateX + fTranslation ;
@@ -2089,8 +2096,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[1] +
 											   fTranslateY * pfVectorY[1] +
 											   fTranslateZ * pfVectorZ[1])) ;
-		if ((pData->fCenterY + fTranslation) < 2 * 150 &&
-			(pData->fCenterY + fTranslation) > -2 * 150)
+		if ((pData->fCenterY + fTranslation) < 150 &&
+			(pData->fCenterY + fTranslation) > -150)
 		{
 			pData->fCenterY = pData->fCenterY + fTranslation ;
 			pData->fTranslateY = pData->fTranslateY + fTranslation ;
@@ -2099,8 +2106,8 @@ int drawingGLZoom (OpenGLData* pData,
 		fTranslation = -1 * (pData->fRadius * (fTranslateX * pfVectorX[2] +
 											   fTranslateY * pfVectorY[2] +
 											   fTranslateZ * pfVectorZ[2])) ;
-		if ((pData->fCenterZ + fTranslation) < 2 * 150 &&
-			(pData->fCenterZ + fTranslation) > -2 * 150)
+		if ((pData->fCenterZ + fTranslation) < 150 &&
+			(pData->fCenterZ + fTranslation) > -150)
 		{
 			pData->fCenterZ = pData->fCenterZ + fTranslation ;
 			pData->fTranslateZ = pData->fTranslateZ + fTranslation ;
@@ -2300,13 +2307,13 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 	pData->iDirectionY = pfCoord[1] ;
 	pData->iDirectionZ = pfCoord[2] ;
 
-	/* Mise à jour des fMoveX/Y/Z. */
+		/* Mise à jour des fMoveX/Y/Z. */
 
 	fDistance = sqrt((pData->iDirectionX - pData->fCenterX)*(pData->iDirectionX - pData->fCenterX) +
 					 (pData->iDirectionY - pData->fCenterY)*(pData->iDirectionY - pData->fCenterY) +
 					 (pData->iDirectionZ - pData->fCenterZ)*(pData->iDirectionZ - pData->fCenterZ)) ;
 
-	fTravelTime = fDistance / fSpeed ;
+		fTravelTime = fDistance / fSpeed ;
 
 	pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
 	pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
