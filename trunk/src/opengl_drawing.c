@@ -2449,12 +2449,14 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
 					AnalyzedTracks* pTracks, int iPrecision,
 					GdkGLDrawable* psSurface)
 {
-	GLuint buff[64] = {0};
- 	GLint hits, view[4];
- 	int i;
+	GLuint uiBuffer[64] = {0};
+ 	GLint iNbHits = 0;
+ 	GLint piViewport[4] = {0};
+ 	GLuint *ptr = NULL;
+ 	int i = 0;
 
- 	glSelectBuffer(64, buff);
- 	glGetIntegerv(GL_VIEWPORT, view);
+ 	glSelectBuffer(64, uiBuffer);
+ 	glGetIntegerv(GL_VIEWPORT, piViewport);
 
  	glRenderMode(GL_SELECT);
 
@@ -2465,38 +2467,43 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
  	glPushMatrix();
  		glLoadIdentity();
 
- 		gluPickMatrix(iX, iY, 1.0, 1.0, view);
+ 		gluPickMatrix((GLdouble) iX - (pData->iWidth)/2,
+					(GLdouble) iY-(pData->iHeight)/2,
+					100.0, 100.0, piViewport);
  		gluPerspective(45,
 				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
 				   0.001, 100000);
-
-
  		glMatrixMode(GL_MODELVIEW);
 
-		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
- 		drawingGLDraw(pTracks, pData, iPrecision, 1 /* TRUE */);
+ 		drawingGLDraw(pTracks, pData, iPrecision, TRUE /* TRUE */);
 
  		glMatrixMode(GL_PROJECTION);
  	glPopMatrix();
 
- 	hits = glRenderMode(GL_RENDER);
+ 	glMatrixMode(GL_MODELVIEW);
+ 	glFlush();
 
- 	for (i=0; i<hits; i++)
+ 	iNbHits = glRenderMode(GL_RENDER);
+
+	ptr = (GLuint*) uiBuffer;
+	printf("Hits : %d\n", iNbHits);
+
+ 	for (i = 0; i < iNbHits; i++)
  	{
  		printf("Number: %d\n"
  				"Min Z: %d\n"
  				"Max Z: %d\n"
  				"Name on stack: %d\n",
- 				(int)buff[i * 4],
- 				(int)buff[i * 4 + 1],
- 				(int)buff[i * 4 + 2],
- 				(int)buff[i * 4 + 3]
+ 				(int)ptr[0],
+ 				(int)ptr[1],
+ 				(int)ptr[2],
+ 				(int)ptr[3]
  				);
  	}
 
  	glMatrixMode(GL_MODELVIEW);
 
- 	return (int) buff[3]; /* Name of the object */
+ 	return (int) ptr[3]; /* Name of the object */
 }
 
 
