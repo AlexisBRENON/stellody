@@ -280,13 +280,14 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 							GPtrArray* pData)
 {
 	int i = 0;
-	int* piDistance = NULL;
-	int iNewDistance = 0;
+	float* pfDistance = NULL;
+	float fDistance = 0;
+	float fNewDistance = 0;
 	float* pfTrackCoord/* [3] */ = NULL;
 	float pfTrackNewCoord[3] = {0};
 	float* pfMouseCoord/*[2*/ = NULL;
 	float* pfTransfertMatrix = NULL;
-	float fDiameter = 0;
+	float fRadius = 0;
 	float fCamRadius = 0;
 	OpenGLData* pGLData = NULL;
 
@@ -294,11 +295,12 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 	pfMouseCoord = (float*) g_ptr_array_index(pData, 0);
 	pGLData = (OpenGLData*) g_ptr_array_index(pData, 1);
 	pfTransfertMatrix = (float*) g_ptr_array_index(pData, 2);
-	piDistance = (int*) g_ptr_array_index(pData, 3);
+	pfDistance = (float*) g_ptr_array_index(pData, 3);
 	fCamRadius = drawingGLGetRadius(pGLData);
-
-	fDiameter = analyzedTrackGetLength(pTrack)/200000;
-	fDiameter = fDiameter*(fCamRadius/600);
+	fRadius = analyzedTrackGetLength(pTrack);
+	fRadius = fRadius/1050000;
+	printf("fRadius : %f\n", fRadius);
+	printf("CamRadius : %f\n", fCamRadius);
 
 	for (i = 0; i < 3; i++)
 	{
@@ -308,16 +310,28 @@ static gboolean guiPlayTrackFromCoord (int* piKey,
 			pfTrackCoord[2]*pfTransfertMatrix[3*i+2];
 	}
 
-	if (pfTrackNewCoord[0]+fDiameter >= pfMouseCoord[0] &&
-		pfTrackNewCoord[0]-fDiameter <= pfMouseCoord[0] &&
-		pfTrackNewCoord[1]+fDiameter >= pfMouseCoord[1] &&
-		pfTrackNewCoord[1]-fDiameter <= pfMouseCoord[1])
-	{
-		iNewDistance = fCamRadius-pfTrackNewCoord[2];
+	fDistance = fCamRadius - pfTrackNewCoord[2];
+	printf("Distance : %f\n", fDistance);
+	fRadius = (0.001/fDistance)*fRadius;
 
-		if (iNewDistance < *piDistance || *piDistance == -1)
+	printf("fRadius : %f\n", fRadius);
+
+	printf("X+fRadius = %f\n", pfTrackNewCoord[0]+fRadius);
+	printf("X-fRadius = %f\n", pfTrackNewCoord[0]-fRadius);
+	printf("Y+fRadius = %f\n", pfTrackNewCoord[1]+fRadius);
+	printf("Y-fRadius = %f\n\n", pfTrackNewCoord[1]-fRadius);
+
+	if (pfTrackNewCoord[0]+fRadius >= pfMouseCoord[0] &&
+		pfTrackNewCoord[0]-fRadius <= pfMouseCoord[0] &&
+		pfTrackNewCoord[1]+fRadius >= pfMouseCoord[1] &&
+		pfTrackNewCoord[1]-fRadius <= pfMouseCoord[1])
+	{
+		printf ("On sauvegarde le morceau.\n");
+		fNewDistance = fCamRadius-pfTrackNewCoord[2];
+
+		if (fNewDistance < *pfDistance || *pfDistance == -1)
 		{
-			*piDistance = iNewDistance;
+			*pfDistance = fNewDistance;
 			g_ptr_array_remove_index(pData,4);
 			g_ptr_array_add(pData, pTrack);
 		}
@@ -333,7 +347,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 									int iMousePositionY,
 									const OpenGLData* pGLData)
 {
-	int iDistance = -1;
+	float fDistance = -1;
 	const float* pfTransferMatrix/*[9]*/ = NULL;
 	float pfMouseCoord[2] = {0};
 	float fCamRadius = 0; /* La position de la caméra sur son propre axe des Z. */
@@ -359,9 +373,12 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	pfMouseCoord[0] = (float) ((iMousePositionX*
 							(fCamRadius/600))+
 							drawingGLGetTranslateX(pGLData));
-	pfMouseCoord[1] = (float) ((iMousePositionY*
+	pfMouseCoord[1] = (float) ((-1)*(iMousePositionY*
 							(fCamRadius/600))+
 							drawingGLGetTranslateY(pGLData));
+
+	printf("Souris : \n");
+	printf("\t(%f,%f)\n", pfMouseCoord[0],pfMouseCoord[1]);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -422,7 +439,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 	g_ptr_array_add(ppDataArray, pfMouseCoord);					/* [0] */
 	g_ptr_array_add(ppDataArray, (gpointer*) pGLData);			/* [1] */
 	g_ptr_array_add(ppDataArray, pfInvertedTransfertMatrix);	/* [2] */
-	g_ptr_array_add(ppDataArray, &iDistance);					/* [3] */
+	g_ptr_array_add(ppDataArray, &fDistance);					/* [3] */
 	g_ptr_array_add(ppDataArray, pTrackToPlay);					/* [4] */
 
 /* ********************************************************************* */
@@ -1429,7 +1446,8 @@ int on_Stellarium_DrawingArea_expose_event (
 	{
 		drawingGLDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA],
 						preferencesGet3DQuality(
-								(Preferences*) pData[PREFERENCES]));
+								(Preferences*) pData[PREFERENCES]),
+						0/*FALSE*/);
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
@@ -1437,16 +1455,6 @@ int on_Stellarium_DrawingArea_expose_event (
 	return EXIT_SUCCESS;
 }
 
-
-int on_Stellarium_DrawingArea_key_press_event(
-							GtkWidget * psWidget,
-							GdkEventKey * psEvent,
-							gpointer * pData)
-{
-	printf("Si possible, ne pas utiliser, c'est pas intuitif...\n");
-
-	return EXIT_SUCCESS;
-}
 
 int on_Stellarium_DrawingArea_button_release_event (
 								GtkWidget * psWidget,

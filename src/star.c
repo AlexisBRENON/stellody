@@ -64,12 +64,12 @@ int starCreate(Star * pStar,
 
 	/* Vérifie que l'analyse a bien été faite. */
 	iAnalyzed = (int) analyzedTrackGetAnalyzed(pTrack) ;
-	
+
 	if (iAnalyzed == 1)
 	{
 		/* Vérifie que la position n'est pas déjà calculée. */
 		pfCoord = analyzedTrackGetCoord(pTrack) ;
-		
+
 		if (pfCoord[0] == 0 && pfCoord[1] == 0 && pfCoord[2] == 0)
 		{
 			/* Si non, calcul et attribution des coordonnées. */
@@ -213,7 +213,7 @@ int starCreate(Star * pStar,
 		else
 		{
 			pStar->fSize = (float) uiSize/1050000.0f ;
-		}		
+		}
 
 		/* Définition des couleurs. */
 
