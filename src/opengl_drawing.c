@@ -1681,66 +1681,66 @@ static void drawGrid()
 {
     int i = 0 ;
     glLineWidth(1) ;
-	
+
     glPushMatrix() ;
     glTranslatef( -10, 0, -10) ;
 	glColor3f(1, 0, 0) ;
     glBegin(GL_LINES) ;
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(i, 0, 0) ;
         glVertex3f(i, 0, 20) ;
     }
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(0, 0, i) ;
         glVertex3f(20, 0, i) ;
     }
-	
+
     glEnd() ;
     glPopMatrix() ;
-	
+
     glPushMatrix() ;
 	glRotatef(90, 1, 0, 0) ;
     glTranslatef(-10, 0, -10) ;
 	glColor3f(0, 1, 0) ;
     glBegin(GL_LINES) ;
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(i, 0, 0) ;
         glVertex3f(i, 0, 20) ;
     }
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(0, 0, i) ;
         glVertex3f(20, 0, i) ;
     }
-	
+
     glEnd() ;
     glPopMatrix() ;
-	
+
     glPushMatrix() ;
 	glRotatef(90, 0, 0, 1) ;
     glTranslatef(-10, 0, -10) ;
 	glColor3f(0, 0, 1) ;
     glBegin(GL_LINES) ;
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(i, 0, 0) ;
         glVertex3f(i, 0, 20) ;
     }
-	
+
     for (i = 0 ; i <= 20 ; i+=2)
     {
         glVertex3f(0, 0, i) ;
         glVertex3f(20, 0, i) ;
     }
-	
+
     glEnd() ;
     glPopMatrix() ;
 }
@@ -1857,7 +1857,7 @@ static gboolean drawStellarium(int * piKey,
 	Star sStar ;
 	/* Vérifie que l'analyse a bien été faite. */
 	iAnalyzed = (int) analyzedTrackGetAnalyzed(pTrack) ;
-	
+
 	if (iAnalyzed == 1)
 	{
 		starCreate(& sStar, pTrack, pData->psExistingStars) ;
@@ -1870,7 +1870,7 @@ static gboolean drawStellarium(int * piKey,
 		drawStar(& sStar, pData->iPrecision) ;
 		glPopMatrix() ;
 	}
-	
+
 	return FALSE ;
 }
 
@@ -1884,7 +1884,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 		(void) glRenderMode (GL_SELECT) ;
 		glInitNames() ;
 	}
-	
+
 	if (pData->pPlayedTrack != NULL)
 	{
 		starCreate(& sSelectedStar,
@@ -1894,10 +1894,10 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	}
 
 	glDisable(GL_LIGHTING) ;
-	
+
 	drawGrid() ;
 	drawCubeMap(pData) ;
-	
+
 	glPushMatrix() ;
 	glScalef(2, 2, 2) ;
 	glColor3f(1, 1, 1) ;
@@ -2442,6 +2442,61 @@ int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 	/* Fin des dessins. */
 
 	return EXIT_SUCCESS;
+}
+
+
+int drawingGLSelect (int iX, int iY, OpenGLData* pData,
+					AnalyzedTracks* pTracks, int iPrecision,
+					GdkGLDrawable* psSurface)
+{
+	GLuint buff[64] = {0};
+ 	GLint hits, view[4];
+ 	int i;
+
+ 	glSelectBuffer(64, buff);
+ 	glGetIntegerv(GL_VIEWPORT, view);
+
+ 	glRenderMode(GL_SELECT);
+
+ 	glInitNames();
+ 	glPushName(0);
+
+ 	glMatrixMode(GL_PROJECTION);
+ 	glPushMatrix();
+ 		glLoadIdentity();
+
+ 		gluPickMatrix(iX, iY, 1.0, 1.0, view);
+ 		gluPerspective(45,
+				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
+				   0.001, 100000);
+
+
+ 		glMatrixMode(GL_MODELVIEW);
+
+		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
+ 		drawingGLDraw(pTracks, pData, iPrecision, 1 /* TRUE */);
+
+ 		glMatrixMode(GL_PROJECTION);
+ 	glPopMatrix();
+
+ 	hits = glRenderMode(GL_RENDER);
+
+ 	for (i=0; i<hits; i++)
+ 	{
+ 		printf("Number: %d\n"
+ 				"Min Z: %d\n"
+ 				"Max Z: %d\n"
+ 				"Name on stack: %d\n",
+ 				(int)buff[i * 4],
+ 				(int)buff[i * 4 + 1],
+ 				(int)buff[i * 4 + 2],
+ 				(int)buff[i * 4 + 3]
+ 				);
+ 	}
+
+ 	glMatrixMode(GL_MODELVIEW);
+
+ 	return (int) buff[3]; /* Name of the object */
 }
 
 
