@@ -1,105 +1,105 @@
 
-[data/Musics/Did You Get It.mp3]
-iTID=1
-bAnalyzed=1
-strPath=data/Musics/Did You Get It.mp3
-uiLength=164937
-fAverage=123.23618316650391
-fBass=0.17318089306354523
-fMedium=0.18887178599834442
-fTreble=0.6379472017288208
-fCoordX=3
-fCoordY=0
-fCoordZ=0
-
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3]
-iTID=2
+iTID=0
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3
 uiLength=164937
-fAverage=435.96453857421875
-fBass=0.63728052377700806
-fMedium=0.19041059911251068
-fTreble=0.1723090261220932
-fCoordX=27
-fCoordY=-61
-fCoordZ=-65
+fAverage=100.70913696289062
+fBass=0.68083173036575317
+fMedium=0.20649775862693787
+fTreble=0.11267135292291641
+fCoordX=9
+fCoordY=-14
+fCoordZ=-19
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3]
-iTID=3
+iTID=1
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3
 uiLength=223111
-fAverage=74.463211059570312
-fBass=0.41506484150886536
-fMedium=0.099361889064311981
-fTreble=0.059767041355371475
-fCoordX=-16
-fCoordY=-80
-fCoordZ=-88
+fAverage=145.87008666992188
+fBass=0.40293791890144348
+fMedium=0.091816142201423645
+fTreble=0.079439207911491394
+fCoordX=-4
+fCoordY=-20
+fCoordZ=-21
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
-iTID=4
+iTID=2
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
 uiLength=271464
-fAverage=232.95008850097656
-fBass=0.24043229222297668
-fMedium=0.13953712582588196
-fTreble=0.029121523723006248
-fCoordX=-51
-fCoordY=-72
-fCoordZ=-94
+fAverage=128.87294006347656
+fBass=0.28260323405265808
+fMedium=0.09614262729883194
+fTreble=0.030344890430569649
+fCoordX=-10
+fCoordY=-20
+fCoordZ=-23
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3]
-iTID=5
+iTID=3
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3
 uiLength=125466
-fAverage=38.281253814697266
-fBass=0.12826433777809143
-fMedium=0.020577659830451012
-fTreble=0.0098881013691425323
-fCoordX=-74
-fCoordY=-95
-fCoordZ=-98
+fAverage=58.7890625
+fBass=0.10844377428293228
+fMedium=0.034713994711637497
+fTreble=0.015572380274534225
+fCoordX=-19
+fCoordY=-23
+fCoordZ=-24
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3]
-iTID=6
+iTID=4
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3
 uiLength=228466
-fAverage=51.743179321289062
-fBass=0.13066162168979645
-fMedium=0.051188770681619644
-fTreble=0.041736725717782974
-fCoordX=-73
-fCoordY=-89
-fCoordZ=-91
+fAverage=40.421051025390625
+fBass=0.14761431515216827
+fMedium=0.041727121919393539
+fTreble=0.034245766699314117
+fCoordX=-17
+fCoordY=-22
+fCoordZ=-23
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3]
-iTID=7
+iTID=5
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3
 uiLength=230034
-fAverage=29.285158157348633
-fBass=0.11517468094825745
-fMedium=0.045117940753698349
-fTreble=0.023707496002316475
-fCoordX=-76
-fCoordY=-90
-fCoordZ=-95
+fAverage=30.146484375
+fBass=0.12787184119224548
+fMedium=0.034726493060588837
+fTreble=0.021401625126600266
+fCoordX=-18
+fCoordY=-23
+fCoordZ=-23
 
 [/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3]
-iTID=8
+iTID=6
 bAnalyzed=1
 strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3
 uiLength=210677
-fAverage=27.533050537109375
-fBass=0.1210591122508049
-fMedium=0.018764158710837364
-fTreble=0.0037664442788809538
-fCoordX=-75
-fCoordY=-96
-fCoordZ=-99
+fAverage=57.569095611572266
+fBass=0.095904164016246796
+fMedium=0.034466609358787537
+fTreble=0.01321899238973856
+fCoordX=-20
+fCoordY=-23
+fCoordZ=-24
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Eric Johnson, Joe Satriani, Steve Vaï.._/Inconnu/Jimmy Hendrix Tribute.mp3]
+iTID=7
+bAnalyzed=1
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Eric Johnson, Joe Satriani, Steve Vaï.._/Inconnu/Jimmy Hendrix Tribute.mp3
+uiLength=294687
+fAverage=302.20101928710938
+fBass=0.70078814029693604
+fMedium=0.18468852341175079
+fTreble=0.1145239844918251
+fCoordX=6
+fCoordY=-9
+fCoordZ=-11
 
