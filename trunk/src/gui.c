@@ -438,7 +438,7 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	return g_ptr_array_index(ppDataArray, 2);
+	return g_ptr_array_index(ppDataArray, 4);
 }
 
 
@@ -1481,7 +1481,7 @@ int on_Stellarium_DrawingArea_button_release_event (
 		case GDK_BUTTON_RELEASE: /* Si on relache un bouton */
 			if (((GdkEventButton*)psEvent)->button == 1)
 			{
-				AnalyzedTrack* pTrackToPlay;
+				AnalyzedTrack* pTrackToPlay = NULL;
 				pTrackToPlay = guiPlayTrackFromStellarium(
 								(AnalyzedTracks*) pData[ANALYZED_TRACKS],
 								((GdkEventButton*)psEvent)->x,
