@@ -1,92 +1,92 @@
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Privet.mp3]
 iTID=0
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3
-uiLength=164937
-fAverage=164.31488037109375
-fBass=0.6102752685546875
-fMedium=0.16032873094081879
-fTreble=0.22939617931842804
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Privet.mp3
+uiLength=228466
+fAverage=63.88970947265625
+fBass=0.63113784790039062
+fMedium=0.18146988749504089
+fTreble=0.18739223480224609
 fCoordX=3
-fCoordY=-5
-fCoordZ=-1
+fCoordY=-4
+fCoordZ=-3
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/people.mp3]
 iTID=1
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3
-uiLength=223111
-fAverage=42.510711669921875
-fBass=0.80946415662765503
-fMedium=0.064189329743385315
-fTreble=0.054565731436014175
-fCoordX=9
-fCoordY=-11
-fCoordZ=-11
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/people.mp3
+uiLength=125466
+fAverage=36.394145965576172
+fBass=0.88635903596878052
+fMedium=0.030996015295386314
+fTreble=0.0121687026694417
+fCoordX=11
+fCoordY=-13
+fCoordZ=-14
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3]
 iTID=2
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
-uiLength=271464
-fAverage=106.85036468505859
-fBass=0.74749112129211426
-fMedium=0.097637325525283813
-fTreble=0.023377828299999237
-fCoordX=7
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Dropping out of School.mp3
+uiLength=223111
+fAverage=62.000778198242188
+fBass=0.64436280727386475
+fMedium=0.092061199247837067
+fTreble=0.080588333308696747
+fCoordX=4
 fCoordY=-9
-fCoordZ=-13
+fCoordZ=-10
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3]
 iTID=3
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/people.mp3
-uiLength=125466
-fAverage=32.40234375
-fBass=0.71465319395065308
-fMedium=0.039594791829586029
-fTreble=0.01975850947201252
-fCoordX=6
-fCoordY=-12
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Kachkin - People need People album version.mp3
+uiLength=271464
+fAverage=108.1080322265625
+fBass=0.74245202541351318
+fMedium=0.079762235283851624
+fTreble=0.018905222415924072
+fCoordX=7
+fCoordY=-10
 fCoordZ=-13
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3]
 iTID=4
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Privet.mp3
-uiLength=228466
-fAverage=22.538431167602539
-fBass=0.63486343622207642
-fMedium=0.058698631823062897
-fTreble=0.053989559412002563
-fCoordX=4
-fCoordY=-11
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Did You Get It.mp3
+uiLength=164937
+fAverage=74.599044799804688
+fBass=0.61709636449813843
+fMedium=0.038714893162250519
+fTreble=0.050518527626991272
+fCoordX=3
+fCoordY=-12
 fCoordZ=-11
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3]
 iTID=5
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Push On.mp3
-uiLength=230034
-fAverage=33.400188446044922
-fBass=0.69957518577575684
-fMedium=0.043136443942785263
-fTreble=0.029081834480166435
-fCoordX=5
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3
+uiLength=210677
+fAverage=57.684482574462891
+fBass=0.76230961084365845
+fMedium=0.039210356771945953
+fTreble=0.011225544847548008
+fCoordX=7
 fCoordY=-12
-fCoordZ=-13
+fCoordZ=-14
 
-[/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3]
+[/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Push On.mp3]
 iTID=6
 bAnalyzed=1
-strPath=/Users/Matthieu/Documents/Cours/Semestre 4/LIF7/Projet/stellody/data/Musics/Stories from Emona I.mp3
-uiLength=210677
-fAverage=43.803836822509766
-fBass=0.62387573719024658
-fMedium=0.056768108159303665
-fTreble=0.02242373488843441
-fCoordX=3
-fCoordY=-11
+strPath=/home/alexis/FAC/S4/LIF7/Projet/stellody/data/Musics/Push On.mp3
+uiLength=230034
+fAverage=38.641769409179688
+fBass=0.67273843288421631
+fMedium=0.044578298926353455
+fTreble=0.025449063628911972
+fCoordX=5
+fCoordY=-12
 fCoordZ=-13
 

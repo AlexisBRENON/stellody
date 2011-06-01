@@ -459,6 +459,54 @@ static AnalyzedTrack* guiPlayTrackFromStellarium (
 }
 
 
+static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
+								AnalyzedTrack* pTrack,
+								gpointer* pData)
+{
+	GtkWidget* psPlayListBox = NULL;
+	GtkWidget* psTrackLabel = NULL;
+	char* strTrackPath = NULL;
+	char* strTrackName = NULL;
+	int* piTID = NULL;
+
+	if (pData[PLAYLIST] == NULL)
+	{
+		on_Stop_Action_activate(NULL, pData);
+		guiPlayTrack(pTrack,
+					GTK_BUILDER(pData[MAIN_BUILDER]),
+					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+					(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
+					(OpenGLData*) pData[OPENGLDATA]);
+
+		g_timeout_add_seconds(1,
+					(GSourceFunc) guiTrackScaleIncrement,
+					pData);
+	}
+
+	pData[PLAYLIST] = g_list_append((GList*) pData[PLAYLIST], pTrack);
+
+	strTrackPath = analyzedTrackGetPath(pTrack);
+	strTrackName = strrchr(strTrackPath, '/');
+	psTrackLabel = gtk_label_new(&(strTrackName[1]));
+
+	piTID = (int*) malloc(sizeof(int));
+	*piTID = analyzedTrackGetTID(pTrack);
+	g_object_set_data(G_OBJECT(psTrackLabel),
+					"TID", piTID);
+
+	psPlayListBox = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
+													"PlayList_Box"));
+
+	gtk_box_pack_start(GTK_BOX(psPlayListBox), psTrackLabel,
+						FALSE, FALSE, 0);
+
+	g_signal_connect(psTrackLabel, "button-release-event",
+					G_CALLBACK(on_PlayList_button_release_event), pData);
+
+	gtk_widget_show_all(psPlayListBox);
+
+	return EXIT_SUCCESS;
+}
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -976,8 +1024,7 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		pTrack = ((AnalyzedTrack*) (g_list_first(
 									(GList*)pData[PLAYLIST]))->data);
 
-		pData[PLAYLIST] = g_list_remove((GList*)pData[PLAYLIST], pTrack);
-		pData[PLAYLIST] = g_list_append((GList*)pData[PLAYLIST], pTrack);
+		pData[PLAYLIST] = g_list_next((GList*)pData[PLAYLIST]);
 	}
 	else
 	{
@@ -1045,7 +1092,48 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 	return EXIT_SUCCESS;
 }
 
+int on_PlayList_button_release_event(GtkWidget* psWidget,
+									GdkEventButton* psEvent,
+									gpointer* pData)
+{
+	int* piTID = NULL;
+	AnalyzedTrack* pTrack = NULL;
 
+	printf("Label Cliqué !\n");
+
+	if (psEvent->button != 1 ||
+		psEvent->type != GDK_2BUTTON_PRESS)
+	{
+		return EXIT_FAILURE;
+	}
+
+	piTID = (int*) g_object_get_data(G_OBJECT(psWidget), "TID");
+	pTrack = g_tree_lookup((GTree*) pData[ANALYZED_TRACKS],
+							piTID);
+
+	if (pTrack == NULL)
+	{
+		GtkContainer* psPlayListBox = NULL;
+
+		psPlayListBox = GTK_CONTAINER(gtk_widget_get_parent(psWidget));
+		gtk_container_remove(psPlayListBox, psWidget);
+		gtk_widget_destroy(psWidget);
+		free(piTID);
+
+		return EXIT_FAILURE;
+	}
+
+	on_Stop_Action_activate(psWidget, pData);
+	guiPlayTrack(pTrack,
+				GTK_BUILDER(pData[MAIN_BUILDER]),
+				(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
+				(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
+				(OpenGLData*) pData[OPENGLDATA]);
+
+	pData[PLAYLIST] = g_list_find((GList*)pData[PLAYLIST], pTrack);
+
+	return EXIT_SUCCESS;
+}
 
 
 
@@ -1492,6 +1580,7 @@ int on_Stellarium_DrawingArea_button_release_event (
 				GdkGLContext * psContext = NULL;
 				GdkGLDrawable * psSurface = NULL;
 				gboolean bActivate = FALSE;
+				AnalyzedTrack* pTrack = NULL;
 
 				psContext = gtk_widget_get_gl_context(psWidget);
 				psSurface = gtk_widget_get_gl_drawable(psWidget);
@@ -1509,7 +1598,14 @@ int on_Stellarium_DrawingArea_button_release_event (
 					gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 				}
 
-				printf ("iTID = %d\n", iTID);
+				if (iTID > 0)
+				{
+					pTrack = g_tree_lookup(pData[ANALYZED_TRACKS], &iTID);
+
+					guiAddTrackToPlaylist(GTK_BUILDER(pData[MAIN_BUILDER]),
+											pTrack,
+											pData);
+				}
 			}
 			break;
 		default:
