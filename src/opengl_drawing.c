@@ -1677,73 +1677,6 @@ static void drawAWing(int Armes)
 	glPopMatrix() ;
 }
 
-static void drawGrid()
-{
-    int i = 0 ;
-    glLineWidth(1) ;
-
-    glPushMatrix() ;
-    glTranslatef( -10, 0, -10) ;
-	glColor3f(1, 0, 0) ;
-    glBegin(GL_LINES) ;
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(i, 0, 0) ;
-        glVertex3f(i, 0, 20) ;
-    }
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(0, 0, i) ;
-        glVertex3f(20, 0, i) ;
-    }
-
-    glEnd() ;
-    glPopMatrix() ;
-
-    glPushMatrix() ;
-	glRotatef(90, 1, 0, 0) ;
-    glTranslatef(-10, 0, -10) ;
-	glColor3f(0, 1, 0) ;
-    glBegin(GL_LINES) ;
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(i, 0, 0) ;
-        glVertex3f(i, 0, 20) ;
-    }
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(0, 0, i) ;
-        glVertex3f(20, 0, i) ;
-    }
-
-    glEnd() ;
-    glPopMatrix() ;
-
-    glPushMatrix() ;
-	glRotatef(90, 0, 0, 1) ;
-    glTranslatef(-10, 0, -10) ;
-	glColor3f(0, 0, 1) ;
-    glBegin(GL_LINES) ;
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(i, 0, 0) ;
-        glVertex3f(i, 0, 20) ;
-    }
-
-    for (i = 0 ; i <= 20 ; i+=2)
-    {
-        glVertex3f(0, 0, i) ;
-        glVertex3f(20, 0, i) ;
-    }
-
-    glEnd() ;
-    glPopMatrix() ;
-}
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -1895,14 +1828,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	glDisable(GL_LIGHTING) ;
 
-	drawGrid() ;
 	drawCubeMap(pData) ;
-
-	glPushMatrix() ;
-	glScalef(2, 2, 2) ;
-	glColor3f(1, 1, 1) ;
-	drawSphere(pData->iPrecision) ;
-	glPopMatrix() ;
 
 	glEnable(GL_LIGHTING) ;
 
@@ -2110,7 +2036,7 @@ int drawingGLRotate (OpenGLData* pData,
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 0.01) pData->fRadius = 0.01 ;
+	if (pData->fRadius < 0.1) pData->fRadius = 0.1 ;
 	if (pData->fRadius > 45) pData->fRadius = 45 ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
@@ -2134,9 +2060,9 @@ int drawingGLZoom (OpenGLData* pData,
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 0.01)
+	if (pData->fRadius < 0.1)
 	{
-		pData->fRadius = 0.01 ;
+		pData->fRadius = 0.1 ;
 	}
 	else if (pData->fRadius > 45)
 	{
@@ -2405,12 +2331,95 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 	return EXIT_SUCCESS ;
 }
 
+int drawingGLSelect (int iX, int iY, OpenGLData* pData,
+					  AnalyzedTracks* pTracks)
+{	
+	GLuint uiBuffer[64] = {0} ;
+ 	GLint iNbHits = 0 ;
+ 	GLint piViewport[4] = {0} ;
+ 	GLuint *ptr = NULL ;
+ 	int iRet = -1 ;
+	
+	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
+	
+ 	glSelectBuffer(64, uiBuffer) ;
+ 	glGetIntegerv(GL_VIEWPORT, piViewport) ;
+	
+ 	glRenderMode(GL_SELECT) ;
+	
+ 	glInitNames() ;
+ 	glPushName(0) ;
+			
+ 	glMatrixMode(GL_PROJECTION) ;
+	
+	glPushMatrix() ;
+	
+	glLoadIdentity() ;
+	gluPickMatrix((GLdouble) iX,
+				  -1 * (GLdouble) iY + (pData->iHeight),
+				  10.0, 10.0, piViewport);
+	gluPerspective(45,
+				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
+				   0.001, 100000) ;
+
+	glMatrixMode(GL_MODELVIEW) ;
+	glLoadIdentity();
+	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
+			  + pData->fTranslateX,
+			  pData->fRadius * sin(pData->fAlpha)
+			  + pData->fTranslateY,
+			  pData->fRadius * cos(pData->fAlpha) * -1*sin(pData->fBeta)
+			  + pData->fTranslateZ,
+			  pData->fCenterX,
+			  pData->fCenterY,
+			  pData->fCenterZ,
+			  0, 1, 0) ;
+			
+	pData->bPicking = 1 ;
+	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
+	pData->bPicking = 0 ;
+			
+	glMatrixMode(GL_PROJECTION) ;
+	
+	glPopMatrix() ;
+
+	glMatrixMode(GL_MODELVIEW);
+
+ 	glFlush();
+	glPopName() ;
+	
+	ptr = (GLuint*) uiBuffer;
+
+	
+ 	iNbHits = glRenderMode(GL_RENDER) ;
+	if (iNbHits == 1)
+	{
+		iRet = (int) ptr[3] ;
+	}
+	/*
+	printf("Hits : %d\n", iNbHits);
+	
+ 	for (i = 0; i < iNbHits; i++)
+ 	{
+ 		printf("Number: %d\n"
+			   "Min Z: %d\n"
+			   "Max Z: %d\n"
+			   "Name on stack: %d\n",
+			   (int)ptr[0],
+			   (float)ptr[1] / 0x7fffffff,
+			   (float)ptr[2] / 0x7fffffff,
+			   (int)ptr[3]
+			   ) ;
+ 	}
+	*/
+	g_ptr_array_free(pData->psExistingStars, TRUE) ;
+	pData->psExistingStars = NULL ;
+ 	return iRet ;
+}
 
 int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
-					int iPrecision, int bPicking)
+					int iPrecision)
 {
-	pData->bPicking = bPicking ;
-
 	/* Gestion de la vision. */
 
 	drawingGLMoveDirection(pData) ;
@@ -2442,68 +2451,6 @@ int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 	/* Fin des dessins. */
 
 	return EXIT_SUCCESS;
-}
-
-
-int drawingGLSelect (int iX, int iY, OpenGLData* pData,
-					AnalyzedTracks* pTracks, int iPrecision,
-					GdkGLDrawable* psSurface)
-{
-	GLuint uiBuffer[64] = {0};
- 	GLint iNbHits = 0;
- 	GLint piViewport[4] = {0};
- 	GLuint *ptr = NULL;
- 	int i = 0;
-
- 	glSelectBuffer(64, uiBuffer);
- 	glGetIntegerv(GL_VIEWPORT, piViewport);
-
- 	glRenderMode(GL_SELECT);
-
- 	glInitNames();
- 	glPushName(0);
-
- 	glMatrixMode(GL_PROJECTION);
- 	glPushMatrix();
- 		glLoadIdentity();
-
- 		gluPickMatrix((GLdouble) iX - (pData->iWidth)/2,
-					(GLdouble) iY-(pData->iHeight)/2,
-					100.0, 100.0, piViewport);
- 		gluPerspective(45,
-				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
-				   0.001, 100000);
- 		glMatrixMode(GL_MODELVIEW);
-
- 		drawingGLDraw(pTracks, pData, iPrecision, TRUE /* TRUE */);
-
- 		glMatrixMode(GL_PROJECTION);
- 	glPopMatrix();
-
- 	glMatrixMode(GL_MODELVIEW);
- 	glFlush();
-
- 	iNbHits = glRenderMode(GL_RENDER);
-
-	ptr = (GLuint*) uiBuffer;
-	printf("Hits : %d\n", iNbHits);
-
- 	for (i = 0; i < iNbHits; i++)
- 	{
- 		printf("Number: %d\n"
- 				"Min Z: %d\n"
- 				"Max Z: %d\n"
- 				"Name on stack: %d\n",
- 				(int)ptr[0],
- 				(int)ptr[1],
- 				(int)ptr[2],
- 				(int)ptr[3]
- 				);
- 	}
-
- 	glMatrixMode(GL_MODELVIEW);
-
- 	return (int) ptr[3]; /* Name of the object */
 }
 
 

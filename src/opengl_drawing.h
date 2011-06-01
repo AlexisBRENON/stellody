@@ -151,6 +151,19 @@ int drawingGLInit (OpenGLData* pData) ;
 int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
 
 /**
+ * @fn int drawingGLSelect (int iX, int iY, OpenGLData* pData, AnalyzedTracks* pTracks)
+ * @brief Renvoie le TID de l'étoile selectionné par un clic souris..
+ *
+ * @param[in] iX Position de la souris en X
+ * @param[in] iY Position de la souris en Y
+ * @param[in,out] pData Données OpenGL
+ * @param[in, out] pTracks Données des chansons
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingGLSelect (int iX, int iY, OpenGLData* pData,
+					 AnalyzedTracks* pTracks) ;
+
+/**
   * @fn int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
   * @brief Rafraichit la scene.
   *
@@ -159,13 +172,8 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
   * @param[in] iPrecision Precision des dessins
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision,
-					int bPicking) ;
+int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
 
-
-int drawingGLSelect (int iX, int iY, OpenGLData* pData,
-					AnalyzedTracks* pTracks, int iPrecision,
-					GdkGLDrawable* psSurface);
 
 /* ********************************************************************* */
 /*                                                                       */
