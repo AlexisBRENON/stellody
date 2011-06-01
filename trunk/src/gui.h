@@ -184,6 +184,10 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								GdkEventButton* pEvent,
 								gpointer* pData);
 
+int on_PlayList_button_release_event(GtkWidget* psWidget,
+									GdkEventButton* psEvent,
+									gpointer* pData);
+
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
 /* ********************************************************************* */
