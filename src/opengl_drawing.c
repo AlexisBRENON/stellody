@@ -1710,7 +1710,7 @@ static int drawStar(Star * psStar, int iPrecision)
 	assert(psStar != NULL) ;
 
 	glPushMatrix() ;
-	glTranslatef(starGetX(psStar), starGetY(psStar), starGetZ(psStar)) ;
+	glTranslatef((float) starGetX(psStar), (float) starGetY(psStar), (float) starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
 	glColor3f(starGetColourR(psStar),
 			  starGetColourG(psStar),
@@ -1752,7 +1752,7 @@ static void drawCubeMap(OpenGLData * pData)
 	/*
 	glTranslatef(fPosX, fPosY, fPosZ) ;
 	*/
-	glScalef(5000, 5000, 5000) ;
+	glScalef(250, 250, 250) ;
 	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
 	glColor3f(1, 1, 1) ;
 
@@ -1800,7 +1800,9 @@ static gboolean drawStellarium(int * piKey,
 		{
 			glLoadName(analyzedTrackGetTID(pTrack)) ;
 		}
+
 		drawStar(& sStar, pData->iPrecision) ;
+	
 		glPopMatrix() ;
 	}
 
@@ -1812,11 +1814,13 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	Star sSelectedStar ;
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
-	if (pData->bPicking == 1)
-	{
-		(void) glRenderMode (GL_SELECT) ;
-		glInitNames() ;
-	}
+	glDisable(GL_LIGHTING) ;
+
+	drawCubeMap(pData) ;
+
+	glEnable(GL_LIGHTING) ;
+	
+	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	if (pData->pPlayedTrack != NULL)
 	{
@@ -1825,14 +1829,6 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 				   pData->psExistingStars) ;
 		drawSelectedStar(& sSelectedStar) ;
 	}
-
-	glDisable(GL_LIGHTING) ;
-
-	drawCubeMap(pData) ;
-
-	glEnable(GL_LIGHTING) ;
-
-	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
@@ -2019,25 +2015,19 @@ int drawingGLTranslate (OpenGLData* pData,
 	}
 
 	drawingGLUpdateTransfertMatrix(pData) ;
-
+	
 	return EXIT_SUCCESS ;
 }
 
 int drawingGLRotate (OpenGLData* pData,
 				   float fTranslateX,
-				   float fTranslateY,
-				   float fMovedRadius)
+				   float fTranslateY)
 {
 	pData->fAlpha = pData->fAlpha - fTranslateY ;
 	if (pData->fAlpha >= M_PI/2) pData->fAlpha = M_PI/2 - 0.001 ;
 	if (pData->fAlpha <= -M_PI/2) pData->fAlpha = -M_PI/2 + 0.001 ;
 
 	pData->fBeta = pData->fBeta - fTranslateX ;
-
-	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
-
-	if (pData->fRadius < 0.1) pData->fRadius = 0.1 ;
-	if (pData->fRadius > 45) pData->fRadius = 45 ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
 
@@ -2060,13 +2050,13 @@ int drawingGLZoom (OpenGLData* pData,
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 0.1)
+	if (pData->fRadius < 1)
 	{
-		pData->fRadius = 0.1 ;
+		pData->fRadius = 1 ;
 	}
-	else if (pData->fRadius > 45)
+	else if (pData->fRadius > 90)
 	{
-		pData->fRadius = 45 ;
+		pData->fRadius = 90 ;
 	}
 	else
 	{
@@ -2119,7 +2109,7 @@ int drawingGLZoom (OpenGLData* pData,
 
 		drawingGLUpdateTransfertMatrix(pData) ;
 	}
-
+	
 	return EXIT_SUCCESS ;
 }
 
@@ -2131,7 +2121,7 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
 	glLoadIdentity() ;
 	gluPerspective(45,
 				   (GLfloat) iWidth / (GLfloat) iHeight ,
-				   0.001, 100000);
+				   0.001, 1000);
 	glMatrixMode(GL_MODELVIEW) ;
 
 	pData->iWidth = iWidth ;
@@ -2172,7 +2162,7 @@ int drawingGLInit (OpenGLData* pData)
 
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
-	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap1.ppm") ;
+	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap6.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
@@ -2334,6 +2324,7 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 int drawingGLSelect (int iX, int iY, OpenGLData* pData,
 					  AnalyzedTracks* pTracks)
 {	
+	
 	GLuint uiBuffer[64] = {0} ;
  	GLint iNbHits = 0 ;
  	GLint piViewport[4] = {0} ;
@@ -2360,9 +2351,10 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
 				  10.0, 10.0, piViewport);
 	gluPerspective(45,
 				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
-				   0.001, 100000) ;
+				   0.001, 1000) ;
 
 	glMatrixMode(GL_MODELVIEW) ;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
 			  + pData->fTranslateX,
@@ -2396,25 +2388,11 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
 	{
 		iRet = (int) ptr[3] ;
 	}
-	/*
-	printf("Hits : %d\n", iNbHits);
-	
- 	for (i = 0; i < iNbHits; i++)
- 	{
- 		printf("Number: %d\n"
-			   "Min Z: %d\n"
-			   "Max Z: %d\n"
-			   "Name on stack: %d\n",
-			   (int)ptr[0],
-			   (float)ptr[1] / 0x7fffffff,
-			   (float)ptr[2] / 0x7fffffff,
-			   (int)ptr[3]
-			   ) ;
- 	}
-	*/
+
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
- 	return iRet ;
+ 	
+	return iRet ;
 }
 
 int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
@@ -2428,7 +2406,7 @@ int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glLoadIdentity();
+	glLoadIdentity() ;
 	gluLookAt(pData->fRadius * cos(pData->fAlpha) * cos(pData->fBeta)
 			  + pData->fTranslateX,
 			  pData->fRadius * sin(pData->fAlpha)

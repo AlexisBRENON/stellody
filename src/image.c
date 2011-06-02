@@ -109,7 +109,6 @@ int imInitPPM (Image * piImage, const char * pcFileName)
 		}
 	}
 	fclose(fFile);
-	printf("Lecture de l'image %s : ok !\n", pcFileName);
 
 	return EXIT_SUCCESS ;
 }

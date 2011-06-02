@@ -106,7 +106,7 @@ int drawingGLTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY,
  * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
+int drawingGLRotate (OpenGLData* pData, float fTranslateX, float fTranslateY) ;
 
 /**
  * @fn int drawingGLZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
