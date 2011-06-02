@@ -183,9 +183,11 @@ int ImRegressionTest(void)
 	
 	printf("Test de imFree : ");
 	imFree(& iImage) ;
-	assert(imGetDimX(& iImage) == 25) && (imGetDimY(& iImage) == 50) ;
-	assert(imGetDimC(& iImage) == 1) ;
-	assert(imGetData(& iImage) != NULL) ;	printf("ok.\n") ;
+	assert((imGetDimX(& iImage) == 0))
+	&& (imGetDimY(& iImage) == 0)
+	&& (imGetDimC(& iImage) == 0)
+	&& (imGetData(& iImage) == NULL)) ;
+	printf("ok.\n") ;
 	
 	printf("\nTest de regression du module STAR terminé avec succès.\n\n");	
 	
