@@ -1532,8 +1532,8 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGLDraw(pData[ANALYZED_TRACKS], pData[OPENGLDATA],
-						preferencesGet3DQuality(
+		drawingGLDraw(pData[OPENGLDATA], pData[ANALYZED_TRACKS], 
+					  preferencesGet3DQuality(
 								(Preferences*) pData[PREFERENCES]));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
@@ -1590,10 +1590,10 @@ int on_Stellarium_DrawingArea_button_release_event (
 				if (bActivate == TRUE)
 				{
 					iTID = drawingGLSelect(
-						((GdkEventButton*)psEvent)->x,
-						((GdkEventButton*)psEvent)->y,
 						(OpenGLData*) pData[OPENGLDATA],
-						(AnalyzedTracks*) pData[ANALYZED_TRACKS]);
+						(AnalyzedTracks*) pData[ANALYZED_TRACKS],
+						((GdkEventButton*)psEvent)->x,
+						((GdkEventButton*)psEvent)->y);
 
 					gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 					gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */

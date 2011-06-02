@@ -1,8 +1,8 @@
 /**
- * @brief Fichier d'entête du module \em OpenGLDrawing.
+ * @brief Fichier d'implémentation du module \em Star.
  *
  * @author Matthieu VIDAL in STELLODY TEAM
- * @file star.h
+ * @file star.c
  */
 
 
@@ -27,7 +27,7 @@
 
 /* ********************************************************************* */
 /*                                                                       */
-/*            Fonction(s) relative(s) à la structure Star                */
+/*               Fonction relative à la structure Star                   */
 /*                                                                       */
 /* ********************************************************************* */
 
@@ -311,5 +311,35 @@ int starGetZ (const Star * pStar)
 
 int StarRegressionTest(void)
 {
+	star sStar ;
+	printf("\n\nTest de regression du module STAR :\n") ;
+	
+	printf("Test des accesseurs : ");
+	
+	star.fSize = 0.25 ;
+	assert(starGetSize(sStar) == 0.25) ;
+	
+	star.fColourR = 0.25 ;
+	assert(starGetColourR(sStar) == 0.25) ;
+
+	star.fColourG = 0.50 ;
+	assert(starGetColourV(sStar) == 0.50) ;
+
+	star.fColourB = 0.75 ;
+	assert(starGetColourB(sStar) == 0.75) ;
+
+	star.iPositionX = 1 ;
+	assert(starGetX(sStar) == 1) ;
+
+	star.iPositionY = 2 ;
+	assert(starGetY(sStar) == 2) ;
+
+	star.iPositionZ	 = 3 ;
+	assert(starGetZ(sStar) == 3) ;
+	
+	printf("ok.\n") ;
+	
+	printf("\nTest de regression du module STAR terminé avec succès.\n\n");
+	
 	return (0) ;
 }

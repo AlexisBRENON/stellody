@@ -2321,8 +2321,8 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 	return EXIT_SUCCESS ;
 }
 
-int drawingGLSelect (int iX, int iY, OpenGLData* pData,
-					  AnalyzedTracks* pTracks)
+int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
+					 int iX, int iY)
 {	
 	
 	GLuint uiBuffer[64] = {0} ;
@@ -2395,8 +2395,8 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
 	return iRet ;
 }
 
-int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData,
-					int iPrecision)
+int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
+				   int iPrecision)
 {
 	/* Gestion de la vision. */
 

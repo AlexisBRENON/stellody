@@ -160,8 +160,8 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
  * @param[in, out] pTracks Données des chansons
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLSelect (int iX, int iY, OpenGLData* pData,
-					 AnalyzedTracks* pTracks) ;
+int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
+					 int iX, int iY) ;
 
 /**
   * @fn int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
@@ -172,7 +172,7 @@ int drawingGLSelect (int iX, int iY, OpenGLData* pData,
   * @param[in] iPrecision Precision des dessins
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
+int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks, int iPrecision) ;
 
 
 /* ********************************************************************* */
