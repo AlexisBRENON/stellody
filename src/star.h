@@ -71,7 +71,7 @@ typedef struct sStar Star ;
  * @brief Initialise une étoile avec les données issues d'un morceau analysé.
  *
  * @param[in, out] pStar Pointeur sur l'étoile à initialiser.
- * @param[in] pTrack Pointeur sur l'analyse.
+ * @param[in, out] pTrack Pointeur sur l'analyse.
  * @param[in, out] psExistingStars Pointeur sur un arbre contenant toutes les coordonées des étoiles déjà placées.
  * @return 0 si tout s'est bien passé.
  */

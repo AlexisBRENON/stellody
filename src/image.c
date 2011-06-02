@@ -2,7 +2,7 @@
  * @file image.h
  * @brief Fichier d'implémentation du module \em Image.
  *
- * @author Professeurs de LIF7/LIFO41 simplifié/adapté par Matthieu VIDAL in STELLODY TEAM
+ * @author Matthieu VIDAL in STELLODY TEAM
  */
 
 
@@ -166,5 +166,28 @@ const unsigned char * imGetData (const Image * piImage)
 
 int ImRegressionTest(void)
 {
+	Image iImage ;
+	
+	printf("\n\nTest de regression du module STAR :\n") ;
+
+	printf("Test de imInit : ");
+	imInit(& iImage, 25, 50, 1) ;
+	printf("ok.\n") ;
+
+	printf("Test des accesseurs : ");
+	assert((imGetDimX(& iImage) == 25))
+			&& (imGetDimY(& iImage) == 50)
+			&& (imGetDimC(& iImage) == 1)
+			&& (imGetData(& iImage) != NULL)) ;
+	printf("ok.\n") ;
+	
+	printf("Test de imFree : ");
+	imFree(& iImage) ;
+	assert(imGetDimX(& iImage) == 25) && (imGetDimY(& iImage) == 50) ;
+	assert(imGetDimC(& iImage) == 1) ;
+	assert(imGetData(& iImage) != NULL) ;	printf("ok.\n") ;
+	
+	printf("\nTest de regression du module STAR terminé avec succès.\n\n");	
+	
 	return EXIT_SUCCESS ;
 }

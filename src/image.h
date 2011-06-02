@@ -2,9 +2,8 @@
  * @file image.h
  * @brief Fichier d'entête du module \em Image.
  *
- * @author Professeurs de LIF7/LIFO41 simplifié/adapté par Matthieu VIDAL in STELLODY TEAM
+ * @author Matthieu VIDAL in STELLODY TEAM
  */
-
 
 #ifndef IMAGE_H_INCLUDED
 #define IMAGE_H_INCLUDED
@@ -27,9 +26,9 @@
 struct sImage
 {
     unsigned char * pData ; /**< Données de l'image */
-    int iDimX ; /**< Dimension en X de l'image */
-    int iDimY ; /**< Dimension en Y de l'image */
-    int iDimC ; /**< Nombre de couleur de l'image (1 : niveaux de gris, 3 : RGB, 4 : RGBA) */
+    int iDimX ;				/**< Dimension en X de l'image */
+    int iDimY ;				/**< Dimension en Y de l'image */
+    int iDimC ;				/**< Nombre de couleur de l'image (1 : niveaux de gris, 3 : RGB, 4 : RGBA) */
 } ;
 
 /**
