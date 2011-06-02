@@ -81,6 +81,32 @@ int starCreate(Star * pStar,
 		fVal2 = ((pfRate[1] * 2)) ;
 		fVal3 = ((pfRate[2] * 4)) ;
 	
+		
+		/* Définition des couleurs. */
+		
+		pStar->fColourR = fVal1 ;
+		pStar->fColourG = fVal2 ;
+		pStar->fColourB = fVal3 ;
+		
+		
+		/* Définition de la taille. */
+		
+		if (uiSize > 420000)
+		{
+			pStar->fSize = 0.4 ;
+		}
+		else if (uiSize < 105000)
+		{
+			pStar->fSize = 0.1 ;
+		}
+		else
+		{
+			pStar->fSize = (float) uiSize/1050000.0f ;
+		}
+		
+		
+		/* Définition de la position. */
+	
 		/* Vérifie que la position n'est pas déjà calculée. */
 		pfCoord = analyzedTrackGetCoord(pTrack) ;
 
@@ -88,9 +114,11 @@ int starCreate(Star * pStar,
 		{
 			/* Si non, calcul et attribution des coordonnées. */
 			
-			pStar->iPositionX = (int) ((fVal1 * 60) - 30) ;
-			pStar->iPositionY = (int) ((fVal2 * 60) - 30) ;
-			pStar->iPositionZ = (int) ((fVal3 * 60) - 30) ;
+			fTemp = 1.5 * (1 - (pStar->fSize/0.45)*(pStar->fSize/0.45)*(pStar->fSize/0.45)*(pStar->fSize/0.45)) ;
+			
+			pStar->iPositionX = (int) (((fVal1 * fTemp * 30) - 15)) ;
+			pStar->iPositionY = (int) (((fVal2 * fTemp * 30) - 15)) ;
+			pStar->iPositionZ = (int) (((fVal3 * fTemp * 30) - 15)) ;
 			
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
@@ -212,28 +240,6 @@ int starCreate(Star * pStar,
 		pfTemp[2] = pStar->iPositionZ ;
 
 		g_ptr_array_add(psExistingStars, pfTemp) ;
-
-
-		/* Définition de la taille. */
-
-		if (uiSize > 420000)
-		{
-			pStar->fSize = 0.4 ;
-		}
-		else if (uiSize < 105000)
-		{
-			pStar->fSize = 0.1 ;
-		}
-		else
-		{
-			pStar->fSize = (float) uiSize/1050000.0f ;
-		}
-
-		/* Définition des couleurs. */
-
-		pStar->fColourR = fVal1 ;
-		pStar->fColourG = fVal2 ;
-		pStar->fColourB = fVal3 ;
 	}
 	
 	return (0) ;
