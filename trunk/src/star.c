@@ -40,10 +40,13 @@ int starCreate(Star * pStar,
 	int iArraySize = 0 ;
 	int iAnalyzed = 0 ;
 	unsigned int uiSize = 0 ;
-	float fAverage = 0 ;
+	float fTemp = 0 ;
+	float fVal1 = 0 ;
+	float fVal2 = 0 ;
+	float fVal3 = 0 ;
 	float * pfCoord = NULL ;
 	float * pfRate = NULL;
-	float * fTemp ;
+	float * pfTemp ;
 
 	float fStep = 2*M_PI/64 ;
 	float fAlpha = -M_PI/2 ;
@@ -58,7 +61,6 @@ int starCreate(Star * pStar,
 
 	iArraySize = psExistingStars->len ;
 	uiSize = analyzedTrackGetLength(pTrack) ;
-	fAverage = analyzedTrackGetAverage(pTrack) ;
 
 	/* Définition des coordonnées en fonction de l'analyse. */
 
@@ -67,23 +69,29 @@ int starCreate(Star * pStar,
 
 	if (iAnalyzed == 1)
 	{
+		pfRate = analyzedTrackGetRate(pTrack) ;
+		
+		fTemp = pfRate[0] + pfRate[1] + pfRate[2] ;
+		
+		pfRate[0] = pfRate[0]/fTemp ;
+		pfRate[1] = pfRate[1]/fTemp ;
+		pfRate[2] = pfRate[2]/fTemp ;
+		
+		fVal1 = (((pfRate[0] - 0.40) / 0.60)) ;
+		fVal2 = ((pfRate[1] * 2)) ;
+		fVal3 = ((pfRate[2] * 4)) ;
+	
 		/* Vérifie que la position n'est pas déjà calculée. */
 		pfCoord = analyzedTrackGetCoord(pTrack) ;
 
 		if (pfCoord[0] == 0 && pfCoord[1] == 0 && pfCoord[2] == 0)
 		{
 			/* Si non, calcul et attribution des coordonnées. */
-
-			pfRate = analyzedTrackGetRate(pTrack) ;
-
-			pfRate[0] = pfRate[0]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
-			pfRate[1] = pfRate[1]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
-			pfRate[2] = pfRate[2]/(pfRate[0] + pfRate[1] + pfRate[2]) ;
 			
-			pStar->iPositionX = pfRate[0]*30 - 15 ;
-			pStar->iPositionY = pfRate[1]*2*30 - 15 ;
-			pStar->iPositionZ = pfRate[2]*2*30 - 15 ;
-
+			pStar->iPositionX = (int) ((fVal1 * 60) - 30) ;
+			pStar->iPositionY = (int) ((fVal2 * 60) - 30) ;
+			pStar->iPositionZ = (int) ((fVal3 * 60) - 30) ;
+			
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
 
@@ -95,6 +103,8 @@ int starCreate(Star * pStar,
 			while (iTest == 0)
 			{
 				iTest = 1 ; /* A priori, après ces tests, la vérification ne sera pas à refaire. */
+				
+				/* Si c'est la première étoile à être placée. */
 				if (iArraySize == 0)
 				{
 					/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
@@ -134,13 +144,13 @@ int starCreate(Star * pStar,
 					(puisque que de toutes façons, il faudra refaire le test depuis le début).*/
 					for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
 					{
-						fTemp = g_ptr_array_index(psExistingStars, i) ;
+						pfTemp = g_ptr_array_index(psExistingStars, i) ;
 
 						/*Boucle tant que les coordonnées sont prises
 						ou tant qu'elles sont trop proche du bulbe central. */
-						while ((pStar->iPositionX == fTemp[0] &&
-								pStar->iPositionY == fTemp[1] &&
-								pStar->iPositionZ == fTemp[2])
+						while ((pStar->iPositionX == pfTemp[0] &&
+								pStar->iPositionY == pfTemp[1] &&
+								pStar->iPositionZ == pfTemp[2])
 							   ||
 							   (pStar->iPositionX < 3 && pStar->iPositionX > -3 &&
 								pStar->iPositionY < 3 && pStar->iPositionY > -3 &&
@@ -196,12 +206,12 @@ int starCreate(Star * pStar,
 
 		/* Ajoute les nouvelles coordonnées aux données existantes. */
 
-		fTemp = (float *) malloc(3*sizeof(float)) ;
-		fTemp[0] = pStar->iPositionX ;
-		fTemp[1] = pStar->iPositionY ;
-		fTemp[2] = pStar->iPositionZ ;
+		pfTemp = (float *) malloc(3*sizeof(float)) ;
+		pfTemp[0] = pStar->iPositionX ;
+		pfTemp[1] = pStar->iPositionY ;
+		pfTemp[2] = pStar->iPositionZ ;
 
-		g_ptr_array_add(psExistingStars, fTemp) ;
+		g_ptr_array_add(psExistingStars, pfTemp) ;
 
 
 		/* Définition de la taille. */
@@ -221,14 +231,11 @@ int starCreate(Star * pStar,
 
 		/* Définition des couleurs. */
 
-		pfRate = analyzedTrackGetRate(pTrack);
-
-		pStar->fColourR = 1 - pfRate[2] ;
-
-		pStar->fColourG = 1 - pfRate[1] ;
-
-		pStar->fColourB = 1 - pfRate[0] ;
+		pStar->fColourR = fVal1 ;
+		pStar->fColourG = fVal2 ;
+		pStar->fColourB = fVal3 ;
 	}
+	
 	return (0) ;
 }
 

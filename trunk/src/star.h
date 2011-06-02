@@ -125,7 +125,7 @@ float starGetColourB (const Star * pStar) ;
  * @brief Accesseur de la position x d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
- * @return fPositionX de l'étoile
+ * @return iPositionX de l'étoile
  */
 int starGetX (const Star * pStar) ;
 
@@ -134,7 +134,7 @@ int starGetX (const Star * pStar) ;
  * @brief Accesseur de la position y d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
- * @return fPositionY de l'étoile
+ * @return iPositionY de l'étoile
  */
 int starGetY (const Star * pStar) ;
 
@@ -143,7 +143,7 @@ int starGetY (const Star * pStar) ;
  * @brief Accesseur de la position z d'une étoile.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
- * @return fPositionZ de l'étoile
+ * @return iPositionZ de l'étoile
  */
 int starGetZ (const Star * pStar) ;
 

@@ -1557,17 +1557,17 @@ int on_Stellarium_DrawingArea_button_release_event (
 			{
 				case GDK_SCROLL_UP:
 					drawingGLZoom(pData[OPENGLDATA],
-								(*(float*) pData[MOUSEPOSITION_X]),
-								(*(float*) pData[MOUSEPOSITION_Y]),
-								0.1);
+								  (*(float*) pData[MOUSEPOSITION_X]),
+								  (*(float*) pData[MOUSEPOSITION_Y]),
+								  0.1);
 					break;
 				case GDK_SCROLL_DOWN:
 					gtk_widget_get_allocation(psWidget,
 												&sAllocation);
 					drawingGLZoom(pData[OPENGLDATA],
-				sAllocation.width - (*(float*) pData[MOUSEPOSITION_X]),
-				sAllocation.height - (*(float*) pData[MOUSEPOSITION_Y]),
-							-0.1);
+								  sAllocation.width - (*(float*) pData[MOUSEPOSITION_X]),
+								  sAllocation.height - (*(float*) pData[MOUSEPOSITION_Y]),
+								  -0.1);
 					break;
 				default:
 					break;
@@ -1595,10 +1595,11 @@ int on_Stellarium_DrawingArea_button_release_event (
 						(OpenGLData*) pData[OPENGLDATA],
 						(AnalyzedTracks*) pData[ANALYZED_TRACKS]);
 
+					gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 					gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 				}
 
-				if (iTID > 0)
+				if (iTID >= 0)
 				{
 					pTrack = g_tree_lookup(pData[ANALYZED_TRACKS], &iTID);
 
@@ -1628,7 +1629,7 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
 		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
 
-		drawingGLRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20, 0);
+		drawingGLRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20);
 	}
 	else if (((psEvent->state)>>8)%2 == 1)
 	{
