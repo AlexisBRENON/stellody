@@ -175,7 +175,7 @@ int ImRegressionTest(void)
 	printf("ok.\n") ;
 
 	printf("Test des accesseurs : ");
-	assert((imGetDimX(& iImage) == 25))
+	assert((imGetDimX(& iImage) == 25)
 			&& (imGetDimY(& iImage) == 50)
 			&& (imGetDimC(& iImage) == 1)
 			&& (imGetData(& iImage) != NULL)) ;
@@ -183,10 +183,10 @@ int ImRegressionTest(void)
 	
 	printf("Test de imFree : ");
 	imFree(& iImage) ;
-	assert((imGetDimX(& iImage) == 0))
-	&& (imGetDimY(& iImage) == 0)
-	&& (imGetDimC(& iImage) == 0)
-	&& (imGetData(& iImage) == NULL)) ;
+	assert((imGetDimX(& iImage) == 0)
+			&& (imGetDimY(& iImage) == 0)
+			&& (imGetDimC(& iImage) == 0)
+			&& (imGetData(& iImage) == NULL)) ;
 	printf("ok.\n") ;
 	
 	printf("\nTest de regression du module STAR terminé avec succès.\n\n");	
