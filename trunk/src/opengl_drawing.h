@@ -46,29 +46,52 @@
  */
 struct sOpenGLData
 {
-	float fRadius ;					/**< Rayon de la sphère de vision de la caméra */
-	float fAlpha ;					/**< Angle de vision latitudinal de la caméra */
-	float fBeta ;					/**< Angle de vision longitudinal de la caméra */
-	float fCenterX ;				/**< Position en x de la direction de la caméra */
-	float fCenterY ;				/**< Position en y de la direction de la caméra */
-	float fCenterZ ;				/**< Position en z de la direction de la caméra */
-	float fTranslateX ;				/**< Translation en x de la caméra */
-	float fTranslateY ;				/**< Translation en y de la caméra */
-	float fTranslateZ ;				/**< Translation en z de la caméra */
-	int iDirectionX ;				/**< Direction en x de la caméra lors d'une translation automatique */
-	int iDirectionY ;				/**< Direction en y de la caméra lors d'une translation automatique */
-	int iDirectionZ ;				/**< Direction en z de la caméra lors d'une translation automatique */
-	float fMoveX ;					/**< Mouvement unitaire en x lors d'une translation automatique */
-	float fMoveY ;					/**< Mouvement unitaire en x lors d'une translation automatique */
-	float fMoveZ ;					/**< Mouvement unitaire en x lors d'une translation automatique */
-	unsigned int uiTexture ;		/**< Numéro de la texture du cubemap */
-	int iWidth ;					/**< Largeur de la fenêtre */
-	int iHeight ;					/**< Hauteur de la fenêtre */
-	int iPrecision ;				/**< Precision choisie en préférence pour la qualité des dessins. */
-	int bPicking ;					/**< Booléen indiquant si on est en picking ou non. */
-	float pfTransfertMatrix[9] ;	/**< Matrice de passage de la base du monde à la base caméra. */
-	AnalyzedTrack * pPlayedTrack ;	/**< Analyse du morceau en train d'être lu. */
-	GPtrArray * psExistingStars ;	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
+	float fRadius ;
+	/**< Rayon de la sphère de vision de la caméra */
+	float fAlpha ;
+	/**< Angle de vision latitudinal de la caméra */
+	float fBeta ;
+	/**< Angle de vision longitudinal de la caméra */
+	float fCenterX ;
+	/**< Position en x de la direction de la caméra */
+	float fCenterY ;
+	/**< Position en y de la direction de la caméra */
+	float fCenterZ ;
+	/**< Position en z de la direction de la caméra */
+	float fTranslateX ;
+	/**< Translation en x de la caméra */
+	float fTranslateY ;
+	/**< Translation en y de la caméra */
+	float fTranslateZ ;
+	/**< Translation en z de la caméra */
+	int iDirectionX ;
+	/**< Direction en x de la caméra lors d'une translation automatique */
+	int iDirectionY ;
+	/**< Direction en y de la caméra lors d'une translation automatique */
+	int iDirectionZ ;
+	/**< Direction en z de la caméra lors d'une translation automatique */
+	float fMoveX ;
+	/**< Mouvement unitaire en x lors d'une translation automatique */
+	float fMoveY ;
+	/**< Mouvement unitaire en x lors d'une translation automatique */
+	float fMoveZ ;
+	/**< Mouvement unitaire en x lors d'une translation automatique */
+	unsigned int uiTexture ;
+	/**< Numéro de la texture du cubemap */
+	int iWidth ;
+	/**< Largeur de la fenêtre */
+	int iHeight ;
+	/**< Hauteur de la fenêtre */
+	int iPrecision ;
+	/**< Precision choisie en préférence pour la qualité des dessins. */
+	int bPicking ;
+	/**< Booléen indiquant si on est en picking ou non. */
+	float pfTransfertMatrix[9] ;
+	/**< Matrice de passage de la base du monde à la base caméra. */
+	AnalyzedTrack * pPlayedTrack ;
+	/**< Analyse du morceau en train d'être lu. */
+	GPtrArray * psExistingStars ;
+	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
 } ;
 
 /**
@@ -80,13 +103,15 @@ typedef struct sOpenGLData OpenGLData;
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                   Fonctions relatives à OpenGL                        */
+/*                     Fonctions générales OpenGL                        */
 /*                                                                       */
 /* ********************************************************************* */
 
 /**
- * @fn int drawingGLTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
- * @brief Permet de gérer le positionnement latitudinal, longitudinal de la caméra ainsi que le zoom.
+ * @fn int drawingGLTranslate (OpenGLData* pData,
+				float fTranslateX, float fTranslateY, float fTranslateZ)
+ * @brief Permet de gérer le positionnement latitudinal,
+ longitudinal de la caméra ainsi que le zoom.
  *
  * @param[in,out] pData Données utilisées par OpenGL
  * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
@@ -94,31 +119,37 @@ typedef struct sOpenGLData OpenGLData;
  * @param[in] fTranslateZ Translation effectuée par l'utilisateur en Z
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLTranslate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fTranslateZ) ;
+int drawingGLTranslate (OpenGLData* pData,
+						float fTranslateX, float fTranslateY, float fTranslateZ) ;
 
 /**
- * @fn int drawingGLRotate (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
- * @brief Permet de gérer le positionnement latitudinal et longitudinal de la caméra.
+ * @fn int drawingGLRotate (OpenGLData* pData,
+							float fTranslateX, float fTranslateY)
+ * @brief Permet de gérer le positionnement latitudinal et longitudinal
+ de la caméra.
  *
  * @param[in,out] pData Données utilisées par OpenGL
  * @param[in] fTranslateX Translation effectuée par l'utilisateur en X
  * @param[in] fTranslateY Translation effectuée par l'utilisateur en Y
- * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLRotate (OpenGLData* pData, float fTranslateX, float fTranslateY) ;
+int drawingGLRotate (OpenGLData* pData,
+					 float fTranslateX, float fTranslateY) ;
 
 /**
- * @fn int drawingGLZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fRadius) ;
+ * @fn int drawingGLZoom (OpenGLData* pData,
+					float fPositionX, float fPositionY, float fMovedRadius)
  * @brief Permet de gérer le lzoomde la caméra.
  *
  * @param[in,out] pData Données utilisées par OpenGL
  * @param[in] fPositionX Position de la souris en X
  * @param[in] fPositionY Position de la souris en Y
- * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur le rayon (zoom)
+ * @param[in] fMovedRadius Modification effectuée par l'utilisateur sur
+ le rayon (zoom)
  * @return EXIT_SUCCESS si tout est OK
  */
-int drawingGLZoom (OpenGLData* pData, float fTranslateX, float fTranslateY, float fMovedRadius) ;
+int drawingGLZoom (OpenGLData* pData,
+				   float fPositionX, float fPositionY, float fMovedRadius) ;
 
 /**
   * @fn int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
@@ -141,7 +172,7 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
 int drawingGLInit (OpenGLData* pData) ;
 
 /**
- * @fn float drawingGLGetRadius(OpenGLData * pData) ;
+ * @fn int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
  * @brief Indique une nouvelle direction de la caméra.
  *
  * @param[in, out] pData Données OpenGL.
@@ -151,20 +182,22 @@ int drawingGLInit (OpenGLData* pData) ;
 int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
 
 /**
- * @fn int drawingGLSelect (int iX, int iY, OpenGLData* pData, AnalyzedTracks* pTracks)
+ * @fn int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
+							int iPositionX, int iPositionY)
  * @brief Renvoie le TID de l'étoile selectionné par un clic souris..
  *
- * @param[in] iX Position de la souris en X
- * @param[in] iY Position de la souris en Y
  * @param[in,out] pData Données OpenGL
- * @param[in, out] pTracks Données des chansons
+ * @param[in,out] pTracks Données des chansons
+ * @param[in] iPositionX Position de la souris en X
+ * @param[in] iPositionY Position de la souris en Y
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
-					 int iX, int iY) ;
+					 int iPositionX, int iPositionY) ;
 
 /**
-  * @fn int drawingGLDraw (AnalyzedTracks * pTracks, OpenGLData * pData, int iPrecision) ;
+ * @fn int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
+						  int iPrecision)
   * @brief Rafraichit la scene.
   *
   * @param[in, out] pTracks Données des chansons
@@ -172,7 +205,8 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
   * @param[in] iPrecision Precision des dessins
   * @return EXIT_SUCCESS si tout est OK
   */
-int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks, int iPrecision) ;
+int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
+				   int iPrecision)
 
 
 /* ********************************************************************* */
@@ -182,7 +216,7 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks, int iPrecision) ;
 /* ********************************************************************* */
 
 /**
- * @fn float drawingGLGetRadius(OpenGLData * pData)
+ * @fn float drawingGLGetRadius(const OpenGLData * pData)
  * @brief Accesseur du rayon de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -209,7 +243,7 @@ float drawingGLGetAlpha(const OpenGLData * pData) ;
 float drawingGLGetBeta(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateX(OpenGLData * pData)
+ * @fn float drawingGLGetCenterX(const OpenGLData * pData)
  * @brief Accesseur de la position en x de la direction de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -218,7 +252,7 @@ float drawingGLGetBeta(const OpenGLData * pData) ;
 float drawingGLGetCenterX(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateY(OpenGLData * pData)
+ * @fn float drawingGLGetCenterY(const OpenGLData * pData)
  * @brief Accesseur de la position en y de la direction de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -227,7 +261,7 @@ float drawingGLGetCenterX(const OpenGLData * pData) ;
 float drawingGLGetCenterY(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateZ(OpenGLData * pData)
+ * @fn float drawingGLGetCenterZ(const OpenGLData * pData)
  * @brief Accesseur de la position en z de la direction de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -236,7 +270,7 @@ float drawingGLGetCenterY(const OpenGLData * pData) ;
 float drawingGLGetCenterZ(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateX(OpenGLData * pData)
+ * @fn float drawingGLGetTranslateX(const OpenGLData * pData)
  * @brief Accesseur de la translation en X de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -245,7 +279,7 @@ float drawingGLGetCenterZ(const OpenGLData * pData) ;
 float drawingGLGetTranslateX(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateY(OpenGLData * pData)
+ * @fn float drawingGLGetTranslateY(const OpenGLData * pData)
  * @brief Accesseur de la translation en Y de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -254,7 +288,7 @@ float drawingGLGetTranslateX(const OpenGLData * pData) ;
 float drawingGLGetTranslateY(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetTranslateZ(OpenGLData * pData)
+ * @fn int drawingGLGetTranslateZ(const OpenGLData * pData)
  * @brief Accesseur de la translation en Z de la caméra.
  *
  * @param[in] pData Données OpenGL.
@@ -263,7 +297,7 @@ float drawingGLGetTranslateY(const OpenGLData * pData) ;
 float drawingGLGetTranslateZ(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetWidth(OpenGLData * pData)
+ * @fn int drawingGLGetWidth(const OpenGLData * pData)
  * @brief Accesseur de la largeur de la fenêtre OpenGL.
  *
  * @param[in] pData Données OpenGL.
@@ -272,7 +306,7 @@ float drawingGLGetTranslateZ(const OpenGLData * pData) ;
 int drawingGLGetWidth(const OpenGLData * pData) ;
 
 /**
- * @fn float drawingGLGetHeight(OpenGLData * pData)
+ * @fn int drawingGLGetHeight(const OpenGLData * pData)
  * @brief Accesseur de la hauteur de la fenêtre OpenGL.
  *
  * @param[in] pData Données OpenGL.
@@ -294,7 +328,7 @@ const float * drawingGLGetTransfertMatrix(const OpenGLData * pData) ;
  * @brief Mutateur du champ PlayedTrack de la structure OpenGLData.
  *
  * @param[in, out] pData Données OpenGL.
- * @param[in, out] pTranck Chanson lue.
+ * @param[in, out] pTrack Chanson lue.
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack) ;
