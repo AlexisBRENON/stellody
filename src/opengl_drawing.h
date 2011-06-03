@@ -206,7 +206,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
   * @return EXIT_SUCCESS si tout est OK
   */
 int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
-				   int iPrecision)
+				   int iPrecision) ;
 
 
 /* ********************************************************************* */
