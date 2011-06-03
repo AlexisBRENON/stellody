@@ -168,7 +168,7 @@ int ImRegressionTest(void)
 {
 	Image iImage ;
 	
-	printf("\n\nTest de regression du module STAR :\n") ;
+	printf("\n\nTest de regression du module STAR :\n\n") ;
 
 	printf("Test de imInit : ");
 	imInit(& iImage, 25, 50, 1) ;

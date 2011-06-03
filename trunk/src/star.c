@@ -312,7 +312,7 @@ int starGetZ (const Star * pStar)
 int StarRegressionTest(void)
 {
 	Star sStar ;
-	printf("\n\nTest de regression du module STAR :\n") ;
+	printf("\n\nTest de regression du module STAR :\n\n") ;
 	
 	printf("Test des accesseurs : ");
 	
