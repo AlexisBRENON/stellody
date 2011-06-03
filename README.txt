@@ -121,21 +121,15 @@ pour leur aide et leur soutient tout au long du semestre;
     - mon co√©quipi√© sans qui la repr√©sentation 3D n'aurait jamais √©t√© possible;
     - mes fr√®res - Lucas et Basile - qui ont r√©alis√© le logo de l'application;
     - ma ch√©rie - Alison - pour m'avoir laisser programmer sans (trop) me
-d√©concentrer ; et enfin, tous ceux qui ont servis de b√©ta-testeurs afin de 
+d√©concentrer ;
+    - et enfin, tous ceux qui ont servis de b√©ta-testeurs afin de 
 rendre cette application la plus intuitive.
 
 Matthieu :
-A Faire !
-
-
-
-
-
-
-
-
-
-
+Je souhaiterais à mon tour remercier :
+    - nos professeurs de LIF7 - Alexandre MEYER, Julien MILLE et Quentin COLOMBET - pour leurs connaissances, leus soutien et surtout leur patience !
+    - Alexis sans qui tout ce projet n'aurait jamais pu voir le jour. Dès le début, il savait où nous allions et commentons y allions alors que je me demandais ce que nous allions faire...
+    - Hélène, ma chère et tendre, pour sa présence quotidienne, sa patience, pour m'avoir laissé programmer de longues heures et pour son soutien et ses réponses à mes questions tout au long du projet.
 
 
 ********************************************************************************
@@ -143,9 +137,3 @@ A Faire !
 ********************************************************************************
 
 TODO
-
-
-
-
-
-

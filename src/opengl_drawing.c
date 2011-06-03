@@ -1963,10 +1963,85 @@ static int drawingGLUpdateTransfertMatrix (OpenGLData* pData)
 	return EXIT_SUCCESS ;
 }
 
+static int drawingGLMoveDirection(OpenGLData * pData)
+{
+	if (pData->fMoveX != 0)
+	{
+		if (pData->fCenterX < pData->iDirectionX)
+		{
+			if (pData->fCenterX + pData->fMoveX >= pData->iDirectionX)
+			{
+				pData->fCenterX = pData->iDirectionX ;
+				pData->iDirectionX = 0 ;
+				pData->fMoveX = 0 ;
+			}
+		}
+		else if (pData->fCenterX > pData->iDirectionX)
+		{
+			if (pData->fCenterX + pData->fMoveX <= pData->iDirectionX)
+			{
+				pData->fCenterX = pData->iDirectionX ;
+				pData->iDirectionX = 0 ;
+				pData->fMoveX = 0 ;
+			}
+		}
+		pData->fCenterX = pData->fCenterX + pData->fMoveX ;
+		pData->fTranslateX = pData->fTranslateX + pData->fMoveX ;
+	}
+	
+	if (pData->fMoveY != 0)
+	{
+		if (pData->fCenterY < pData->iDirectionY)
+		{
+			if (pData->fCenterY + pData->fMoveY >= pData->iDirectionY)
+			{
+				pData->fCenterY = pData->iDirectionY ;
+				pData->iDirectionY = 0 ;
+				pData->fMoveY = 0 ;
+			}
+		}
+		else if (pData->fCenterY > pData->iDirectionY)
+		{
+			if (pData->fCenterY + pData->fMoveY <= pData->iDirectionY)
+			{
+				pData->fCenterY = pData->iDirectionY ;
+				pData->iDirectionY = 0 ;
+				pData->fMoveY = 0 ;
+			}
+		}
+		pData->fCenterY = pData->fCenterY + pData->fMoveY ;
+		pData->fTranslateY = pData->fTranslateY + pData->fMoveY ;
+	}
+	
+	if (pData->fMoveZ != 0)
+	{
+		if (pData->fCenterZ < pData->iDirectionZ)
+		{
+			if (pData->fCenterZ + pData->fMoveZ >= pData->iDirectionZ)
+			{
+				pData->fCenterZ = pData->iDirectionZ ;
+				pData->iDirectionZ = 0 ;
+				pData->fMoveZ = 0 ;
+			}
+		}
+		else if (pData->fCenterZ > pData->iDirectionZ)
+		{
+			if (pData->fCenterZ + pData->fMoveZ <= pData->iDirectionZ)
+			{
+				pData->fCenterZ = pData->iDirectionZ ;
+				pData->iDirectionZ = 0 ;
+				pData->fMoveZ = 0 ;
+			}
+		}
+		pData->fCenterZ = pData->fCenterZ + pData->fMoveZ ;
+		pData->fTranslateZ = pData->fTranslateZ + pData->fMoveZ ;
+	}
+	
+	return EXIT_SUCCESS ;
+}
+
 int drawingGLTranslate (OpenGLData* pData,
-					  float fTranslateX,
-					  float fTranslateY,
-					  float fTranslateZ)
+					  float fTranslateX, float fTranslateY, float fTranslateZ)
 {
 	int i = 0 ;
 	float fTranslation = 0 ;
@@ -2020,8 +2095,7 @@ int drawingGLTranslate (OpenGLData* pData,
 }
 
 int drawingGLRotate (OpenGLData* pData,
-				   float fTranslateX,
-				   float fTranslateY)
+				   float fTranslateX, float fTranslateY)
 {
 	pData->fAlpha = pData->fAlpha - fTranslateY ;
 	if (pData->fAlpha >= M_PI/2) pData->fAlpha = M_PI/2 - 0.001 ;
@@ -2035,9 +2109,7 @@ int drawingGLRotate (OpenGLData* pData,
 }
 
 int drawingGLZoom (OpenGLData* pData,
-				 float fPositionX,
-				 float fPositionY,
-				 float fMovedRadius)
+				 float fPositionX, float fPositionY, float fMovedRadius)
 {
 	int i = 0 ;
 	float fTranslation = 0 ;
@@ -2210,83 +2282,6 @@ int drawingGLInit (OpenGLData* pData)
 	return EXIT_SUCCESS;
 }
 
-static int drawingGLMoveDirection(OpenGLData * pData)
-{
-	if (pData->fMoveX != 0)
-	{
-		if (pData->fCenterX < pData->iDirectionX)
-		{
-			if (pData->fCenterX + pData->fMoveX >= pData->iDirectionX)
-			{
-				pData->fCenterX = pData->iDirectionX ;
-				pData->iDirectionX = 0 ;
-				pData->fMoveX = 0 ;
-			}
-		}
-		else if (pData->fCenterX > pData->iDirectionX)
-		{
-			if (pData->fCenterX + pData->fMoveX <= pData->iDirectionX)
-			{
-				pData->fCenterX = pData->iDirectionX ;
-				pData->iDirectionX = 0 ;
-				pData->fMoveX = 0 ;
-			}
-		}
-		pData->fCenterX = pData->fCenterX + pData->fMoveX ;
-		pData->fTranslateX = pData->fTranslateX + pData->fMoveX ;
-	}
-
-	if (pData->fMoveY != 0)
-	{
-		if (pData->fCenterY < pData->iDirectionY)
-		{
-			if (pData->fCenterY + pData->fMoveY >= pData->iDirectionY)
-			{
-				pData->fCenterY = pData->iDirectionY ;
-				pData->iDirectionY = 0 ;
-				pData->fMoveY = 0 ;
-			}
-		}
-		else if (pData->fCenterY > pData->iDirectionY)
-		{
-			if (pData->fCenterY + pData->fMoveY <= pData->iDirectionY)
-			{
-				pData->fCenterY = pData->iDirectionY ;
-				pData->iDirectionY = 0 ;
-				pData->fMoveY = 0 ;
-			}
-		}
-		pData->fCenterY = pData->fCenterY + pData->fMoveY ;
-		pData->fTranslateY = pData->fTranslateY + pData->fMoveY ;
-	}
-
-	if (pData->fMoveZ != 0)
-	{
-		if (pData->fCenterZ < pData->iDirectionZ)
-		{
-			if (pData->fCenterZ + pData->fMoveZ >= pData->iDirectionZ)
-			{
-				pData->fCenterZ = pData->iDirectionZ ;
-				pData->iDirectionZ = 0 ;
-				pData->fMoveZ = 0 ;
-			}
-		}
-		else if (pData->fCenterZ > pData->iDirectionZ)
-		{
-			if (pData->fCenterZ + pData->fMoveZ <= pData->iDirectionZ)
-			{
-				pData->fCenterZ = pData->iDirectionZ ;
-				pData->iDirectionZ = 0 ;
-				pData->fMoveZ = 0 ;
-			}
-		}
-		pData->fCenterZ = pData->fCenterZ + pData->fMoveZ ;
-		pData->fTranslateZ = pData->fTranslateZ + pData->fMoveZ ;
-	}
-
-	return EXIT_SUCCESS ;
-}
-
 int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 {
 	float * pfCoord = NULL ;
@@ -2322,7 +2317,7 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 }
 
 int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
-					 int iX, int iY)
+					 int iPositionX, int iPositionY)
 {	
 	
 	GLuint uiBuffer[64] = {0} ;
@@ -2346,8 +2341,8 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 	glPushMatrix() ;
 	
 	glLoadIdentity() ;
-	gluPickMatrix((GLdouble) iX,
-				  -1 * (GLdouble) iY + (pData->iHeight),
+	gluPickMatrix((GLdouble) iPositionX,
+				  -1 * (GLdouble) iPositionY + (pData->iHeight),
 				  10.0, 10.0, piViewport);
 	gluPerspective(45,
 				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
