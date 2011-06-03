@@ -25,10 +25,10 @@ int preferencesInit (Preferences* psPref)
 {
 	assert (psPref != NULL);
 
-	psPref->iAnalysisRate = 0;
-	psPref->iWindowXSize = 0;
-	psPref->iWindowYSize = 0;
-	psPref->i3DQuality = 0;
+	psPref->iAnalysisRate = 1;
+	psPref->iWindowXSize = 800;
+	psPref->iWindowYSize = 600;
+	psPref->i3DQuality = 20;
 	psPref->iMaxTID = 0;
 	psPref->iMinTID = 0;
 	psPref->iNbPath = 0;

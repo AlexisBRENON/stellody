@@ -18,7 +18,7 @@
 /* ********************************************************************* */
 
 
-#define NB_DATA 15 /**< Nombre de cases aux tableaux de données */
+#define NB_DATA 17 /**< Nombre de cases aux tableaux de données */
 
 #define PREFERENCES 		0	/**< Structure de préférences. */
 #define ANALYZED_TRACKS		1	/**< Arbre des morceaux analysés. */
@@ -31,11 +31,12 @@
 #define	ANALYZING_CHANNEL	8	/**< Canal FMod d'analyse. */
 #define	ANALYZING_COUNTER	9	/**< Nobre de tour d'analyse. */
 #define	PLAYLIST			10	/**< Liste des morceaux à lire */
-#define	ANALYZELIST			11	/**< Liste des morceau à analyser */
-#define	CHECKANALYZE		12	/**< ID du timer de vérification d'analyse */
-#define	MOUSEPOSITION_X		13	/**< Coordonnées en x de la souris */
-#define	MOUSEPOSITION_Y		14	/**< Coordonnées en y de la souris */
-#define	OPENGLDATA			15	/**< Structure de données OpenGL */
+#define PLAYLIST_INDEX		11  /**< Index du morceau en lecture dans la playlist */
+#define	ANALYZELIST			12	/**< Liste des morceau à analyser */
+#define	CHECKANALYZE		13	/**< ID du timer de vérification d'analyse */
+#define	MOUSEPOSITION_X		14	/**< Coordonnées en x de la souris */
+#define	MOUSEPOSITION_Y		15	/**< Coordonnées en y de la souris */
+#define	OPENGLDATA			16	/**< Structure de données OpenGL */
 
 /* ********************************************************************* */
 /*                                                                       */
