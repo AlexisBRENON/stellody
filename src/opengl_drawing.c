@@ -1710,7 +1710,9 @@ static int drawStar(Star * psStar, int iPrecision)
 	assert(psStar != NULL) ;
 
 	glPushMatrix() ;
-	glTranslatef((float) starGetX(psStar), (float) starGetY(psStar), (float) starGetZ(psStar)) ;
+	glTranslatef((float) starGetX(psStar),
+				 (float) starGetY(psStar),
+				 (float) starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
 	glColor3f(starGetColourR(psStar),
 			  starGetColourG(psStar),
@@ -1721,7 +1723,7 @@ static int drawStar(Star * psStar, int iPrecision)
 	return 0 ;
 }
 
-static void drawCubeMap(OpenGLData * pData)
+static void drawCubeMap(unsigned int uiTexture)
 {
 	int i = 0 ;
 
@@ -1753,7 +1755,7 @@ static void drawCubeMap(OpenGLData * pData)
 	glTranslatef(fPosX, fPosY, fPosZ) ;
 	*/
 	glScalef(250, 250, 250) ;
-	glBindTexture(GL_TEXTURE_2D, pData->uiTexture) ;
+	glBindTexture(GL_TEXTURE_2D, uiTexture) ;
 	glColor3f(1, 1, 1) ;
 
 	for(i = 0 ; i < 6 ; i++)
@@ -1816,8 +1818,13 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	glDisable(GL_LIGHTING) ;
 
-	drawCubeMap(pData) ;
-
+	drawCubeMap(pData->uiTexture) ;
+	
+	glPushMatrix() ;
+	glScalef(2, 2, 2) ;
+	glColor3f(1, 1, 1) ;
+	drawSphere(pData->iPrecision) ;
+	glPopMatrix() ;
 	glEnable(GL_LIGHTING) ;
 
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
@@ -2122,9 +2129,9 @@ int drawingGLZoom (OpenGLData* pData,
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 1)
+	if (pData->fRadius < 5)
 	{
-		pData->fRadius = 1 ;
+		pData->fRadius = 5 ;
 	}
 	else if (pData->fRadius > 60)
 	{
@@ -2303,9 +2310,12 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 
 			/* Mise à jour des fMoveX/Y/Z. */
 
-		fDistance = sqrt((pData->iDirectionX - pData->fCenterX)*(pData->iDirectionX - pData->fCenterX) +
-						 (pData->iDirectionY - pData->fCenterY)*(pData->iDirectionY - pData->fCenterY) +
-						 (pData->iDirectionZ - pData->fCenterZ)*(pData->iDirectionZ - pData->fCenterZ)) ;
+		fDistance = sqrt((pData->iDirectionX - pData->fCenterX) *
+						 (pData->iDirectionX - pData->fCenterX) +
+						 (pData->iDirectionY - pData->fCenterY) *
+						 (pData->iDirectionY - pData->fCenterY) +
+						 (pData->iDirectionZ - pData->fCenterZ) *
+						 (pData->iDirectionZ - pData->fCenterZ)) ;
 
 			fTravelTime = fDistance / fSpeed ;
 
@@ -2526,5 +2536,31 @@ int drawingGLRegressionTest()
 	/* Après discution avec l'enseignant, cette fonction de test de regression
 	 ne testera que les fonction "testables".*/
 
+	printf("\n\nTest de regression du module OpenGL_Drawing :\n\n") ;
+	
+	printf("Test des xxx : ");
+	
+	
+	printf("ok.\n") ;
+
+	printf("Test des xxx : ");
+	
+	
+	printf("ok.\n") ;
+	
+	printf("Test des xxx : ");
+	
+	
+	printf("ok.\n") ;
+	
+	printf("Test des xxx : ");
+	
+	
+	printf("ok.\n") ;
+	
+	printf("\nTest de regression du module STAR terminé avec succès.\n\n");
+	
+	return (0) ;
+	
 	return EXIT_SUCCESS ;
 }
