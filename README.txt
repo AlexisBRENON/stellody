@@ -75,7 +75,7 @@ Une fois toutes les librairies correctement installées :
     ~/stellody$ make {lin|mac} (selon si vous voulez un exécutable pour ubuntu
 ou pour MacOSX).
 
-Il se peut qu'un 'Warning' apparaisse à la compilation sur le fichier
+Il se peut qu'un 'Warning' apparaisse à  la compilation sur le fichier
 gdkgltokens.h. Cet avertissement (indépendant de notre volonté) ne pose aucun
 problème pour l'exécution.
 
@@ -89,7 +89,7 @@ construit), il vous suffit de taper la commande suivante :
 
 Si tous les fichier d'interfaces sont présents et que vous lancez le programme
 depuis le dossier stellody, tout se charge normalement et l'application est dès
-à présent fonctionnelle, il ne vous reste plus qu'à ajouter des morceaux via le
+à  présent fonctionnelle, il ne vous reste plus qu'à  ajouter des morceaux via le
 menu Fichier->Ajouter un morceau ou Fichier->Ajouter un répertoire.
 
 
@@ -126,10 +126,15 @@ déconcentrer ;
 rendre cette application la plus intuitive.
 
 Matthieu :
-Je souhaiterais � mon tour remercier :
-    - nos professeurs de LIF7 - Alexandre MEYER, Julien MILLE et Quentin COLOMBET - pour leurs connaissances, leus soutien et surtout leur patience !
-    - Alexis sans qui tout ce projet n'aurait jamais pu voir le jour. D�s le d�but, il savait o� nous allions et commentons y allions alors que je me demandais ce que nous allions faire...
-    - H�l�ne, ma ch�re et tendre, pour sa pr�sence quotidienne, sa patience, pour m'avoir laiss� programmer de longues heures et pour son soutien et ses r�ponses � mes questions tout au long du projet.
+Je souhaiterais à mon tour remercier :
+    - nos professeurs de LIF7 - Alexandre MEYER, Julien MILLE et Quentin 
+COLOMBET - pour leurs connaissances, leus soutien et surtout leur patience !
+    - Alexis sans qui tout ce projet n'aurait jamais pu voir le jour. Dès le 
+début, il savait où nous allions et comment nous y allions alors que je me 
+demandais ce que nous allions faire...
+    - Hélène, ma chére et tendre, pour sa présence quotidienne, sa patience, 
+pour m'avoir laissé programmer de longues heures et pour son soutien et ses 
+réponses à mes questions tout au long du projet.
 
 
 ********************************************************************************

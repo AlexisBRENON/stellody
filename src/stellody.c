@@ -138,6 +138,8 @@ int stellody(int argc, char* argv[])
 	*((int*) pDatas[ANALYZING_COUNTER]) = 0;
 	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
 	*((int*) pDatas[CHECKANALYZE]) = 0;
+	pDatas[PLAYLIST_INDEX] = (int*) malloc(sizeof(int));
+	*((int*) pDatas[PLAYLIST_INDEX]) = 0;
 	pDatas[MOUSEPOSITION_X] = (float*) malloc(sizeof(float));
 	*((float*) pDatas[MOUSEPOSITION_X]) = 0;
 	pDatas[MOUSEPOSITION_Y] = (float*) malloc(sizeof(float));

@@ -54,7 +54,7 @@ chargement d'un fichier. */
 
 #define GUI_MAIN_WIN "Stellody_Window" /**< Nom du widget de niveau
 supérieur. */
-#define GUI_MAIN_CONTAINER "Display_HBox" /**< Nom du widget contenant les
+#define GUI_MAIN_CONTAINER "Variable_Box" /**< Nom du widget contenant les
 différentes fenêtres (variables). */
 #define GUI_STELLARIUM_WIN "Stellarium_VBox" /**< Nom du conteneur du
 stellarium. */
@@ -71,20 +71,24 @@ fichier. */
 /*                                                                       */
 /* ********************************************************************* */
 
-
-/**
-  * @fn static int guiUnparent (GtkBuilder* pMainBuilder,
+static int guiUnparent (GtkBuilder* pMainBuilder,
 						GtkBuilder* pPreferencesBuilder,
 						GtkBuilder* pAboutBuilder,
-						GtkBuilder* pStellariumBuilder)
-  * @brief Déparente toutes les fenêtres variables.
-  *
-  * @param[in,out] pMainBuilder Builder principal
-  * @param[in,out] pPreferencesBuilder Builder de la fenêtre de préférences
-  * @param[in,out] pAboutBuilder Builder de la fenêtre APropos
-  * @param[in,out] pStellariumBuilder Builder du Stellarium
-  * @return EXIT_SUCCESS si tout est OK
-  */
+						GtkBuilder* pStellariumBuilder);
+
+static gboolean guiTrackScaleIncrement (gpointer* pData);
+
+static int guiPlayTrack (AnalyzedTrack* pTrack,
+						GtkBuilder* pMainBuilder,
+						FMOD_SYSTEM* pFmodContext,
+						FMOD_CHANNEL** ppPlayingChannel,
+						OpenGLData* pGLData);
+
+static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
+								AnalyzedTrack* pTrack,
+								gpointer* pData);
+
+
 static int guiUnparent (GtkBuilder* pMainBuilder,
 						GtkBuilder* pPreferencesBuilder,
 						GtkBuilder* pAboutBuilder,
@@ -146,7 +150,6 @@ static int guiUnparent (GtkBuilder* pMainBuilder,
 static gboolean guiTrackScaleIncrement (gpointer* pData)
 {
 	GtkWidget* pScale = NULL;
-	GtkAction* pStopAction = NULL;
 	GtkObject* pAdjustment = NULL;
 	double dTrackPosition = 0;
 	double dLength = 0;
@@ -171,12 +174,45 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 												"Track_Adjustment"));
 	dLength = gtk_adjustment_get_upper(GTK_ADJUSTMENT(pAdjustment));
 
-	if (dTrackPosition+1 >= dLength || bIsPlaying == FALSE)
+	if (dTrackPosition+1 >= dLength)
 	{
-		pStopAction = GTK_ACTION(gtk_builder_get_object
-								(pData[MAIN_BUILDER], "Stop_Action"));
-		g_signal_emit_by_name(pStopAction, "activate");
+		on_Stop_Action_activate(NULL, pData);
+
+		if(pData[PLAYLIST] != NULL)
+		{
+			AnalyzedTrack* pTrack = NULL;
+			GList* pList = NULL;
+
+			*((int*)pData[PLAYLIST_INDEX]) =
+					(*((int*) pData[PLAYLIST_INDEX]))+1;
+			pList = g_list_nth(
+						(GList*)pData[PLAYLIST],
+						*((int*) pData[PLAYLIST_INDEX]));
+
+			if (pList != NULL)
+			{
+				pTrack = (AnalyzedTrack*) pList->data;
+			}
+
+			if (pTrack != NULL)
+			{
+				guiPlayTrack(pTrack,
+						pData[MAIN_BUILDER],
+						pData[FMOD_CONTEXT],
+						(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+						pData[OPENGLDATA]);
+			}
+		}
 	}
+
+	if (bIsPlaying == FALSE)
+	{
+		on_Stop_Action_activate(NULL, pData);
+	}
+
+
+	FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
+								&bIsPlaying);
 
 	return bIsPlaying;
 }
@@ -275,189 +311,6 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 
 }
 
-static gboolean guiPlayTrackFromCoord (int* piKey,
-							AnalyzedTrack* pTrack,
-							GPtrArray* pData)
-{
-	int i = 0;
-	float* pfDistance = NULL;
-	float fDistance = 0;
-	float fNewDistance = 0;
-	float* pfTrackCoord/* [3] */ = NULL;
-	float pfTrackNewCoord[3] = {0};
-	float* pfMouseCoord/*[2*/ = NULL;
-	float* pfTransfertMatrix = NULL;
-	float fRadius = 0;
-	float fCamRadius = 0;
-	OpenGLData* pGLData = NULL;
-
-	pfTrackCoord = analyzedTrackGetCoord(pTrack);
-	pfMouseCoord = (float*) g_ptr_array_index(pData, 0);
-	pGLData = (OpenGLData*) g_ptr_array_index(pData, 1);
-	pfTransfertMatrix = (float*) g_ptr_array_index(pData, 2);
-	pfDistance = (float*) g_ptr_array_index(pData, 3);
-	fCamRadius = drawingGLGetRadius(pGLData);
-	fRadius = analyzedTrackGetLength(pTrack);
-	fRadius = fRadius/1050000;
-	printf("fRadius : %f\n", fRadius);
-	printf("CamRadius : %f\n", fCamRadius);
-
-	for (i = 0; i < 3; i++)
-	{
-		pfTrackNewCoord[i] =
-			pfTrackCoord[0]*pfTransfertMatrix[3*i+0]+
-			pfTrackCoord[1]*pfTransfertMatrix[3*i+1]+
-			pfTrackCoord[2]*pfTransfertMatrix[3*i+2];
-	}
-
-	fDistance = fCamRadius - pfTrackNewCoord[2];
-	printf("Distance : %f\n", fDistance);
-	fRadius = (0.001/fDistance)*fRadius;
-
-	printf("fRadius : %f\n", fRadius);
-
-	printf("X+fRadius = %f\n", pfTrackNewCoord[0]+fRadius);
-	printf("X-fRadius = %f\n", pfTrackNewCoord[0]-fRadius);
-	printf("Y+fRadius = %f\n", pfTrackNewCoord[1]+fRadius);
-	printf("Y-fRadius = %f\n\n", pfTrackNewCoord[1]-fRadius);
-
-	if (pfTrackNewCoord[0]+fRadius >= pfMouseCoord[0] &&
-		pfTrackNewCoord[0]-fRadius <= pfMouseCoord[0] &&
-		pfTrackNewCoord[1]+fRadius >= pfMouseCoord[1] &&
-		pfTrackNewCoord[1]-fRadius <= pfMouseCoord[1])
-	{
-		printf ("On sauvegarde le morceau.\n");
-		fNewDistance = fCamRadius-pfTrackNewCoord[2];
-
-		if (fNewDistance < *pfDistance || *pfDistance == -1)
-		{
-			*pfDistance = fNewDistance;
-			g_ptr_array_remove_index(pData,4);
-			g_ptr_array_add(pData, pTrack);
-		}
-	}
-
-	return FALSE;
-}
-
-
-static AnalyzedTrack* guiPlayTrackFromStellarium (
-									AnalyzedTracks* pTracks,
-									int iMousePositionX,
-									int iMousePositionY,
-									const OpenGLData* pGLData)
-{
-	float fDistance = -1;
-	const float* pfTransferMatrix/*[9]*/ = NULL;
-	float pfMouseCoord[2] = {0};
-	float fCamRadius = 0; /* La position de la caméra sur son propre axe des Z. */
-	float fDet = 0;
-	float pfInvertedTransfertMatrix[9] = {0};
-	AnalyzedTrack* pTrackToPlay = NULL;
-	GPtrArray* ppDataArray = NULL;
-
-
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* Centrage de l'origine de la fenêtre */
-
-	iMousePositionX = iMousePositionX - (drawingGLGetWidth(pGLData)/2);
-	iMousePositionY = iMousePositionY - (drawingGLGetHeight(pGLData)/2);
-
-	/* Passage des coordonnées de la fenêtres (en pixels) aux coordonnées
-	OpenGL dépendant de la distance de la caméra */
-
-	fCamRadius = drawingGLGetRadius(pGLData);
-	pfMouseCoord[0] = (float) ((iMousePositionX*
-							(fCamRadius/600))+
-							drawingGLGetTranslateX(pGLData));
-	pfMouseCoord[1] = (float) ((-1)*(iMousePositionY*
-							(fCamRadius/600))+
-							drawingGLGetTranslateY(pGLData));
-
-	printf("Souris : \n");
-	printf("\t(%f,%f)\n", pfMouseCoord[0],pfMouseCoord[1]);
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* Inversion de la matrice de passage */
-
-	pfTransferMatrix = drawingGLGetTransfertMatrix(pGLData);
-
-	fDet = pfTransferMatrix[0]*pfTransferMatrix[4]*pfTransferMatrix[8]+
-			pfTransferMatrix[1]*pfTransferMatrix[5]*pfTransferMatrix[6]+
-			pfTransferMatrix[2]*pfTransferMatrix[3]*pfTransferMatrix[7]-
-			pfTransferMatrix[2]*pfTransferMatrix[4]*pfTransferMatrix[6]-
-			pfTransferMatrix[5]*pfTransferMatrix[7]*pfTransferMatrix[0]-
-			pfTransferMatrix[8]*pfTransferMatrix[1]*pfTransferMatrix[3];
-	if (fDet == 0)
-	{
-		return NULL;
-	}
-	fDet = 1/fDet;
-
-	pfInvertedTransfertMatrix[0] =
-		fDet*(pfTransferMatrix[4]*pfTransferMatrix[8]-
-				pfTransferMatrix[5]*pfTransferMatrix[7]);
-	pfInvertedTransfertMatrix[1] =
-		fDet*(pfTransferMatrix[2]*pfTransferMatrix[7]-
-				pfTransferMatrix[1]*pfTransferMatrix[8]);
-	pfInvertedTransfertMatrix[2] =
-		fDet*(pfTransferMatrix[1]*pfTransferMatrix[5]-
-				pfTransferMatrix[2]*pfTransferMatrix[4]);
-	pfInvertedTransfertMatrix[3] =
-		fDet*(pfTransferMatrix[5]*pfTransferMatrix[6]-
-				pfTransferMatrix[3]*pfTransferMatrix[8]);
-	pfInvertedTransfertMatrix[4] =
-		fDet*(pfTransferMatrix[0]*pfTransferMatrix[8]-
-				pfTransferMatrix[2]*pfTransferMatrix[6]);
-	pfInvertedTransfertMatrix[5] =
-		fDet*(pfTransferMatrix[2]*pfTransferMatrix[3]-
-				pfTransferMatrix[0]*pfTransferMatrix[5]);
-	pfInvertedTransfertMatrix[6] =
-		fDet*(pfTransferMatrix[3]*pfTransferMatrix[7]-
-				pfTransferMatrix[4]*pfTransferMatrix[6]);
-	pfInvertedTransfertMatrix[7] =
-		fDet*(pfTransferMatrix[1]*pfTransferMatrix[6]-
-				pfTransferMatrix[0]*pfTransferMatrix[7]);
-	pfInvertedTransfertMatrix[8] =
-		fDet*(pfTransferMatrix[0]*pfTransferMatrix[4]-
-				pfTransferMatrix[1]*pfTransferMatrix[3]);
-
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-
-	/* On initialise le tableau de pointeurs qui sera utilisé pour la
-	traversée de l'arbre */
-
-	ppDataArray = g_ptr_array_new();
-	g_ptr_array_add(ppDataArray, pfMouseCoord);					/* [0] */
-	g_ptr_array_add(ppDataArray, (gpointer*) pGLData);			/* [1] */
-	g_ptr_array_add(ppDataArray, pfInvertedTransfertMatrix);	/* [2] */
-	g_ptr_array_add(ppDataArray, &fDistance);					/* [3] */
-	g_ptr_array_add(ppDataArray, pTrackToPlay);					/* [4] */
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	/* On cherche dans l'ensemble des morceau s'il existe un morceau ayant
-	ces coordonnées */
-
-	g_tree_foreach((GTree*) pTracks,
-					(GTraverseFunc) guiPlayTrackFromCoord,
-					ppDataArray);
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	return g_ptr_array_index(ppDataArray, 4);
-}
-
 
 static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 								AnalyzedTrack* pTrack,
@@ -488,6 +341,8 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	strTrackPath = analyzedTrackGetPath(pTrack);
 	strTrackName = strrchr(strTrackPath, '/');
 	psTrackLabel = gtk_label_new(&(strTrackName[1]));
+
+	gtk_label_set_selectable(GTK_LABEL(psTrackLabel), TRUE);
 
 	piTID = (int*) malloc(sizeof(int));
 	*piTID = analyzedTrackGetTID(pTrack);
@@ -624,7 +479,9 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		else
 		{
 			/* Sinon, on charge le premier morceau de la playlist*/
-			psTrack = ((GSList*)pData[PLAYLIST])->data;
+			psTrack = (AnalyzedTrack*)
+						(g_list_nth((GList*) pData[PLAYLIST],
+								*((int*) pData[PLAYLIST_INDEX])))->data;
 			strPath = analyzedTrackGetPath(psTrack);
 		}
 
@@ -726,7 +583,6 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 		/* On vérifie que ce soit un fichier pris en charge */
 		if (strcmp(strExtension, ".mp3") == 0 ||
-			strcmp(strExtension, ".wma") == 0 ||
 			strcmp(strExtension, ".mid") == 0 ||
 			strcmp(strExtension, ".m3u") == 0 ||
 			strcmp(strExtension, ".mp2") == 0 ||
@@ -830,7 +686,6 @@ Utilisez un systeme <u>UNIX</u> :p !");
 
 				/* On vérifie que ce soit un fichier pris en charge */
 				if (strcmp(strExtension, ".mp3") == 0 ||
-					strcmp(strExtension, ".wma") == 0 ||
 					strcmp(strExtension, ".mid") == 0 ||
 					strcmp(strExtension, ".m3u") == 0 ||
 					strcmp(strExtension, ".mp2") == 0 ||
@@ -1021,10 +876,17 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	if (pData[PLAYLIST] != NULL)
 	{
-		pTrack = ((AnalyzedTrack*) (g_list_first(
-									(GList*)pData[PLAYLIST]))->data);
+		GList* pList = NULL;
 
-		pData[PLAYLIST] = g_list_next((GList*)pData[PLAYLIST]);
+		*((int*)pData[PLAYLIST_INDEX]) = (*((int*) pData[PLAYLIST_INDEX]))+1;
+		pList = g_list_nth(
+					(GList*)pData[PLAYLIST],
+					*((int*) pData[PLAYLIST_INDEX]));
+
+		if (pList != NULL)
+		{
+			pTrack = (AnalyzedTrack*) pList->data;
+		}
 	}
 	else
 	{
@@ -1099,10 +961,7 @@ int on_PlayList_button_release_event(GtkWidget* psWidget,
 	int* piTID = NULL;
 	AnalyzedTrack* pTrack = NULL;
 
-	printf("Label Cliqué !\n");
-
-	if (psEvent->button != 1 ||
-		psEvent->type != GDK_2BUTTON_PRESS)
+	if (psEvent->button != 1)
 	{
 		return EXIT_FAILURE;
 	}
@@ -1130,7 +989,9 @@ int on_PlayList_button_release_event(GtkWidget* psWidget,
 				(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
 				(OpenGLData*) pData[OPENGLDATA]);
 
-	pData[PLAYLIST] = g_list_find((GList*)pData[PLAYLIST], pTrack);
+	*((int*) pData[PLAYLIST_INDEX]) = g_list_index(
+											(GList*) pData[PLAYLIST],
+											pTrack);
 
 	return EXIT_SUCCESS;
 }
@@ -1186,17 +1047,11 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 		int iTIDMax = 0;
 		int iTIDMin = 0;
 		int iTID = 0;
-		float* pfRate = NULL;
 		char* strConstFileName = NULL;
 		char* strFileName = NULL;
 		char* strStatusBarMessage = NULL;
 		GtkWidget* psStatusBar = NULL;
 
-		pfRate = analyzedTrackGetCoord(psTrack);
-		printf("Fin d'analyse :\n");
-		printf("\tX : %f\n", pfRate[0]);
-		printf("\tY : %f\n", pfRate[1]);
-		printf("\tZ : %f\n\n", pfRate[2]);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1259,12 +1114,12 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 		strFileName = strrchr(strConstFileName, '/');
 
 		strStatusBarMessage = (char*) malloc((
-									strlen("Le fichier ")+
+									strlen("Le fichier '")+
 									strlen(&(strFileName[1]))+
-									strlen(" vient d'être analysé.")+1)
+									strlen("' vient d'être analysé.")+1)
 											*sizeof(char));
 		sprintf(strStatusBarMessage,
-				"Le fichier %s vient d'être analysé.", &(strFileName[1]));
+				"Le fichier '%s' vient d'être analysé.", &(strFileName[1]));
 		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
 									(GtkBuilder*) pData[MAIN_BUILDER],
 												"Stellody_StatusBar"));
@@ -1283,7 +1138,8 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 
 gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 {
-	if (pData[ANALYZELIST] == NULL)
+	if (pData[ANALYZELIST] == NULL &&
+		!playerIsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL]))
 	{
 		/* Si la liste d'analyse est vide */
 
@@ -1303,6 +1159,8 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 /* ********************************************************************* */
 
 		/* C'est fonction n'a plus lieu d'être appelée */
+
+		*((int*) pData[CHECKANALYZE]) = 0;
 
 		return FALSE;
 	}
@@ -1342,8 +1200,8 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 							&strSinger,
 							&strTitle);
 			/* On coupe le son, le morceau doit être joué mais pas entendu */
-			/*playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
-							0.0);*/
+			playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+							0.0);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1354,12 +1212,12 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 			strFileName = strrchr(strConstFileName, '/');
 
 			strStatusBarMessage = (char*) malloc((
-									strlen("Analyse de ")+
+									strlen("Analyse de '")+
 									strlen(&(strFileName[1]))+
-									strlen(" en cours..."))
+									strlen("' en cours...")+1)
 											*sizeof(char));
 			sprintf(strStatusBarMessage,
-				"Analyse de %s en cours...", &(strFileName[1]));
+				"Analyse de '%s' en cours...", &(strFileName[1]));
 			psStatusBar = GTK_WIDGET(gtk_builder_get_object(
 										(GtkBuilder*) pData[MAIN_BUILDER],
 										"Stellody_StatusBar"));
@@ -1532,7 +1390,7 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGLDraw(pData[OPENGLDATA], pData[ANALYZED_TRACKS], 
+		drawingGLDraw(pData[OPENGLDATA], pData[ANALYZED_TRACKS],
 					  preferencesGet3DQuality(
 								(Preferences*) pData[PREFERENCES]));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */

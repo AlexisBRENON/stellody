@@ -29,6 +29,8 @@ gboolean analyzedTracksSaveTracks (int* pKey,
 	int iTID = 0;
 	char bAnalyzed = 0;
 	const char* strPath = NULL;
+	char* strGroupName = NULL;
+	char* pcToChange = NULL;
 	unsigned int uiLength = 0;
 	float fAverage = 0;
 	float* fRate = NULL;
@@ -42,51 +44,75 @@ gboolean analyzedTracksSaveTracks (int* pKey,
 	fRate = analyzedTrackGetRate(pValue);
 	fCoord = analyzedTrackGetCoord(pValue);
 
-	g_key_file_set_integer(pData,
-							strPath,
-							"iTID",
-							iTID);
-	g_key_file_set_integer(pData,
-							strPath,
-							"bAnalyzed",
-							(int) bAnalyzed);
+	/* Il faut vérifier que le chemin (qui sera utilisé comme identifiant)
+	ne contiennent pas de "[]". On remplace les crochets par des
+	parenthèses. */
+
+	strGroupName = (char*) malloc((strlen(strPath)+1)*sizeof(char));
+	strcpy(strGroupName, strPath);
+	pcToChange = strchr(strGroupName, '[');
+	while (pcToChange != NULL)
+	{
+		*pcToChange = '(';
+		pcToChange = strchr(strGroupName, '[');
+	}
+	pcToChange = strchr(strGroupName, ']');
+	while (pcToChange != NULL)
+	{
+		*pcToChange = ')';
+		pcToChange = strchr(strGroupName, ']');
+	}
+
+	/* On sauvegarde les données */
+
+
 	g_key_file_set_string(pData,
-						strPath,
+						strGroupName,
 						"strPath",
 						strPath);
 	g_key_file_set_integer(pData,
-						strPath,
+							strGroupName,
+							"iTID",
+							iTID);
+	g_key_file_set_integer(pData,
+							strGroupName,
+							"bAnalyzed",
+							(int) bAnalyzed);
+	g_key_file_set_integer(pData,
+						strGroupName,
 						"uiLength",
 						uiLength);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fAverage",
 						fAverage);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fBass",
 						(double) fRate[0]);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fMedium",
 						(double) fRate[1]);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fTreble",
 						(double) fRate[2]);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fCoordX",
 						(double) fCoord[0]);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fCoordY",
 						(double) fCoord[1]);
 	g_key_file_set_double(pData,
-						strPath,
+						strGroupName,
 						"fCoordZ",
 						(double) fCoord[2]);
 
+
+	free(strGroupName); strGroupName = NULL;
 
 	return FALSE;
 }
@@ -299,14 +325,18 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 		analyzedTrackSetAverage(psTrack, 0);
 		analyzedTrackSetRate(psTrack, NULL);
 		analyzedTrackSetCoord(psTrack, NULL);
+
 		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
-											psTrack);
+										psTrack);
+
+		/* On crée le timer sur la vérification d'analyse s'il n'existe pas */
 
 		if (*((int*) pData[CHECKANALYZE]) == 0)
 		{
-			*((int*) pData[CHECKANALYZE]) = g_timeout_add_seconds(2,
-									(GSourceFunc) guiTimeoutAnalyze,
-									pData);
+			*((int*) pData[CHECKANALYZE]) =
+				g_timeout_add_seconds(2,
+								(GSourceFunc) guiTimeoutCheckForAnalyze,
+								pData);
 		}
 	}
 
