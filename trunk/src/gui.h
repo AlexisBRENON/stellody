@@ -184,6 +184,17 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								GdkEventButton* pEvent,
 								gpointer* pData);
 
+/**
+ * @fn int on_PlayList_button_release_event(GtkWidget* psWidget,
+											GdkEventButton* psEvent,
+											gpointer* pData)
+ * @brief Permet de cliquer sur la playlist (ou pas).
+ *
+ * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
+ * @param[in,out] psEvent Un pointeur sur une structure évenement
+ * @param[in,out] pData Données autres passées au callback.
+ * @return EXIT_SUCCESS si tout est OK.
+ */
 int on_PlayList_button_release_event(GtkWidget* psWidget,
 									GdkEventButton* psEvent,
 									gpointer* pData);
