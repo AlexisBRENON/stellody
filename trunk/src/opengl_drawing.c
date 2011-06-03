@@ -1820,11 +1820,6 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	drawCubeMap(pData->uiTexture) ;
 	
-	glPushMatrix() ;
-	glScalef(2, 2, 2) ;
-	glColor3f(1, 1, 1) ;
-	drawSphere(pData->iPrecision) ;
-	glPopMatrix() ;
 	glEnable(GL_LIGHTING) ;
 
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
@@ -2241,7 +2236,7 @@ int drawingGLInit (OpenGLData* pData)
 
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
-	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap1.ppm") ;
+	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap6.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
