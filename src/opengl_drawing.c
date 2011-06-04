@@ -1814,7 +1814,6 @@ static gboolean drawStellarium(int * piKey,
 static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	int i = 0 ;
-	int iPrecision = (pData->iPrecision - 6)/2 ;
 	float f = 0 ;
 	float fTemp = 0 ;
 	GLfloat White[4] = {1.0f, 1.0f, 1.0f, 0.0f} ;
@@ -2255,7 +2254,7 @@ int drawingGLInit (OpenGLData* pData)
 
 	pData->pPlayedTrack = NULL ;
 	pData->iPrecision = 0 ;
-	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap6.ppm") ;
+	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
 
 	drawingGLUpdateTransfertMatrix(pData) ;
