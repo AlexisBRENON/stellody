@@ -1814,8 +1814,8 @@ static gboolean drawStellarium(int * piKey,
 static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
 	int i = 0 ;
-	GLfloat FullWhite[] = {1.0f, 1.0f, 1.0f, 0.95f} ;
-	GLfloat White[] = {1.0f, 1.0f, 1.0f, 0.05f} ;
+	float f = 0 ;
+	GLfloat White[4] = {0.0f, 0.0f, 0.0f, 0.0f} ;
 	Star sSelectedStar ;
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
@@ -1825,12 +1825,12 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	drawCubeMap(pData->uiTexture) ;
 	glEnable(GL_LIGHTING) ;
 
-	glColor4fv(FullWhite) ;
-	glScalef(0.5, 0.5, 0.5) ;
-	drawSphere(64) ;
 	for (i = 0 ; i < 25 ; i++)
 	{
-		glScalef(1.02, 1.02, 1.02) ;
+		f = (float) i / 100 ;
+		GLfloat White[4] = {1.0f, 1.0f, 1.0f,
+							(1 - f) * (1 - f) * (1 - f) * (1 - f) * (1 - f)} ;
+		glScalef(1.01, 1.01, 1.01) ;
 		glColor4fv(White) ;
 		drawSphere(64) ;
 	}
