@@ -138,6 +138,8 @@ int stellody(int argc, char* argv[])
 	*((int*) pDatas[ANALYZING_COUNTER]) = 0;
 	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
 	*((int*) pDatas[CHECKANALYZE]) = 0;
+	pDatas[INCREMENT_TIMER] = (int*) malloc(sizeof(int));
+	*((int*)pDatas[INCREMENT_TIMER]) = 0;
 	pDatas[PLAYLIST_INDEX] = (int*) malloc(sizeof(int));
 	*((int*) pDatas[PLAYLIST_INDEX]) = 0;
 	pDatas[MOUSEPOSITION_X] = (float*) malloc(sizeof(float));
@@ -173,8 +175,6 @@ int stellody(int argc, char* argv[])
 
 	/* Libération de la mémoire */
 
-	printf("\n");
-
 	filesCloseAndSave(&pFileContext,
 					pDatas[PREFERENCES],
 					pDatas[ANALYZED_TRACKS]);
@@ -185,10 +185,13 @@ int stellody(int argc, char* argv[])
 
 	FMOD_System_Release((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT]);
 
+	free(pDatas[ANALYZING_COUNTER]); pDatas[ANALYZING_COUNTER] = NULL;
 	free(pDatas[CHECKANALYZE]); pDatas[CHECKANALYZE] = NULL;
-
+	free(pDatas[INCREMENT_TIMER]); pDatas[INCREMENT_TIMER] = NULL;
+	free(pDatas[PLAYLIST_INDEX]); pDatas[PLAYLIST_INDEX] = NULL;
 	free(pDatas[MOUSEPOSITION_X]); pDatas[MOUSEPOSITION_X] = NULL;
 	free(pDatas[MOUSEPOSITION_Y]); pDatas[MOUSEPOSITION_Y] = NULL;
+
 
 	free(pDatas[OPENGLDATA]); pDatas[OPENGLDATA] = NULL;
 
