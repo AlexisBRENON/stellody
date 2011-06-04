@@ -113,12 +113,13 @@ int starCreate(Star * pStar,
 		if (pfCoord[0] == 0 && pfCoord[1] == 0 && pfCoord[2] == 0)
 		{
 			/* Si non, calcul et attribution des coordonnées. */
-			
-			fTemp = 1.5 * (1 - (pStar->fSize/0.45)*(pStar->fSize/0.45)*(pStar->fSize/0.45)*(pStar->fSize/0.45)) ;
-			
-			pStar->iPositionX = (int) (((fVal1 * fTemp * 30) - 15)) ;
-			pStar->iPositionY = (int) (((fVal2 * fTemp * 30) - 15)) ;
-			pStar->iPositionZ = (int) (((fVal3 * fTemp * 30) - 15)) ;
+			/*
+			fTemp = 1.5 * (1 - (pStar->fSize/0.45) * (pStar->fSize/0.45) *
+						   (pStar->fSize/0.45) * (pStar->fSize/0.45)) ;
+			*/
+			pStar->iPositionX = (int) (((fVal1 * 30) - 15)) ;
+			pStar->iPositionY = (int) (((fVal2 * 30) - 15)) ;
+			pStar->iPositionZ = (int) (((fVal3 * 30) - 15)) ;
 			
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
@@ -317,25 +318,25 @@ int StarRegressionTest(void)
 	printf("Test des accesseurs : ");
 	
 	sStar.fSize = 0.25 ;
-	assert(starGetSize(& sStar) == 0.25) ;
+	assert(starGetSize(& sStar) == sStar.fSize) ;
 	
 	sStar.fColourR = 0.25 ;
-	assert(starGetColourR(& sStar) == 0.25) ;
+	assert(starGetColourR(& sStar) == sStar.fColourR) ;
 
 	sStar.fColourG = 0.50 ;
-	assert(starGetColourG(& sStar) == 0.50) ;
+	assert(starGetColourG(& sStar) == sStar.fColourG) ;
 
 	sStar.fColourB = 0.75 ;
-	assert(starGetColourB(& sStar) == 0.75) ;
+	assert(starGetColourB(& sStar) == sStar.fColourB) ;
 
 	sStar.iPositionX = 1 ;
-	assert(starGetX(& sStar) == 1) ;
+	assert(starGetX(& sStar) == sStar.iPositionX) ;
 
 	sStar.iPositionY = 2 ;
-	assert(starGetY(& sStar) == 2) ;
+	assert(starGetY(& sStar) == sStar.iPositionY) ;
 
-	sStar.iPositionZ	 = 3 ;
-	assert(starGetZ(& sStar) == 3) ;
+	sStar.iPositionZ = 3 ;
+	assert(starGetZ(& sStar) == sStar.iPositionZ) ;
 	
 	printf("ok.\n") ;
 	
