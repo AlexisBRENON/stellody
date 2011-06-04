@@ -1835,8 +1835,6 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 		fTemp = 1.03 ;
 		White[3] = pow((1 - f), 7) ;
 		
-		printf("f = %.2f, White[3] = %.2f\n", f, White[3]);
-
 		glScalef(fTemp, fTemp, fTemp) ;
 		glColor4fv(White) ;
 		drawSphere(pData->iPrecision) ;
