@@ -82,6 +82,7 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 						GtkBuilder* pMainBuilder,
 						FMOD_SYSTEM* pFmodContext,
 						FMOD_CHANNEL** ppPlayingChannel,
+						int iGoToStar,
 						OpenGLData* pGLData);
 
 static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
@@ -156,10 +157,8 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 	gboolean bIsPlaying = FALSE;
 	gboolean bIsPaused = FALSE;
 
-	FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-								&bIsPlaying);
-	FMOD_Channel_GetPaused((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-								&bIsPaused);
+	bIsPlaying = playerIsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
+	bIsPaused = playerIsPaused((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
 
 	if (bIsPlaying == TRUE && bIsPaused == FALSE)
 	{
@@ -200,19 +199,30 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 						pData[MAIN_BUILDER],
 						pData[FMOD_CONTEXT],
 						(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+						((Preferences*)pData[PREFERENCES])->iMoveCam,
 						pData[OPENGLDATA]);
+				*((int*)pData[INCREMENT_TIMER]) =
+					g_timeout_add_seconds(1,
+							(GSourceFunc) guiTrackScaleIncrement,
+							pData);
 			}
 		}
 	}
 
-	if (bIsPlaying == FALSE)
+	if (bIsPlaying == FALSE &&
+		*((int*)pData[INCREMENT_TIMER]) != 0)
 	{
 		on_Stop_Action_activate(NULL, pData);
 	}
 
+	if (*((int*)pData[INCREMENT_TIMER]) == 0)
+	{
+		return FALSE;
+	}
 
-	FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-								&bIsPlaying);
+
+	bIsPlaying = playerIsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
+
 
 	return bIsPlaying;
 }
@@ -222,6 +232,7 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 						GtkBuilder* pMainBuilder,
 						FMOD_SYSTEM* pFmodContext,
 						FMOD_CHANNEL** ppPlayingChannel,
+						int iGoToStar,
 						OpenGLData* pGLData)
 {
 	unsigned int uiTrackPerCent = 0;
@@ -260,7 +271,12 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 /* ********************************************************************* */
 
 	drawingGLSetPlayedTrack(pGLData, pTrack);
-	drawingGLSetNewDirection(pGLData, pTrack);
+
+	printf("iGoToStar : %d\n", iGoToStar);
+	if (iGoToStar == 1)
+	{
+		drawingGLSetNewDirection(pGLData, pTrack);
+	}
 
 
 /* ********************************************************************* */
@@ -329,11 +345,13 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 					GTK_BUILDER(pData[MAIN_BUILDER]),
 					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 					(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
+					((Preferences*)pData[PREFERENCES])->iMoveCam,
 					(OpenGLData*) pData[OPENGLDATA]);
 
-		g_timeout_add_seconds(1,
-					(GSourceFunc) guiTrackScaleIncrement,
-					pData);
+		*((int*)pData[INCREMENT_TIMER]) =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
 	}
 
 	pData[PLAYLIST] = g_list_append((GList*) pData[PLAYLIST], pTrack);
@@ -396,6 +414,8 @@ int guiLoad (gpointer* pData)
 
 int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
 {
+	on_Stop_Action_activate(psWidget, pData);
+
 	gtk_widget_destroy(GTK_WIDGET(
 							gtk_builder_get_object(pData[MAIN_BUILDER],
 													GUI_MAIN_WIN)));
@@ -485,18 +505,20 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 			strPath = analyzedTrackGetPath(psTrack);
 		}
 
-
+		on_Stop_Action_activate(psWidget, pData);
 		guiPlayTrack(psTrack,
 					(GtkBuilder*) pData[MAIN_BUILDER],
 					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+					((Preferences*)pData[PREFERENCES])->iMoveCam,
 					(OpenGLData*) pData[OPENGLDATA]);
 
 		/* On crée le timer chargé de faire progresser la barre de
 		lecture */
-		g_timeout_add_seconds(1,
-					(GSourceFunc) guiTrackScaleIncrement,
-					pData);
+		*((int*)pData[INCREMENT_TIMER]) =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
 	}
 
 	return EXIT_SUCCESS;
@@ -510,6 +532,9 @@ int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[PLAYING_CHANNEL]);
 	pData[PLAYING_CHANNEL] = NULL;
+
+	*((int*)pData[INCREMENT_TIMER]) = 0;
+	guiTrackScaleIncrement(pData);
 
 	drawingGLSetPlayedTrack(pData[OPENGLDATA], NULL);
 
@@ -870,9 +895,11 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	 AnalyzedTrack* pTrack = NULL;
-	 FMOD_BOOL bIsPlaying = FALSE;
-	 int i;
+	AnalyzedTrack* pTrack = NULL;
+	FMOD_BOOL bIsPlaying = FALSE;
+	int i;
+
+	on_Stop_Action_activate(psWidget, pData);
 
 	if (pData[PLAYLIST] != NULL)
 	{
@@ -923,15 +950,18 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		}
 	}
 
-	on_Stop_Action_activate(psWidget, pData);
-
 	if (pTrack != NULL)
 	{
 		guiPlayTrack(pTrack,
 					pData[MAIN_BUILDER],
 					pData[FMOD_CONTEXT],
 					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
+					((Preferences*)pData[PREFERENCES])->iMoveCam,
 					pData[OPENGLDATA]);
+		*((int*)pData[INCREMENT_TIMER]) =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
 	}
 
 	return EXIT_SUCCESS;
@@ -987,7 +1017,13 @@ int on_PlayList_button_release_event(GtkWidget* psWidget,
 				GTK_BUILDER(pData[MAIN_BUILDER]),
 				(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 				(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
+				((Preferences*)pData[PREFERENCES])->iMoveCam,
 				(OpenGLData*) pData[OPENGLDATA]);
+
+	*((int*)pData[INCREMENT_TIMER]) =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
 
 	*((int*) pData[PLAYLIST_INDEX]) = g_list_index(
 											(GList*) pData[PLAYLIST],
