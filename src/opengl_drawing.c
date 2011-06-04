@@ -1813,15 +1813,29 @@ static gboolean drawStellarium(int * piKey,
 
 static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 {
+	int i = 0 ;
+	GLfloat FullWhite[] = {1.0f, 1.0f, 1.0f, 0.95f} ;
+	GLfloat White[] = {1.0f, 1.0f, 1.0f, 0.05f} ;
 	Star sSelectedStar ;
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
 	glDisable(GL_LIGHTING) ;
-
+	 
+	glPushMatrix() ;
 	drawCubeMap(pData->uiTexture) ;
-	
 	glEnable(GL_LIGHTING) ;
 
+	glColor4fv(FullWhite) ;
+	glScalef(0.5, 0.5, 0.5) ;
+	drawSphere(64) ;
+	for (i = 0 ; i < 25 ; i++)
+	{
+		glScalef(1.02, 1.02, 1.02) ;
+		glColor4fv(White) ;
+		drawSphere(64) ;
+	}
+	glPopMatrix() ;
+	
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	if (pData->pPlayedTrack != NULL)
@@ -2247,6 +2261,10 @@ int drawingGLInit (OpenGLData* pData)
 	glEnable(GL_DEPTH_TEST) ;
 	glShadeModel(GL_SMOOTH) ;
 	glEnable(GL_LIGHTING) ;
+	
+	/* Transparence. */
+	glEnable(GL_BLEND) ;
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
 
 	/* Fiat lux. */
 
@@ -2438,78 +2456,6 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 /*                                                                       */
 /* ********************************************************************* */
 
-float drawingGLGetRadius(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fRadius ;
-}
-
-float drawingGLGetAlpha(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fAlpha ;
-}
-
-float drawingGLGetBeta(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fBeta ;
-}
-
-float drawingGLGetCenterX(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fCenterX ;
-}
-
-float drawingGLGetCenterY(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fCenterY ;
-}
-
-float drawingGLGetCenterZ(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fCenterZ ;
-}
-
-float drawingGLGetTranslateX(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fTranslateX ;
-}
-
-float drawingGLGetTranslateY(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fTranslateY ;
-}
-
-float drawingGLGetTranslateZ(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->fTranslateZ ;
-}
-
-int drawingGLGetWidth(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->iWidth ;
-}
-
-int drawingGLGetHeight(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->iHeight ;
-}
-
-const float * drawingGLGetTransfertMatrix(const OpenGLData * pData)
-{
-	assert(pData != NULL) ;
-	return pData->pfTransfertMatrix ;
-}
-
 int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
 {
 	assert(pData != NULL) ;
@@ -2528,32 +2474,20 @@ int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)
 
 int drawingGLRegressionTest()
 {
+	OpenGLData oData ;
+	AnalyzedTrack * pTrack = NULL ;
+	
 	/* Après discution avec l'enseignant, cette fonction de test de regression
-	 ne testera que les fonction "testables".*/
+	 ne testera que les fonction "testables". Les fonctions de dessin,
+	 d'affichage et générales OpenGL ne seront donc pas testés.*/
 
 	printf("\n\nTest de regression du module OpenGL_Drawing :\n\n") ;
 	
-	printf("Test des xxx : ");
-	
-	
+	printf("Test des accesseurs et mutateurs : ") ;
+	assert(drawingGLSetPlayedTrack(& oData, pTrack)) ;
 	printf("ok.\n") ;
 
-	printf("Test des xxx : ");
-	
-	
-	printf("ok.\n") ;
-	
-	printf("Test des xxx : ");
-	
-	
-	printf("ok.\n") ;
-	
-	printf("Test des xxx : ");
-	
-	
-	printf("ok.\n") ;
-	
-	printf("\nTest de regression du module STAR terminé avec succès.\n\n");
+	printf("\nTest de regression du module STAR terminé avec succès.\n\n") ;
 	
 	return (0) ;
 	

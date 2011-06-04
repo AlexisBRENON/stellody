@@ -73,11 +73,11 @@ struct sOpenGLData
 	float fMoveX ;
 	/**< Mouvement unitaire en x lors d'une translation automatique */
 	float fMoveY ;
-	/**< Mouvement unitaire en x lors d'une translation automatique */
+	/**< Mouvement unitaire en y lors d'une translation automatique */
 	float fMoveZ ;
-	/**< Mouvement unitaire en x lors d'une translation automatique */
+	/**< Mouvement unitaire en z lors d'une translation automatique */
 	unsigned int uiTexture ;
-	/**< Numéro de la texture du cubemap */
+	/**< Nom/numéro de la texture du cubemap */
 	int iWidth ;
 	/**< Largeur de la fenêtre */
 	int iHeight ;
@@ -85,7 +85,7 @@ struct sOpenGLData
 	int iPrecision ;
 	/**< Precision choisie en préférence pour la qualité des dessins. */
 	int bPicking ;
-	/**< Booléen indiquant si on est en picking ou non. */
+	/**< Booléen indiquant si on est en mode picking ou non. */
 	float pfTransfertMatrix[9] ;
 	/**< Matrice de passage de la base du monde à la base caméra. */
 	AnalyzedTrack * pPlayedTrack ;
@@ -214,114 +214,6 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 /*              Accesseurs et mutateurs d'OpenGLData                     */
 /*                                                                       */
 /* ********************************************************************* */
-
-/**
- * @fn float drawingGLGetRadius(const OpenGLData * pData)
- * @brief Accesseur du rayon de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fRadius des données OpenGL.
- */
-float drawingGLGetRadius(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetAlpha(const OpenGLData * pData)
- * @brief Accesseur de l'angle alpha de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fAlpha des données OpenGL.
- */
-float drawingGLGetAlpha(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetBeta(const OpenGLData * pData)
- * @brief Accesseur de l'angle beta de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fBeta des données OpenGL.
- */
-float drawingGLGetBeta(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetCenterX(const OpenGLData * pData)
- * @brief Accesseur de la position en x de la direction de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fCenterX des données OpenGL.
- */
-float drawingGLGetCenterX(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetCenterY(const OpenGLData * pData)
- * @brief Accesseur de la position en y de la direction de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fCenterY des données OpenGL.
- */
-float drawingGLGetCenterY(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetCenterZ(const OpenGLData * pData)
- * @brief Accesseur de la position en z de la direction de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fCenterZ des données OpenGL.
- */
-float drawingGLGetCenterZ(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetTranslateX(const OpenGLData * pData)
- * @brief Accesseur de la translation en X de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fTranslateX des données OpenGL.
- */
-float drawingGLGetTranslateX(const OpenGLData * pData) ;
-
-/**
- * @fn float drawingGLGetTranslateY(const OpenGLData * pData)
- * @brief Accesseur de la translation en Y de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fTranslateY des données OpenGL.
- */
-float drawingGLGetTranslateY(const OpenGLData * pData) ;
-
-/**
- * @fn int drawingGLGetTranslateZ(const OpenGLData * pData)
- * @brief Accesseur de la translation en Z de la caméra.
- *
- * @param[in] pData Données OpenGL.
- * @return fTranslateZ des données OpenGL.
- */
-float drawingGLGetTranslateZ(const OpenGLData * pData) ;
-
-/**
- * @fn int drawingGLGetWidth(const OpenGLData * pData)
- * @brief Accesseur de la largeur de la fenêtre OpenGL.
- *
- * @param[in] pData Données OpenGL.
- * @return iWidth des données OpenGL.
- */
-int drawingGLGetWidth(const OpenGLData * pData) ;
-
-/**
- * @fn int drawingGLGetHeight(const OpenGLData * pData)
- * @brief Accesseur de la hauteur de la fenêtre OpenGL.
- *
- * @param[in] pData Données OpenGL.
- * @return iHeight des données OpenGL.
- */
-int drawingGLGetHeight(const OpenGLData * pData) ;
-
-/**
- * @fn const float * drawingGLGetTransfertMatrix(const OpenGLData * pData)
- * @brief Accesseur de la matrice de passage (repère monde au repère caméra).
- *
- * @param[in] pData Données OpenGL.
- * @return fRadius des données OpenGL.
- */
-const float * drawingGLGetTransfertMatrix(const OpenGLData * pData) ;
 
 /**
  * @fn int drawingGLSetPlayedTrack(OpenGLData * pData, AnalyzedTrack * pTrack)

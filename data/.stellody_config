@@ -1,11 +1,11 @@
 
 [DEFAULT]
-iAnalysisRate=1
+iAnalysisRate=0
 iWindowXSize=0
 iWindowYSize=0
-i3DQuality=25
-iTIDMax=149
+i3DQuality=0
+iTIDMax=0
 iTIDMin=0
-iMoveCam=1
+iMoveCam=0
 pstrPath=
 
