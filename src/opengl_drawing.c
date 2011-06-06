@@ -1840,7 +1840,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	pData->psExistingStars = NULL ;
 
 
-	/* Bulbe central.
+	/* Bulbe central. */
 	glPushMatrix() ;
 	for (i = 0 ; i < 50 ; i++)
 	{
@@ -1852,7 +1852,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 		glColor4fv(White) ;
 		drawSphere(pData->iPrecision) ;
 	}
-	glPopMatrix() ;*/
+	glPopMatrix() ;
 }
 
 
