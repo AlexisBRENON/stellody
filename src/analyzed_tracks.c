@@ -187,6 +187,8 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 		free(strPath); strPath = NULL;
 	}
 
+	g_strfreev(strGroups);
+	
 	return EXIT_SUCCESS;
 }
 int analyzedTracksRelease(AnalyzedTracks* psTracks)
@@ -328,7 +330,6 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 
 		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
 										psTrack);
-
 		/* On crée le timer sur la vérification d'analyse s'il n'existe pas */
 
 		if (*((int*) pData[CHECKANALYZE]) == 0)
