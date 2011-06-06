@@ -152,6 +152,16 @@ int drawingGLZoom (OpenGLData* pData,
 				   float fPositionX, float fPositionY, float fMovedRadius) ;
 
 /**
+ * @fn int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
+ * @brief Indique une nouvelle direction de la caméra.
+ *
+ * @param[in, out] pData Données OpenGL.
+ * @param[in] pTrack Analyse du morceau vers lequel se diriger.
+ * @return EXIT_SUCCESS si tout s'est bien passé.
+ */
+int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
+
+/**
   * @fn int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
   * @brief Redimenssionne la scene
   *
@@ -170,16 +180,6 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLInit (OpenGLData* pData) ;
-
-/**
- * @fn int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
- * @brief Indique une nouvelle direction de la caméra.
- *
- * @param[in, out] pData Données OpenGL.
- * @param[in] pTrack Analyse du morceau vers lequel se diriger.
- * @return EXIT_SUCCESS si tout s'est bien passé.
- */
-int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
 
 /**
  * @fn int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,

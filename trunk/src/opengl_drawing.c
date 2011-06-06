@@ -2205,6 +2205,43 @@ int drawingGLZoom (OpenGLData* pData,
 	return EXIT_SUCCESS ;
 }
 
+int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
+{
+	float * pfCoord = NULL ;
+	float fSpeed = 40/25 ;		/* Initialisation de la vitesse de déplacement désirée. */
+	float fDistance = 0 ;
+	float fTravelTime = 0 ;		/* en 25ème de seconde, car actualisation toutes les 40 ms. */
+	
+	pfCoord = analyzedTrackGetCoord(pTrack);
+	
+	if(pfCoord[0] != pData->fCenterX &&
+	   pfCoord[1] != pData->fCenterY &&
+	   pfCoord[2] != pData->fCenterZ)
+	{
+		/* Mise à jour des iDirectionX/Y/Z. */
+		
+		pData->iDirectionX = pfCoord[0] ;
+		pData->iDirectionY = pfCoord[1] ;
+		pData->iDirectionZ = pfCoord[2] ;
+		
+		/* Mise à jour des fMoveX/Y/Z. */
+		
+		fDistance = sqrt((pData->iDirectionX - pData->fCenterX) *
+						 (pData->iDirectionX - pData->fCenterX) +
+						 (pData->iDirectionY - pData->fCenterY) *
+						 (pData->iDirectionY - pData->fCenterY) +
+						 (pData->iDirectionZ - pData->fCenterZ) *
+						 (pData->iDirectionZ - pData->fCenterZ)) ;
+		
+		fTravelTime = fDistance / fSpeed ;
+		
+		pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
+		pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
+		pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
+	}
+	return EXIT_SUCCESS ;
+}
+
 int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
 {
 	glViewport(0, 0, iWidth, iHeight) ;
@@ -2304,43 +2341,6 @@ int drawingGLInit (OpenGLData* pData)
 	/* Fin de l'initialisation. */
 
 	return EXIT_SUCCESS;
-}
-
-int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
-{
-	float * pfCoord = NULL ;
-	float fSpeed = 40/25 ;		/* Initialisation de la vitesse de déplacement désirée. */
-	float fDistance = 0 ;
-	float fTravelTime = 0 ;		/* en 25ème de seconde, car actualisation toutes les 40 ms. */
-
-	pfCoord = analyzedTrackGetCoord(pTrack);
-
-	if(pfCoord[0] != pData->fCenterX &&
-	   pfCoord[1] != pData->fCenterY &&
-	   pfCoord[2] != pData->fCenterZ)
-	{
-		/* Mise à jour des iDirectionX/Y/Z. */
-
-		pData->iDirectionX = pfCoord[0] ;
-		pData->iDirectionY = pfCoord[1] ;
-		pData->iDirectionZ = pfCoord[2] ;
-
-			/* Mise à jour des fMoveX/Y/Z. */
-
-		fDistance = sqrt((pData->iDirectionX - pData->fCenterX) *
-						 (pData->iDirectionX - pData->fCenterX) +
-						 (pData->iDirectionY - pData->fCenterY) *
-						 (pData->iDirectionY - pData->fCenterY) +
-						 (pData->iDirectionZ - pData->fCenterZ) *
-						 (pData->iDirectionZ - pData->fCenterZ)) ;
-
-			fTravelTime = fDistance / fSpeed ;
-
-		pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
-		pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
-		pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
-	}
-	return EXIT_SUCCESS ;
 }
 
 int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
@@ -2456,7 +2456,7 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 
 /* ********************************************************************* */
 /*                                                                       */
-/*              Accesseurs et mutateurs d'OpenGLData                     */
+/*                        Mutateurs d'OpenGLData                         */
 /*                                                                       */
 /* ********************************************************************* */
 
