@@ -271,8 +271,6 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 /* ********************************************************************* */
 
 	drawingGLSetPlayedTrack(pGLData, pTrack);
-
-	printf("iGoToStar : %d\n", iGoToStar);
 	if (iGoToStar == 1)
 	{
 		drawingGLSetNewDirection(pGLData, pTrack);
