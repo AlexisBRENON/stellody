@@ -137,9 +137,9 @@ int starCreate(Star * pStar,
 				if (iArraySize == 0)
 				{
 					/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
-					while ((pStar->iPositionX < 3 && pStar->iPositionX > -3) &&
-						   (pStar->iPositionY < 3 && pStar->iPositionY > -3) &&
-						   (pStar->iPositionZ < 3 && pStar->iPositionZ > -3))
+					while ((pStar->iPositionX < 4 && pStar->iPositionX > -4) &&
+						   (pStar->iPositionY < 4 && pStar->iPositionY > -4) &&
+						   (pStar->iPositionZ < 4 && pStar->iPositionZ > -4))
 					{
 						/* Boucle tant que les coordonnées n'ont pas été modifiées. */
 						while ((pStar->iPositionX == iOldX + iTranslateX) &&
