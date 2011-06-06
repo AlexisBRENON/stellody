@@ -406,7 +406,7 @@ int guiLoad (gpointer* pData)
 	gtk_widget_show_all(psWin);
 
 	pData[MAIN_BUILDER] = psBuilder;
-	
+
 	return EXIT_SUCCESS;
 }
 
@@ -581,7 +581,7 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
-										"data/Musics");
+										"$HOME");
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
@@ -667,7 +667,7 @@ Utilisez un systeme <u>UNIX</u> :p !");
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
-										"data/Musics");
+										"$HOME");
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
@@ -1224,7 +1224,7 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 			/* On charge le morceau dans le canal d'analyse */
 
 			psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
-			
+
 			playerPlayTrack(analyzedTrackGetPath(psTrack),
 							(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 							(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL],
@@ -1241,7 +1241,7 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 /* ********************************************************************* */
 
 			/* On indique le début de l'analyse */
-			
+
 			strConstFileName = analyzedTrackGetPath(psTrack);
 			strFileName = strrchr(strConstFileName, '/');
 
