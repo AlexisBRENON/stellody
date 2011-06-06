@@ -190,7 +190,7 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
  * @fn int on_PlayList_button_release_event(GtkWidget* psWidget,
 											GdkEventButton* psEvent,
 											gpointer* pData)
- * @brief Permet de cliquer sur la playlist (ou pas).
+ * @brief Permet de sélectionner un morceau dans la playlist.
  *
  * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
  * @param[in,out] psEvent Un pointeur sur une structure évenement
