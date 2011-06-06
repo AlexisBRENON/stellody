@@ -119,7 +119,7 @@ int starCreate(Star * pStar,
 			*/
 			pStar->iPositionX = (int) (((fVal1 * 30) - 15)) + 3 ;
 			pStar->iPositionY = (int) (((fVal2 * 30) - 15)) + 1 ;
-			pStar->iPositionZ = (int) (((fVal3 * 30) - 15)) ;
+			pStar->iPositionZ = (int) (((fVal3 * 30) - 15)) - 1 ;
 			
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
@@ -136,10 +136,9 @@ int starCreate(Star * pStar,
 				/* Si c'est la première étoile à être placée. */
 				if (iArraySize == 0)
 				{
+					fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
 					/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
-					while ((pStar->iPositionX < 4 && pStar->iPositionX > -4) &&
-						   (pStar->iPositionY < 4 && pStar->iPositionY > -4) &&
-						   (pStar->iPositionZ < 4 && pStar->iPositionZ > -4))
+					while (fTemp < 4)
 					{
 						/* Boucle tant que les coordonnées n'ont pas été modifiées. */
 						while ((pStar->iPositionX == iOldX + iTranslateX) &&
@@ -164,6 +163,7 @@ int starCreate(Star * pStar,
 						pStar->iPositionX = iOldX + iTranslateX ;
 						pStar->iPositionY = iOldY + iTranslateY ;
 						pStar->iPositionZ = iOldZ + iTranslateZ ;
+						fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
 					}
 				}
 				else
@@ -174,16 +174,15 @@ int starCreate(Star * pStar,
 					for (i = 0 ; i < iArraySize && iTest == 1 ; i ++)
 					{
 						pfTemp = g_ptr_array_index(psExistingStars, i) ;
+						
+						fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
 
 						/*Boucle tant que les coordonnées sont prises
 						ou tant qu'elles sont trop proche du bulbe central. */
 						while ((pStar->iPositionX == pfTemp[0] &&
 								pStar->iPositionY == pfTemp[1] &&
 								pStar->iPositionZ == pfTemp[2])
-							   ||
-							   (pStar->iPositionX < 3 && pStar->iPositionX > -3 &&
-								pStar->iPositionY < 3 && pStar->iPositionY > -3 &&
-								pStar->iPositionZ < 3 && pStar->iPositionZ > -3))
+							   || (fTemp < 4) )
 						{
 							iTest = 0 ; /* Puisqu'on modifie les coordonnées,
 										le test est à refaire depuis le début. */
@@ -211,6 +210,7 @@ int starCreate(Star * pStar,
 							pStar->iPositionX = iOldX + iTranslateX ;
 							pStar->iPositionY = iOldY + iTranslateY ;
 							pStar->iPositionZ = iOldZ + iTranslateZ ;
+							fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
 						}
 					}
 				}
