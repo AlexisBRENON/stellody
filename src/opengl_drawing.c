@@ -2143,9 +2143,9 @@ int drawingGLZoom (OpenGLData* pData,
 
 	pData->fRadius = pData->fRadius - (fMovedRadius * pData->fRadius) ;
 
-	if (pData->fRadius < 5)
+	if (pData->fRadius < 1)
 	{
-		pData->fRadius = 5 ;
+		pData->fRadius = 1 ;
 	}
 	else if (pData->fRadius > 60)
 	{
