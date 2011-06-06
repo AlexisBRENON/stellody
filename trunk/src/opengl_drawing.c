@@ -1821,25 +1821,11 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
 	glDisable(GL_LIGHTING) ;
-	 
+
 	drawCubeMap(pData->uiTexture) ;
-	
+
 	glEnable(GL_LIGHTING) ;
 
-	/* Bulbe central. */
-	glPushMatrix() ;
-	for (i = 0 ; i < 50 ; i++)
-	{
-		f = (float) i / 100 ;
-		fTemp = 1.03 ;
-		White[3] = pow((1 - f), 7) ;
-		
-		glScalef(fTemp, fTemp, fTemp) ;
-		glColor4fv(White) ;
-		drawSphere(pData->iPrecision) ;
-	}
-	glPopMatrix() ;
-	
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
 
 	if (pData->pPlayedTrack != NULL)
@@ -1852,6 +1838,21 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
 	pData->psExistingStars = NULL ;
+
+
+	/* Bulbe central.
+	glPushMatrix() ;
+	for (i = 0 ; i < 50 ; i++)
+	{
+		f = (float) i / 100 ;
+		fTemp = 1.03 ;
+		White[3] = pow((1 - f), 7) ;
+
+		glScalef(fTemp, fTemp, fTemp) ;
+		glColor4fv(White) ;
+		drawSphere(pData->iPrecision) ;
+	}
+	glPopMatrix() ;*/
 }
 
 
@@ -2211,30 +2212,30 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 	float fSpeed = 40/25 ;		/* Initialisation de la vitesse de déplacement désirée. */
 	float fDistance = 0 ;
 	float fTravelTime = 0 ;		/* en 25ème de seconde, car actualisation toutes les 40 ms. */
-	
+
 	pfCoord = analyzedTrackGetCoord(pTrack);
-	
+
 	if(pfCoord[0] != pData->fCenterX &&
 	   pfCoord[1] != pData->fCenterY &&
 	   pfCoord[2] != pData->fCenterZ)
 	{
 		/* Mise à jour des iDirectionX/Y/Z. */
-		
+
 		pData->iDirectionX = pfCoord[0] ;
 		pData->iDirectionY = pfCoord[1] ;
 		pData->iDirectionZ = pfCoord[2] ;
-		
+
 		/* Mise à jour des fMoveX/Y/Z. */
-		
+
 		fDistance = sqrt((pData->iDirectionX - pData->fCenterX) *
 						 (pData->iDirectionX - pData->fCenterX) +
 						 (pData->iDirectionY - pData->fCenterY) *
 						 (pData->iDirectionY - pData->fCenterY) +
 						 (pData->iDirectionZ - pData->fCenterZ) *
 						 (pData->iDirectionZ - pData->fCenterZ)) ;
-		
+
 		fTravelTime = fDistance / fSpeed ;
-		
+
 		pData->fMoveX = (pData->iDirectionX - pData->fCenterX)/fTravelTime ;
 		pData->fMoveY = (pData->iDirectionY - pData->fCenterY)/fTravelTime ;
 		pData->fMoveZ = (pData->iDirectionZ - pData->fCenterZ)/fTravelTime ;
@@ -2302,7 +2303,7 @@ int drawingGLInit (OpenGLData* pData)
 	glEnable(GL_DEPTH_TEST) ;
 	glShadeModel(GL_SMOOTH) ;
 	glEnable(GL_LIGHTING) ;
-	
+
 	/* Transparence. */
 	glEnable(GL_BLEND) ;
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
@@ -2480,20 +2481,20 @@ int drawingGLRegressionTest()
 {
 	OpenGLData oData ;
 	AnalyzedTrack * pTrack = NULL ;
-	
+
 	/* Après discution avec l'enseignant, cette fonction de test de regression
 	 ne testera que les fonction "testables". Les fonctions de dessin,
 	 d'affichage et générales OpenGL ne seront donc pas testés.*/
 
 	printf("\n\nTest de regression du module OpenGL_Drawing :\n\n") ;
-	
+
 	printf("Test des accesseurs et mutateurs : ") ;
 	assert(drawingGLSetPlayedTrack(& oData, pTrack)) ;
 	printf("ok.\n") ;
 
 	printf("\nTest de regression du module STAR terminé avec succès.\n\n") ;
-	
+
 	return (0) ;
-	
+
 	return EXIT_SUCCESS ;
 }
