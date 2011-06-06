@@ -84,9 +84,9 @@ int starCreate(Star * pStar,
 		
 		/* Définition des couleurs. */
 		
-		pStar->fColourR = fVal1 ;
+		pStar->fColourR = fVal3 ;
 		pStar->fColourG = fVal2 ;
-		pStar->fColourB = fVal3 ;
+		pStar->fColourB = fVal1 ;
 		
 		
 		/* Définition de la taille. */
@@ -117,8 +117,8 @@ int starCreate(Star * pStar,
 			fTemp = 1.5 * (1 - (pStar->fSize/0.45) * (pStar->fSize/0.45) *
 						   (pStar->fSize/0.45) * (pStar->fSize/0.45)) ;
 			*/
-			pStar->iPositionX = (int) (((fVal1 * 30) - 15)) ;
-			pStar->iPositionY = (int) (((fVal2 * 30) - 15)) ;
+			pStar->iPositionX = (int) (((fVal1 * 30) - 15)) + 3 ;
+			pStar->iPositionY = (int) (((fVal2 * 30) - 15)) + 1 ;
 			pStar->iPositionZ = (int) (((fVal3 * 30) - 15)) ;
 			
 			/* Début de la vérification des coordonnées
