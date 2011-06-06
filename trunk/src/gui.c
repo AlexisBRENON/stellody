@@ -39,7 +39,7 @@
 /*                                                                       */
 /*                       Définitions de constantes                       */
 /*                                                                       */
-/* *********************************1506 src/gui.c************************************ */
+/* ********************************************************************* */
 
 #define GUI_WIN "data/windows/Window.glade" /**< Nom du fichier GUI
 principal. */
@@ -406,7 +406,7 @@ int guiLoad (gpointer* pData)
 	gtk_widget_show_all(psWin);
 
 	pData[MAIN_BUILDER] = psBuilder;
-
+	
 	return EXIT_SUCCESS;
 }
 
@@ -1224,7 +1224,7 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 			/* On charge le morceau dans le canal d'analyse */
 
 			psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
-
+			
 			playerPlayTrack(analyzedTrackGetPath(psTrack),
 							(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
 							(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL],
@@ -1241,7 +1241,7 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 /* ********************************************************************* */
 
 			/* On indique le début de l'analyse */
-
+			
 			strConstFileName = analyzedTrackGetPath(psTrack);
 			strFileName = strrchr(strConstFileName, '/');
 
