@@ -1,1 +1,287 @@
-# Fichier de données
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/01 So Far Away.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/01 So Far Away.mp3
+iTID=0
+bAnalyzed=1
+uiLength=311536
+fAverage=233.73944091796875
+fBass=0.67831450700759888
+fMedium=0.20566409826278687
+fTreble=0.11602137982845306
+fCoordX=3
+fCoordY=-2
+fCoordZ=-2
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/02 Money For Nothing.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/02 Money For Nothing.mp3
+iTID=1
+bAnalyzed=1
+uiLength=505652
+fAverage=206.08468627929688
+fBass=0.62585759162902832
+fMedium=0.21776442229747772
+fTreble=0.15637795627117157
+fCoordX=0
+fCoordY=-2
+fCoordZ=4
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/06 Ride Across The River.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/06 Ride Across The River.mp3
+iTID=2
+bAnalyzed=1
+uiLength=417515
+fAverage=152.61056518554688
+fBass=0.69165188074111938
+fMedium=0.20386399328708649
+fTreble=0.10448413342237473
+fCoordX=3
+fCoordY=-1
+fCoordZ=-3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/07 The Man's Too Strong.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/07 The Man's Too Strong.mp3
+iTID=3
+bAnalyzed=1
+uiLength=279745
+fAverage=38.652988433837891
+fBass=0.70636612176895142
+fMedium=0.18885891139507294
+fTreble=0.10477501153945923
+fCoordX=3
+fCoordY=-2
+fCoordZ=-3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/08 One World.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/08 One World.mp3
+iTID=4
+bAnalyzed=1
+uiLength=220525
+fAverage=39.462001800537109
+fBass=0.65734773874282837
+fMedium=0.21379216015338898
+fTreble=0.12886011600494385
+fCoordX=2
+fCoordY=-3
+fCoordZ=-2
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/09 Brothers In Arms.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Dire Straits/Brothers In Arms/09 Brothers In Arms.mp3
+iTID=5
+bAnalyzed=1
+uiLength=419631
+fAverage=49.818984985351562
+fBass=0.66157549619674683
+fMedium=0.20597563683986664
+fTreble=0.13244883716106415
+fCoordX=3
+fCoordY=-3
+fCoordZ=-1
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-01 Just Dance (Feat. Colby O'Donis).mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-01 Just Dance (Feat. Colby O'Donis).mp3
+iTID=6
+bAnalyzed=1
+uiLength=242442
+fAverage=29.957281112670898
+fBass=0.60270476341247559
+fMedium=0.24994446337223053
+fTreble=0.14735080301761627
+fCoordX=-3
+fCoordY=1
+fCoordZ=3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-02 Lovegame.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-02 Lovegame.mp3
+iTID=7
+bAnalyzed=1
+uiLength=218801
+fAverage=25.542263031005859
+fBass=0.61436945199966431
+fMedium=0.22552452981472015
+fTreble=0.16010597348213196
+fCoordX=-1
+fCoordY=-1
+fCoordZ=4
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-03 Paparazzi.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-03 Paparazzi.mp3
+iTID=8
+bAnalyzed=1
+uiLength=209763
+fAverage=18.139272689819336
+fBass=0.60841453075408936
+fMedium=0.23626598715782166
+fTreble=0.15531951189041138
+fCoordX=-2
+fCoordY=2
+fCoordZ=3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-04 Poker Face.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-04 Poker Face.mp3
+iTID=9
+bAnalyzed=1
+uiLength=239516
+fAverage=15.689488410949707
+fBass=0.69003200531005859
+fMedium=0.19912624359130859
+fTreble=0.1108417883515358
+fCoordX=3
+fCoordY=-3
+fCoordZ=-2
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-05 I Like It Rough.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-05 I Like It Rough.mp3
+iTID=10
+bAnalyzed=1
+uiLength=204669
+fAverage=25.946016311645508
+fBass=0.55351579189300537
+fMedium=0.26223772764205933
+fTreble=0.18424651026725769
+fCoordX=-4
+fCoordY=1
+fCoordZ=6
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-06 Eh, Eh (Nothing Else I Can Say).mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-06 Eh, Eh (Nothing Else I Can Say).mp3
+iTID=11
+bAnalyzed=1
+uiLength=177606
+fAverage=13.243941307067871
+fBass=0.65950018167495728
+fMedium=0.23225903511047363
+fTreble=0.10824081301689148
+fCoordX=1
+fCoordY=-1
+fCoordZ=-4
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-07 Starstruck.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-07 Starstruck.mp3
+iTID=12
+bAnalyzed=1
+uiLength=219297
+fAverage=34.258033752441406
+fBass=0.63220769166946411
+fMedium=0.21764011681079865
+fTreble=0.15015223622322083
+fCoordX=0
+fCoordY=-1
+fCoordZ=4
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-08 Beautiful, Dirty, Rich.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-08 Beautiful, Dirty, Rich.mp3
+iTID=13
+bAnalyzed=1
+uiLength=173583
+fAverage=9.0250492095947266
+fBass=0.67189770936965942
+fMedium=0.19614312052726746
+fTreble=0.13195919990539551
+fCoordX=3
+fCoordY=-3
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-09 The Fame.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-09 The Fame.mp3
+iTID=14
+bAnalyzed=1
+uiLength=222928
+fAverage=21.453245162963867
+fBass=0.59562599658966064
+fMedium=0.24667847156524658
+fTreble=0.15769551694393158
+fCoordX=-3
+fCoordY=0
+fCoordZ=3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-10 Money Honey.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-10 Money Honey.mp3
+iTID=15
+bAnalyzed=1
+uiLength=172434
+fAverage=6.645261287689209
+fBass=0.6222541332244873
+fMedium=0.21337988972663879
+fTreble=0.16436600685119629
+fCoordX=-1
+fCoordY=-2
+fCoordZ=4
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-11 Boys Boys Boys.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-11 Boys Boys Boys.mp3
+iTID=16
+bAnalyzed=1
+uiLength=202109
+fAverage=13.022343635559082
+fBass=0.52293401956558228
+fMedium=0.26947969198226929
+fTreble=0.20758630335330963
+fCoordX=-5
+fCoordY=2
+fCoordZ=8
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-12 Paper Gangsta.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-12 Paper Gangsta.mp3
+iTID=17
+bAnalyzed=1
+uiLength=265560
+fAverage=8.1899785995483398
+fBass=0.66828984022140503
+fMedium=0.21160833537578583
+fTreble=0.12010184675455093
+fCoordX=4
+fCoordY=-3
+fCoordZ=-1
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-13 Brown Eyes.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-13 Brown Eyes.mp3
+iTID=18
+bAnalyzed=1
+uiLength=245211
+fAverage=11.80500316619873
+fBass=0.66836237907409668
+fMedium=0.19818149507045746
+fTreble=0.13345612585544586
+fCoordX=3
+fCoordY=-3
+fCoordZ=1
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-14 Summerboy.mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-14 Summerboy.mp3
+iTID=19
+bAnalyzed=1
+uiLength=255425
+fAverage=9.2700862884521484
+fBass=0.65119290351867676
+fMedium=0.2090977281332016
+fTreble=0.13970939815044403
+fCoordX=1
+fCoordY=-4
+fCoordZ=0
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-15 Disco Heaven (Bonus Track).mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-15 Disco Heaven (Bonus Track).mp3
+iTID=20
+bAnalyzed=1
+uiLength=222589
+fAverage=10.402898788452148
+fBass=0.65845251083374023
+fMedium=0.21641345322132111
+fTreble=0.12513403594493866
+fCoordX=1
+fCoordY=-3
+fCoordZ=-3
+
+[/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster (Deluxe Edition) Disc 2/2-16 Again Again (Bonus Track).mp3]
+strPath=/Users/Matthieu/Music/iTunes/iTunes Media/Music/Lady Gaga/The Fame Monster [Deluxe Edition] Disc 2/2-16 Again Again (Bonus Track).mp3
+iTID=21
+bAnalyzed=1
+uiLength=184999
+fAverage=10.443844795227051
+fBass=0.57021921873092651
+fMedium=0.25769302248954773
+fTreble=0.17208775877952576
+fCoordX=-3
+fCoordY=1
+fCoordZ=4
+
