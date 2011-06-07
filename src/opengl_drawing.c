@@ -1713,9 +1713,9 @@ static int drawStar(Star * psStar, int iPrecision)
 	assert(psStar != NULL) ;
 
 	glPushMatrix() ;
-	glTranslatef((float) starGetX(psStar),
-				 (float) starGetY(psStar),
-				 (float) starGetZ(psStar)) ;
+	glTranslatef(starGetX(psStar),
+				 starGetY(psStar),
+				 starGetZ(psStar)) ;
 	glScalef(starGetSize(psStar), starGetSize(psStar), starGetSize(psStar)) ;
 	glColor3f(starGetColourR(psStar),
 			  starGetColourG(psStar),
