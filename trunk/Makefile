@@ -29,17 +29,18 @@ BIN_DIR = 		bin
 	# Nom de l'exécutable
 EXEC = 			stellody
 	# Noms des fichiers sources
-SRCS = 			stellody.c \
+SRCS = 			files.c \
 			analyzed_track.c \
-			analyzed_tracks.c \
 			preferences.c \
-			opengl_drawing.c \
-			files.c \
+			analyzed_tracks.c \
+			player.c \
 			gui.c \
 			analysis.c \
+			image.c \
 			star.c \
-			player.c \
-			image.c
+			stellarium.c \
+			opengl_drawing.c \
+			stellody.c 
 
 	# Noms des fichiers objets (génération dynamique)
 OBJS_LIN =		$(SRCS:%.c=$(OBJ_DIR)/%_lin.o)

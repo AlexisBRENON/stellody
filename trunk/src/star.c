@@ -52,12 +52,13 @@ int starCreate(Star * pStar,
 	float fAlpha = -M_PI/2 ;
 	float fBeta = -fStep ;
 	float fRadius = 1 ;
-	int iOldX = 0 ;
-	int iOldY = 0 ;
-	int iOldZ = 0 ;
-	int iTranslateX = 0 ;
-	int iTranslateY = 0 ;
-	int iTranslateZ = 0 ;
+	float fOldX = 0 ;
+	float fOldY = 0 ;
+	float fOldZ = 0 ;
+	float fTranslateX = 0 ;
+	float fTranslateY = 0 ;
+	float fTranslateZ = 0 ;
+	float fDist = 0 ;
 
 	iArraySize = psExistingStars->len ;
 	uiSize = analyzedTrackGetLength(pTrack) ;
@@ -117,16 +118,16 @@ int starCreate(Star * pStar,
 			fTemp = 1.5 * (1 - (pStar->fSize/0.45) * (pStar->fSize/0.45) *
 						   (pStar->fSize/0.45) * (pStar->fSize/0.45)) ;
 			*/
-			pStar->iPositionX = (int) (((fVal1 * 30) - 15)) + 3 ;
-			pStar->iPositionY = (int) (((fVal2 * 30) - 15)) + 1 ;
-			pStar->iPositionZ = (int) (((fVal3 * 30) - 15)) - 1 ;
+			pStar->fPositionX = ((fVal1 * 30) - 15) + 3 ;
+			pStar->fPositionY = ((fVal2 * 30) - 15) + 1 ;
+			pStar->fPositionZ = ((fVal3 * 30) - 15) - 1 ;
 			
 			/* Début de la vérification des coordonnées
 			(vérifie qu'elles ne sont pas encore prises). */
 
-			iOldX = pStar->iPositionX ;
-			iOldY = pStar->iPositionY ;
-			iOldZ = pStar->iPositionZ ;
+			fOldX = pStar->fPositionX ;
+			fOldY = pStar->fPositionY ;
+			fOldZ = pStar->fPositionZ ;
 
 			/* Boucle tant que la vérification est à faire. */
 			while (iTest == 0)
@@ -136,34 +137,36 @@ int starCreate(Star * pStar,
 				/* Si c'est la première étoile à être placée. */
 				if (iArraySize == 0)
 				{
-					fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
+					fTemp = sqrt(pow(pStar->fPositionX, 2) +
+								 pow(pStar->fPositionY, 2) +
+								 pow(pStar->fPositionZ, 2)) ;
+					
 					/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
 					while (fTemp < 4)
 					{
-						/* Boucle tant que les coordonnées n'ont pas été modifiées. */
-						while ((pStar->iPositionX == iOldX + iTranslateX) &&
-							   (pStar->iPositionY == iOldY + iTranslateY) &&
-							   (pStar->iPositionZ == iOldZ + iTranslateZ))
+
+						fBeta = fBeta + fStep ;
+						if (fBeta >= 2 * M_PI)
 						{
-							fBeta = fBeta + fStep ;
-							if (fBeta >= 2 * M_PI)
-							{
-								fBeta = 0 ;
-								fAlpha = fAlpha + fStep ;
-							}
-							if (fAlpha > M_PI/2)
-							{
-								fAlpha = -M_PI/2 ;
-								fRadius = fRadius + 1 ;
-							}
-							iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
-							iTranslateY = (int) (fRadius * sin(fAlpha)) ;
-							iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
+							fBeta = 0 ;
+							fAlpha = fAlpha + fStep ;
 						}
-						pStar->iPositionX = iOldX + iTranslateX ;
-						pStar->iPositionY = iOldY + iTranslateY ;
-						pStar->iPositionZ = iOldZ + iTranslateZ ;
-						fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
+						if (fAlpha > M_PI/2)
+						{
+							fAlpha = -M_PI/2 ;
+							fRadius = fRadius + 1 ;
+						}
+						fTranslateX = fRadius * cos(fAlpha) * cos(fBeta) ;
+						fTranslateY = fRadius * sin(fAlpha) ;
+						fTranslateZ = fRadius * cos(fAlpha) * -1*sin(fBeta) ;
+						
+						pStar->fPositionX = fOldX + fTranslateX ;
+						pStar->fPositionY = fOldY + fTranslateY ;
+						pStar->fPositionZ = fOldZ + fTranslateZ ;
+						
+						fTemp = sqrt(pow(pStar->fPositionX, 2) +
+									 pow(pStar->fPositionY, 2) +
+									 pow(pStar->fPositionZ, 2)) ;
 					}
 				}
 				else
@@ -175,42 +178,48 @@ int starCreate(Star * pStar,
 					{
 						pfTemp = g_ptr_array_index(psExistingStars, i) ;
 						
-						fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
+						fTemp = sqrt(pow(pStar->fPositionX, 2) +
+									 pow(pStar->fPositionY, 2) +
+									 pow(pStar->fPositionZ, 2)) ;
 
+						fDist = sqrt(pow(pStar->fPositionX - pfTemp[1], 2) +
+									 pow(pStar->fPositionY - pfTemp[2], 2) +
+									 pow(pStar->fPositionZ - pfTemp[3], 2)) ;
+						
 						/*Boucle tant que les coordonnées sont prises
 						ou tant qu'elles sont trop proche du bulbe central. */
-						while ((pStar->iPositionX == pfTemp[0] &&
-								pStar->iPositionY == pfTemp[1] &&
-								pStar->iPositionZ == pfTemp[2])
+						while ((pfTemp[0] + pStar->fSize + 0.2 > fDist)
 							   || (fTemp < 4) )
-						{
+						{							
 							iTest = 0 ; /* Puisqu'on modifie les coordonnées,
 										le test est à refaire depuis le début. */
 
-							/* Boucle tant que les coordonnées n'ont pas été modifiées. */
-							while ((pStar->iPositionX == iOldX + iTranslateX) &&
-								   (pStar->iPositionY == iOldY + iTranslateY) &&
-								   (pStar->iPositionZ == iOldZ + iTranslateZ))
+							fBeta = fBeta + fStep ;
+							if (fBeta >= 2 * M_PI)
 							{
-								fBeta = fBeta + fStep ;
-								if (fBeta >= 2 * M_PI)
-								{
 								fBeta = 0 ;
 								fAlpha = fAlpha + fStep ;
-								}
-								if (fAlpha > M_PI/2)
-								{
-									fAlpha = -M_PI/2 ;
-									fRadius = fRadius + 1 ;
-								}
-								iTranslateX = (int) (fRadius * cos(fAlpha) * cos(fBeta)) ;
-								iTranslateY = (int) (fRadius * sin(fAlpha)) ;
-								iTranslateZ = (int) (fRadius * cos(fAlpha) * -1*sin(fBeta)) ;
 							}
-							pStar->iPositionX = iOldX + iTranslateX ;
-							pStar->iPositionY = iOldY + iTranslateY ;
-							pStar->iPositionZ = iOldZ + iTranslateZ ;
-							fTemp = sqrt(pow(pStar->iPositionX, 2) + pow(pStar->iPositionY, 2) + pow(pStar->iPositionZ, 2)) ;
+							if (fAlpha > M_PI/2)
+							{
+								fAlpha = -M_PI/2 ;
+								fRadius = fRadius + 1 ;
+							}
+							fTranslateX = fRadius * cos(fAlpha) * cos(fBeta) ;
+							fTranslateY = fRadius * sin(fAlpha) ;
+							fTranslateZ = fRadius * cos(fAlpha) * -1*sin(fBeta) ;
+							
+							pStar->fPositionX = fOldX + fTranslateX ;
+							pStar->fPositionY = fOldY + fTranslateY ;
+							pStar->fPositionZ = fOldZ + fTranslateZ ;
+							
+							fTemp = sqrt(pow(pStar->fPositionX, 2) +
+										 pow(pStar->fPositionY, 2) +
+										 pow(pStar->fPositionZ, 2)) ;
+							
+							fDist = sqrt(pow(pStar->fPositionX - pfTemp[1], 2) +
+										 pow(pStar->fPositionY - pfTemp[2], 2) +
+										 pow(pStar->fPositionZ - pfTemp[3], 2)) ;
 						}
 					}
 				}
@@ -219,26 +228,27 @@ int starCreate(Star * pStar,
 			/* Mise à jour des coordonnées dans l'analyse. */
 
 			analyzedTrackSetCoords(pTrack,
-								   pStar->iPositionX,
-								   pStar->iPositionY,
-								   pStar->iPositionZ) ;
+								   pStar->fPositionX,
+								   pStar->fPositionY,
+								   pStar->fPositionZ) ;
 		}
 		else
 		{
 			/* Si les coordonnées ont déjà été calculées pour le morceau,
 			on met à jour l'étoile correspondante. */
 
-			pStar->iPositionX = pfCoord[0] ;
-			pStar->iPositionY = pfCoord[1] ;
-			pStar->iPositionZ = pfCoord[2] ;
+			pStar->fPositionX = pfCoord[0] ;
+			pStar->fPositionY = pfCoord[1] ;
+			pStar->fPositionZ = pfCoord[2] ;
 		}
 
 		/* Ajoute les nouvelles coordonnées aux données existantes. */
 
-		pfTemp = (float *) malloc(3*sizeof(float)) ;
-		pfTemp[0] = pStar->iPositionX ;
-		pfTemp[1] = pStar->iPositionY ;
-		pfTemp[2] = pStar->iPositionZ ;
+		pfTemp = (float *) malloc(4*sizeof(float)) ;
+		pfTemp[0] = pStar->fSize ;
+		pfTemp[1] = pStar->fPositionX ;
+		pfTemp[2] = pStar->fPositionY ;
+		pfTemp[3] = pStar->fPositionZ ;
 
 		g_ptr_array_add(psExistingStars, pfTemp) ;
 	}
@@ -281,25 +291,25 @@ float starGetColourB (const Star * pStar)
 	return pStar->fColourB ;
 }
 
-int starGetX (const Star * pStar)
+float starGetX (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
-	return pStar->iPositionX ;
+	return pStar->fPositionX ;
 }
 
-int starGetY (const Star * pStar)
+float starGetY (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
-	return pStar->iPositionY ;
+	return pStar->fPositionY ;
 }
 
-int starGetZ (const Star * pStar)
+float starGetZ (const Star * pStar)
 {
 	assert(pStar != NULL) ;
 
-	return pStar->iPositionZ ;
+	return pStar->fPositionZ ;
 }
 
 
@@ -329,14 +339,14 @@ int StarRegressionTest(void)
 	sStar.fColourB = 0.75 ;
 	assert(starGetColourB(& sStar) == sStar.fColourB) ;
 
-	sStar.iPositionX = 1 ;
-	assert(starGetX(& sStar) == sStar.iPositionX) ;
+	sStar.fPositionX = 1 ;
+	assert(starGetX(& sStar) == sStar.fPositionX) ;
 
-	sStar.iPositionY = 2 ;
-	assert(starGetY(& sStar) == sStar.iPositionY) ;
+	sStar.fPositionY = 2 ;
+	assert(starGetY(& sStar) == sStar.fPositionY) ;
 
-	sStar.iPositionZ = 3 ;
-	assert(starGetZ(& sStar) == sStar.iPositionZ) ;
+	sStar.fPositionZ = 3 ;
+	assert(starGetZ(& sStar) == sStar.fPositionZ) ;
 	
 	printf("ok.\n") ;
 	
