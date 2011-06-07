@@ -1684,17 +1684,20 @@ static void drawAWing(int Armes)
 /*                                                                       */
 /* ********************************************************************* */
 
-static void drawSelectedStar(Star * pStar)
+static void drawSelectedStar(Star * pStar, AnalyzedTrack * pTrack)
 {
 	int iRotations = 4 ;
 	float fRotationAngle = 360/iRotations ;
 	float fTime = ((float) (clock())) / CLOCKS_PER_SEC ;
+	float * pfCoord = NULL ;
 
 	while (fTime >= iRotations) fTime = fTime - iRotations ;
-
+	
+	pfCoord = analyzedTrackGetCoord(pTrack) ;
+	
 	glPushMatrix() ;
 
-	glTranslatef(starGetX(pStar), starGetY(pStar), starGetZ(pStar)) ;
+	glTranslatef(pfCoord[0], pfCoord[1], pfCoord[2]) ;
 	glRotatef(15, 0, 0, 1) ;
 	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
 	glTranslatef(pStar->fSize * 1.2, 0, 0) ;
@@ -1833,7 +1836,7 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 		starCreate(& sSelectedStar,
 				   pData->pPlayedTrack,
 				   pData->psExistingStars) ;
-		drawSelectedStar(& sSelectedStar) ;
+		drawSelectedStar(& sSelectedStar, pData->pPlayedTrack) ;
 	}
 
 	g_ptr_array_free(pData->psExistingStars, TRUE) ;
@@ -2371,7 +2374,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 	glLoadIdentity() ;
 	gluPickMatrix((GLdouble) iPositionX,
 				  -1 * (GLdouble) iPositionY + (pData->iHeight),
-				  10.0, 10.0, piViewport);
+				  1.0, 1.0, piViewport);
 	gluPerspective(45,
 				   (GLfloat) pData->iWidth/ (GLfloat) pData->iHeight ,
 				   0.001, 1000) ;
