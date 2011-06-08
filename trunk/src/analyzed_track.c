@@ -108,7 +108,8 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 	/* On assigne le reste des valeurs */
 
 	psTrack->iTID = iTID;
-	psTrack->bAnalyzed = 1;
+	psTrack->bAnalyzed = 1 ;
+	psTrack->bAdded = 0 ;
 	psTrack->uiLength = uiLength;
 	psTrack->fAverage = fAverage;
 
@@ -133,6 +134,7 @@ int analyzedTrackRelease(AnalyzedTrack* psTrack)
 	psTrack->fAverage = 0;
 	psTrack->pfCoord[0] = psTrack->pfCoord[1] = psTrack->pfCoord[2] = 0;
 	psTrack->pfRate[0] = psTrack->pfRate[1] = psTrack->pfRate[2] = 0;
+	psTrack->bAdded = 0 ;
 	if (psTrack->strPath != NULL)
 	{
 		free(psTrack->strPath);
@@ -364,6 +366,22 @@ int analyzedTrackSetCoords(AnalyzedTrack* psTrack,
 
 
         return EXIT_SUCCESS;
+}
+
+unsigned char analyzedTrackGetbAdded (const AnalyzedTrack* psTrack)
+{
+	assert (psTrack != NULL) ;
+	
+	return psTrack->bAdded ;
+}
+
+int analyzedTrackSetbAdded (AnalyzedTrack* psTrack, unsigned char bAdded)
+{
+	assert (psTrack != NULL && (bAdded == 0 || bAdded == 1)) ;
+
+	psTrack->bAdded = bAdded ;
+	
+	return EXIT_SUCCESS ;
 }
 
 

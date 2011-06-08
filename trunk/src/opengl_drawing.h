@@ -18,6 +18,7 @@
 
 #include <gtk/gtk.h>
 #include "analyzed_tracks.h"
+#include "stellarium.h"
 
 #if defined(__linux)
 	#include <GL/gl.h>
@@ -84,14 +85,14 @@ struct sOpenGLData
 	/**< Hauteur de la fenêtre */
 	int iPrecision ;
 	/**< Precision choisie en préférence pour la qualité des dessins. */
-	int bPicking ;
+	unsigned char bPicking ;
 	/**< Booléen indiquant si on est en mode picking ou non. */
 	float pfTransfertMatrix[9] ;
 	/**< Matrice de passage de la base du monde à la base caméra. */
 	AnalyzedTrack * pPlayedTrack ;
 	/**< Analyse du morceau en train d'être lu. */
-	GPtrArray * psExistingStars ;
-	/**< Tableau dynamique GTK contenant la position des étoiles éxistantes */
+	Stellarium * psStellarium ;
+	/**< Stellarium/Tableau dynamique contenant les étoiles éxistantes */
 } ;
 
 /**
@@ -173,6 +174,15 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack) ;
 int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
 
 /**
+ * @fn int drawingGLStellariumInit (OpenGLData* pData)
+ * @brief Initialise le Stellarium.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingGLStellariumInit(OpenGLData* pData) ;
+
+/**
  * @fn int drawingGLInit (OpenGLData* pData)
  * @brief Initialise les paramètres OpenGL (caméra, lumière...).
  *
@@ -180,6 +190,15 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight) ;
  * @return EXIT_SUCCESS si tout est OK
  */
 int drawingGLInit (OpenGLData* pData) ;
+
+/**
+ * @fn int drawingGLFree (OpenGLData* pData)
+ * @brief Libère ce qu'il faut libérer dans OpenGLData.
+ *
+ * @param[in,out] pData Données utilisées par OpenGL
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int drawingGLFree (OpenGLData* pData) ;
 
 /**
  * @fn int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,

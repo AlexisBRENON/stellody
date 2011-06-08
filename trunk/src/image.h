@@ -5,8 +5,8 @@
  * @author Matthieu VIDAL in STELLODY TEAM
  */
 
-#ifndef IMAGE_H_INCLUDED
-#define IMAGE_H_INCLUDED
+#ifndef _IMAGE_H_
+#define _IMAGE_H_
 
 
 /* ********************************************************************* */

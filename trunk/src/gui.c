@@ -34,6 +34,8 @@
 #include "analysis.h"
 #include "opengl_drawing.h"
 #include "player.h"
+#include "stellarium.h"
+
 
 /* ********************************************************************* */
 /*                                                                       */

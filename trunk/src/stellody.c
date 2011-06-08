@@ -168,6 +168,8 @@ int stellody(int argc, char* argv[])
 	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
 					(GTraverseFunc) analyzedTracksCheckForAnalyze,
 					pDatas);
+	
+	drawingGLStellariumInit(pDatas[OPENGLDATA]) ;
 
 	/* Lancement de la boucle d'évenements */
 	on_Stellarium_Action_activate(NULL, pDatas);
@@ -192,6 +194,7 @@ int stellody(int argc, char* argv[])
 	free(pDatas[MOUSEPOSITION_X]); pDatas[MOUSEPOSITION_X] = NULL;
 	free(pDatas[MOUSEPOSITION_Y]); pDatas[MOUSEPOSITION_Y] = NULL;
 
+	drawingGLFree(pDatas[OPENGLDATA]) ;
 
 	free(pDatas[OPENGLDATA]); pDatas[OPENGLDATA] = NULL;
 
