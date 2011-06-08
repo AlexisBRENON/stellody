@@ -38,6 +38,7 @@ struct sAnalyzedTrack
 	float fAverage; /**< Fréquences moyenne */
 	float pfRate[3]; /**< Pourcentage des aigus, mediums et graves */
 	float pfCoord[3]; /**< Coordonnées du morceau une fois représenté. */
+	unsigned char bAdded ; /**< Booléen indiquant que le morceau a été ajouté au stellarium */
 } ;
 /**
   * @typedef AnalyzedTrack
@@ -366,6 +367,26 @@ int analyzedTrackSetCoords(AnalyzedTrack* psTrack,
 						float fX,
 						float fY,
 						float fZ);
+
+/**
+ * @fn unsigned char analyzedTrackGetbAdded (const AnalyzedTrack* psTrack)
+ * @brief Accesseur pour obtenir le booléen added du morceau.
+ *
+ * @param[in] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+ * @return Le booléen indiquant si le morceau est placé sur le stellarium.
+ */
+unsigned char analyzedTrackGetbAdded (const AnalyzedTrack* psTrack) ;
+
+/**
+ * @fn int analyzedTrackSetbAdded (AnalyzedTrack* psTrack, unsigned char bAdded)
+ * @brief Mutateur pour modifier la booléen added du morceau.
+ *
+ * @param[in,out] psTrack Pointeur sur la structure AnalyzedTrack à accéder.
+ * @param[in] bAdded Le booléen à enregistrer.
+ * @return EXIT_SUCCESS si tout s'est bien passé.
+ */
+int analyzedTrackSetbAdded (AnalyzedTrack* psTrack, unsigned char bAdded) ;
+
 
 /* ********************************************************************* */
 /*                                                                       */

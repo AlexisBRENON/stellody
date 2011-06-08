@@ -5,7 +5,6 @@
  * @file star.h
  */
 
-
 #ifndef _STAR_H_
 #define _STAR_H_
 
@@ -15,9 +14,6 @@
 /*                      Librairies d'une étoile                          */
 /*                                                                       */
 /* ********************************************************************* */
-
-#include <gtk/gtk.h>
-#include "analyzed_track.h"
 
 #if defined(__linux)
 #include <GL/gl.h>
@@ -44,6 +40,7 @@
  */
 struct sStar
 {
+	int iTID; /**< Identifiant du morceau (dans l'abre, le Stellarium) */
 	float fSize ;		/**< Taille de l'étoile */
 	float fColourR ;	/**< Couleur rouge  de l'étoile */
 	float fColourG ;	/**< Couleur verte  de l'étoile */
@@ -62,27 +59,29 @@ typedef struct sStar Star ;
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                   Fonctions relatives à OpenGL                        */
+/*                 Accesseurs de la structure Star                       */
 /*                                                                       */
 /* ********************************************************************* */
 
 /**
- * @fn int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars)
- * @brief Initialise une étoile avec les données issues d'un morceau analysé.
+ * @fn int starGetTID (const AnalyzedTrack* psTrack)
+ * @brief Accesseur sur l'identifiant du morceau.
  *
- * @param[in, out] pStar Pointeur sur l'étoile à initialiser.
- * @param[in, out] pTrack Pointeur sur l'analyse.
- * @param[in, out] psExistingStars Pointeur sur un arbre contenant toutes les coordonées des étoiles déjà placées.
- * @return 0 si tout s'est bien passé.
+ * @param[in] pStar Pointeur sur l'étoile à accéder.
+ * @return L'identifiant (entier) du morceau
  */
-int starCreate(Star * pStar, AnalyzedTrack * pTrack, GPtrArray * psExistingStars) ;
+int starGetTID (const Star * pStar) ;
 
-
-/* ********************************************************************* */
-/*                                                                       */
-/*                 Accesseurs de la structure Star                       */
-/*                                                                       */
-/* ********************************************************************* */
+/**
+ * @fn int starSetTID (AnalyzedTrack* psTrack,
+ int iValue)
+ * @brief Mutateur sur l'identifiant d'un morceau.
+ *
+ * @param[in,out] pStar Pointeur sur l'étoile à accéder.
+ * @param[in] iValue Nouvelle valeur à stocker
+ * @return EXIT_SUCCESS si tout est OK
+ */
+int starSetTID (Star * pStar, int iValue) ;
 
 /**
  * @fn float starGetSize (const Star * pStar)

@@ -25,6 +25,7 @@
 #include "image.h"
 #include "analyzed_track.h"
 #include "opengl_drawing.h"
+#include "stellarium.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159 /**< Défini la constante PI si elle ne l'est pas.*/
@@ -1684,9 +1685,11 @@ static void drawAWing(int Armes)
 /*                                                                       */
 /* ********************************************************************* */
 
-static void drawSelectedStar(Star * pStar, AnalyzedTrack * pTrack)
+static void drawSelectedStar(AnalyzedTrack * pTrack)
 {
 	int iRotations = 4 ;
+	unsigned int uiSize = 0 ;
+	float fSize = 0 ;
 	float fRotationAngle = 360/iRotations ;
 	float fTime = ((float) (clock())) / CLOCKS_PER_SEC ;
 	float * pfCoord = NULL ;
@@ -1694,21 +1697,37 @@ static void drawSelectedStar(Star * pStar, AnalyzedTrack * pTrack)
 	while (fTime >= iRotations) fTime = fTime - iRotations ;
 	
 	pfCoord = analyzedTrackGetCoord(pTrack) ;
+	uiSize = analyzedTrackGetLength(pTrack) ;
+
+	/* Recalcul de la taille. */
+	
+	if (uiSize > 420000)
+	{
+		fSize = 0.4 ;
+	}
+	else if (uiSize < 105000)
+	{
+		fSize = 0.1 ;
+	}
+	else
+	{
+		fSize = (float) uiSize/1050000.0f ;
+	}
 	
 	glPushMatrix() ;
 
 	glTranslatef(pfCoord[0], pfCoord[1], pfCoord[2]) ;
 	glRotatef(15, 0, 0, 1) ;
 	glRotatef(fTime*fRotationAngle, 0, 1, 0) ;
-	glTranslatef(pStar->fSize * 1.2, 0, 0) ;
+	glTranslatef(fSize * 1.2, 0, 0) ;
 	glRotatef(-90, 0, 0, 1) ;
-	glScalef(pStar->fSize*0.05, pStar->fSize*0.05, pStar->fSize*0.05) ;
+	glScalef(fSize*0.05, fSize*0.05, fSize*0.05) ;
 	drawAWing(1) ;
 
 	glPopMatrix() ;
 }
 
-static int drawStar(Star * psStar, int iPrecision)
+static int drawStar(const Star * psStar, int iPrecision)
 {
 	assert(psStar != NULL) ;
 
@@ -1787,41 +1806,52 @@ static void drawCubeMap(unsigned int uiTexture)
 	glDisable(GL_TEXTURE_2D) ;
 }
 
-static gboolean drawStellarium(int * piKey,
-							   AnalyzedTrack * pTrack,
-							   OpenGLData * pData)
+static gboolean drawStellariumUpdate(int * piKey,
+						  AnalyzedTrack * pTrack,
+						  OpenGLData * pData)
 {
-	int iAnalyzed = 0 ;
-	Star sStar ;
+	unsigned char bAnalyzed = 0 ;
+		
 	/* Vérifie que l'analyse a bien été faite. */
-	iAnalyzed = (int) analyzedTrackGetAnalyzed(pTrack) ;
-
-	if (iAnalyzed == 1)
+	bAnalyzed = (unsigned char) analyzedTrackGetAnalyzed(pTrack) ;
+		
+	if (bAnalyzed == 1)
 	{
-		starCreate(& sStar, pTrack, pData->psExistingStars) ;
-
-		glPushMatrix() ;
-		if (pData->bPicking == 1)
-		{
-			glLoadName(analyzedTrackGetTID(pTrack)) ;
-		}
-
-		drawStar(& sStar, pData->iPrecision) ;
-
-		glPopMatrix() ;
+		stellariumCreateStar(pData->psStellarium, pTrack) ;
 	}
-
+		
 	return FALSE ;
 }
 
-static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
+static int drawStellarium(OpenGLData * pData)
+{
+	unsigned int i = 0 ;
+	unsigned int uiStellariumLastPosition = 0 ;
+	const Star * pStar = NULL ;
+		
+	uiStellariumLastPosition = stellariumGetLastPosition(pData->psStellarium) ;
+		
+	for (i = 0 ; i < uiStellariumLastPosition ; i++)
+	{
+		pStar = stellariumGetStar(pData->psStellarium, i) ;
+	
+		if (pData->bPicking == 1)
+		{
+			glLoadName(starGetTID(pStar)) ;
+		}
+
+		drawStar(pStar, pData->iPrecision) ;
+	}
+		
+	return EXIT_SUCCESS ;
+}
+
+static void drawScene(OpenGLData * pData)
 {
 	int i = 0 ;
 	float f = 0 ;
 	float fTemp = 0 ;
 	GLfloat White[4] = {1.0f, 1.0f, 1.0f, 0.0f} ;
-	Star sSelectedStar ;
-	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
 
 	glDisable(GL_LIGHTING) ;
 
@@ -1829,19 +1859,12 @@ static void drawScene(AnalyzedTracks * pTracks, OpenGLData * pData)
 
 	glEnable(GL_LIGHTING) ;
 
-	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
+	drawStellarium(pData) ;
 
 	if (pData->pPlayedTrack != NULL)
 	{
-		starCreate(& sSelectedStar,
-				   pData->pPlayedTrack,
-				   pData->psExistingStars) ;
-		drawSelectedStar(& sSelectedStar, pData->pPlayedTrack) ;
+		drawSelectedStar(pData->pPlayedTrack) ;
 	}
-
-	g_ptr_array_free(pData->psExistingStars, TRUE) ;
-	pData->psExistingStars = NULL ;
-
 
 	/* Bulbe central. */
 	glPushMatrix() ;
@@ -2263,6 +2286,15 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
 	return EXIT_SUCCESS ;
 }
 
+int drawingGLStellariumInit(OpenGLData* pData)
+{
+	pData->psStellarium = (Stellarium *) malloc (sizeof(Stellarium)) ;
+	
+	stellariumInit(pData->psStellarium, 1) ;
+
+	return EXIT_SUCCESS ;
+}
+
 int drawingGLInit (OpenGLData* pData)
 {
 	/* Début de l'initialisation. */
@@ -2297,7 +2329,7 @@ int drawingGLInit (OpenGLData* pData)
 	pData->iPrecision = 0 ;
 	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
-
+	
 	drawingGLUpdateTransfertMatrix(pData) ;
 
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
@@ -2343,8 +2375,17 @@ int drawingGLInit (OpenGLData* pData)
     glEnable( GL_COLOR_MATERIAL );
 
 	/* Fin de l'initialisation. */
-
+	
 	return EXIT_SUCCESS;
+}
+
+int drawingGLFree (OpenGLData* pData)
+{
+	stellariumFree(pData->psStellarium) ;
+	
+	free(pData->psStellarium) ;
+	
+	return EXIT_SUCCESS ;
 }
 
 int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
@@ -2356,9 +2397,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
  	GLint piViewport[4] = {0} ;
  	GLuint *ptr = NULL ;
  	int iRet = -1 ;
-
-	pData->psExistingStars = g_ptr_array_new_with_free_func(free) ;
-
+	
  	glSelectBuffer(64, uiBuffer) ;
  	glGetIntegerv(GL_VIEWPORT, piViewport) ;
 
@@ -2394,7 +2433,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 			  0, 1, 0) ;
 
 	pData->bPicking = 1 ;
-	g_tree_foreach(pTracks, (GTraverseFunc) drawStellarium, pData) ;
+	drawStellarium(pData) ;
 	pData->bPicking = 0 ;
 
 	glMatrixMode(GL_PROJECTION) ;
@@ -2408,15 +2447,11 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 
 	ptr = (GLuint*) uiBuffer;
 
-
  	iNbHits = glRenderMode(GL_RENDER) ;
 	if (iNbHits == 1)
 	{
 		iRet = (int) ptr[3] ;
 	}
-
-	g_ptr_array_free(pData->psExistingStars, TRUE) ;
-	pData->psExistingStars = NULL ;
 
 	return iRet ;
 }
@@ -2427,8 +2462,8 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 	/* Gestion de la vision. */
 
 	drawingGLMoveDirection(pData) ;
-
-	glMatrixMode(GL_MODELVIEW);
+	
+	glMatrixMode(GL_MODELVIEW) ;	
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -2443,14 +2478,18 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 			  pData->fCenterY,
 			  pData->fCenterZ,
 			  0, 1, 0) ;
-
+	
 	/* Fin de la gestion de la vision. */
 
+	/* Gestion du Stellarium. */
+		
+	g_tree_foreach(pTracks, (GTraverseFunc) drawStellariumUpdate, pData) ;
+	
 	/* Début des dessins. */
 
 	pData->iPrecision = 2*iPrecision + 6 ;
 
-	drawScene(pTracks, pData) ;
+	drawScene(pData) ;
 
 	/* Fin des dessins. */
 
