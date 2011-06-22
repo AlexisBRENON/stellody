@@ -39,6 +39,8 @@
 #define	MOUSEPOSITION_Y		16	/**< Coordonnées en y de la souris */
 #define	OPENGLDATA			17	/**< Structure de données OpenGL */
 
+
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                   Fonctions relatives à la fenêtre                    */

@@ -358,7 +358,6 @@ int preferencesGetMoveCam(const Preferences* psPref)
 
 int preferencesSetMoveCam(Preferences* psPref, int iValue)
 {
-	printf("%d\n", iValue);
 
 	assert (psPref != NULL);
 	assert (iValue == 0 || iValue == 1);

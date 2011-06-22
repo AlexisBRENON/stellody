@@ -381,6 +381,7 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	return EXIT_SUCCESS;
 }
 
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                   Fonctions relatives à la fenêtre                    */

@@ -3,7 +3,16 @@
   *
   * @author STELLODY TEAM
   * @file stellody.c
+  * @todo Créer module de tableau dynamique. \n
+  Modifier AnalyzedTracks en tableau dynamique (ABR inutile). \n
+  Modifier Stellarium en surcouche du tableau dynamique.
+
+  * @todo Création des structures pour gérer l'interface. \n
+  \t Structure guiData -> OK \n
+  \t Structure PlayerData -> TODO \n
+  \t Structure OpenGLData -> OK \n
   */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -168,7 +177,7 @@ int stellody(int argc, char* argv[])
 	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
 					(GTraverseFunc) analyzedTracksCheckForAnalyze,
 					pDatas);
-	
+
 	drawingGLStellariumInit(pDatas[OPENGLDATA]) ;
 
 	/* Lancement de la boucle d'évenements */

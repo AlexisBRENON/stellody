@@ -50,7 +50,7 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
 					$(GTK_CFLAGS)	$(GL_CFLAGS)
 LIN_LDFLAGS =		-export-dynamic \
-					-lfmodex-4.32.09 \
+					-lfmodex64-4.34.05 \
 					-lgtkglext-x11-1.0 \
 					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 
