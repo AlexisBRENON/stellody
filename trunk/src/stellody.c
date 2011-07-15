@@ -3,14 +3,15 @@
   *
   * @author STELLODY TEAM
   * @file stellody.c
-  * @todo Créer module de tableau dynamique. \n
-  Modifier AnalyzedTracks en tableau dynamique (ABR inutile). \n
-  Modifier Stellarium en surcouche du tableau dynamique.
-
-  * @todo Création des structures pour gérer l'interface. \n
-  \t Structure guiData -> OK \n
-  \t Structure PlayerData -> TODO \n
-  \t Structure OpenGLData -> OK \n
+  * @todo
+		Modifier AnalyzedTracks en tableau dynamique (ABR inutile). \n
+		Modifier Stellarium en surcouche du tableau dynamique. \n \n
+		Utiliser les strucures GUI, PLAYER et OPENGL pour les callbacks. \n
+		Implémenter le bouton précédent. \n
+		Règler le problème de la barre de progression. \n
+		Utiliser les GtkTreeModel pour la liste de lecture. \n \n
+		Ajouter un onglet pour voir en liste toute la bibliothèque. \n
+		Ajouter récurcivement les dossiers de musique. \n
   */
 
 
@@ -28,6 +29,8 @@
 #include <fmod.h>
 #endif
 
+#include "dynamic_array.h"
+#include "linked_list.h"
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
 #include "preferences.h"
@@ -79,8 +82,10 @@ int regressionTests()
 	printf ("\t3 : analyzedTrackRegressionTest\n");
 	printf ("\t4 : filesRegressionTest\n");
 	printf ("\t5 : openglRegressionTest\n");
+	printf ("\t6 : dynamicArrayRegressionTest\n");
+	printf ("\t7 : linkedListRegressionTest\n");
 
-	while (iAnswer < 0 || iAnswer > 5)
+	while (iAnswer < 0 || iAnswer > 7)
     {
     	printf("\n Choix : ");
     	scanf("%d", &iAnswer);
@@ -108,6 +113,14 @@ int regressionTests()
 			printf("Returned value : %d\n",
 				   drawingGLRegressionTest());
 			break;
+		case 6:
+			printf("Returned value : %d\n",
+					dynamicArrayRegressionTest());
+			break;
+		case 7:
+			printf("Returned value : %d\n",
+					linkedListRegressionTest());
+				break;
 		default:
 			break;
     }

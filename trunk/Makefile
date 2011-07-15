@@ -40,6 +40,10 @@ SRCS = 			files.c \
 			star.c \
 			stellarium.c \
 			opengl_drawing.c \
+			dynamic_array.c \
+			linked_list.c \
+			gui_data.c \
+			player_data.c \
 			stellody.c 
 
 	# Noms des fichiers objets (génération dynamique)
