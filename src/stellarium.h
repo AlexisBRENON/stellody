@@ -7,7 +7,7 @@
 
 #ifndef _STELLARIUM_H_
 #define _STELLARIUM_H_
- 
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -94,13 +94,14 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack) ;
  * @brief Ajoute une étoile au stellarium.
  *
  * @param[in,out] pStellarium Pointeur sur le stellarium à libérer.
- * @param[in,out] sStar Pointeur sur l'étoile.
+ * @param[in,out] pStar Pointeur sur l'étoile.
  * @return EXIT_SUCCESS si tout est OK.
  */
 int stellariumAddStar(Stellarium * pStellarium, Star * pStar) ;
 
 /**
- * @fn const Star * Star stellariumGetStar(Stellarium * pStellarium, unsigned int uiNumber)
+ * @fn const Star * stellariumGetStar(const Stellarium * pStellarium,
+									unsigned int uiNumber)
  * @brief Renvoie la i-ème étoile du stellarium
  *
  * @param[in] pStellarium Pointeur sur le stellarium.

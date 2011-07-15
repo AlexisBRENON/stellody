@@ -64,7 +64,7 @@ typedef struct sStar Star ;
 /* ********************************************************************* */
 
 /**
- * @fn int starGetTID (const AnalyzedTrack* psTrack)
+ * @fn int starGetTID (const Star* pStar)
  * @brief Accesseur sur l'identifiant du morceau.
  *
  * @param[in] pStar Pointeur sur l'étoile à accéder.
@@ -73,8 +73,8 @@ typedef struct sStar Star ;
 int starGetTID (const Star * pStar) ;
 
 /**
- * @fn int starSetTID (AnalyzedTrack* psTrack,
- int iValue)
+ * @fn int starSetTID (Star *pStar,
+						int iValue)
  * @brief Mutateur sur l'identifiant d'un morceau.
  *
  * @param[in,out] pStar Pointeur sur l'étoile à accéder.

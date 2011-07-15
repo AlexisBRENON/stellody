@@ -58,6 +58,14 @@
     <property name="icon_name">preferences-system</property>
     <signal name="activate" handler="on_Preferences_Action_activate" swapped="no"/>
   </object>
+  <object class="GtkAction" id="Previous_Action">
+    <property name="label" translatable="yes">Précédent</property>
+    <property name="short_label" translatable="yes">|&lt;&lt;</property>
+    <property name="tooltip" translatable="yes">Lire le morceau précédent</property>
+    <property name="stock_id">gtk-media-previous</property>
+    <property name="icon_name">media-skip-backward</property>
+    <signal name="activate" handler="on_Previous_Action_activate" swapped="no"/>
+  </object>
   <object class="GtkAction" id="Quit_Action">
     <property name="label">Quitter</property>
     <property name="short_label">Quitter</property>
@@ -82,12 +90,15 @@
   </object>
   <object class="GtkListStore" id="PlayList_ListStore">
     <columns>
-      <!-- column-name Track_infos -->
+      <!-- column-name Titre -->
       <column type="gchararray"/>
     </columns>
     <data>
       <row>
         <col id="0" translatable="yes">Test</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">test 3</col>
       </row>
     </data>
   </object>
@@ -286,16 +297,43 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkHButtonBox" id="Play_ButtonBox">
+              <object class="GtkVButtonBox" id="vbuttonbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="Play_But">
+                  <object class="GtkHButtonBox" id="hbuttonbox3">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="related_action">Play_Action</property>
-                    <property name="use_stock">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton" id="Previous_But2">
+                        <property name="label" translatable="yes">|&lt;&lt;</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Previous_Action</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="Next_But2">
+                        <property name="label" translatable="yes">&gt;&gt;|</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Next_Action</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -304,12 +342,51 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="Pause_But">
+                  <object class="GtkHButtonBox" id="hbuttonbox4">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="related_action">Pause_Action</property>
-                    <property name="use_stock">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton" id="Stop_But2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Stop_Action</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="Play_But2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Play_Action</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="Pause_But2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Pause_Action</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -317,38 +394,10 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkButton" id="Stop_But">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="related_action">Stop_Action</property>
-                    <property name="use_stock">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="Next_But">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="related_action">Next_Action</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="padding">5</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -412,6 +461,20 @@
                 <property name="extension_events">cursor</property>
                 <property name="spacing">5</property>
                 <child>
+                  <object class="GtkTreeView" id="PlayList_TreeView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="model">PlayList_ListStore</property>
+                    <property name="headers_clickable">False</property>
+                    <property name="enable_grid_lines">horizontal</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkVBox" id="PlayList_Box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -451,7 +514,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -505,7 +568,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
