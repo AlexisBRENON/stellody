@@ -5,19 +5,25 @@
   * @file stellody.c
   * @todo
 		Modifier AnalyzedTracks en tableau dynamique (ABR inutile). \n
-		Modifier Stellarium en surcouche du tableau dynamique. \n \n
-		Utiliser les strucures GUI, PLAYER et OPENGL pour les callbacks. \n
+		Reprendre Stellarium pour stocker l'adresse de l'étoile et non l'étoile. \n \n
 		Implémenter le bouton précédent. \n
-		Règler le problème de la barre de progression. \n
-		Utiliser les GtkTreeModel pour la liste de lecture. \n \n
 		Ajouter un onglet pour voir en liste toute la bibliothèque. \n
 		Ajouter récurcivement les dossiers de musique. \n
   */
 
 
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                     INCLUSIONS DU PREPROCESSEUR                       */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
@@ -39,8 +45,23 @@
 #include "gui.h"
 
 
+/* ********************************************************************* */
+/*                                                                       */
+/*                              PROTOTYPES                               */
+/*                                                                       */
+/* ********************************************************************* */
+
+
 int regressionTests ();
 int stellody (int argc, char* argv[]);
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                            IMPLEMENTATION                             */
+/*                                                                       */
+/* ********************************************************************* */
+
 
 /**
   * @fn int main (int argc, char* argv[])
@@ -141,86 +162,12 @@ int regressionTests()
   */
 int stellody(int argc, char* argv[])
 {
-	/* Déclaration des variables. */
-	gpointer pDatas[NB_DATA];
-	GKeyFile** pFileContext;
-
-	int i;
-
-	/* Initialisation des variables */
-
-	srand(time(NULL));
-
-	for (i = 0; i < NB_DATA; i++)
-	{
-		pDatas[i] = NULL;
-	}
-
-	pDatas[ANALYZING_COUNTER] = (int*) malloc(sizeof(int));
-	*((int*) pDatas[ANALYZING_COUNTER]) = 0;
-	pDatas[CHECKANALYZE] = (int*) malloc(sizeof(int));
-	*((int*) pDatas[CHECKANALYZE]) = 0;
-	pDatas[INCREMENT_TIMER] = (int*) malloc(sizeof(int));
-	*((int*)pDatas[INCREMENT_TIMER]) = 0;
-	pDatas[PLAYLIST_INDEX] = (int*) malloc(sizeof(int));
-	*((int*) pDatas[PLAYLIST_INDEX]) = 0;
-	pDatas[MOUSEPOSITION_X] = (float*) malloc(sizeof(float));
-	*((float*) pDatas[MOUSEPOSITION_X]) = 0;
-	pDatas[MOUSEPOSITION_Y] = (float*) malloc(sizeof(float));
-	*((float*) pDatas[MOUSEPOSITION_Y]) = 0;
-
-	FMOD_System_Create((FMOD_SYSTEM**) &(pDatas[FMOD_CONTEXT]));
-	FMOD_System_Init((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT],
-					2, FMOD_INIT_NORMAL, NULL);
-	pDatas[OPENGLDATA] = (OpenGLData *) malloc (sizeof(OpenGLData)) ;
-
-	/* Initialisation des bibliothèques tierces. */
+	void* ppDatas[5] = {NULL, NULL, NULL, NULL, NULL};
 
 	gtk_init(&argc, &argv);
-	gtk_gl_init(&argc, &argv);
+	assert (guiLoad(ppDatas) == EXIT_SUCCESS);
 
-	/* Création de l'interface et chargement des données */
-
-	guiLoad(pDatas);
-
-	pFileContext = filesOpen();
-	pDatas[PREFERENCES] = preferencesCreateFromFile(pFileContext);
-	pDatas[ANALYZED_TRACKS] = analyzedTracksCreateFromFile(pFileContext);
-
-	g_tree_foreach((GTree*) pDatas[ANALYZED_TRACKS],
-					(GTraverseFunc) analyzedTracksCheckForAnalyze,
-					pDatas);
-
-	drawingGLStellariumInit(pDatas[OPENGLDATA]) ;
-
-	/* Lancement de la boucle d'évenements */
-	on_Stellarium_Action_activate(NULL, pDatas);
 	gtk_main();
-
-	/* Libération de la mémoire */
-
-	filesCloseAndSave(&pFileContext,
-					pDatas[PREFERENCES],
-					pDatas[ANALYZED_TRACKS]);
-
-	preferencesDestroy((Preferences**) &(pDatas[PREFERENCES]));
-
-	analyzedTracksDestroy((AnalyzedTracks**)&(pDatas[ANALYZED_TRACKS]));
-
-	FMOD_System_Release((FMOD_SYSTEM*) pDatas[FMOD_CONTEXT]);
-
-	free(pDatas[ANALYZING_COUNTER]); pDatas[ANALYZING_COUNTER] = NULL;
-	free(pDatas[CHECKANALYZE]); pDatas[CHECKANALYZE] = NULL;
-	free(pDatas[INCREMENT_TIMER]); pDatas[INCREMENT_TIMER] = NULL;
-	free(pDatas[PLAYLIST_INDEX]); pDatas[PLAYLIST_INDEX] = NULL;
-	free(pDatas[MOUSEPOSITION_X]); pDatas[MOUSEPOSITION_X] = NULL;
-	free(pDatas[MOUSEPOSITION_Y]); pDatas[MOUSEPOSITION_Y] = NULL;
-
-	drawingGLFree(pDatas[OPENGLDATA]) ;
-
-	free(pDatas[OPENGLDATA]); pDatas[OPENGLDATA] = NULL;
-
-	/* All is alright ! ;p */
 
 	return EXIT_SUCCESS;
 }

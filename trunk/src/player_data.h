@@ -91,6 +91,15 @@ int playerDataInit (PlayerData* pData);
 int playerDataRelease (PlayerData* pData);
 
 /**
+  * @fn FMOD_SYSTEM* playerDataGetSystem (const PlayerData* pData)
+  * @brief Accesseur
+  *
+  * @param[in] pData Adresse de la structure
+  * @return Le systeme FMod
+  */
+FMOD_SYSTEM* playerDataGetSystem (const PlayerData* pData);
+
+/**
   * @fn FMOD_CHANNEL* playerDataGetPlayingChannel (PlayerData* pData);
   * @brief Permet de récupérer le cannal de lecture.
   *
@@ -147,8 +156,14 @@ int playerDataGetCheckForAnalyze (const PlayerData* pData);
 int playerDataSetCheckForAnalyze (PlayerData* pData,
 								int iValue);
 
-
-
+/**
+  * @fn LinkedList* playerDataGetAnalyzingList (const PlayerData* pData)
+  * @brief Accesseur
+  *
+  * @param[in] pData Adresse de la structure.
+  * @return La liste d'analyse.
+  */
+LinkedList* playerDataGetAnalyzingList (const PlayerData* pData);
 
 
 

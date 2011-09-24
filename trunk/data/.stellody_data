@@ -32,10 +32,10 @@ bAnalyzed=1
 uiLength=227134
 fAverage=54.037246704101562
 fBass=0.6041761040687561
-fMedium=0.24829773604869843
+fMedium=0.24829770624637604
 fTreble=0.14752623438835144
 fCoordX=-2.6788687705993652
-fCoordY=0.5495229959487915
+fCoordY=0.54952108860015869
 fCoordZ=2.9316349029541016
 
 [/home/alexis/Musique/Katy Perry - Teenage Dream (2010)/04 Firework_(www.DownloadMixTapes.org).mp3]
@@ -122,12 +122,12 @@ iTID=9
 bAnalyzed=1
 uiLength=247875
 fAverage=27.949558258056641
-fBass=0.69424867630004883
-fMedium=0.2033315896987915
-fTreble=0.10241968184709549
-fCoordX=2.7124338150024414
+fBass=0.6942487359046936
+fMedium=0.2033316045999527
+fTreble=0.10241968929767609
+fCoordX=2.7124366760253906
 fCoordY=-1.8001041412353516
-fCoordZ=-3.2096385955810547
+fCoordZ=-3.2096376419067383
 
 [/home/alexis/Musique/Katy Perry - Teenage Dream (2010)/01 Teenage Dream_(www.DownloadMixTapes.org).mp3]
 strPath=/home/alexis/Musique/Katy Perry - Teenage Dream (2010)/01 Teenage Dream_(www.DownloadMixTapes.org).mp3
@@ -161,10 +161,10 @@ iTID=12
 bAnalyzed=1
 uiLength=241136
 fAverage=20.732046127319336
-fBass=0.74914664030075073
+fBass=0.74914669990539551
 fMedium=0.19191177189350128
 fTreble=0.0589415542781353
-fCoordX=5.4573326110839844
+fCoordX=5.4573345184326172
 fCoordY=-2.4852933883666992
 fCoordZ=-8.4270133972167969
 
@@ -180,4 +180,17 @@ fTreble=0.13449037075042725
 fCoordX=1.2941926717758179
 fCoordY=-3.6079216003417969
 fCoordZ=1.1508640050888062
+
+[/home/alexis/Musique/Always where I need to be - The Kooks.mp3]
+strPath=/home/alexis/Musique/Always where I need to be - The Kooks.mp3
+iTID=14
+bAnalyzed=1
+uiLength=161776
+fAverage=150.73240661621094
+fBass=0.64038759469985962
+fMedium=0.14619828760623932
+fTreble=0.21341407299041748
+fCoordX=0.019379615783691406
+fCoordY=-5.2281026840209961
+fCoordZ=10.109687805175781
 

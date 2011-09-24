@@ -51,9 +51,11 @@ int guiDataInitWithData (GuiData* pData,
 	guiDataSetBuilderByName(pData,
 							STELLARIUM, strStellariumBuilder);
 	guiDataSetBuilderByName(pData,
-							PREFERENCES, strPreferencesBuilder);
+							PREFERENCE, strPreferencesBuilder);
 	guiDataSetBuilderByName(pData,
 							ABOUT, strAboutBuilder);
+
+	pData->psPath = gtk_tree_path_new_first();
 
 	return EXIT_SUCCESS;
 }
@@ -73,6 +75,8 @@ int guiDataRelease (GuiData* pData)
 	pData->pAboutBuilder = NULL;
 
 	pData->iIncrementTimerID = 0;
+
+	gtk_tree_path_free(pData->psPath);
 
 	pData->iXMousePosition = 0;
 	pData->iYMousePosition = 0;
@@ -104,9 +108,11 @@ GuiData* guiDataCreateWithData (const char* strMainBuilder,
 	guiDataSetBuilderByName(pData,
 							STELLARIUM, strStellariumBuilder);
 	guiDataSetBuilderByName(pData,
-							PREFERENCES, strPreferencesBuilder);
+							PREFERENCE, strPreferencesBuilder);
 	guiDataSetBuilderByName(pData,
 							ABOUT, strAboutBuilder);
+
+	pData->psPath = gtk_tree_path_new_first();
 
 	return pData;
 }
@@ -121,6 +127,20 @@ int guiDataDestroy (GuiData** ppData)
 
 	free(*ppData);
 	*ppData = NULL;
+
+	return EXIT_SUCCESS;
+}
+
+
+int guiDataConnectSignals (GuiData* pData,
+						void* pConnectData)
+{
+	assert (pData != NULL);
+
+	gtk_builder_connect_signals(pData->pMainBuilder, pConnectData);
+	gtk_builder_connect_signals(pData->pStellariumBuilder, pConnectData);
+	gtk_builder_connect_signals(pData->pPreferencesBuilder, pConnectData);
+	gtk_builder_connect_signals(pData->pAboutBuilder, pConnectData);
 
 	return EXIT_SUCCESS;
 }
@@ -149,7 +169,7 @@ int guiDataSetBuilder (GuiData* pData,
 			}
 			pData->pStellariumBuilder = pBuilder;
 			break;
-		case PREFERENCES:
+		case PREFERENCE:
 			if (pData->pPreferencesBuilder != NULL)
 			{
 				g_object_unref(pData->pPreferencesBuilder);
@@ -190,7 +210,7 @@ int guiDataSetBuilderByName(GuiData* pData,
 			gtk_builder_add_from_file(pData->pStellariumBuilder,
 										strBuilder, NULL);
 			break;
-		case PREFERENCES:
+		case PREFERENCE:
 			gtk_builder_add_from_file(pData->pPreferencesBuilder,
 										strBuilder, NULL);
 			break;
@@ -220,7 +240,7 @@ GtkBuilder* guiDataGetBuilder (const GuiData* pData,
 		case STELLARIUM:
 			return pData->pStellariumBuilder;
 			break;
-		case PREFERENCES:
+		case PREFERENCE:
 			return pData->pPreferencesBuilder;
 			break;
 		case ABOUT:
@@ -253,6 +273,13 @@ int guiDataGetIncrementTimerID (const GuiData* pData)
 	return pData->iIncrementTimerID;
 }
 
+
+GtkTreePath* guiDataGetTreePath (const GuiData* pData)
+{
+	assert (pData != NULL);
+
+	return (pData->psPath);
+}
 
 int guiDataSetMousePosition (GuiData* pData,
 							int iX, int iY)

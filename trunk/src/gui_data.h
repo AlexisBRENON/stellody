@@ -28,7 +28,7 @@ enum eBuilderName
 {
 	MAIN, /**< Identifie le builder principal. */
 	STELLARIUM, /**< Identifie le builder du Stellarium */
-	PREFERENCES, /**< Identifie le builder des Préférences */
+	PREFERENCE, /**< Identifie le builder des Préférences */
 	ABOUT /**< Identifie le builder de la fenêtre APropos */
 };
 /**
@@ -48,6 +48,8 @@ struct sGuiData
 	GtkBuilder* pStellariumBuilder; /**< Builder du Stellarium */
 	GtkBuilder* pPreferencesBuilder; /**< Builder de la gestion de préférences */
 	GtkBuilder* pAboutBuilder; /**< Builder du @em A Propos */
+
+	GtkTreePath* psPath; /**< Pointeur sur le morceau de la playlist. */
 
 	int iIncrementTimerID; /**< ID du timer d'incrémentation */
 
@@ -141,6 +143,17 @@ GuiData* guiDataCreateWithData (const char* strMainBuilder,
 int guiDataDestroy (GuiData** ppData);
 
 
+/**
+  * @fn int guiDataConnectSignals (GuiData* pData,
+							void* pConnectData)
+  * @brief Connecte les signaux des interfaces avec la donnée passée.
+  *
+  * @param[in,out] pData Donnée d'interface
+  * @param[in] pConnectData Donnée à connecter aux signaux de l'interface principale
+  * @return EXIT_SUCCESS
+  */
+int guiDataConnectSignals (GuiData* pData,
+						void* pConnectData);
 
 /**
   * @fn int guiDataSetBuilder(GuiData* pData,
@@ -200,6 +213,16 @@ int guiDataSetIncrementTimerID (GuiData* pData, int iID);
   * @return l'ID du timer (>0)
   */
 int guiDataGetIncrementTimerID (const GuiData* pData);
+
+
+/**
+  * @fn GtkTreePath* guiDataGetTreePath (const GuiData* pData)
+  * @brief Accesseur.
+  *
+  * @param[in] pData Structure à accéder
+  * @return GtkTreePath sur le morceau à lire
+  */
+GtkTreePath* guiDataGetTreePath (const GuiData* pData);
 
 /**
   * @fn int guiDataSetMousePosition (GuiData* pData,
