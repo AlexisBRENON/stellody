@@ -72,4 +72,26 @@ int playerPlayTrack (char* strPath,
 					unsigned int uiStartingPerCent,
 					unsigned int* puiTrackLength,
 					char** strSinger, char** strTitle);
+
+/**
+  * @fn int playerStopTrack (FMOD_CHANNEL* psPlayingChannel);
+  * @brief Stoppe la lecture du morceau.
+  *
+  * @param[in] psPlayingChannel Canal de lecture.
+  * @return EXIT_SUCCESS
+  */
+int playerStopTrack (FMOD_CHANNEL* psPlayingChannel);
+
+/**
+  * @fn int playerSetPaused (FMOD_CHANNEL* psChannel,
+					FMOD_BOOL bPause);
+  * @brief Modifie l'état de pause d'un canal.
+  *
+  * @param[in,out] psChannel Canal à modifier
+  * @param[in] bPause L'état à assigner
+  * @return EXIT_SUCCESS
+  */
+int playerSetPaused (FMOD_CHANNEL* psChannel,
+					FMOD_BOOL bPause);
+
 #endif /* __PLAYER_H__ */

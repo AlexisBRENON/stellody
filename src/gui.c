@@ -28,13 +28,16 @@
 #endif
 
 #include "gui.h"
+#include "gui_data.h"
 #include "preferences.h"
 #include "analyzed_tracks.h"
 #include "analyzed_track.h"
 #include "analysis.h"
 #include "opengl_drawing.h"
 #include "player.h"
+#include "player_data.h"
 #include "stellarium.h"
+#include "files.h"
 
 
 /* ********************************************************************* */
@@ -73,12 +76,15 @@ fichier. */
 /*                                                                       */
 /* ********************************************************************* */
 
-static int guiUnparent (GtkBuilder* pMainBuilder,
-						GtkBuilder* pPreferencesBuilder,
-						GtkBuilder* pAboutBuilder,
-						GtkBuilder* pStellariumBuilder);
+/* ********************************************************************* */
+/* Déclarations                                                          */
+/* ********************************************************************* */
 
-static gboolean guiTrackScaleIncrement (gpointer* pData);
+static int guiUnparent (GuiData* psData);
+
+static gboolean guiTrackScaleIncrement (GtkBuilder* psMainBuilder,
+										FMOD_CHANNEL* psPlayingChannel,
+										gpointer* pData);
 
 static int guiPlayTrack (AnalyzedTrack* pTrack,
 						GtkBuilder* pMainBuilder,
@@ -86,147 +92,113 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 						FMOD_CHANNEL** ppPlayingChannel,
 						int iGoToStar,
 						OpenGLData* pGLData);
+static int guiStopTrack (GtkBuilder* psMainBuilder,
+						FMOD_CHANNEL* psChannel,
+						GuiData* psGuiData,
+						OpenGLData* psGLData,
+						int iTimeOutID);
 
 static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 								AnalyzedTrack* pTrack,
 								gpointer* pData);
 
 
-static int guiUnparent (GtkBuilder* pMainBuilder,
-						GtkBuilder* pPreferencesBuilder,
-						GtkBuilder* pAboutBuilder,
-						GtkBuilder* pStellariumBuilder)
+/* ********************************************************************* */
+/* Implémentation                                                        */
+/* ********************************************************************* */
+
+static int guiUnparent (GuiData* psData)
 {
+	GtkBuilder* pMainBuilder = NULL;
+	GtkBuilder* pPreferencesBuilder = NULL;
+	GtkBuilder* pAboutBuilder = NULL;
+	GtkBuilder* pStellariumBuilder = NULL;
+
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psPreference = NULL;
 	GtkWidget* psAbout = NULL;
 	GtkWidget* psContainer = NULL;
 
-	psContainer = GTK_WIDGET(gtk_builder_get_object(
-										pMainBuilder,
+
+	pMainBuilder = guiDataGetBuilder(psData, MAIN);
+	pPreferencesBuilder = guiDataGetBuilder(psData, PREFERENCE);
+	pAboutBuilder = guiDataGetBuilder(psData, ABOUT);
+	pStellariumBuilder = guiDataGetBuilder(psData, STELLARIUM);
+
+
+	psContainer = GTK_WIDGET(
+				gtk_builder_get_object(pMainBuilder,
 										GUI_MAIN_CONTAINER));
 
-	/* Récupération des potentiels widgets fils et obturation du widget */
-	if (pPreferencesBuilder != NULL)
-	{
-		psPreference = GTK_WIDGET(gtk_builder_get_object(
-										pPreferencesBuilder,
-										GUI_PREFERENCES_WIN));
-		gtk_widget_hide_all(psPreference);
-
-		if (gtk_widget_get_parent(psPreference) != NULL)
-		{
-			gtk_container_remove ((GtkContainer*)psContainer, psPreference);
-		}
-	}
-
-	if (pAboutBuilder != NULL)
-	{
-		psAbout = GTK_WIDGET(gtk_builder_get_object(
-												pAboutBuilder,
-												GUI_ABOUT_WIN));
-		gtk_widget_hide_all(psAbout);
-
-		if (gtk_widget_get_parent(psAbout) != NULL)
-		{
-			gtk_container_remove ((GtkContainer*)psContainer, psAbout);
-		}
-	}
-
-	if (pStellariumBuilder != NULL)
-	{
-		psStellarium = GTK_WIDGET(gtk_builder_get_object(
-											pStellariumBuilder,
+	psPreference = GTK_WIDGET(
+				gtk_builder_get_object(pPreferencesBuilder,
+									GUI_PREFERENCES_WIN));
+	psAbout = GTK_WIDGET(
+			gtk_builder_get_object(pAboutBuilder,
+									GUI_ABOUT_WIN));
+	psStellarium = GTK_WIDGET(
+					gtk_builder_get_object(pStellariumBuilder,
 											GUI_STELLARIUM_WIN));
-		gtk_widget_hide_all(psStellarium);
 
-		if (gtk_widget_get_parent(psStellarium) != NULL)
-		{
-			gtk_container_remove ((GtkContainer*)psContainer, psStellarium);
-		}
+	gtk_widget_hide_all(psPreference);
+	gtk_widget_hide_all(psAbout);
+	gtk_widget_hide_all(psStellarium);
+
+
+	if (gtk_widget_get_parent(psPreference) != NULL)
+	{
+		gtk_container_remove ((GtkContainer*)psContainer, psPreference);
+	}
+	if (gtk_widget_get_parent(psAbout) != NULL)
+	{
+		gtk_container_remove ((GtkContainer*)psContainer, psAbout);
+	}
+	if (gtk_widget_get_parent(psStellarium) != NULL)
+	{
+		gtk_container_remove ((GtkContainer*)psContainer, psStellarium);
 	}
 
 	return EXIT_SUCCESS;
 }
 
 
-static gboolean guiTrackScaleIncrement (gpointer* pData)
+static gboolean guiTrackScaleIncrement (GtkBuilder* psMainBuilder,
+										FMOD_CHANNEL* psPlayingChannel,
+										gpointer* pData)
 {
-	GtkWidget* pScale = NULL;
-	GtkObject* pAdjustment = NULL;
-	double dTrackPosition = 0;
-	double dLength = 0;
-	gboolean bIsPlaying = FALSE;
-	gboolean bIsPaused = FALSE;
+	GtkObject* psAdjustment = NULL;
 
-	bIsPlaying = playerIsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
-	bIsPaused = playerIsPaused((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
+	assert (psMainBuilder != NULL);
+	assert (pData != NULL);
 
-	if (bIsPlaying == TRUE && bIsPaused == FALSE)
+	psAdjustment = GTK_OBJECT(gtk_builder_get_object(psMainBuilder,
+										"Track_Adjustment"));
+
+	if (playerIsPlaying(psPlayingChannel) == 0)	/* Si la lecture est stoppée, on réinitialise la barre de progression */
 	{
-		pScale = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
-														"Track_Scale"));
-		dTrackPosition = gtk_range_get_value(GTK_RANGE(pScale));
-		gtk_range_set_value(GTK_RANGE(pScale), dTrackPosition+1);
-	}
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(psAdjustment), 0);
+		gtk_adjustment_set_upper(GTK_ADJUSTMENT(psAdjustment), 100);
 
-
-	pAdjustment = GTK_OBJECT(gtk_builder_get_object(pData[MAIN_BUILDER],
-												"Track_Adjustment"));
-	dLength = gtk_adjustment_get_upper(GTK_ADJUSTMENT(pAdjustment));
-
-	if (dTrackPosition+1 >= dLength)
-	{
-		on_Stop_Action_activate(NULL, pData);
-
-		if(pData[PLAYLIST] != NULL)
-		{
-			AnalyzedTrack* pTrack = NULL;
-			GList* pList = NULL;
-
-			*((int*)pData[PLAYLIST_INDEX]) =
-					(*((int*) pData[PLAYLIST_INDEX]))+1;
-			pList = g_list_nth(
-						(GList*)pData[PLAYLIST],
-						*((int*) pData[PLAYLIST_INDEX]));
-
-			if (pList != NULL)
-			{
-				pTrack = (AnalyzedTrack*) pList->data;
-			}
-
-			if (pTrack != NULL)
-			{
-				guiPlayTrack(pTrack,
-						pData[MAIN_BUILDER],
-						pData[FMOD_CONTEXT],
-						(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
-						((Preferences*)pData[PREFERENCES])->iMoveCam,
-						pData[OPENGLDATA]);
-				*((int*)pData[INCREMENT_TIMER]) =
-					g_timeout_add_seconds(1,
-							(GSourceFunc) guiTrackScaleIncrement,
-							pData);
-			}
-		}
-	}
-
-	if (bIsPlaying == FALSE &&
-		*((int*)pData[INCREMENT_TIMER]) != 0)
-	{
-		on_Stop_Action_activate(NULL, pData);
-	}
-
-	if (*((int*)pData[INCREMENT_TIMER]) == 0)
-	{
 		return FALSE;
 	}
+	else if (playerIsPaused(psPlayingChannel) == 0)	/* Si la lecture n'est pas en pause, on incrémente */
+	{
+		int iActualValue = 0;
 
+		iActualValue = gtk_adjustment_get_value(
+											GTK_ADJUSTMENT(psAdjustment));
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(psAdjustment),
+								iActualValue+1);
 
-	bIsPlaying = playerIsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL]);
+		return TRUE;
+	}
+	else /* Si la lecture est en pause */
+	{
+		/* On ne fait rien */
+		return TRUE;
+	}
 
-
-	return bIsPlaying;
+	return FALSE;
 }
 
 
@@ -327,59 +299,129 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 
 }
 
+static int guiStopTrack (GtkBuilder* psMainBuilder,
+						FMOD_CHANNEL* psChannel,
+						GuiData* psGuiData,
+						OpenGLData* psGLData,
+						int iTimeOutID)
+{
+	GtkWidget* psRange = NULL;
+	GtkWidget* psTrackLabel = NULL;
+	GtkObject* psAdjustment = NULL;
+
+/* Cessation de la lecture. */
+	playerStopTrack(psChannel);
+	drawingGLSetPlayedTrack(psGLData, NULL);
+
+/* Arret du timer d'incrémentation de la barre d'avancement */
+	g_source_remove(iTimeOutID);
+	guiDataSetIncrementTimerID(psGuiData, 0);
+
+/* Réinitialisation de l'affichage (barre de progression, label). */
+	psRange = GTK_WIDGET(
+				gtk_builder_get_object(psMainBuilder,
+										"Track_Scale"));
+	psAdjustment = GTK_OBJECT(
+					gtk_builder_get_object(psMainBuilder,
+										"Track_Adjustment"));
+	psTrackLabel = GTK_WIDGET(
+					gtk_builder_get_object(psMainBuilder,
+											"TrackInfo_Label"));
+
+	gtk_label_set_text(GTK_LABEL(psTrackLabel), "");
+
+	gtk_adjustment_set_upper(GTK_ADJUSTMENT(psAdjustment), 100);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(psAdjustment), 0);
+	gtk_range_set_value(GTK_RANGE(psRange), 0);
+
+
+
+	return EXIT_SUCCESS;
+}
 
 static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 								AnalyzedTrack* pTrack,
 								gpointer* pData)
 {
-	GtkWidget* psPlayListBox = NULL;
-	GtkWidget* psTrackLabel = NULL;
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psMainBuilder = NULL;
+	FMOD_SYSTEM* psFmodContext = NULL;
+	FMOD_CHANNEL* psPlayingChannel = NULL;
+	int iMoveCam = 0;
+	int iIncrementTimerID = 0;
+	int iTID = 0;
+
+	GtkCellRenderer* psCellRender = NULL;
+	GtkTreeModel* psListStore = NULL;
+	GtkTreeView* psTreeView = NULL;
+	GtkTreeIter Iter;
 	char* strTrackPath = NULL;
 	char* strTrackName = NULL;
-	int* piTID = NULL;
 
-	if (pData[PLAYLIST] == NULL)
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+	psFmodContext = playerDataGetSystem(psPlayerData);
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+	iMoveCam = preferencesGetMoveCam(psPreferences);
+	psListStore = GTK_TREE_MODEL( gtk_builder_get_object (psMainBuilder,
+														"liststore1"));
+
+	if (gtk_tree_model_get_iter_first(psListStore, &Iter) == FALSE)
 	{
 		on_Stop_Action_activate(NULL, pData);
 		guiPlayTrack(pTrack,
-					GTK_BUILDER(pData[MAIN_BUILDER]),
-					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-					(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
-					((Preferences*)pData[PREFERENCES])->iMoveCam,
-					(OpenGLData*) pData[OPENGLDATA]);
+					psMainBuilder,
+					psFmodContext,
+					&psPlayingChannel,
+					iMoveCam,
+					psGLData);
 
-		*((int*)pData[INCREMENT_TIMER]) =
+		iIncrementTimerID =
 			g_timeout_add_seconds(1,
 						(GSourceFunc) guiTrackScaleIncrement,
 						pData);
+		guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
 	}
-
-	pData[PLAYLIST] = g_list_append((GList*) pData[PLAYLIST], pTrack);
 
 	strTrackPath = analyzedTrackGetPath(pTrack);
 	strTrackName = strrchr(strTrackPath, '/');
-	psTrackLabel = gtk_label_new(&(strTrackName[1]));
+	iTID = analyzedTrackGetTID(pTrack);
 
-	gtk_label_set_selectable(GTK_LABEL(psTrackLabel), TRUE);
+	psTreeView = (GtkTreeView*) gtk_builder_get_object(psMainBuilder,
+														"PlayList_TreeView");
 
-	piTID = (int*) malloc(sizeof(int));
-	*piTID = analyzedTrackGetTID(pTrack);
-	g_object_set_data(G_OBJECT(psTrackLabel),
-					"TID", piTID);
+	psCellRender = gtk_cell_renderer_text_new ();
 
-	psPlayListBox = GTK_WIDGET(gtk_builder_get_object(pMainBuilder,
-													"PlayList_Box"));
 
-	gtk_box_pack_start(GTK_BOX(psPlayListBox), psTrackLabel,
-						FALSE, FALSE, 0);
+	gtk_list_store_append(GTK_LIST_STORE(psListStore), &Iter);
+	gtk_list_store_set(GTK_LIST_STORE(psListStore), &Iter,
+						0, &(strTrackName[1]), 1, iTID, -1);
 
-	g_signal_connect(psTrackLabel, "button-release-event",
-					G_CALLBACK(on_PlayList_button_release_event), pData);
 
-	gtk_widget_show_all(psPlayListBox);
+
+	gtk_widget_show_all(GTK_WIDGET(psTreeView));
 
 	return EXIT_SUCCESS;
 }
+
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 
 /* ********************************************************************* */
@@ -393,54 +435,146 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 /* ********************************************************************* */
 
 
-
-
-
-int guiLoad (gpointer* pData)
+int guiLoad (void** ppDatas)
 {
-	GtkBuilder* psBuilder = NULL;
-	GtkWidget* psWin = NULL;
+	GtkBuilder* psLoadingBuilder = NULL;
+	GtkWidget* psLoadingWindow = NULL;
+	GtkWidget* psLoadingLabel = NULL;
 
-	psBuilder = gtk_builder_new();
-	gtk_builder_add_from_file(psBuilder, GUI_WIN, NULL);
-	gtk_builder_connect_signals(psBuilder, pData);
-	psWin = GTK_WIDGET(gtk_builder_get_object(psBuilder,
-											GUI_MAIN_WIN));
-	gtk_widget_show_all(psWin);
+	GKeyFile** ppsFiles = NULL;
 
-	pData[MAIN_BUILDER] = psBuilder;
+	GtkBuilder* pMainBuilder = NULL;
+	GtkWidget* pMainWindow = NULL;
+
+/* ********************************************************************* */
+/* Ouverture de la fenêtre de chargement...                              */
+/* ********************************************************************* */
+
+	psLoadingBuilder = gtk_builder_new();
+	gtk_builder_add_from_file(psLoadingBuilder,
+							"data/windows/Loading.glade",
+							NULL);
+
+	psLoadingWindow = GTK_WIDGET(
+					gtk_builder_get_object(
+										psLoadingBuilder,
+										"Loading_Window"));
+	psLoadingLabel = GTK_WIDGET(
+					gtk_builder_get_object(
+										psLoadingBuilder,
+										"Loading_Label"));
+
+	gtk_widget_show_all(psLoadingWindow);
+
+
+/* ********************************************************************* */
+/*                                                                       */
+/*                             CHARGEMENTS                               */
+/*                                                                       */
+/* ********************************************************************* */
+
+
+/* ********************************************************************* */
+/* Ouverture des fichiers...                                             */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Ouverture des fichiers...");
+
+	ppsFiles = filesOpen();
+	g_usleep(100000);
+
+/* ********************************************************************* */
+/* Chargements des morceaux...                                           */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Chargement des morceaux...");
+
+	ppDatas[0] = (void*) analyzedTracksCreateFromFile(ppsFiles);
+	g_usleep(100000);
+
+/* ********************************************************************* */
+/* Chargements des préférences...                                        */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Chargement des préférences...");
+
+	ppDatas[1] = (void*) preferencesCreateFromFile(ppsFiles);
+	g_usleep(100000);
+
+/* ********************************************************************* */
+/* Initialisation de l'interface...                                      */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Initialisation de l'interface...");
+
+	ppDatas[2] = (void*) guiDataCreateWithData(GUI_WIN,
+										GUI_STELLARIUM,
+										GUI_PREFERENCES,
+										GUI_ABOUT);
+
+	guiDataConnectSignals((GuiData*) ppDatas[2],
+						ppDatas);
+	g_usleep(100000);
+
+/* ********************************************************************* */
+/* Initialisation du lecteur...                                          */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Initialisation du lecteur...");
+
+	ppDatas[3] = (void*) playerDataCreate();
+	g_usleep(1000000);
+
+/* ********************************************************************* */
+/* Initialisation de l'affichage 3D...                                   */
+/* ********************************************************************* */
+
+	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
+						"Initialisation de l'affichage 3D...");
+
+	ppDatas[4] = malloc(sizeof(OpenGLData));
+	drawingGLInit((OpenGLData*) ppDatas[4]);
+
+/* ********************************************************************* */
+/* Ouverture de la fenêtre...                                            */
+/* ********************************************************************* */
+
+	pMainBuilder = guiDataGetBuilder((GuiData*) ppDatas[2], MAIN);
+	pMainWindow = GTK_WIDGET(
+				gtk_builder_get_object(pMainBuilder, GUI_MAIN_WIN));
+
+	gtk_widget_show_all(pMainWindow);
+
+	gtk_widget_destroy(psLoadingWindow);
+	g_object_unref(G_OBJECT(psLoadingBuilder));
+
+/* ********************************************************************* */
+/* Fin                                                                   */
+/* ********************************************************************* */
 
 	return EXIT_SUCCESS;
 }
 
 int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
 {
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
 	on_Stop_Action_activate(psWidget, pData);
 
-	gtk_widget_destroy(GTK_WIDGET(
-							gtk_builder_get_object(pData[MAIN_BUILDER],
-													GUI_MAIN_WIN)));
-
-	if (pData[PREFERENCES_BUILDER] != NULL)
-	{
-		gtk_widget_destroy(GTK_WIDGET(
-					gtk_builder_get_object(pData[PREFERENCES_BUILDER],
-											GUI_PREFERENCES_WIN)));
-	}
-
-	if (pData[ABOUT_BUILDER] != NULL)
-	{
-		gtk_widget_destroy(GTK_WIDGET(
-					gtk_builder_get_object(pData[ABOUT_BUILDER],
-											GUI_ABOUT_WIN)));
-	}
-
-	if (pData[STELLARIUM_BUILDER] != NULL)
-	{
-		gtk_widget_destroy(GTK_WIDGET(
-					gtk_builder_get_object(pData[STELLARIUM_BUILDER],
-											GUI_STELLARIUM_WIN)));
-	}
+	analyzedTracksDestroy(&psTracks);
+	preferencesDestroy(&psPreferences);
+	guiDataDestroy(&psGuiData);
+	playerDataDestroy(&psPlayerData);
+	drawingGLFree(psGLData); free(psGLData); psGLData = NULL;
 
 	gtk_main_quit();
 
@@ -450,76 +584,79 @@ int on_Quit_Action_activate(GtkWidget* psWidget, gpointer* pData)
 
 int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psPlayingChannel = NULL;
 	FMOD_BOOL bIsPlaying = FALSE;
-	char* strPath;
-	AnalyzedTrack* psTrack = NULL;
-	int i = 1;
 
 
-	if (pData[PLAYING_CHANNEL] != NULL)
+	AnalyzedTrack* psTrackToPlay = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreePath* psPath = NULL;
+	GtkTreeIter sIter;
+	int iTrackIndex = -1;
+
+/* ********************************************************************* */
+/* Si un morceau est en lecture, on le met en pause et inversement       */
+/* ********************************************************************* */
+
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+	bIsPlaying = playerIsPlaying(psPlayingChannel);
+	if (bIsPlaying == TRUE)
 	{
-		FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-								&bIsPlaying);
+		playerSetPaused(psPlayingChannel, !bIsPlaying);
 	}
-	if (bIsPlaying == FALSE)
+
+/* ********************************************************************* */
+/* Sinon, on regarde dans la liste de lecture.                           */
+/* ********************************************************************* */
+
+	else
 	{
-		/* Si aucun morceau n'est dans la playlist... */
-		if (pData[PLAYLIST] == NULL)
+		psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+		psModel = GTK_TREE_MODEL(
+				gtk_builder_get_object(psMainBuilder, "liststore1"));
+
+		if (gtk_tree_model_get_iter_first(psModel, &sIter) == FALSE) /* Si la liste est vide */
 		{
-			int iTIDMax = 0;
-
-			iTIDMax = preferencesGetMaxTID((Preferences*)
-											pData[PREFERENCES]);
-
-			/* On charge un morceau aléatoirement */
-			i = rand() % (iTIDMax+1);
-			/*i = 0;*/
-			do
-			{
-				psTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
-													i);
-				i++;
-			} while ((psTrack == NULL && i <= iTIDMax));
-
-			if (psTrack == NULL)
-			{
-				GtkWidget* psStatusBar;
-
-				psStatusBar = GTK_WIDGET(gtk_builder_get_object(
-										(GtkBuilder*) pData[MAIN_BUILDER],
-										"Stellody_StatusBar"));
-				gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
-				gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
-									"Aucun morceau trouvé...");
-				return EXIT_FAILURE;
-			}
-
-			strPath = analyzedTrackGetPath(psTrack);
-
+			/* On prends un morceau aléatoirement */
+			/** @todo Selection aléatoire d'un morceau **/
 		}
 		else
 		{
-			/* Sinon, on charge le premier morceau de la playlist*/
-			psTrack = (AnalyzedTrack*)
-						(g_list_nth((GList*) pData[PLAYLIST],
-								*((int*) pData[PLAYLIST_INDEX])))->data;
-			strPath = analyzedTrackGetPath(psTrack);
+			FMOD_SYSTEM* psFmodContext = NULL;
+			int iGoToStar = -1;
+
+			/* Sinon, on lit le morceau actif de la liste */
+			psPath = guiDataGetTreePath(psGuiData);
+			assert(gtk_tree_model_get_iter(psModel, &sIter, psPath)
+					== TRUE);
+			gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
+
+			psTrackToPlay =
+				analyzedTracksGetTrack(psTracks, iTrackIndex);
+
+			psFmodContext = playerDataGetSystem(psPlayerData);
+			iGoToStar = preferencesGetMoveCam(psPreferences);
+
+			guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
+							&psPlayingChannel, iGoToStar, psGLData);
 		}
 
-		on_Stop_Action_activate(psWidget, pData);
-		guiPlayTrack(psTrack,
-					(GtkBuilder*) pData[MAIN_BUILDER],
-					(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
-					((Preferences*)pData[PREFERENCES])->iMoveCam,
-					(OpenGLData*) pData[OPENGLDATA]);
-
-		/* On crée le timer chargé de faire progresser la barre de
-		lecture */
-		*((int*)pData[INCREMENT_TIMER]) =
-			g_timeout_add_seconds(1,
-						(GSourceFunc) guiTrackScaleIncrement,
-						pData);
 	}
 
 	return EXIT_SUCCESS;
@@ -527,55 +664,95 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_Stop_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	GtkWidget* pRange = NULL;
-	GtkWidget* pLabel = NULL;
-	GtkObject* pAdjustment = NULL;
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
 
-	FMOD_Channel_Stop((FMOD_CHANNEL*) pData[PLAYING_CHANNEL]);
-	pData[PLAYING_CHANNEL] = NULL;
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
 
-	*((int*)pData[INCREMENT_TIMER]) = 0;
-	guiTrackScaleIncrement(pData);
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
 
-	drawingGLSetPlayedTrack(pData[OPENGLDATA], NULL);
+	FMOD_CHANNEL* psPlayingChannel = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	int iTimeOutID = 0;
 
-	pAdjustment = GTK_OBJECT(gtk_builder_get_object(
-											pData[MAIN_BUILDER],
-											"Track_Adjustment"));
-	pRange = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
-												"Track_Scale"));
+/* ********************************************************************* */
+/* Execution                                                             */
+/* ********************************************************************* */
 
-	gtk_adjustment_set_upper(GTK_ADJUSTMENT(pAdjustment), 100);
-	gtk_range_set_value(GTK_RANGE(pRange), 0);
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
 
-	pLabel = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
-													"TrackInfo_Label"));
-	gtk_label_set_text (GTK_LABEL(pLabel), "");
+	if (playerIsPlaying(psPlayingChannel))
+	{
+		psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+		iTimeOutID = guiDataGetIncrementTimerID(psGuiData);
+
+		guiStopTrack(psMainBuilder,
+					psPlayingChannel,
+					psGuiData,
+					psGLData,
+					iTimeOutID);
+	}
 
 	return EXIT_SUCCESS;
 }
 
 int on_Pause_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	PlayerData* psPlayerData = pData[3];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psPlayingChannel = NULL;
 	FMOD_BOOL bIsPaused;
 
-	FMOD_Channel_GetPaused((FMOD_CHANNEL*) pData[PLAYING_CHANNEL],
-							&bIsPaused);
-	FMOD_Channel_SetPaused(pData[PLAYING_CHANNEL],
-							!bIsPaused);
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+
+	bIsPaused = playerIsPaused(psPlayingChannel);
+	playerSetPaused(psPlayingChannel, !bIsPaused);
 
 	return EXIT_SUCCESS;
 }
 
 int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	GtkWidget* pDialog;
-	GtkWidget* pParent;
-	int iDialogAnswer;
 
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psMainBuilder = NULL;
+	GtkWidget* pDialog = NULL;
+	GtkWidget* pParent = NULL;
+	int iDialogAnswer = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 
 	/* Affichage de la fenêtre de sélection de fichier. */
-	pParent = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
+	pParent = GTK_WIDGET(gtk_builder_get_object(psMainBuilder,
 										GUI_MAIN_WIN));
 	pDialog = gtk_file_chooser_dialog_new ("Ajouter un morceau...",
 				      GTK_WINDOW(pParent),
@@ -645,14 +822,38 @@ Le fichier:\n \t%s\n n'est pas un fichier comptatible.",
 
 int on_AddDir_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psMainBuilder = NULL;
 	GtkWidget* pDialog;
 	GtkWidget* pParent;
 	int iDialogAnswer;
 
-	pParent = GTK_WIDGET(gtk_builder_get_object(pData[MAIN_BUILDER],
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+
+	pParent = GTK_WIDGET(gtk_builder_get_object(psMainBuilder,
 										GUI_MAIN_WIN));
 
+
+/* ********************************************************************* */
+/* Si on est sous Windows, le systeme de dossier n'est pas pris en       */
+/* compte.                                                               */
+/* ********************************************************************* */
+
 #if defined(_WIN32)
+
 	/* Affiche un message d'errreur. */
 	pDialog = gtk_message_dialog_new(
 									GTK_WINDOW(pParent),
@@ -661,7 +862,13 @@ int on_AddDir_Action_activate (GtkWidget* psWidget, gpointer* pData)
 									GTK_BUTTONS_CLOSE,
 					"Fonctionnalité non prise en charge sous Windows.\n\
 Utilisez un systeme <u>UNIX</u> :p !");
+
+/* ********************************************************************* */
+/* Sinon, on ajoute tous les morceaux du dossier.                        */
+/* ********************************************************************* */
+
 #else
+
 	/* Affichage de la fenêtre de sélection de fichier. */
 	pDialog = gtk_file_chooser_dialog_new ("Ajouter un dossier...",
 				      GTK_WINDOW(pParent),
@@ -675,7 +882,7 @@ Utilisez un systeme <u>UNIX</u> :p !");
 	gtk_widget_hide_all (pDialog);
 
 
-	/* Si l'utilisateur a ouvert un fichier */
+	/* Si l'utilisateur a ouvert un dossier */
 	if (iDialogAnswer == GTK_RESPONSE_ACCEPT)
 	{
 		char* strFolderName;
@@ -728,7 +935,9 @@ Utilisez un systeme <u>UNIX</u> :p !");
 					strcpy(strFullFileName, strFolderName);
 					strcat(strFullFileName, "/");
 					strcat(strFullFileName, strFileName);
+
 					analysisTrack(strFullFileName, pData);
+
 					free(strFullFileName);
 					strFullFileName = NULL;
 				}
@@ -753,48 +962,53 @@ Utilisez un systeme <u>UNIX</u> :p !");
 
 int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	GtkBuilder* psBuilder = NULL;
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psStellariumBuilder = NULL;
+	GtkBuilder* psMainBuilder = NULL;
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psContainer = NULL;
 
-	guiUnparent(pData[MAIN_BUILDER],
-				pData[PREFERENCES_BUILDER],
-				pData[ABOUT_BUILDER],
-				pData[STELLARIUM_BUILDER]);
+	GdkGLConfig* pConfig = NULL;
+	GtkWidget* pDrawingArea = NULL;
 
-	if (pData[STELLARIUM_BUILDER] == NULL)
-	{
-		GdkGLConfig* pConfig = NULL;
-		GtkWidget* pDrawingArea = NULL;
+/* ********************************************************************* */
+/* On détache le widget attaché.                                         */
+/* ********************************************************************* */
 
-		/* Crée le Stellarium à partir du fichier glade. */
-		psBuilder = gtk_builder_new();
-		gtk_builder_add_from_file(psBuilder, GUI_STELLARIUM, NULL);
-		gtk_builder_connect_signals(psBuilder, pData);
+	guiUnparent(psGuiData);
 
-		pData[STELLARIUM_BUILDER] = psBuilder;
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+	psStellariumBuilder = guiDataGetBuilder(psGuiData, STELLARIUM);
 
-		/* Active la capacité OpenGL au Stellarium */
-		pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psBuilder,
-											"Stellarium_DrawingArea"));
+	/* Active la capacité OpenGL au Stellarium */
+	pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psStellariumBuilder,
+										"Stellarium_DrawingArea"));
 
-		pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
-											GDK_GL_MODE_DEPTH |
-											GDK_GL_MODE_DOUBLE);
+	pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
+										GDK_GL_MODE_DEPTH |
+										GDK_GL_MODE_DOUBLE);
 
-		gtk_widget_set_gl_capability(pDrawingArea,
-										pConfig,
-										NULL,
-										TRUE,
-										GDK_GL_RGBA_TYPE);
-
-	}
+	gtk_widget_set_gl_capability(pDrawingArea,
+									pConfig,
+									NULL,
+									TRUE,
+									GDK_GL_RGBA_TYPE);
 
 	psStellarium = GTK_WIDGET(gtk_builder_get_object(
-											pData[STELLARIUM_BUILDER],
+											psStellariumBuilder,
 											GUI_STELLARIUM_WIN));
 	psContainer = GTK_WIDGET(
-					gtk_builder_get_object(pData[MAIN_BUILDER],
+					gtk_builder_get_object(psMainBuilder,
 										GUI_MAIN_CONTAINER));
 	gtk_box_pack_start((GtkBox*)psContainer,
 							psStellarium, TRUE, TRUE, 0);
@@ -805,53 +1019,59 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	GtkBuilder* psBuilder = NULL;
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psPreferencesBuilder = NULL;
+	GtkBuilder* psMainBuilder = NULL;
 	GtkWidget* psPrefWin = NULL;
 	GtkWidget* psContainer = NULL;
 	GtkWidget* psScale = NULL;
 	GtkWidget* psCheckBut = NULL;
 
-	guiUnparent(pData[MAIN_BUILDER],
-				pData[PREFERENCES_BUILDER],
-				pData[ABOUT_BUILDER],
-				pData[STELLARIUM_BUILDER]);
+/* ********************************************************************* */
+/* ********************************************************************* */
 
-	/* Si la fenêtre n'a jamais été créée. */
-	if (pData[PREFERENCES_BUILDER] == NULL)
-	{
-		psBuilder = gtk_builder_new();
-		gtk_builder_add_from_file(psBuilder, GUI_PREFERENCES, NULL);
-		gtk_builder_connect_signals(psBuilder, pData);
+	guiUnparent(psGuiData);
 
-		pData[PREFERENCES_BUILDER] = psBuilder;
-	}
+	psPreferencesBuilder = guiDataGetBuilder(psGuiData, PREFERENCE);
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 
 	psPrefWin = GTK_WIDGET(gtk_builder_get_object(
-												pData[PREFERENCES_BUILDER],
+												psPreferencesBuilder,
 												GUI_PREFERENCES_WIN));
 	psScale = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"AnalysisRate_Scale"));
 	gtk_range_set_value((GtkRange*)psScale,
 					(double) preferencesGetAnalysisRate(
-												pData[PREFERENCES]));
+												psPreferences));
 
 	psScale = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"3DQuality_Scale"));
 	gtk_range_set_value((GtkRange*)psScale,
 					(double) preferencesGet3DQuality(
-												pData[PREFERENCES]));
+												psPreferences));
 
 	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"MoveCamera_Check"));
 	gtk_toggle_button_set_active(
 					GTK_TOGGLE_BUTTON(psCheckBut),
-					(gboolean) preferencesGetMoveCam(pData[PREFERENCES]));
+					(gboolean) preferencesGetMoveCam(psPreferences));
 
 	psContainer = GTK_WIDGET(
-						gtk_builder_get_object(pData[MAIN_BUILDER],
+						gtk_builder_get_object(psMainBuilder,
 											GUI_MAIN_CONTAINER));
 	gtk_box_pack_start((GtkBox*)psContainer,
 							psPrefWin, TRUE, TRUE, 0);
@@ -863,29 +1083,35 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	GtkBuilder* psBuilder = NULL;
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psMainBuilder = NULL;
+	GtkBuilder* psAboutBuilder = NULL;
 	GtkWidget* psAbout = NULL;
 	GtkWidget* psContainer = NULL;
 
-	guiUnparent(pData[MAIN_BUILDER],
-				pData[PREFERENCES_BUILDER],
-				pData[ABOUT_BUILDER],
-				pData[STELLARIUM_BUILDER]);
+/* ********************************************************************* */
+/* ********************************************************************* */
 
-	if (pData[ABOUT_BUILDER] == NULL)
-	{
-		psBuilder = gtk_builder_new();
-		gtk_builder_add_from_file(psBuilder, GUI_ABOUT, NULL);
-		gtk_builder_connect_signals(psBuilder, pData);
+	guiUnparent(psGuiData);
 
-		pData[ABOUT_BUILDER] = psBuilder;
-	}
+	psAboutBuilder = guiDataGetBuilder(psGuiData, ABOUT);
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 
 	psAbout = GTK_WIDGET(gtk_builder_get_object(
-											pData[ABOUT_BUILDER],
+											psAboutBuilder,
 											GUI_ABOUT_WIN));
 	psContainer = GTK_WIDGET(
-					gtk_builder_get_object(pData[MAIN_BUILDER],
+					gtk_builder_get_object(psMainBuilder,
 										GUI_MAIN_CONTAINER));
 	gtk_box_pack_start((GtkBox*)psContainer,
 							psAbout, TRUE, TRUE, 0);
@@ -896,74 +1122,69 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
-	AnalyzedTrack* pTrack = NULL;
-	FMOD_BOOL bIsPlaying = FALSE;
-	int i;
 
-	on_Stop_Action_activate(psWidget, pData);
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
 
-	if (pData[PLAYLIST] != NULL)
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psPlayingChannel = NULL;
+	AnalyzedTrack* psTrackToPlay = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreePath* psPath = NULL;
+
+	GtkTreeIter sIter;
+	int iTrackIndex = -1;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+	psModel = GTK_TREE_MODEL(
+			gtk_builder_get_object(psMainBuilder, "liststore1"));
+
+	/* Si la liste est vide */
+	if (gtk_tree_model_get_iter_first(psModel, &sIter) == FALSE)
 	{
-		GList* pList = NULL;
-
-		*((int*)pData[PLAYLIST_INDEX]) = (*((int*) pData[PLAYLIST_INDEX]))+1;
-		pList = g_list_nth(
-					(GList*)pData[PLAYLIST],
-					*((int*) pData[PLAYLIST_INDEX]));
-
-		if (pList != NULL)
-		{
-			pTrack = (AnalyzedTrack*) pList->data;
-		}
+		/* On affiche un message à l'utilisateur */
+		/** @todo Affichage d'un msg. **/
 	}
 	else
 	{
-		if (pData[PLAYING_CHANNEL] != NULL)
-		{
-			FMOD_Channel_IsPlaying((FMOD_CHANNEL*)pData[PLAYING_CHANNEL],
-									&bIsPlaying);
-		}
+		FMOD_SYSTEM* psFmodContext = NULL;
+		int iGoToStar = -1;
 
-		if (bIsPlaying == TRUE)
-		{
-			int iTIDMax = 0;
+		/* On arrête la lecture en cours */
+		on_Stop_Action_activate(psWidget, pData);
 
-			iTIDMax = preferencesGetMaxTID((Preferences*)
-											pData[PREFERENCES]);
+		/* Sinon, on lit le morceau actif de la liste */
+		psPath = guiDataGetTreePath(psGuiData);
+		gtk_tree_path_next(psPath);
+		assert(gtk_tree_model_get_iter(psModel, &sIter, psPath)
+				== TRUE);
+		gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
 
-			/* On charge un morceau aléatoirement */
-			i = rand() % (iTIDMax+1);
-			do
-			{
-				pTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
-													i);
-				i++;
-			} while ((pTrack == NULL && i <= iTIDMax));
+		psTrackToPlay =
+			analyzedTracksGetTrack(psTracks, iTrackIndex);
 
-			if (pTrack == NULL)
-			{
-				for (i = 0; pTrack == NULL && i <= iTIDMax; i++)
-				{
-					pTrack = analyzedTracksGetTrack(pData[ANALYZED_TRACKS],
-													i);
-				}
-			}
-		}
+		psFmodContext = playerDataGetSystem(psPlayerData);
+		iGoToStar = preferencesGetMoveCam(psPreferences);
+
+		guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
+						&psPlayingChannel, iGoToStar, psGLData);
 	}
 
-	if (pTrack != NULL)
-	{
-		guiPlayTrack(pTrack,
-					pData[MAIN_BUILDER],
-					pData[FMOD_CONTEXT],
-					(FMOD_CHANNEL**) &pData[PLAYING_CHANNEL],
-					((Preferences*)pData[PREFERENCES])->iMoveCam,
-					pData[OPENGLDATA]);
-		*((int*)pData[INCREMENT_TIMER]) =
-			g_timeout_add_seconds(1,
-						(GSourceFunc) guiTrackScaleIncrement,
-						pData);
-	}
 
 	return EXIT_SUCCESS;
 }
@@ -972,12 +1193,30 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								GdkEventButton* pEvent,
 								 gpointer* pData)
 {
-	gdouble dNewTrackPosition;
 
-	if (pData[PLAYING_CHANNEL] != NULL)
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	PlayerData* psPlayerData = pData[3];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psPlayingChannel = NULL;
+
+	double dNewTrackPosition = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+
+	if (psPlayingChannel != NULL)
 	{
 		dNewTrackPosition = gtk_range_get_value(GTK_RANGE(psWidget));
-		FMOD_Channel_SetPosition((FMOD_CHANNEL*) pData[PLAYING_CHANNEL],
+		FMOD_Channel_SetPosition(psPlayingChannel,
 									dNewTrackPosition*1000,
 									FMOD_TIMEUNIT_MS);
 	}
@@ -985,53 +1224,42 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 	return EXIT_SUCCESS;
 }
 
-int on_PlayList_button_release_event(GtkWidget* psWidget,
-									GdkEventButton* psEvent,
-									gpointer* pData)
+int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData)
 {
-	int* piTID = NULL;
-	AnalyzedTrack* pTrack = NULL;
 
-	if (psEvent->button != 1)
-	{
-		return EXIT_FAILURE;
-	}
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
 
-	piTID = (int*) g_object_get_data(G_OBJECT(psWidget), "TID");
-	pTrack = g_tree_lookup((GTree*) pData[ANALYZED_TRACKS],
-							piTID);
+	GuiData* psGuiData = pData[2];
 
-	if (pTrack == NULL)
-	{
-		GtkContainer* psPlayListBox = NULL;
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
 
-		psPlayListBox = GTK_CONTAINER(gtk_widget_get_parent(psWidget));
-		gtk_container_remove(psPlayListBox, psWidget);
-		gtk_widget_destroy(psWidget);
-		free(piTID);
+	GtkTreePath* psCurrentPath = NULL;
 
-		return EXIT_FAILURE;
-	}
+/* ********************************************************************* */
+/* ********************************************************************* */
 
-	on_Stop_Action_activate(psWidget, pData);
-	guiPlayTrack(pTrack,
-				GTK_BUILDER(pData[MAIN_BUILDER]),
-				(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-				(FMOD_CHANNEL**) &(pData[PLAYING_CHANNEL]),
-				((Preferences*)pData[PREFERENCES])->iMoveCam,
-				(OpenGLData*) pData[OPENGLDATA]);
+	/* On met a jour le chemin du morceau sélectionné. */
+	psCurrentPath = guiDataGetTreePath(psGuiData);
+	gtk_tree_path_free(psCurrentPath);
+	psCurrentPath = gtk_tree_path_copy(psSelectedTrackPath);
 
-	*((int*)pData[INCREMENT_TIMER]) =
-			g_timeout_add_seconds(1,
-						(GSourceFunc) guiTrackScaleIncrement,
-						pData);
+	/* On arrête la lecture courante */
+	on_Stop_Action_activate(NULL, pData);
 
-	*((int*) pData[PLAYLIST_INDEX]) = g_list_index(
-											(GList*) pData[PLAYLIST],
-											pTrack);
+	/* On lance la lecture, qui se chargera de lire le morceau */
+	/* sélectionné                                             */
+	on_Play_Action_activate(NULL, pData);
 
 	return EXIT_SUCCESS;
 }
+
 
 
 
@@ -1040,29 +1268,51 @@ int on_PlayList_button_release_event(GtkWidget* psWidget,
 /* ********************************************************************* */
 
 
-
-
 gboolean guiTimeoutAnalyze (gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psAnalyzingChannel = NULL;
 	gboolean bIsPlaying = FALSE;
+	LinkedList* psAnalyzingList = NULL;
+	LinkedList* psFirstCell = NULL;
 	AnalyzedTrack* psTrack = NULL;
 
+/* ********************************************************************* */
+/* ********************************************************************* */
+
 	/* On cherche à savoir si l'analyse est finie ou non */
-	bIsPlaying = (gboolean) playerIsPlaying(
-							(FMOD_CHANNEL*)pData[ANALYZING_CHANNEL]);
+	psAnalyzingChannel = playerDataGetAnalyzingChannel(psPlayerData);
+	bIsPlaying = playerIsPlaying(psAnalyzingChannel);
 
+
+	psAnalyzingList = playerDataGetAnalyzingList(psPlayerData);
 	/* On récupère le morceau en cours d'analyse */
-	psTrack = (AnalyzedTrack*) (g_list_first(
-								(GList*) pData[ANALYZELIST]))->data;
+	assert (linkedListGetFirst(psAnalyzingList,
+									&psFirstCell) == LIST_OK);
+	psTrack = (AnalyzedTrack*) psFirstCell->pData;
 
+	/* Si l'analyse est toujours en cours */
 	if (bIsPlaying == TRUE)
 	{
 		float fAnalysisRate = 0;
+		int iAnalyzingCounter = 0;
 
-		/* On récupère le taux d'analyse */
+		/* On récupère le taux d'analyse et le nb de boucles d'analyse */
 
-		fAnalysisRate = (float) preferencesGetAnalysisRate(
-								(Preferences*) pData[PREFERENCES]);
+		fAnalysisRate = (float) preferencesGetAnalysisRate(psPreferences);
+		iAnalyzingCounter = playerDataGetAnalyzingLoopCounter(psPlayerData);
 
 		/* Au maximum (100%) on analysera toutes les 25ms le morceau en
 		vitesse normale.
@@ -1071,76 +1321,35 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 
 		fAnalysisRate = 25/(fAnalysisRate/100.0);
 
-		analysisAnalyze ((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+		analysisAnalyze (psAnalyzingChannel,
 						fAnalysisRate,
 						psTrack,
-						(int*) pData[ANALYZING_COUNTER]);
+						iAnalyzingCounter);
 
-		(*((int*) pData[ANALYZING_COUNTER]))++;
+		iAnalyzingCounter++;
+		playerDataSetAnalyzingLoopCounter(psPlayerData, iAnalyzingCounter);
 
 	}
-	else
+	else /* Si l'analyse est terminée */
 	{
-		int iTIDMax = 0;
-		int iTIDMin = 0;
-		int iTID = 0;
-		char* strConstFileName = NULL;
+		const char* strConstFileName = NULL;
 		char* strFileName = NULL;
 		char* strStatusBarMessage = NULL;
+
+		GtkBuilder* psMainBuilder = NULL;
 		GtkWidget* psStatusBar = NULL;
 
-
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-		/* On récupère le TID actuel pour enlever le morceau de l'arbre */
-
-		iTID = analyzedTrackGetTID(psTrack);
-		g_tree_steal((GTree*) pData[ANALYZED_TRACKS],
-					&iTID);
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-		/* On calcul le nouveau TID, et changeons le status du morceau
-		(analysé) */
-
-		analyzedTrackSetTID(psTrack,
-							0);
+		/* On change le status du morceau (analysé) */
 		analyzedTrackSetAnalyzed(psTrack, 1);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-		/* On ajoute le morceau à l'arbre avec son nouveau TID */
-
-		analyzedTracksInsertTrack((AnalyzedTracks*) pData[ANALYZED_TRACKS],
-									psTrack);
-
 		/* On le supprime de la liste d'analyse */
-
-		pData[ANALYZELIST] = g_list_remove((GList*) pData[ANALYZELIST],
-											psTrack);
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-		/* Il se peut que le TID ai changé à l'insertion, on le récupère */
-
-		iTID = analyzedTrackGetTID(psTrack);
-		iTIDMax = preferencesGetMaxTID((Preferences*) pData[PREFERENCES]);
-		iTIDMin = preferencesGetMinTID((Preferences*) pData[PREFERENCES]);
-
-		/* On vérifie que les bornes sont tjs correctes */
-
-		if (iTID > iTIDMax)
-		{
-			preferencesSetMaxTID((Preferences*) pData[PREFERENCES], iTID);
-		}
-		else if (iTID < iTIDMin)
-		{
-			preferencesSetMinTID((Preferences*) pData[PREFERENCES], iTID);
-		}
+		linkedListRemoveFirst(psAnalyzingList, NULL);
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1157,9 +1366,12 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 											*sizeof(char));
 		sprintf(strStatusBarMessage,
 				"Le fichier '%s' vient d'être analysé.", &(strFileName[1]));
+
+		psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
-									(GtkBuilder*) pData[MAIN_BUILDER],
-												"Stellody_StatusBar"));
+									psMainBuilder,
+									"Stellody_StatusBar"));
+
 		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
 		gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
 						 strStatusBarMessage);
@@ -1175,20 +1387,41 @@ gboolean guiTimeoutAnalyze (gpointer* pData)
 
 gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 {
-	if (pData[ANALYZELIST] == NULL &&
-		!playerIsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL]))
-	{
-		/* Si la liste d'analyse est vide */
 
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	LinkedList* psAnalyzeList = NULL;
+	int iListLength = 0;
+
+	FMOD_CHANNEL* psAnalyzingChannel = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
+	linkedListGetLength(psAnalyzeList, &iListLength);
+	psAnalyzingChannel = playerDataGetAnalyzingChannel(psPlayerData);
+
+	if (iListLength == 0 &&
+		!playerIsPlaying(psAnalyzingChannel)) /* Si la liste d'analyse est vide */
+	{
+		GtkBuilder* psMainBuilder = NULL;
 		GtkWidget* psStatusBar = NULL;
 
-/* ********************************************************************* */
-/* ********************************************************************* */
-
 		/* On efface le message de la barre d'état */
-
+		psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 		psStatusBar = GTK_WIDGET(gtk_builder_get_object(
-									(GtkBuilder*) pData[MAIN_BUILDER],
+									psMainBuilder,
 									"Stellody_StatusBar"));
 		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
 
@@ -1197,21 +1430,23 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 
 		/* C'est fonction n'a plus lieu d'être appelée */
 
-		*((int*) pData[CHECKANALYZE]) = 0;
+		playerDataSetCheckForAnalyze(psPlayerData, 0);
 
 		return FALSE;
 	}
 	else
 	{
-		if (playerIsPlaying((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL]))
+		if (playerIsPlaying(psAnalyzingChannel))
 		{
 			/* Si le canal d'analyse est déja en train d'analysé,
 			on attend */
 
 			return TRUE;
 		}
-		else
+		else /* On lance une nouvelle analyse */
 		{
+			LinkedList* psFirstCell = NULL;
+			FMOD_SYSTEM* psFmodContext = NULL;
 			unsigned int uiTrackLength = 0;
 			char* strSinger = NULL; /* Not Use */
 			char* strTitle = NULL; /* Not Use */
@@ -1219,25 +1454,29 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 			char* strFileName = NULL;
 			char* strStatusBarMessage = NULL;
 			AnalyzedTrack* psTrack = NULL;
+			GtkBuilder* psMainBuilder = NULL;
 			GtkWidget* psStatusBar = NULL;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
 			/* On charge le morceau dans le canal d'analyse */
+			assert (linkedListGetFirst(psAnalyzeList, &psFirstCell) ==
+						LIST_OK);
+			psTrack = psFirstCell->pData;
 
-			psTrack = (g_list_first((GList*) pData[ANALYZELIST]))->data;
+			psFmodContext = playerDataGetSystem(psPlayerData);
 
 			playerPlayTrack(analyzedTrackGetPath(psTrack),
-							(FMOD_SYSTEM*) pData[FMOD_CONTEXT],
-							(FMOD_CHANNEL**) &pData[ANALYZING_CHANNEL],
+							psFmodContext,
+							&psAnalyzingChannel,
 							0,
 							0,
 							&uiTrackLength,
 							&strSinger,
 							&strTitle);
 			/* On coupe le son, le morceau doit être joué mais pas entendu */
-			playerSetVolume((FMOD_CHANNEL*) pData[ANALYZING_CHANNEL],
+			playerSetVolume(psAnalyzingChannel,
 							0.0);
 
 /* ********************************************************************* */
@@ -1255,9 +1494,11 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 											*sizeof(char));
 			sprintf(strStatusBarMessage,
 				"Analyse de '%s' en cours...", &(strFileName[1]));
+
+			psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 			psStatusBar = GTK_WIDGET(gtk_builder_get_object(
-										(GtkBuilder*) pData[MAIN_BUILDER],
-										"Stellody_StatusBar"));
+									psMainBuilder,
+									"Stellody_StatusBar"));
 			gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
 			gtk_statusbar_push(GTK_STATUSBAR(psStatusBar), 1,
 								strStatusBarMessage);
@@ -1297,25 +1538,43 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 
 int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psPreferencesBuilder = NULL;
 	GtkWidget* psScale = NULL;
 	GtkWidget* psCheckBut = NULL;
 
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psPreferencesBuilder = guiDataGetBuilder(psGuiData, PREFERENCE);
+
 	psScale = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"AnalysisRate_Scale"));
-	preferencesSetAnalysisRate(pData[PREFERENCES],
+	preferencesSetAnalysisRate(psPreferences,
 						(int) gtk_range_get_value((GtkRange*)psScale));
 
 	psScale = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"3DQuality_Scale"));
-	preferencesSet3DQuality(pData[PREFERENCES],
+	preferencesSet3DQuality(psPreferences,
 						(int) gtk_range_get_value((GtkRange*)psScale));
 
 	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
-										pData[PREFERENCES_BUILDER],
+										psPreferencesBuilder,
 										"MoveCamera_Check"));
-	preferencesSetMoveCam(pData[PREFERENCES],
+	preferencesSetMoveCam(psPreferences,
 						(int) gtk_toggle_button_get_active(
 										GTK_TOGGLE_BUTTON(psCheckBut)));
 
@@ -1326,9 +1585,23 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 int on_FlushData_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
 	GtkWidget* pDialog = NULL;
 
-	analyzedTracksRelease((AnalyzedTracks*) pData[ANALYZED_TRACKS]);
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	analyzedTracksRelease(psTracks);
 
 	pDialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 									GTK_MESSAGE_WARNING,
@@ -1355,9 +1628,21 @@ int on_Stellarium_DrawingArea_realize(
 								GtkWidget* psWidget,
 								gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
 	GdkGLContext * psContext = NULL;
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 	psContext = gtk_widget_get_gl_context(psWidget);
 	psSurface = gtk_widget_get_gl_drawable(psWidget);
@@ -1365,7 +1650,6 @@ int on_Stellarium_DrawingArea_realize(
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
 	if (bActivate == TRUE)
 	{
-		drawingGLInit((OpenGLData*)pData[OPENGLDATA]);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 
 		g_timeout_add(40,
@@ -1383,9 +1667,23 @@ int on_Stellarium_DrawingArea_configure_event(
 								GdkEventConfigure* psEvent,
 								gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
 	GdkGLContext * psContext = NULL;
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 	psContext = gtk_widget_get_gl_context(psWidget) ;
 	psSurface = gtk_widget_get_gl_drawable(psWidget) ;
@@ -1393,7 +1691,7 @@ int on_Stellarium_DrawingArea_configure_event(
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
 	if (bActivate == TRUE)
 	{
-		drawingGLResize(pData[OPENGLDATA], psEvent->width, psEvent->height);
+		drawingGLResize(psGLData, psEvent->width, psEvent->height);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
 	return EXIT_SUCCESS;
@@ -1405,9 +1703,25 @@ int on_Stellarium_DrawingArea_expose_event (
 							GdkEventExpose* psEvent,
 							gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
 	GdkGLContext * psContext = NULL;
 	GdkGLDrawable * psSurface = NULL;
 	gboolean bActivate = FALSE;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 	psContext = gtk_widget_get_gl_context(psWidget);
 	psSurface = gtk_widget_get_gl_drawable(psWidget);
@@ -1416,9 +1730,9 @@ int on_Stellarium_DrawingArea_expose_event (
 
 	if (bActivate == TRUE)
 	{
-		drawingGLDraw(pData[OPENGLDATA], pData[ANALYZED_TRACKS],
+		drawingGLDraw(psGLData, psTracks,
 					  preferencesGet3DQuality(
-								(Preferences*) pData[PREFERENCES]));
+								psPreferences));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
@@ -1432,7 +1746,27 @@ int on_Stellarium_DrawingArea_button_release_event (
 								GdkEventAny * psEvent,
 								gpointer * pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	GuiData* psGuiData = pData[2];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
 	GtkAllocation sAllocation;
+	int iXMousePosition = 0;
+	int iYMousePosition = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	guiDataGetMousePosition(psGuiData, &iXMousePosition, &iYMousePosition);
 
 	switch (psEvent->type)
 	{
@@ -1440,17 +1774,17 @@ int on_Stellarium_DrawingArea_button_release_event (
 			switch (((GdkEventScroll*)psEvent)->direction)
 			{
 				case GDK_SCROLL_UP:
-					drawingGLZoom(pData[OPENGLDATA],
-								  (*(float*) pData[MOUSEPOSITION_X]),
-								  (*(float*) pData[MOUSEPOSITION_Y]),
+					drawingGLZoom(psGLData,
+								  (float) iXMousePosition,
+								  (float) iYMousePosition,
 								  0.1);
 					break;
 				case GDK_SCROLL_DOWN:
 					gtk_widget_get_allocation(psWidget,
 												&sAllocation);
-					drawingGLZoom(pData[OPENGLDATA],
-								  sAllocation.width - (*(float*) pData[MOUSEPOSITION_X]),
-								  sAllocation.height - (*(float*) pData[MOUSEPOSITION_Y]),
+					drawingGLZoom(psGLData,
+								  sAllocation.width - (float) iXMousePosition,
+								  sAllocation.height - (float) iYMousePosition,
 								  -0.1);
 					break;
 				default:
@@ -1474,8 +1808,8 @@ int on_Stellarium_DrawingArea_button_release_event (
 				if (bActivate == TRUE)
 				{
 					iTID = drawingGLSelect(
-						(OpenGLData*) pData[OPENGLDATA],
-						(AnalyzedTracks*) pData[ANALYZED_TRACKS],
+						psGLData,
+						psTracks,
 						((GdkEventButton*)psEvent)->x,
 						((GdkEventButton*)psEvent)->y);
 
@@ -1485,9 +1819,13 @@ int on_Stellarium_DrawingArea_button_release_event (
 
 				if (iTID >= 0)
 				{
-					pTrack = g_tree_lookup(pData[ANALYZED_TRACKS], &iTID);
+					GtkBuilder* psMainBuilder = NULL;
 
-					guiAddTrackToPlaylist(GTK_BUILDER(pData[MAIN_BUILDER]),
+
+					pTrack = analyzedTracksGetTrack(psTracks, iTID);
+					psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+
+					guiAddTrackToPlaylist(psMainBuilder,
 											pTrack,
 											pData);
 				}
@@ -1505,26 +1843,46 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 												GdkEventMotion* psEvent,
 												gpointer* pData)
 {
-	float iStepX = 0;
-	float iStepY = 0;
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	float fStepX = 0;
+	float fStepY = 0;
+	int iXMousePosition = 0;
+	int iYMousePosition = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	guiDataGetMousePosition(psGuiData, &iXMousePosition, &iYMousePosition);
 
 	if (((psEvent->state)>>9)%2 == 1 || ((psEvent->state)>>10)%2 == 1)
+	/* Si le déplacement est fait avec le boutton central ou droit appuyé */
 	{
-		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
-		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
+		fStepX = (float) iXMousePosition - (float) psEvent->x;
+		fStepY = (float) iYMousePosition - (float) psEvent->y;
 
-		drawingGLRotate(pData[OPENGLDATA], -iStepX/20, iStepY/20);
+		drawingGLRotate(psGLData, -fStepX/20, fStepY/20);
 	}
 	else if (((psEvent->state)>>8)%2 == 1)
+	/* Si c'est avec le bouton gauche */
 	{
-		iStepX = (*(float*) pData[MOUSEPOSITION_X]) - (float) psEvent->x;
-		iStepY = (*(float*) pData[MOUSEPOSITION_Y]) - (float) psEvent->y;
+		fStepX = (float) iXMousePosition - (float) psEvent->x;
+		fStepY = (float) iYMousePosition - (float) psEvent->y;
 
-		drawingGLTranslate(pData[OPENGLDATA], -iStepX/500, iStepY/500, 0);
+		drawingGLTranslate(psGLData, -fStepX/500, fStepY/500, 0);
 	}
 
-	*((float*) pData[MOUSEPOSITION_X]) = (float) psEvent->x;
-	*((float*) pData[MOUSEPOSITION_Y]) = (float) psEvent->y;
+	guiDataSetMousePosition(psGuiData, psEvent->x, psEvent->y);
 
 	return EXIT_SUCCESS;
 }

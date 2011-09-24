@@ -84,6 +84,13 @@ int playerDataRelease (PlayerData* pData)
 }
 
 
+FMOD_SYSTEM* playerDataGetSystem (const PlayerData* pData)
+{
+	assert (pData != NULL);
+
+	return pData->pFmodSystem;
+}
+
 FMOD_CHANNEL* playerDataGetPlayingChannel (PlayerData* pData)
 {
 	assert (pData != NULL);
@@ -134,4 +141,12 @@ int playerDataSetCheckForAnalyze (PlayerData* pData,
 	pData->iCheckForAnalyze = iValue;
 
 	return EXIT_SUCCESS;
+}
+
+
+LinkedList* playerDataGetAnalyzingList (const PlayerData* pData)
+{
+	assert (pData != NULL);
+
+	return pData->pAnalyzeList;
 }

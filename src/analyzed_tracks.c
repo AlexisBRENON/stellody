@@ -15,6 +15,9 @@
 #include "files.h"
 #include "gui.h"
 #include "analysis.h"
+#include "gui_data.h"
+#include "player_data.h"
+#include "opengl_drawing.h"
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -188,7 +191,7 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 	}
 
 	g_strfreev(strGroups);
-	
+
 	return EXIT_SUCCESS;
 }
 int analyzedTracksRelease(AnalyzedTracks* psTracks)
@@ -318,7 +321,23 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 										AnalyzedTrack* psTrack,
 										gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	PlayerData* psPlayerData = pData[3];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	LinkedList* psAnalyzeList = NULL;
 	char bAnalyzed = 0;
+	int iCheckAnalyze = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
 
 	bAnalyzed = analyzedTrackGetAnalyzed(psTrack);
 
@@ -328,16 +347,19 @@ gboolean analyzedTracksCheckForAnalyze(int* piKey,
 		analyzedTrackSetRate(psTrack, NULL);
 		analyzedTrackSetCoord(psTrack, NULL);
 
-		pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
-										psTrack);
+		psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
+		linkedListAppend(psAnalyzeList, psTrack);
+
 		/* On crée le timer sur la vérification d'analyse s'il n'existe pas */
 
-		if (*((int*) pData[CHECKANALYZE]) == 0)
+		iCheckAnalyze = playerDataGetCheckForAnalyze(psPlayerData);
+		if (iCheckAnalyze == 0)
 		{
-			*((int*) pData[CHECKANALYZE]) =
+			iCheckAnalyze =
 				g_timeout_add_seconds(2,
 								(GSourceFunc) guiTimeoutCheckForAnalyze,
 								pData);
+			playerDataSetCheckForAnalyze(psPlayerData, iCheckAnalyze);
 		}
 	}
 

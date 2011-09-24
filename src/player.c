@@ -93,3 +93,23 @@ int playerPlayTrack (char* strPath,
 	return EXIT_SUCCESS;
 }
 
+int playerStopTrack (FMOD_CHANNEL* psPlayingChannel)
+{
+	FMOD_Channel_Stop(psPlayingChannel);
+	psPlayingChannel = NULL;
+
+	return EXIT_SUCCESS;
+}
+
+
+int playerSetPaused (FMOD_CHANNEL* psChannel,
+					FMOD_BOOL bPause)
+{
+	assert (psChannel != NULL);
+
+	FMOD_Channel_SetPaused(psChannel, bPause);
+
+	return EXIT_SUCCESS;
+}
+
+

@@ -26,7 +26,9 @@
 #include "analyzed_tracks.h"
 #include "preferences.h"
 #include "analysis.h"
-
+#include "gui_data.h"
+#include "player_data.h"
+#include "opengl_drawing.h"
 
 
 #define fHERTZSTEP 43.06640625 /**< Ecart entre 2 raies du spectre d'amplitude */
@@ -41,7 +43,7 @@
 int analysisAnalyze (FMOD_CHANNEL* pChannel,
 					float fAnalysisRate,
 					AnalyzedTrack* pTrack,
-					int* piAnalyzingCounter)
+					int iAnalyzingCounter)
 {
 	int i = 0, j = 0;
 	float fMax = 0;
@@ -139,9 +141,9 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	/* On calcule la fréquence maximale moyenne */
 
 	fOldAverage = analyzedTrackGetAverage(pTrack);
-	fAverage = ((fOldAverage*(*piAnalyzingCounter))+
+	fAverage = ((fOldAverage*iAnalyzingCounter)+
 							(iIndex*fHERTZSTEP))/
-							((*piAnalyzingCounter)+1);
+							(iAnalyzingCounter+1);
 	analyzedTrackSetAverage(pTrack,
 							fAverage);
 
@@ -160,8 +162,8 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 	}
 	for (i = 0; i < 3; i++)
 	{
-		pfRate[i] = (pfOldRate[i]*(*piAnalyzingCounter)+
-							(pfSum[i]/fTotalSum))/((*piAnalyzingCounter)+1);
+		pfRate[i] = (pfOldRate[i]*iAnalyzingCounter+
+							(pfSum[i]/fTotalSum))/(iAnalyzingCounter+1);
 	}
 
 	analyzedTrackSetRate(pTrack, pfRate);
@@ -174,26 +176,45 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 
 int analysisTrack (const char* strPath, gpointer* pData)
 {
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	PlayerData* psPlayerData = pData[3];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	LinkedList* psAnalyzeList = NULL;
 	AnalyzedTrack* psTrack = NULL;
 
-	/* On ajoute le morceau à la liste d'analyse (et à l'arbre en cas de
-	sauvegarde). */
+	int iCheckAnalyze = 0;
 
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+
+	/* On ajoute le morceau à la liste d'analyse (et la liste complète
+	en cas de sauvegarde. */
+	psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
 	psTrack = analyzedTrackCreate();
 	analyzedTrackSetPath(psTrack, strPath);
-	pData[ANALYZELIST] = g_list_append((GList*) pData[ANALYZELIST],
-										psTrack);
-	analyzedTracksInsertTrack((AnalyzedTracks*) pData[ANALYZED_TRACKS],
+	linkedListAppend(psAnalyzeList, psTrack);
+	analyzedTracksInsertTrack(psTracks,
 								psTrack);
 
 	/* On crée le timer sur la vérification d'analyse s'il n'existe pas */
-
-	if (*((int*) pData[CHECKANALYZE]) == 0)
+	iCheckAnalyze = playerDataGetCheckForAnalyze(psPlayerData);
+	if (iCheckAnalyze == 0)
 	{
-		*((int*) pData[CHECKANALYZE]) =
+		iCheckAnalyze =
 			g_timeout_add_seconds(2,
 							(GSourceFunc) guiTimeoutCheckForAnalyze,
 							pData);
+		playerDataSetCheckForAnalyze(psPlayerData, iCheckAnalyze);
 	}
 
 	return EXIT_SUCCESS;

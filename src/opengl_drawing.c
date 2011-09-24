@@ -1695,12 +1695,12 @@ static void drawSelectedStar(AnalyzedTrack * pTrack)
 	float * pfCoord = NULL ;
 
 	while (fTime >= iRotations) fTime = fTime - iRotations ;
-	
+
 	pfCoord = analyzedTrackGetCoord(pTrack) ;
 	uiSize = analyzedTrackGetLength(pTrack) ;
 
 	/* Recalcul de la taille. */
-	
+
 	if (uiSize > 420000)
 	{
 		fSize = 0.4 ;
@@ -1713,7 +1713,7 @@ static void drawSelectedStar(AnalyzedTrack * pTrack)
 	{
 		fSize = (float) uiSize/1050000.0f ;
 	}
-	
+
 	glPushMatrix() ;
 
 	glTranslatef(pfCoord[0], pfCoord[1], pfCoord[2]) ;
@@ -1811,15 +1811,15 @@ static gboolean drawStellariumUpdate(int * piKey,
 						  OpenGLData * pData)
 {
 	unsigned char bAnalyzed = 0 ;
-		
+
 	/* Vérifie que l'analyse a bien été faite. */
 	bAnalyzed = (unsigned char) analyzedTrackGetAnalyzed(pTrack) ;
-		
+
 	if (bAnalyzed == 1)
 	{
 		stellariumCreateStar(pData->psStellarium, pTrack) ;
 	}
-		
+
 	return FALSE ;
 }
 
@@ -1828,13 +1828,13 @@ static int drawStellarium(OpenGLData * pData)
 	unsigned int i = 0 ;
 	unsigned int uiStellariumLastPosition = 0 ;
 	const Star * pStar = NULL ;
-		
+
 	uiStellariumLastPosition = stellariumGetLastPosition(pData->psStellarium) ;
-		
+
 	for (i = 0 ; i < uiStellariumLastPosition ; i++)
 	{
 		pStar = stellariumGetStar(pData->psStellarium, i) ;
-	
+
 		if (pData->bPicking == 1)
 		{
 			glLoadName(starGetTID(pStar)) ;
@@ -1842,7 +1842,7 @@ static int drawStellarium(OpenGLData * pData)
 
 		drawStar(pStar, pData->iPrecision) ;
 	}
-		
+
 	return EXIT_SUCCESS ;
 }
 
@@ -1892,6 +1892,9 @@ static unsigned int drawingGLLoadTexture(const char * pcFileName)
 {
 	/* Fonction fournie par nos professeurs d'informatique. */
 
+	int iDimX, iDimY;
+	const unsigned char* strData;
+
     Image iImage ;
     unsigned int iTexture ;
 
@@ -1919,13 +1922,16 @@ static unsigned int drawingGLLoadTexture(const char * pcFileName)
 							  imGetData(& iImage)) ;
 			break;
 		case 3:
+			strData = imGetData(& iImage);
+			iDimY = imGetDimY(& iImage);
+			iDimX = imGetDimX(& iImage);
 			gluBuild2DMipmaps(GL_TEXTURE_2D,
 							  3,
-							  imGetDimX(& iImage),
-							  imGetDimY(& iImage),
+							  iDimX,
+							  iDimY,
 							  GL_RGB,
 							  GL_UNSIGNED_BYTE,
-							  imGetData(& iImage)) ;
+							  strData) ;
 			break;
 		case 4:
 			gluBuild2DMipmaps(GL_TEXTURE_2D,
@@ -2289,7 +2295,7 @@ int drawingGLResize (OpenGLData* pData, int iWidth, int iHeight)
 int drawingGLStellariumInit(OpenGLData* pData)
 {
 	pData->psStellarium = (Stellarium *) malloc (sizeof(Stellarium)) ;
-	
+
 	stellariumInit(pData->psStellarium, 1) ;
 
 	return EXIT_SUCCESS ;
@@ -2329,7 +2335,7 @@ int drawingGLInit (OpenGLData* pData)
 	pData->iPrecision = 0 ;
 	pData->uiTexture = drawingGLLoadTexture("data/images/cubemap.ppm") ;
 	glDisable(GL_TEXTURE_2D) ;
-	
+
 	drawingGLUpdateTransfertMatrix(pData) ;
 
 	glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
@@ -2375,16 +2381,16 @@ int drawingGLInit (OpenGLData* pData)
     glEnable( GL_COLOR_MATERIAL );
 
 	/* Fin de l'initialisation. */
-	
+
 	return EXIT_SUCCESS;
 }
 
 int drawingGLFree (OpenGLData* pData)
 {
 	stellariumFree(pData->psStellarium) ;
-	
+
 	free(pData->psStellarium) ;
-	
+
 	return EXIT_SUCCESS ;
 }
 
@@ -2397,7 +2403,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
  	GLint piViewport[4] = {0} ;
  	GLuint *ptr = NULL ;
  	int iRet = -1 ;
-	
+
  	glSelectBuffer(64, uiBuffer) ;
  	glGetIntegerv(GL_VIEWPORT, piViewport) ;
 
@@ -2462,8 +2468,8 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 	/* Gestion de la vision. */
 
 	drawingGLMoveDirection(pData) ;
-	
-	glMatrixMode(GL_MODELVIEW) ;	
+
+	glMatrixMode(GL_MODELVIEW) ;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -2478,13 +2484,13 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 			  pData->fCenterY,
 			  pData->fCenterZ,
 			  0, 1, 0) ;
-	
+
 	/* Fin de la gestion de la vision. */
 
 	/* Gestion du Stellarium. */
-		
+
 	g_tree_foreach(pTracks, (GTraverseFunc) drawStellariumUpdate, pData) ;
-	
+
 	/* Début des dessins. */
 
 	pData->iPrecision = 2*iPrecision + 6 ;

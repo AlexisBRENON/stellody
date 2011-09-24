@@ -13,49 +13,19 @@
 
 /* ********************************************************************* */
 /*                                                                       */
-/*                        Définitions de types                           */
-/*                                                                       */
-/* ********************************************************************* */
-
-
-#define NB_DATA 18 /**< Nombre de cases aux tableaux de données */
-
-#define PREFERENCES 		0	/**< Structure de préférences. */
-#define ANALYZED_TRACKS		1	/**< Arbre des morceaux analysés. */
-#define	MAIN_BUILDER		2	/**< Builder de la fenêtre principale. */
-#define	STELLARIUM_BUILDER	3	/**< Builder du Stellarium */
-#define	PREFERENCES_BUILDER 4	/**< Builder des préférences. */
-#define	ABOUT_BUILDER		5	/**< Builder du A Propos. */
-#define	FMOD_CONTEXT		6	/**< Contexte Fmod. */
-#define	PLAYING_CHANNEL		7	/**< Canal FMod de lecture. */
-#define	ANALYZING_CHANNEL	8	/**< Canal FMod d'analyse. */
-#define	ANALYZING_COUNTER	9	/**< Nobre de tour d'analyse. */
-#define	PLAYLIST			10	/**< Liste des morceaux à lire */
-#define PLAYLIST_INDEX		11  /**< Index du morceau en lecture dans la playlist */
-#define INCREMENT_TIMER		12	/**< ID du timer d'incrémentation de la barre de lecture */
-#define	ANALYZELIST			13	/**< Liste des morceau à analyser */
-#define	CHECKANALYZE		14	/**< ID du timer de vérification d'analyse */
-#define	MOUSEPOSITION_X		15	/**< Coordonnées en x de la souris */
-#define	MOUSEPOSITION_Y		16	/**< Coordonnées en y de la souris */
-#define	OPENGLDATA			17	/**< Structure de données OpenGL */
-
-
-
-/* ********************************************************************* */
-/*                                                                       */
 /*                   Fonctions relatives à la fenêtre                    */
 /*                                                                       */
 /* ********************************************************************* */
 
 /**
-  * @fn int guiLoad (gpointer* pData)
-  * @brief Charge et affiche l'interface homme machine (GUI).
+  * @fn int guiLoad (void** ppDatas)
+  * @brief Crée et initialise chaque structure de données.
   *
-  * @param[in,out] pData Pointeur sur un tableau qui sera envoyée à tous les
+  * @param[in,out] ppDatas Pointeur sur un tableau qui sera envoyée à tous les
   callbacks
-  * @return Le builder créé.
+  * @return EXIT_SUCCESS
   */
-int guiLoad (gpointer* pData);
+int guiLoad (void** ppDatas);
 
 
 /* ********************************************************************* */
@@ -189,19 +159,22 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 								gpointer* pData);
 
 /**
- * @fn int on_PlayList_button_release_event(GtkWidget* psWidget,
-											GdkEventButton* psEvent,
-											gpointer* pData)
+ * @fn int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData)
  * @brief Permet de sélectionner un morceau dans la playlist.
  *
- * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
- * @param[in,out] psEvent Un pointeur sur une structure évenement
+ * @param[in,out] psTreeView Pointeur sur la vue cliquée
+ * @param[in,out] psSelectedTrackPath Chemin vers le morceau cliqué
+ * @param[in,out] psColumn Colonne cliquée
  * @param[in,out] pData Données autres passées au callback.
  * @return EXIT_SUCCESS si tout est OK.
  */
-int on_PlayList_button_release_event(GtkWidget* psWidget,
-									GdkEventButton* psEvent,
-									gpointer* pData);
+int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData);
 
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
