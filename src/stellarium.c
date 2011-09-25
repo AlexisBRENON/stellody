@@ -37,9 +37,7 @@ int stellariumInit(Stellarium * pStellarium, unsigned int uiSize)
 {
 	assert(pStellarium != NULL) ;
 
-	pStellarium->psAdress = (Star *) malloc(uiSize * sizeof(Star)) ;
-	pStellarium->uiSize = uiSize ;
-	pStellarium->uiLastPosition = 0 ;
+	dynamicArrayInit(pStellarium);
 
 	return EXIT_SUCCESS ;
 }
@@ -48,9 +46,7 @@ int stellariumFree(Stellarium * pStellarium)
 {
 	assert(pStellarium != NULL) ;
 
-	free(pStellarium->psAdress) ;
-	pStellarium->psAdress = NULL ;
-	pStellarium->uiSize = 0 ;
+	dynamicArrayRelease(pStellarium);
 
 	return EXIT_SUCCESS ;
 }
@@ -69,7 +65,7 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 	float fVal3 = 0 ;
 	float * pfRate = NULL;
 
-	Star sStar ;
+	Star* psStar ;
 	const Star * cpStarTemp ;
 
 	float fStep = 2*M_PI/64 ;
@@ -86,6 +82,8 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 
 	uiStellariumSize = stellariumGetLastPosition(pStellarium) ;
 	uiSize = analyzedTrackGetLength(pTrack) ;
+
+	psStar = (Star*) malloc(sizeof(Star));
 
 	/* Définition des coordonnées en fonction de l'analyse. */
 
@@ -109,48 +107,48 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 
 		/* Définition du iTID. */
 
-		sStar.iTID = analyzedTrackGetTID(pTrack) ;
+		psStar->iTID = analyzedTrackGetTID(pTrack) ;
 
 
 		/* Définition des couleurs. */
 
-		sStar.fColourR = fVal3 ;
-		sStar.fColourG = fVal2 ;
-		sStar.fColourB = fVal1 ;
+		psStar->fColourR = fVal3 ;
+		psStar->fColourG = fVal2 ;
+		psStar->fColourB = fVal1 ;
 
 
 		/* Définition de la taille. */
 
 		if (uiSize > 420000)
 		{
-			sStar.fSize = 0.4 ;
+			psStar->fSize = 0.4 ;
 		}
 		else if (uiSize < 105000)
 		{
-			sStar.fSize = 0.1 ;
+			psStar->fSize = 0.1 ;
 		}
 		else
 		{
-			sStar.fSize = (float) uiSize/1050000.0f ;
+			psStar->fSize = (float) uiSize/1050000.0f ;
 		}
 
 
 		/* Définition de la position. */
 
 		/*
-		 fTemp = 1.5 * (1 - (sStar.fSize/0.45) * (sStar.fSize/0.45) *
-		 (sStar.fSize/0.45) * (sStar.fSize/0.45)) ;
+		 fTemp = 1.5 * (1 - (psStar->fSize/0.45) * (psStar->fSize/0.45) *
+		 (psStar->fSize/0.45) * (psStar->fSize/0.45)) ;
 		 */
-		sStar.fPositionX = ((fVal1 * 30) - 15) + 3 ;
-		sStar.fPositionY = ((fVal2 * 30) - 15) + 1 ;
-		sStar.fPositionZ = ((fVal3 * 30) - 15) - 0.5 ;
+		psStar->fPositionX = ((fVal1 * 30) - 15) + 3 ;
+		psStar->fPositionY = ((fVal2 * 30) - 15) + 1 ;
+		psStar->fPositionZ = ((fVal3 * 30) - 15) - 0.5 ;
 
 		/* Début de la vérification des coordonnées
 		 (vérifie qu'elles ne sont pas encore prises). */
 
-		fOldX = sStar.fPositionX ;
-		fOldY = sStar.fPositionY ;
-		fOldZ = sStar.fPositionZ ;
+		fOldX = psStar->fPositionX ;
+		fOldY = psStar->fPositionY ;
+		fOldZ = psStar->fPositionZ ;
 
 		/* Boucle tant que la vérification est à faire. */
 		while (iTest == 0)
@@ -160,9 +158,9 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 			/* Si c'est la première étoile à être placée. */
 			if (uiStellariumSize == 0)
 			{
-				fTemp = sqrt(pow(sStar.fPositionX, 2) +
-							 pow(sStar.fPositionY, 2) +
-							 pow(sStar.fPositionZ, 2)) ;
+				fTemp = sqrt(pow(psStar->fPositionX, 2) +
+							 pow(psStar->fPositionY, 2) +
+							 pow(psStar->fPositionZ, 2)) ;
 
 				/* Boucle tant que les coordonnées sont trop proches du bulbe central.*/
 				while (fTemp < 4)
@@ -182,13 +180,13 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 					fTranslateY = fRadius * sin(fAlpha) ;
 					fTranslateZ = fRadius * cos(fAlpha) * -1*sin(fBeta) ;
 
-					sStar.fPositionX = fOldX + fTranslateX ;
-					sStar.fPositionY = fOldY + fTranslateY ;
-					sStar.fPositionZ = fOldZ + fTranslateZ ;
+					psStar->fPositionX = fOldX + fTranslateX ;
+					psStar->fPositionY = fOldY + fTranslateY ;
+					psStar->fPositionZ = fOldZ + fTranslateZ ;
 
-					fTemp = sqrt(pow(sStar.fPositionX, 2) +
-								 pow(sStar.fPositionY, 2) +
-								 pow(sStar.fPositionZ, 2)) ;
+					fTemp = sqrt(pow(psStar->fPositionX, 2) +
+								 pow(psStar->fPositionY, 2) +
+								 pow(psStar->fPositionZ, 2)) ;
 				}
 			}
 			else
@@ -200,17 +198,17 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 				{
 					cpStarTemp = stellariumGetStar(pStellarium, i) ;
 
-					fTemp = sqrt(pow(sStar.fPositionX, 2) +
-								 pow(sStar.fPositionY, 2) +
-								 pow(sStar.fPositionZ, 2)) ;
+					fTemp = sqrt(pow(psStar->fPositionX, 2) +
+								 pow(psStar->fPositionY, 2) +
+								 pow(psStar->fPositionZ, 2)) ;
 
-					fDist = sqrt(pow(sStar.fPositionX - cpStarTemp->fPositionX, 2) +
-								 pow(sStar.fPositionY - cpStarTemp->fPositionY, 2) +
-								 pow(sStar.fPositionZ - cpStarTemp->fPositionZ, 2)) ;
+					fDist = sqrt(pow(psStar->fPositionX - cpStarTemp->fPositionX, 2) +
+								 pow(psStar->fPositionY - cpStarTemp->fPositionY, 2) +
+								 pow(psStar->fPositionZ - cpStarTemp->fPositionZ, 2)) ;
 
 					/*Boucle tant que les coordonnées sont prises
 					 ou tant qu'elles sont trop proche du bulbe central. */
-					while ((cpStarTemp->fSize + sStar.fSize + 0.2 > fDist) || (fTemp < 4) )
+					while ((cpStarTemp->fSize + psStar->fSize + 0.2 > fDist) || (fTemp < 4) )
 					{
 						iTest = 0 ; /* Puisqu'on modifie les coordonnées,
 									 le test est à refaire depuis le début. */
@@ -230,17 +228,17 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 						fTranslateY = fRadius * sin(fAlpha) ;
 						fTranslateZ = fRadius * cos(fAlpha) * -1*sin(fBeta) ;
 
-						sStar.fPositionX = fOldX + fTranslateX ;
-						sStar.fPositionY = fOldY + fTranslateY ;
-						sStar.fPositionZ = fOldZ + fTranslateZ ;
+						psStar->fPositionX = fOldX + fTranslateX ;
+						psStar->fPositionY = fOldY + fTranslateY ;
+						psStar->fPositionZ = fOldZ + fTranslateZ ;
 
-						fTemp = sqrt(pow(sStar.fPositionX, 2) +
-									 pow(sStar.fPositionY, 2) +
-									 pow(sStar.fPositionZ, 2)) ;
+						fTemp = sqrt(pow(psStar->fPositionX, 2) +
+									 pow(psStar->fPositionY, 2) +
+									 pow(psStar->fPositionZ, 2)) ;
 
-						fDist = sqrt(pow(sStar.fPositionX - cpStarTemp->fPositionX, 2) +
-									 pow(sStar.fPositionY - cpStarTemp->fPositionY, 2) +
-									 pow(sStar.fPositionZ - cpStarTemp->fPositionZ, 2)) ;
+						fDist = sqrt(pow(psStar->fPositionX - cpStarTemp->fPositionX, 2) +
+									 pow(psStar->fPositionY - cpStarTemp->fPositionY, 2) +
+									 pow(psStar->fPositionZ - cpStarTemp->fPositionZ, 2)) ;
 					}
 				}
 			}
@@ -249,13 +247,13 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 		/* Mise à jour des coordonnées dans l'analyse. */
 
 		analyzedTrackSetCoords(pTrack,
-							   sStar.fPositionX,
-							   sStar.fPositionY,
-							   sStar.fPositionZ) ;
+							   psStar->fPositionX,
+							   psStar->fPositionY,
+							   psStar->fPositionZ) ;
 
 		/* Ajoute la nouvelle étoile au stellarium. */
 
-		stellariumAddStar(pStellarium, & sStar) ;
+		stellariumAddStar(pStellarium, psStar) ;
 		analyzedTrackSetbAdded(pTrack, 1) ;
 	}
 
@@ -271,59 +269,33 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack)
 
 int stellariumAddStar(Stellarium * pStellarium, Star * pStar)
 {
-	int i = 0 ;
-	Star * psStarTemp = NULL ;
-
 	assert(pStellarium != NULL) ;
 
-	if (pStellarium->uiLastPosition == pStellarium->uiSize)
-	{
-		psStarTemp = pStellarium->psAdress ;
-
-		pStellarium->psAdress = (Star *) malloc(2 * pStellarium->uiSize * sizeof(Star)) ;
-		pStellarium->uiSize = 2 * pStellarium->uiSize ;
-
-		for (i = 0 ; i < pStellarium->uiLastPosition ; i++)
-		{
-			pStellarium->psAdress[i].iTID = psStarTemp[i].iTID ;
-			pStellarium->psAdress[i].fSize = psStarTemp[i].fSize ;
-			pStellarium->psAdress[i].fColourR = psStarTemp[i].fColourR ;
-			pStellarium->psAdress[i].fColourG = psStarTemp[i].fColourG ;
-			pStellarium->psAdress[i].fColourB = psStarTemp[i].fColourB ;
-			pStellarium->psAdress[i].fPositionX = psStarTemp[i].fPositionX ;
-			pStellarium->psAdress[i].fPositionY = psStarTemp[i].fPositionY ;
-			pStellarium->psAdress[i].fPositionZ = psStarTemp[i].fPositionZ ;
-		}
-
-		free(psStarTemp) ;
-	}
-
-	pStellarium->psAdress[pStellarium->uiLastPosition].iTID = pStar->iTID ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fSize = pStar->fSize ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fColourR = pStar->fColourR ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fColourG = pStar->fColourG ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fColourB = pStar->fColourB ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fPositionX = pStar->fPositionX ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fPositionY = pStar->fPositionY ;
-	pStellarium->psAdress[pStellarium->uiLastPosition].fPositionZ = pStar->fPositionZ ;
-
-	pStellarium->uiLastPosition = pStellarium->uiLastPosition + 1 ;
+	dynamicArrayPush(pStellarium, pStar);
 
 	return EXIT_SUCCESS ;
 }
 
 const Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNumber)
 {
-	assert(pStellarium != NULL && uiNumber < pStellarium->uiLastPosition) ;
+	Star* psStar = NULL;
 
-	return (const Star *) (& pStellarium->psAdress[uiNumber]) ;
+	assert(pStellarium != NULL) ;
+
+	dynamicArrayGet(pStellarium, uiNumber, (void**) &psStar);
+
+	return (const Star *)  psStar;
 }
 
 unsigned int stellariumGetLastPosition(const Stellarium * pStellarium)
 {
+	int iLength = 0;
+
 	assert(pStellarium != NULL) ;
 
-	return pStellarium->uiLastPosition ;
+	dynamicArrayGetSize(pStellarium, &iLength);
+
+	return iLength ;
 }
 
 
