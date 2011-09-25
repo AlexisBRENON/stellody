@@ -126,6 +126,8 @@ int analyzedTracksInit(AnalyzedTracks* psTracks)
 {
 	assert (psTracks != NULL);
 
+	dynamicArrayInit(psTracks);
+
 	return EXIT_SUCCESS;
 }
 int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
@@ -146,6 +148,8 @@ int analyzedTracksInitFromFile (AnalyzedTracks* psTracks,
 
 	assert (psTracks != NULL);
 	assert (ppsContext != NULL);
+
+	analyzedTracksInit(psTracks);
 
 	/* Récupère l'ensemble des noms des groupes */
 	strGroups = g_key_file_get_groups(ppsContext[DATA], &ulNbTracks);
@@ -198,8 +202,7 @@ int analyzedTracksRelease(AnalyzedTracks* psTracks)
 {
 	assert (psTracks != NULL);
 
-	g_tree_foreach(psTracks, (GTraverseFunc) analyzedTrackReleaseFromTree,
-					NULL);
+	dynamicArrayRelease(psTracks);
 
 	return EXIT_SUCCESS;
 }
@@ -207,9 +210,7 @@ int analyzedTracksRelease(AnalyzedTracks* psTracks)
 
 AnalyzedTracks* analyzedTracksCreate(void)
 {
-	return g_tree_new_full((GCompareDataFunc) analyzedTrackDataCompare, NULL,
-							(GDestroyNotify) free,
-							NULL);
+	return dynamicArrayCreate();
 }
 AnalyzedTracks* analyzedTracksCreateFromFile (GKeyFile* ppsContext[])
 {
@@ -227,9 +228,7 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 	assert (ppsTracks != NULL);
 	assert (*ppsTracks != NULL);
 
-	analyzedTracksRelease(*ppsTracks);
-
-	g_tree_destroy(*ppsTracks);
+	dynamicArrayDestroy(ppsTracks);
 	*ppsTracks = NULL;
 
 	return EXIT_SUCCESS;
@@ -239,39 +238,17 @@ int analyzedTracksDestroy(AnalyzedTracks** ppsTracks)
 int analyzedTracksInsertTrack(AnalyzedTracks* psTracks,
 							AnalyzedTrack* psTrack)
 {
-	int iTID = 0, iNewTID = 0;
-	AnalyzedTrack* psTrackInTree = NULL;
-	int *piKey = NULL;
+	int iTID = 0;
+	int iLength = 0;
 
 	assert (psTracks != NULL);
 	assert (psTrack != NULL);
 
-	piKey = (int*) malloc(sizeof(int));
+	assert(dynamicArrayGetSize(psTracks, &iLength) == ARRAY_OK);
 
-	/* On vérifie que la clé qu'on s'apprette à entrer n'existe pas déja */
-	iTID = analyzedTrackGetTID(psTrack);
-	iNewTID = iTID;
-	psTrackInTree = g_tree_lookup(psTracks,
-								&iTID);
-
-	while (psTrackInTree != NULL)
-	{
-		/* Si elle existe déja, on incrémente l'identification et on refait
-		le test */
-		iNewTID++;
-		psTrackInTree = g_tree_lookup(psTracks,
-									&iNewTID);
-	}
-
-	/* Lorsque qu'on a trouvé une clé inutilisée, on la sauvegarde et on
-	stocke le morceau dans l'arbre */
-	if (iTID != iNewTID)
-	{
-		analyzedTrackSetTID(psTrack, iNewTID);
-	}
-
-	*piKey = iNewTID;
-	g_tree_insert(psTracks, piKey, psTrack);
+	iTID = iLength;
+	analyzedTrackSetTID(psTrack, iTID);
+	dynamicArrayPush(psTracks, psTrack);
 
 	return EXIT_SUCCESS;
 }
@@ -285,35 +262,68 @@ AnalyzedTrack* analyzedTracksRemoveTrack(AnalyzedTracks* psTracks,
 	assert (iKey > -1);
 
 	psTrack = analyzedTracksGetTrack(psTracks, iKey);
-
-	if (psTrack != NULL)
-	{
-		g_tree_remove(psTracks, &(psTrack->iTID));
-		analyzedTrackDestroy(&psTrack);
-	}
+	assert(dynamicArrayRemoveByData(psTracks, psTrack) == ARRAY_OK);
 
 	return psTrack;
 }
 
-const AnalyzedTrack* analyzedTracksGetConstTrack(
-									AnalyzedTracks* psTracks,
-									int iKey)
+int analyzedTracksRemoveByData (AnalyzedTracks* psTracks,
+										const AnalyzedTrack* psTrack)
 {
 	assert (psTracks != NULL);
 
-	return g_tree_lookup(psTracks, &iKey);
+	dynamicArrayRemoveByData(psTracks, psTrack);
+
+	return EXIT_SUCCESS;
 }
 
-AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
+
+const AnalyzedTrack* analyzedTracksGetConstTrack(
+									AnalyzedTracks* psTracks,
 									int iKey)
 {
 	AnalyzedTrack* psTrack = NULL;
 
 	assert (psTracks != NULL);
 
-	psTrack = g_tree_lookup(psTracks, &iKey);
+	psTrack = analyzedTracksGetTrack(psTracks, iKey);
 
 	return psTrack;
+}
+
+AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
+									int iKey)
+{
+	int i = 0;
+	int iLength = 0;
+	AnalyzedTrack* psTrack = NULL;
+
+	assert (psTracks != NULL);
+
+	dynamicArrayGetSize(psTracks, &iLength);
+	for (i = 0; i < iLength; i++)
+	{
+		int iTID = 0;
+		dynamicArrayGet(psTracks, i, (void**) &psTrack);
+
+		iTID = analyzedTrackGetTID(psTrack);
+		if (iTID == iKey)
+		{
+			i = iLength+1;
+		}
+	}
+
+	return psTrack;
+}
+
+int analyzedTracksGetNbTracks (const AnalyzedTracks* psTracks)
+{
+	int iSize = 0;
+	assert (psTracks != NULL);
+
+	dynamicArrayGetSize(psTracks, &iSize);
+
+	return iSize;
 }
 
 
@@ -379,6 +389,7 @@ int analyzedTracksRegressionTest(void)
 					*psTrackSet = NULL;
 	const AnalyzedTrack* psTrackGet;
 	AnalyzedTracks *psTracks = NULL;
+	int iLength = 0;
 
 	printf("\n\t -- MODULE ANALYZED_TRACKS --\n");
 
@@ -394,30 +405,36 @@ int analyzedTracksRegressionTest(void)
 	assert (psTrack1 != NULL &&
 			psTrack2 != NULL);
 	analyzedTracksInsertTrack(psTracks, psTrack1);
+	printf("\t\tL'identifiant du premier morceau vaut maintenant : %d\n",
+			analyzedTrackGetTID(psTrack1));
+	assert (analyzedTrackGetTID(psTrack1) == 0);
 	analyzedTracksInsertTrack(psTracks, psTrack2);
 	printf("\t\tL'identifiant du second morceau vaut maintenant : %d\n",
 			analyzedTrackGetTID(psTrack2));
-	assert (g_tree_nnodes(psTracks) == 2);
-	assert (analyzedTrackGetTID(psTrack2) == 2);
+	dynamicArrayGetSize(psTracks, &iLength);
+	assert (iLength == 2);
+	assert (analyzedTrackGetTID(psTrack2) == 1);
 	printf("\tFAIT !!\n");
 
 	printf("Suppression d'un morceau...\n");
-	psTrack1 = analyzedTracksRemoveTrack(psTracks, psTrack1->iTID);
-	assert (g_tree_nnodes(psTracks) == 1);
+	analyzedTracksRemoveByData(psTracks, psTrack1);
+	analyzedTrackDestroy(&psTrack1);
+	dynamicArrayGetSize(psTracks, &iLength);
+	assert (iLength == 1);
 	assert (psTrack1 == NULL);
 	printf("\tFAIT !!\n");
 
 	printf("Modification d'une valeur d'un morceau...\n");
-	psTrackSet = analyzedTracksGetTrack(psTracks, 2);
+	psTrackSet = analyzedTracksGetTrack(psTracks, 1);
 	assert (psTrackSet != NULL);
 	analyzedTrackSetPath(psTrackSet, "ça marche");
 	assert (strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
 	printf("\tFAIT !!\n");
 
 	printf("Lecture d'une valeur d'un morceau...\n");
-	psTrackGet = analyzedTracksGetConstTrack(psTracks, 2);
+	psTrackGet = analyzedTracksGetConstTrack(psTracks, 1);
 	assert (psTrackGet != NULL);
-	assert (analyzedTrackGetTID(psTrackGet) == 2 &&
+	assert (analyzedTrackGetTID(psTrackGet) == 1 &&
 			analyzedTrackGetAverage(psTrackGet) == 0.0 &&
 			strcmp(analyzedTrackGetPath(psTrackSet), "ça marche") == 0);
 	printf("\tFAIT !!\n");

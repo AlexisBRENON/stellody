@@ -4,7 +4,6 @@
   * @author STELLODY TEAM
   * @file stellody.c
   * @todo
-		Modifier AnalyzedTracks en tableau dynamique (ABR inutile). \n
 		Reprendre Stellarium pour stocker l'adresse de l'étoile et non l'étoile. \n \n
 		Implémenter le bouton précédent. \n
 		Ajouter un onglet pour voir en liste toute la bibliothèque. \n

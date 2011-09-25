@@ -2465,6 +2465,9 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 				   int iPrecision)
 {
+	int iLength = 0;
+	int i = 0;
+
 	/* Gestion de la vision. */
 
 	drawingGLMoveDirection(pData) ;
@@ -2489,7 +2492,16 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 
 	/* Gestion du Stellarium. */
 
-	g_tree_foreach(pTracks, (GTraverseFunc) drawStellariumUpdate, pData) ;
+	iLength = analyzedTracksGetNbTracks(pTracks);
+	for (i = 0; i < iLength; i++)
+	{
+		int iTID = 0;
+		AnalyzedTrack* pTrack = NULL;
+
+		dynamicArrayGet(pTracks, i, (void**) &pTrack);
+		iTID = analyzedTrackGetTID(pTrack);
+		drawStellariumUpdate(&iTID, pTrack, pData);
+	}
 
 	/* Début des dessins. */
 

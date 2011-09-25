@@ -91,6 +91,29 @@ ArrayError dynamicArrayGet (const DynamicArray* pArray,
 	return ARRAY_OK;
 }
 
+ArrayError dynamicArrayGetIndex (const DynamicArray* pArray,
+								const void* pData,
+								int* piIndex)
+{
+	int i;
+	void* pPtr = NULL;
+
+	if (pArray == NULL) {return ARRAY_NULL_POINTER;}
+	if (pData == NULL) {return ARRAY_BAD_ARGUMENTS;}
+
+	for (i=0; i<pArray->iFirstEmptyCell; i++)
+	{
+		dynamicArrayGet(pArray, i, &pPtr);
+		if (pPtr == pData)
+		{
+			*piIndex = i;
+			i = pArray->iFirstEmptyCell;
+		}
+	}
+
+	return ARRAY_OK;
+}
+
 
 ArrayError dynamicArrayPush (DynamicArray* pArray,
 				void* pData)
@@ -176,6 +199,49 @@ ArrayError dynamicArrayGetMaxSize (const DynamicArray* pArray,
 
 	return ARRAY_OK;
 }
+
+ArrayError dynamicArrayRemove (DynamicArray* pArray,
+								int iIndex)
+{
+	int i = 0;
+	void* pPtr = NULL;
+
+	if (pArray == NULL) {return ARRAY_NULL_POINTER;}
+	if (iIndex > pArray->iFirstEmptyCell) {return ARRAY_INDEX_OVERFLOW;}
+
+	for (i = iIndex; i < pArray->iFirstEmptyCell; i++)
+	{
+		dynamicArrayGet(pArray, i+1, &pPtr);
+		dynamicArraySet(pArray, i, pPtr);
+	}
+
+	dynamicArrayPop(pArray);
+
+	return ARRAY_OK;
+}
+
+ArrayError dynamicArrayRemoveByData (DynamicArray *pArray,
+									const void* pData)
+{
+	int i = 0;
+
+	if (pArray == NULL) {return ARRAY_NULL_POINTER;}
+
+	for (i = 0; i < pArray->iFirstEmptyCell; i++)
+	{
+		void* pPtr = NULL;
+		dynamicArrayGet(pArray, i, &pPtr);
+
+		if (pPtr == pData)
+		{
+			dynamicArrayRemove(pArray, i);
+			i--;
+		}
+	}
+
+	return ARRAY_OK;
+}
+
 
 
 /* ********************************************************************* */
