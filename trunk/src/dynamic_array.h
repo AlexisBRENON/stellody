@@ -125,6 +125,21 @@ ArrayError dynamicArrayGet (const DynamicArray* pArray,
 							void** pData);
 
 /**
+  * @fn ArrayError dynamicArrayGetIndex (const DynamicArray* pArray,
+								const void* pData,
+								int* piIndex);
+  * @brief Permet de récupèrer l'index de la cellule contenant la valeur pData.
+  *
+  * @param[in] pArray Le tableau étudié.
+  * @param[in] pData La valeur à retrouver
+  * @param[out] piIndex L'index de la donnée ou -1
+  * @return Code d'erreur tableau
+  */
+ArrayError dynamicArrayGetIndex (const DynamicArray* pArray,
+								const void* pData,
+								int* piIndex);
+
+/**
   * @fn ArrayError dynamicArrayPush (DynamicArray* pArray,
 							void* pData)
   * @brief Ajoute une case au tableau (en fin).
@@ -167,6 +182,45 @@ ArrayError dynamicArrayGetSize (const DynamicArray* pArray,
 ArrayError dynamicArrayGetMaxSize (const DynamicArray* pArray,
 								int* piMaxSize);
 
+
+/**
+  * @fn ArrayError dynamicArrayRemove (DynamicArray* pArray,
+								int iIndex);
+  * @brief Supprime une cellule du tableau.
+  *
+  * @param[in,out] pArray Tableau à modifier.
+  * @param[in] iIndex Cellule à supprimer (0 = première).
+  * @return Code d'erreur tableau
+  */
+ArrayError dynamicArrayRemove (DynamicArray* pArray,
+								int iIndex);
+
+/**
+  * @fn ArrayError dynamicArrayRemoveByData (DynamicArray *pArray,
+									const void* pData);
+  * @brief Supprime toutes les cellules contenant la valeur pData.
+  *
+  * @param[in,out] pArray Le tableau à modifier
+  * @param[in] pData Valeur à supprimée
+  * @return Code d'erreur tableau
+  */
+ArrayError dynamicArrayRemoveByData (DynamicArray *pArray,
+									const void* pData);
+
+/**
+  * @fn ArrayError dynamicArrayInsert (DynamicArray* pArray,
+								int iIndex,
+								const void* pData);
+  * @brief Insère une cellule d'index iIndex.
+  *
+  * @param[in,out] pArray Tableau à modifier.
+  * @param[in] iIndex Index de la cellule à insérer.
+  * @param[in] pData Pointeur à stocker
+  * @return Code d'erreur tableau
+  */
+ArrayError dynamicArrayInsert (DynamicArray* pArray,
+								int iIndex,
+								const void* pData);
 
 /* ********************************************************************* */
 /*                                                                       */

@@ -23,7 +23,7 @@
   * @fn int analysisAnalyze (FMOD_CHANNEL* pChannel,
 					float fAnalysisRate,
 					AnalyzedTrack* pTrack,
-					int* piAnalyzingCounter)
+					int iAnalyzingCounter)
   * @brief Récupère les amplitudes des fréquences et les stockent.
   *
   * @param[in,out] pChannel Canal sur lequel analyser
