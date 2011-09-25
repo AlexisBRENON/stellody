@@ -4,7 +4,6 @@
   * @author STELLODY TEAM
   * @file stellody.c
   * @todo
-		Reprendre Stellarium pour stocker l'adresse de l'étoile et non l'étoile. \n \n
 		Implémenter le bouton précédent. \n
 		Ajouter un onglet pour voir en liste toute la bibliothèque. \n
 		Ajouter récurcivement les dossiers de musique. \n

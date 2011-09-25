@@ -17,6 +17,7 @@
 
 #include "star.h"
 #include "analyzed_track.h"
+#include "dynamic_array.h"
 
 
 /* ********************************************************************* */
@@ -26,25 +27,10 @@
 /* ********************************************************************* */
 
 /**
- * @struct sStellarium
- * @brief Structure comprenant la totalité des étoiles de la bibliothèque.
- *
- * Cette structure est un tableau dynamique utilisé pour gérer la totalité
- des étoiles. Les champs de cette structures doivent être modifiés ou lus
- par les accesseurs et mutateurs.
- */
-struct sStellarium
-{
-	Star * psAdress ;				/**< Tableau d'étoiles dans le tas. */
-	unsigned int uiSize ;			/**< Taille du tableau. */
-	unsigned int uiLastPosition ;	/**< Dernière position du tableau utilisée. */
-} ;
-
-/**
  * @typedef Stellarium
- * @brief Redéfinit la structure sStellarium.
+ * @brief Le Stellarium est un tableau comprenant toutes le étoiles.
  */
-typedef struct sStellarium Stellarium ;
+typedef DynamicArray Stellarium ;
 
 
 /* ********************************************************************* */
