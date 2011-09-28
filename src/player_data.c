@@ -98,12 +98,32 @@ FMOD_CHANNEL* playerDataGetPlayingChannel (PlayerData* pData)
 	return pData->pFmodPlayingChannel;
 }
 
+int playerDataSetPlayingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psPlayingChannel)
+{
+	assert (pData != NULL);
+
+	pData->pFmodPlayingChannel = psPlayingChannel;
+
+	return EXIT_SUCCESS;
+}
+
 
 FMOD_CHANNEL* playerDataGetAnalyzingChannel (PlayerData* pData)
 {
 	assert (pData != NULL);
 
 	return pData->pFmodAnalyzingChannel;
+}
+
+int playerDataSetAnalyzingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psAnalyzingChannel)
+{
+	assert (pData != NULL);
+
+	pData->pFmodAnalyzingChannel = psAnalyzingChannel;
+
+	return EXIT_SUCCESS;
 }
 
 

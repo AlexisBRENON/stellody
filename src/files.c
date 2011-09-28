@@ -77,7 +77,7 @@ int filesCloseAndSave(GKeyFile*** pppsContext,
 
 int filesSave(GKeyFile** ppsContext,
 			const Preferences* psPref,
-			const AnalyzedTracks* psTracks)
+			AnalyzedTracks* psTracks)
 {
 	FILE* pfConfig = NULL;
 	FILE* pfData = NULL;
@@ -120,9 +120,17 @@ int filesSave(GKeyFile** ppsContext,
 
 	if (psTracks != NULL)
 	{
-		g_tree_foreach((GTree*) psTracks,
-						(GTraverseFunc) analyzedTracksSaveTracks,
-						ppsContext[DATA]);
+		AnalyzedTrack* psTrack = NULL;
+		int iNbTracks = 0;
+		int i = 0;
+
+		iNbTracks = analyzedTracksGetNbTracks(psTracks);
+		for (i = 0; i < iNbTracks; i++)
+		{
+			psTrack = analyzedTracksGetTrackInArray(psTracks, i);
+			analyzedTracksSaveTracks(psTrack, ppsContext[DATA]);
+		}
+
 		pfData = fopen(DATA_FILE, "w");
 		assert (pfData != NULL);
 		fprintf(pfData, "%s\n", g_key_file_to_data(ppsContext[DATA], NULL,

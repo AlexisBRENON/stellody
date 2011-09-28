@@ -36,18 +36,15 @@ typedef DynamicArray AnalyzedTracks;
 /* ********************************************************************* */
 
 /**
-  * @fn gboolean analyzedTracksSaveTracks (int* pKey,
-								AnalyzedTrack* pValue,
+  * @fn gboolean analyzedTracksSaveTracks (AnalyzedTrack* pValue,
 								GKeyFile* pData)
   * @brief Sauvegarde les morceau du tableau dans le fichier.
   *
-  * @param[in,out] pKey Clé du morceau
   * @param[in,out] pValue Morceau associé
   * @param[in,out] pData Données tierces
   * @return FALSE pour continuer
   */
-gboolean analyzedTracksSaveTracks (int* pKey,
-								AnalyzedTrack* pValue,
+gboolean analyzedTracksSaveTracks (AnalyzedTrack* pValue,
 								GKeyFile* pData);
 
 
@@ -169,10 +166,26 @@ const AnalyzedTrack* analyzedTracksGetConstTrack(
   \em key.
   *
   * @param[in] psTracks Pointeur sur le tableau contenant le morceau
-  * @param[in] iKey Clé/coordonnées du morceau
+  * @param[in] iKey Clé du morceau
   * @return Un pointeur sur le morceau ou NULL
   */
 AnalyzedTrack* analyzedTracksGetTrack(
+							AnalyzedTracks* psTracks,
+							int iKey);
+
+/**
+  * @fn AnalyzedTrack* analyzedTracksGetTrackInArray(
+							AnalyzedTracks* psTracks,
+							int iKey);
+  * @brief Fonction permettant de parcourir tous les morceaux, sans
+  le TID de chacun d'entre eux.
+  *
+  * @param[in,out] psTracks L'ensemble des morceaux
+  * @param[in] iKey Compris entre 0 et le nombre de morceaux. C'est l'index
+  et non le TID du morceau à récupèrer.
+  * @return Retourne la morceau d'index iKey
+  */
+AnalyzedTrack* analyzedTracksGetTrackInArray(
 							AnalyzedTracks* psTracks,
 							int iKey);
 
