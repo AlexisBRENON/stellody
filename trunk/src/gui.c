@@ -167,8 +167,6 @@ static gboolean guiTrackScaleIncrement (gpointer* pData)
 /* Données habituelles                                                   */
 /* ********************************************************************* */
 
-	AnalyzedTracks* psTracks = pData[0];
-	Preferences* psPreferences = pData[1];
 	GuiData* psGuiData = pData[2];
 	PlayerData* psPlayerData = pData[3];
 	OpenGLData* psGLData = pData[4];
@@ -466,35 +464,10 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 
 int guiLoad (void** ppDatas)
 {
-	GtkBuilder* psLoadingBuilder = NULL;
-	GtkWidget* psLoadingWindow = NULL;
-	GtkWidget* psLoadingLabel = NULL;
-
 	GKeyFile** ppsFiles = NULL;
 
 	GtkBuilder* pMainBuilder = NULL;
 	GtkWidget* pMainWindow = NULL;
-
-/* ********************************************************************* */
-/* Ouverture de la fenêtre de chargement...                              */
-/* ********************************************************************* */
-
-	psLoadingBuilder = gtk_builder_new();
-	gtk_builder_add_from_file(psLoadingBuilder,
-							"data/windows/Loading.glade",
-							NULL);
-
-	psLoadingWindow = GTK_WIDGET(
-					gtk_builder_get_object(
-										psLoadingBuilder,
-										"Loading_Window"));
-	psLoadingLabel = GTK_WIDGET(
-					gtk_builder_get_object(
-										psLoadingBuilder,
-										"Loading_Label"));
-
-
-	gtk_widget_show_now(psLoadingWindow);
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -507,70 +480,43 @@ int guiLoad (void** ppDatas)
 /* Ouverture des fichiers...                                             */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Ouverture des fichiers...");
-
 	ppsFiles = filesOpen();
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Chargements des morceaux...                                           */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Chargement des morceaux...");
-
 	ppDatas[0] = (void*) analyzedTracksCreateFromFile(ppsFiles);
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Chargements des préférences...                                        */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Chargement des préférences...");
-	gtk_widget_queue_draw(psLoadingLabel);
-
 	ppDatas[1] = (void*) preferencesCreateFromFile(ppsFiles);
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Initialisation de l'interface...                                      */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Initialisation de l'interface...");
-
 	ppDatas[2] = (void*) guiDataCreateWithData(GUI_WIN,
 										GUI_STELLARIUM,
 										GUI_PREFERENCES,
 										GUI_ABOUT);
-
 	guiDataConnectSignals((GuiData*) ppDatas[2],
 						ppDatas);
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Initialisation du lecteur...                                          */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Initialisation du lecteur...");
-
 	ppDatas[3] = (void*) playerDataCreate();
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Initialisation de l'affichage 3D...                                   */
 /* ********************************************************************* */
 
-	gtk_label_set_text(GTK_LABEL(psLoadingLabel),
-						"Initialisation de l'affichage 3D...");
-
 	ppDatas[4] = malloc(sizeof(OpenGLData));
 	drawingGLStellariumInit(ppDatas[4]);
-
-	g_usleep(500000);
 
 /* ********************************************************************* */
 /* Ouverture de la fenêtre...                                            */
@@ -585,8 +531,6 @@ int guiLoad (void** ppDatas)
 	gtk_widget_show_all(pMainWindow);
 
 	filesClose(&ppsFiles);
-	gtk_widget_destroy(psLoadingWindow);
-	g_object_unref(G_OBJECT(psLoadingBuilder));
 
 /* ********************************************************************* */
 /* Fin                                                                   */
@@ -678,6 +622,7 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		{
 			/* On prends un morceau aléatoirement */
 			/** @todo Selection aléatoire d'un morceau **/
+			printf("Aucun morceau trouvé dans la playlist.\n");
 		}
 		else
 		{
@@ -1090,6 +1035,8 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psContainer = NULL;
 	GtkWidget* psScale = NULL;
 	GtkWidget* psCheckBut = NULL;
+	int iCheck = 0;
+	gboolean bCheck = FALSE;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1119,9 +1066,12 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
 										psPreferencesBuilder,
 										"MoveCamera_Check"));
+
+	iCheck = preferencesGetMoveCam(psPreferences);
+	bCheck = (gboolean) preferencesGetMoveCam(psPreferences);
 	gtk_toggle_button_set_active(
 					GTK_TOGGLE_BUTTON(psCheckBut),
-					(gboolean) preferencesGetMoveCam(psPreferences));
+					bCheck);
 
 	psContainer = GTK_WIDGET(
 						gtk_builder_get_object(psMainBuilder,
@@ -1212,30 +1162,49 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	{
 		/* On affiche un message à l'utilisateur */
 		/** @todo Affichage d'un msg. **/
+		printf("La playlist est vide...\n");
 	}
 	else
 	{
 		FMOD_SYSTEM* psFmodContext = NULL;
 		int iGoToStar = -1;
+		int iIncrementTimerID = 0;
 
-		/* On arrête la lecture en cours */
-		on_Stop_Action_activate(psWidget, pData);
-
-		/* Sinon, on lit le morceau actif de la liste */
+		/* Sinon, on lit le morceau suivant de la liste */
 		psPath = guiDataGetTreePath(psGuiData);
-		gtk_tree_path_next(psPath);
-		assert(gtk_tree_model_get_iter(psModel, &sIter, psPath)
-				== TRUE);
-		gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
+		gtk_tree_model_get_iter(psModel, &sIter, psPath);
+		/* Si le morceau suivant est valide/existe */
+		if (gtk_tree_model_iter_next(psModel, &sIter) == TRUE)
+		{
+			/* On met à jour le morceau actif */
+			gtk_tree_path_next(psPath);
 
-		psTrackToPlay =
-			analyzedTracksGetTrack(psTracks, iTrackIndex);
+			/* On arrête la lecture en cours */
+			on_Stop_Action_activate(psWidget, pData);
 
-		psFmodContext = playerDataGetSystem(psPlayerData);
-		iGoToStar = preferencesGetMoveCam(psPreferences);
+			gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
 
-		guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
-						&psPlayingChannel, iGoToStar, psGLData);
+			psTrackToPlay =
+				analyzedTracksGetTrack(psTracks, iTrackIndex);
+
+			psFmodContext = playerDataGetSystem(psPlayerData);
+			iGoToStar = preferencesGetMoveCam(psPreferences);
+
+			guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
+							&psPlayingChannel, iGoToStar, psGLData);
+			playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
+
+			iIncrementTimerID =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
+			guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+		}
+		else /* Si le morceau suivant n'est pas valide (fin de la liste...)*/
+		{
+			printf("Fin de la playlist.\n");
+		}
+
 	}
 
 
@@ -1300,7 +1269,6 @@ int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
 
 	/* On met a jour le chemin du morceau sélectionné. */
 	psCurrentPath = guiDataGetTreePath(psGuiData);
-	gtk_tree_path_free(psCurrentPath);
 	psCurrentPath = gtk_tree_path_copy(psSelectedTrackPath);
 
 	/* On arrête la lecture courante */
@@ -1528,6 +1496,8 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 							&uiTrackLength,
 							&strSinger,
 							&strTitle);
+			playerDataSetAnalyzingChannel(psPlayerData,
+										psAnalyzingChannel);
 			/* On coupe le son, le morceau doit être joué mais pas entendu */
 			playerSetVolume(psAnalyzingChannel,
 							0.0);
