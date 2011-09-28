@@ -66,14 +66,15 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iMinTID = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
 											"iTIDMin", NULL);
-	psPref->iMoveCam = g_key_file_get_integer(ppsContext[CONFIG],
-											"DEFAULT",
-											"iMoveCam", NULL);
 	pstrTemp = g_key_file_get_string_list(ppsContext[CONFIG],
 											"DEFAULT",
 											"pstrPath",
 											(gsize*) &(psPref->iNbPath),
 											NULL);
+	psPref->iMoveCam = g_key_file_get_integer(ppsContext[CONFIG],
+											"DEFAULT",
+											"iMoveCam", NULL);
+
 	/* Copie le tableau de chaines de manière à ne pas mélanger allocations
 	GTK et libération manuelle (on alloue manuellement et on libère avec
 	GTK ce qui à été alloué par GTK).*/
