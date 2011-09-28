@@ -25,8 +25,7 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-gboolean analyzedTracksSaveTracks (int* pKey,
-								AnalyzedTrack* pValue,
+gboolean analyzedTracksSaveTracks (AnalyzedTrack* pValue,
 								GKeyFile* pData)
 {
 	int iTID = 0;
@@ -312,6 +311,24 @@ AnalyzedTrack* analyzedTracksGetTrack(AnalyzedTracks* psTracks,
 			i = iLength+1;
 		}
 	}
+
+	return psTrack;
+}
+
+AnalyzedTrack* analyzedTracksGetTrackInArray(
+							AnalyzedTracks* psTracks,
+							int iKey)
+{
+	AnalyzedTrack* psTrack = NULL;
+	int iMaxKey = 0;
+
+	assert (psTracks != NULL);
+
+	assert (dynamicArrayGetSize(psTracks, &iMaxKey) == ARRAY_OK);
+
+	assert (iKey >= 0 && iKey < iMaxKey);
+
+	assert (dynamicArrayGet(psTracks, iKey,(void**) &psTrack) == ARRAY_OK);
 
 	return psTrack;
 }

@@ -107,6 +107,18 @@ FMOD_SYSTEM* playerDataGetSystem (const PlayerData* pData);
   * @return Pointeur sur le canal de lecture
   */
 FMOD_CHANNEL* playerDataGetPlayingChannel (PlayerData* pData);
+
+/**
+  * @fn int playerDataSetPlayingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psPlayingChannel);
+  * @brief Mutateur
+  *
+  * @param[in,out] pData Données du player
+  * @param[in,out] psPlayingChannel Nouveau canal de lecture
+  * @return EXIT_SUCCESS
+  */
+int playerDataSetPlayingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psPlayingChannel);
 /**
   * @fn FMOD_CHANNEL* playerDataGetAnalyzingChannel (PlayerData* pData);
   * @brief Permet de récupérer le cannal d'analyse.
@@ -115,6 +127,18 @@ FMOD_CHANNEL* playerDataGetPlayingChannel (PlayerData* pData);
   * @return Pointeur sur le canal d'analyse
   */
 FMOD_CHANNEL* playerDataGetAnalyzingChannel (PlayerData* pData);
+
+/**
+  * @fn int playerDataSetAnalyzingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psAnalyzingChannel);
+  * @brief Mutateur
+  *
+  * @param[in,out] pData Données du player
+  * @param[in,out] psAnalyzingChannel Nouveau canal de lecture
+  * @return EXIT_SUCCESS
+  */
+int playerDataSetAnalyzingChannel (PlayerData* pData,
+								FMOD_CHANNEL* psAnalyzingChannel);
 
 /**
   * @fn int playerDataGetAnalyzingLoopCounter (const PlayerData* pData)

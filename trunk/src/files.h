@@ -78,17 +78,17 @@ int filesCloseAndSave (GKeyFile*** pppsContext,
 /**
   * @fn int filesSave (GKeyFile** ppsContext,
 			const Preferences* psPref,
-			const AnalyzedTracks* psTracks)
+			AnalyzedTracks* psTracks)
   * @brief Sauvegarde les données des GKeyFile*
   *
   * @param[in,out] ppsContext Tableau de GKeyFile*
   * @param[in] psPref Pointeur sur les préférences à sauvegarder
-  * @param[in] psTracks Pointeur sur les morceau à sauvegarder
+  * @param[in,out] psTracks Pointeur sur les morceau à sauvegarder
   * @return EXIT_SUCCESS si tout est OK
   */
 int filesSave (GKeyFile** ppsContext,
 			const Preferences* psPref,
-			const AnalyzedTracks* psTracks);
+			AnalyzedTracks* psTracks);
 
 
 /* ********************************************************************* */
