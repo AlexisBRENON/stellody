@@ -25,6 +25,7 @@
 #include "analyzed_track.h"
 #include "analyzed_tracks.h"
 #include "preferences.h"
+#include "player.h"
 #include "analysis.h"
 #include "gui_data.h"
 #include "player_data.h"
@@ -81,7 +82,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 
 	if (uiNewPosition == uiPosition)
 	{
-		FMOD_Channel_Stop(pChannel);
+		playerStopTrack(pChannel);
 
 		return EXIT_SUCCESS;
 	}
@@ -97,7 +98,7 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 							1, FMOD_DSP_FFT_WINDOW_RECT);
 	iSpectrumRightResult = FMOD_Channel_GetSpectrum(pChannel,
 							pfSpectrumValueRight, iNUMVALUES,
-							0, FMOD_DSP_FFT_WINDOW_HAMMING);
+							0, FMOD_DSP_FFT_WINDOW_RECT);
 
 	/* Si le son était stéréo, on fait la moyenne des deux canaux */
 
@@ -196,12 +197,12 @@ int analysisTrack (const char* strPath, gpointer* pData)
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-
-	/* On ajoute le morceau à la liste d'analyse (et la liste complète
-	en cas de sauvegarde. */
 	psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
 	psTrack = analyzedTrackCreate();
 	analyzedTrackSetPath(psTrack, strPath);
+
+	/* On ajoute le morceau à la liste d'analyse (et la liste complète
+	en cas de sauvegarde. */
 	linkedListAppend(psAnalyzeList, psTrack);
 	analyzedTracksInsertTrack(psTracks,
 								psTrack);
@@ -215,6 +216,9 @@ int analysisTrack (const char* strPath, gpointer* pData)
 							(GSourceFunc) guiTimeoutCheckForAnalyze,
 							pData);
 		playerDataSetCheckForAnalyze(psPlayerData, iCheckAnalyze);
+
+		/* On appelle la fonction immédiatement */
+		guiTimeoutCheckForAnalyze(pData);
 	}
 
 	return EXIT_SUCCESS;

@@ -47,7 +47,7 @@ int playerDataInit (PlayerData* pData)
 	assert (pData != NULL);
 
 	FMOD_System_Create(&(pData->pFmodSystem));
-	FMOD_System_Init(pData->pFmodSystem, 1, FMOD_INIT_NORMAL, NULL);
+	FMOD_System_Init(pData->pFmodSystem, 2, FMOD_INIT_NORMAL, NULL);
 
 	pData->pFmodAnalyzingChannel = NULL;
 	pData->pFmodPlayingChannel = NULL;

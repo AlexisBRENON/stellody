@@ -28,6 +28,7 @@ int guiDataInit (GuiData* pData)
 	pData->pStellariumBuilder = gtk_builder_new();
 	pData->pPreferencesBuilder = gtk_builder_new();
 	pData->pAboutBuilder = gtk_builder_new();
+	pData->pLibraryBuilder = gtk_builder_new();
 
 	pData->iIncrementTimerID = 0;
 
@@ -41,8 +42,12 @@ int guiDataInitWithData (GuiData* pData,
 						const char* strMainBuilder,
 						const char* strStellariumBuilder,
 						const char* strPreferencesBuilder,
+						const char* strLibraryBuilder,
 						const char* strAboutBuilder)
 {
+	GtkTreePath* psPath = NULL;
+	GtkTreeModel* psModel = NULL;
+
 	assert (pData != NULL);
 
 	guiDataInit (pData);
@@ -53,9 +58,14 @@ int guiDataInitWithData (GuiData* pData,
 	guiDataSetBuilderByName(pData,
 							PREFERENCE, strPreferencesBuilder);
 	guiDataSetBuilderByName(pData,
+							LIBRARY, strLibraryBuilder);
+	guiDataSetBuilderByName(pData,
 							ABOUT, strAboutBuilder);
 
-	pData->psPath = gtk_tree_path_new_first();
+	psModel = GTK_TREE_MODEL(gtk_builder_get_object(pData->pMainBuilder,
+													"liststore1"));
+	psPath = gtk_tree_path_new_first();
+	pData->psRowRef = gtk_tree_row_reference_new(psModel, psPath);
 
 	return EXIT_SUCCESS;
 }
@@ -71,12 +81,14 @@ int guiDataRelease (GuiData* pData)
 	pData->pStellariumBuilder = NULL;
 	g_object_unref(pData->pPreferencesBuilder);
 	pData->pPreferencesBuilder = NULL;
+	g_object_unref(pData->pLibraryBuilder);
+	pData->pLibraryBuilder = NULL;
 	g_object_unref(pData->pAboutBuilder);
 	pData->pAboutBuilder = NULL;
 
 	pData->iIncrementTimerID = 0;
 
-	gtk_tree_path_free(pData->psPath);
+	gtk_tree_row_reference_free(pData->psRowRef);
 
 	pData->iXMousePosition = 0;
 	pData->iYMousePosition = 0;
@@ -98,8 +110,11 @@ GuiData* guiDataCreate (void)
 GuiData* guiDataCreateWithData (const char* strMainBuilder,
 								const char* strStellariumBuilder,
 								const char* strPreferencesBuilder,
+								const char* strLibraryBuilder,
 								const char* strAboutBuilder)
 {
+	GtkTreePath* psPath = NULL;
+	GtkTreeModel* psModel = NULL;
 	GuiData* pData = NULL;
 
 	pData = guiDataCreate();
@@ -110,9 +125,14 @@ GuiData* guiDataCreateWithData (const char* strMainBuilder,
 	guiDataSetBuilderByName(pData,
 							PREFERENCE, strPreferencesBuilder);
 	guiDataSetBuilderByName(pData,
+							LIBRARY, strLibraryBuilder);
+	guiDataSetBuilderByName(pData,
 							ABOUT, strAboutBuilder);
 
-	pData->psPath = gtk_tree_path_new_first();
+	psModel = GTK_TREE_MODEL(gtk_builder_get_object(pData->pMainBuilder,
+													"liststore1"));
+	psPath = gtk_tree_path_new_first();
+	pData->psRowRef = gtk_tree_row_reference_new(psModel, psPath);
 
 	return pData;
 }
@@ -140,6 +160,7 @@ int guiDataConnectSignals (GuiData* pData,
 	gtk_builder_connect_signals(pData->pMainBuilder, pConnectData);
 	gtk_builder_connect_signals(pData->pStellariumBuilder, pConnectData);
 	gtk_builder_connect_signals(pData->pPreferencesBuilder, pConnectData);
+	gtk_builder_connect_signals(pData->pLibraryBuilder, pConnectData);
 	gtk_builder_connect_signals(pData->pAboutBuilder, pConnectData);
 
 	return EXIT_SUCCESS;
@@ -175,6 +196,13 @@ int guiDataSetBuilder (GuiData* pData,
 				g_object_unref(pData->pPreferencesBuilder);
 			}
 			pData->pPreferencesBuilder = pBuilder;
+			break;
+		case LIBRARY:
+			if (pData->pLibraryBuilder != NULL)
+			{
+				g_object_unref(pData->pLibraryBuilder);
+			}
+			pData->pLibraryBuilder = pBuilder;
 			break;
 		case ABOUT:
 			if (pData->pAboutBuilder != NULL)
@@ -214,6 +242,10 @@ int guiDataSetBuilderByName(GuiData* pData,
 			gtk_builder_add_from_file(pData->pPreferencesBuilder,
 										strBuilder, NULL);
 			break;
+		case LIBRARY:
+			gtk_builder_add_from_file(pData->pLibraryBuilder,
+										strBuilder, NULL);
+			break;
 		case ABOUT:
 			gtk_builder_add_from_file(pData->pAboutBuilder,
 										strBuilder, NULL);
@@ -242,6 +274,9 @@ GtkBuilder* guiDataGetBuilder (const GuiData* pData,
 			break;
 		case PREFERENCE:
 			return pData->pPreferencesBuilder;
+			break;
+		case LIBRARY:
+			return pData->pLibraryBuilder;
 			break;
 		case ABOUT:
 			return pData->pAboutBuilder;
@@ -274,11 +309,28 @@ int guiDataGetIncrementTimerID (const GuiData* pData)
 }
 
 
-GtkTreePath* guiDataGetTreePath (const GuiData* pData)
+GtkTreeRowReference* guiDataGetTreeRowReference (const GuiData* pData)
 {
 	assert (pData != NULL);
 
-	return (pData->psPath);
+	return (pData->psRowRef);
+}
+
+int guiDataSetTreeRowReference (GuiData* pData,
+								GtkTreeRowReference* psRowRef)
+{
+	assert (pData != NULL);
+
+	gtk_tree_row_reference_free(pData->psRowRef);
+	pData->psRowRef = NULL;
+
+	if (psRowRef != NULL)
+	{
+		pData->psRowRef = gtk_tree_row_reference_copy(psRowRef);
+	}
+
+
+	return EXIT_SUCCESS;
 }
 
 int guiDataSetMousePosition (GuiData* pData,

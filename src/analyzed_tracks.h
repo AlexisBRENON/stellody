@@ -200,19 +200,16 @@ int analyzedTracksGetNbTracks (const AnalyzedTracks* psTracks);
 
 
 /**
-  * @fn gboolean analyzedTracksCheckForAnalyze (int* piKey,
-										AnalyzedTrack* psTrack,
+  * @fn gboolean analyzedTracksCheckForAnalyze (AnalyzedTrack* psTrack,
 										gpointer* pData)
   * @brief Enlève tous les morceau du tableau qui ne sont pas encore
   analysés pour les rajouter à la liste d'analyse.
   *
-  * @param[in,out] piKey pointeur sur la clé dans le tableau
   * @param[in,out] psTrack pointeur sur le morceau
   * @param[in,out] pData Tableau des données utilisées
   * @return FALSE pour continuer la traversée
   */
-gboolean analyzedTracksCheckForAnalyze (int* piKey,
-										AnalyzedTrack* psTrack,
+gboolean analyzedTracksCheckForAnalyze (AnalyzedTrack* psTrack,
 										gpointer* pData);
 
 /* ********************************************************************* */

@@ -124,6 +124,17 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData);
 int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData);
 
 /**
+  * @fn int on_Library_Action_activate (GtkWidget* psWidget,
+										gpointer* pData);
+  * @brief Affiche la librairie.
+  *
+  * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData);
+
+/**
   * @fn int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
   * @brief Affiche la fenêtre A Propos.
   *
@@ -142,6 +153,18 @@ int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData);
   * @return EXIT_SUCCESS si tout est OK.
   */
 int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData);
+
+/**
+  * @fn int on_Previous_Action_activate (GtkWidget* psWidget,
+										gpointer* pData)
+  * @brief Passe au morceau précédent.
+  *
+  * @param[in,out] psWidget Pointeur sur le widget appellant ce callback
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int on_Previous_Action_activate (GtkWidget* psWidget, gpointer* pData);
+
 
 /**
   * @fn int on_Track_Scale_value_changed (GtkWidget* psWidget,
@@ -175,6 +198,21 @@ int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
 										GtkTreePath* psSelectedTrackPath,
 										GtkTreeViewColumn* psColumn,
 										gpointer* pData);
+
+/**
+  * @fn int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData);
+  * @brief Permet la suppression d'un morceau de la playlist.
+  *
+  * @param[in,out] psWidget Widget appellant
+  * @param[in,out] psEvent Données de l'évenement
+  * @param[in,out] pData Données autres
+  * @return EXIT_SUCCESS
+  */
+int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData);
 
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
