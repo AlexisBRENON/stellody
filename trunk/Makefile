@@ -161,7 +161,7 @@ clean :
 flush :
 	@echo "\033[1;33mVidage des fichiers...\n"
 	@echo "# Fichier de données de l'application Stellody" >data/.stellody_data
-	@echo "# Fichier de configuration" >data/.stellody_config
+	@echo "# Fichier de configuration\n\n[DEFAULT]\niAnalysisRate=1\niWindowXSize=0\niWindowYSize=0\ni3DQuality=25\niTIDMax=0\niTIDMin=0\niMoveCam=1\npstrPath=\n" >data/.stellody_config
 	@echo "=======================================\033[0m"
 
 mrproper :

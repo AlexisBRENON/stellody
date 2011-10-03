@@ -4,9 +4,9 @@
   * @author STELLODY TEAM
   * @file stellody.c
   * @todo
-		Implémenter le bouton précédent. \n
 		Ajouter un onglet pour voir en liste toute la bibliothèque. \n
 		Ajouter récurcivement les dossiers de musique. \n
+		Refaire l'algo d'analyse (+ tests) \n
   */
 
 

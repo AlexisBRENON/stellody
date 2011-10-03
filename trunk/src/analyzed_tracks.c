@@ -344,8 +344,7 @@ int analyzedTracksGetNbTracks (const AnalyzedTracks* psTracks)
 }
 
 
-gboolean analyzedTracksCheckForAnalyze(int* piKey,
-										AnalyzedTrack* psTrack,
+gboolean analyzedTracksCheckForAnalyze(AnalyzedTrack* psTrack,
 										gpointer* pData)
 {
 

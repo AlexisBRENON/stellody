@@ -2247,9 +2247,9 @@ int drawingGLSetNewDirection(OpenGLData * pData, const AnalyzedTrack * pTrack)
 
 	pfCoord = analyzedTrackGetCoord(pTrack);
 
-	if(pfCoord[0] != pData->fCenterX &&
-	   pfCoord[1] != pData->fCenterY &&
-	   pfCoord[2] != pData->fCenterZ)
+	if((int) pfCoord[0] != pData->fCenterX &&
+	   (int) pfCoord[1] != pData->fCenterY &&
+	   (int) pfCoord[2] != pData->fCenterZ)
 	{
 		/* Mise à jour des iDirectionX/Y/Z. */
 

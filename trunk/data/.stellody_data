@@ -1,14 +1,53 @@
 
-[/home/alexis/Téléchargements/florida - good feeling.mp3]
-strPath=/home/alexis/Téléchargements/florida - good feeling.mp3
+[/home/alexis/Musique/Jimmy Hendrix Tribute.mp3]
+strPath=/home/alexis/Musique/Jimmy Hendrix Tribute.mp3
 iTID=0
 bAnalyzed=1
+uiLength=294635
+fAverage=247.72711181640625
+fBass=0.62727075815200806
+fMedium=0.18540607392787933
+fTreble=0.18732313811779022
+fCoordX=-0.63646221160888672
+fCoordY=-2.8756351470947266
+fCoordZ=6.9787769317626953
+
+[/home/alexis/Musique/the black keys - i got mine.mp3]
+strPath=/home/alexis/Musique/the black keys - i got mine.mp3
+iTID=1
+bAnalyzed=1
+uiLength=239255
+fAverage=171.35897827148438
+fBass=0.56862461566925049
+fMedium=0.20929887890815735
+fTreble=0.22207650542259216
+fCoordX=-3.5687694549560547
+fCoordY=-1.4420671463012695
+fCoordZ=11.149181365966797
+
+[/home/alexis/Musique/florida - good feeling.mp3]
+strPath=/home/alexis/Musique/florida - good feeling.mp3
+iTID=2
+bAnalyzed=1
 uiLength=249155
-fAverage=394.18948364257812
-fBass=0.55607062578201294
-fMedium=0.25894981622695923
-fTreble=0.18497961759567261
-fCoordX=-4.1964688301086426
-fCoordY=1.5369892120361328
-fCoordZ=6.6975536346435547
+fAverage=112.109375
+fBass=0.53044998645782471
+fMedium=0.28376826643943787
+fTreble=0.18578173220157623
+fCoordX=-5.4775009155273438
+fCoordY=3.0260963439941406
+fCoordZ=6.7938079833984375
+
+[/home/alexis/Musique/Vivaldi's Four Season.mp3]
+strPath=/home/alexis/Musique/Vivaldi's Four Season.mp3
+iTID=3
+bAnalyzed=1
+uiLength=179147
+fAverage=15.238883018493652
+fBass=0.83838135004043579
+fMedium=0.090754151344299316
+fTreble=0.07086452841758728
+fCoordX=9.9190673828125
+fCoordY=-8.5547504425048828
+fCoordZ=-6.9962568283081055
 

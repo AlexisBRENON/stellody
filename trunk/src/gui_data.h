@@ -29,7 +29,8 @@ enum eBuilderName
 	MAIN, /**< Identifie le builder principal. */
 	STELLARIUM, /**< Identifie le builder du Stellarium */
 	PREFERENCE, /**< Identifie le builder des Préférences */
-	ABOUT /**< Identifie le builder de la fenêtre APropos */
+	ABOUT, /**< Identifie le builder de la fenêtre APropos */
+	LIBRARY /**< Identifie le builder de la librairie */
 };
 /**
   * @typedef BuilderName
@@ -47,9 +48,10 @@ struct sGuiData
 	GtkBuilder* pMainBuilder; /**< Builder de l'interface commune */
 	GtkBuilder* pStellariumBuilder; /**< Builder du Stellarium */
 	GtkBuilder* pPreferencesBuilder; /**< Builder de la gestion de préférences */
+	GtkBuilder* pLibraryBuilder; /**< Builder de la librairie */
 	GtkBuilder* pAboutBuilder; /**< Builder du @em A Propos */
 
-	GtkTreePath* psPath; /**< Pointeur sur le morceau de la playlist. */
+	GtkTreeRowReference* psRowRef; /**< Pointeur sur le morceau de la playlist. */
 
 	int iIncrementTimerID; /**< ID du timer d'incrémentation */
 
@@ -83,6 +85,7 @@ int guiDataInit (GuiData* pData);
 						const char* strMainBuilder,
 						const char* strStellariumBuilder,
 						const char* strPreferencesBuilder,
+						const char* strLibraryBuilder,
 						const char* strAboutBuilder)
   * @brief Initialisation de la structure en chargeant les fichiers
   d'interface.
@@ -91,6 +94,7 @@ int guiDataInit (GuiData* pData);
   * @param[in] strMainBuilder Chemin vers le fichier d'interface générale.
   * @param[in] strStellariumBuilder Chemin vers l'interface du Stellarium.
   * @param[in] strPreferencesBuilder Chemin vers l'interface Preferences.
+  * @param[in] strLibraryBuilder Chemin vers l'interface Library.
   * @param[in] strAboutBuilder Chemin vers l'interface du APropos.
   * @return EXIT_SUCCESS si tout est OK.
   */
@@ -98,6 +102,7 @@ int guiDataInitWithData (GuiData* pData,
 						const char* strMainBuilder,
 						const char* strStellariumBuilder,
 						const char* strPreferencesBuilder,
+						const char* strLibraryBuilder,
 						const char* strAboutBuilder);
 /**
   * @fn int guiDataRelease (GuiData* pData)
@@ -119,6 +124,7 @@ GuiData* guiDataCreate (void);
   * @fn GuiData* guiDataCreateWithData (const char* strMainBuilder,
 								const char* strStellariumBuilder,
 								const char* strPreferencesBuilder,
+								const char* strLibraryBuilder,
 								const char* strAboutBuilder)
   * @brief Alloue et initialise une structure de donnée en chargeant les
   fichiers d'interface.
@@ -126,12 +132,14 @@ GuiData* guiDataCreate (void);
   * @param[in] strMainBuilder Chemin vers le fichier d'interface générale.
   * @param[in] strStellariumBuilder Chemin vers l'interface du Stellarium.
   * @param[in] strPreferencesBuilder Chemin vers l'interface Preferences.
+  * @param[in] strLibraryBuilder Chemin vers l'interface Library.
   * @param[in] strAboutBuilder Chemin vers l'interface du APropos.
   * @return Une structure nouvellement allouée.
   */
 GuiData* guiDataCreateWithData (const char* strMainBuilder,
 								const char* strStellariumBuilder,
 								const char* strPreferencesBuilder,
+								const char* strLibraryBuilder,
 								const char* strAboutBuilder);
 /**
   * @fn int guiDataDestroy (GuiData** ppData)
@@ -216,13 +224,25 @@ int guiDataGetIncrementTimerID (const GuiData* pData);
 
 
 /**
-  * @fn GtkTreePath* guiDataGetTreePath (const GuiData* pData)
+  * @fn GtkTreeRowReference* guiDataGetTreeRowReference (const GuiData* pData)
   * @brief Accesseur.
   *
   * @param[in] pData Structure à accéder
-  * @return GtkTreePath sur le morceau à lire
+  * @return GtkTreeRowReference sur le morceau à lire
   */
-GtkTreePath* guiDataGetTreePath (const GuiData* pData);
+GtkTreeRowReference* guiDataGetTreeRowReference (const GuiData* pData);
+
+/**
+  * @fn int guiDataSetTreeRowReference (GuiData* pData,
+										GtkTreeRowReference* psRowRef);
+  * @brief Mutateur
+  *
+  * @param[in,out] pData Structure à modifier
+  * @param[in,out] psRowRef GtkTreeRowReference à stocker.
+  * @return EXIT_SUCCESS
+  */
+int guiDataSetTreeRowReference (GuiData* pData,
+								GtkTreeRowReference* psRowRef);
 
 /**
   * @fn int guiDataSetMousePosition (GuiData* pData,

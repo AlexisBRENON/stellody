@@ -56,6 +56,8 @@ fichier GUI contenant la gestion des préférences. */
 contenant le A Propos. */
 #define GUI_ADDTRACK "data/windows/AddTrack.glade" /**< Interface de
 chargement d'un fichier. */
+#define GUI_LIBRARY "data/windows/Library.glade" /**< Interface d'affichage
+de la librairie */
 
 #define GUI_MAIN_WIN "Stellody_Window" /**< Nom du widget de niveau
 supérieur. */
@@ -66,6 +68,7 @@ stellarium. */
 #define GUI_PREFERENCES_WIN "Preferences_VBox" /**< Nom du conteneur des
 preferences. */
 #define GUI_ABOUT_WIN "About_VBox" /**< Nom du conteneur de A Propos; */
+#define GUI_LIBRARY_WIN "Library_Box" /**< Nom du conteneur de la librairie */
 #define GUI_ADDTRACK_WIN "AddTrack_VBox" /**< Conteneneur d'ajout de
 fichier. */
 
@@ -111,10 +114,12 @@ static int guiUnparent (GuiData* psData)
 	GtkBuilder* pPreferencesBuilder = NULL;
 	GtkBuilder* pAboutBuilder = NULL;
 	GtkBuilder* pStellariumBuilder = NULL;
+	GtkBuilder* pLibraryBuilder = NULL;
 
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psPreference = NULL;
 	GtkWidget* psAbout = NULL;
+	GtkWidget* psLibrary = NULL;
 	GtkWidget* psContainer = NULL;
 
 
@@ -122,6 +127,7 @@ static int guiUnparent (GuiData* psData)
 	pPreferencesBuilder = guiDataGetBuilder(psData, PREFERENCE);
 	pAboutBuilder = guiDataGetBuilder(psData, ABOUT);
 	pStellariumBuilder = guiDataGetBuilder(psData, STELLARIUM);
+	pLibraryBuilder = guiDataGetBuilder(psData, LIBRARY);
 
 
 	psContainer = GTK_WIDGET(
@@ -137,10 +143,14 @@ static int guiUnparent (GuiData* psData)
 	psStellarium = GTK_WIDGET(
 					gtk_builder_get_object(pStellariumBuilder,
 											GUI_STELLARIUM_WIN));
+	psLibrary = GTK_WIDGET(
+					gtk_builder_get_object(pLibraryBuilder,
+											GUI_LIBRARY_WIN));
 
 	gtk_widget_hide_all(psPreference);
 	gtk_widget_hide_all(psAbout);
 	gtk_widget_hide_all(psStellarium);
+	gtk_widget_hide_all(psLibrary);
 
 
 	if (gtk_widget_get_parent(psPreference) != NULL)
@@ -154,6 +164,10 @@ static int guiUnparent (GuiData* psData)
 	if (gtk_widget_get_parent(psStellarium) != NULL)
 	{
 		gtk_container_remove ((GtkContainer*)psContainer, psStellarium);
+	}
+	if (gtk_widget_get_parent(psLibrary) != NULL)
+	{
+		gtk_container_remove ((GtkContainer*)psContainer, psLibrary);
 	}
 
 	return EXIT_SUCCESS;
@@ -296,6 +310,14 @@ static int guiPlayTrack (AnalyzedTrack* pTrack,
 
 	/* On concatène artiste et morceau */
 
+	if (g_utf8_validate(strTitle, -1, NULL) == FALSE)
+	{
+		strTitle = NULL;
+	}
+	if (g_utf8_validate(strSinger, -1, NULL) == FALSE)
+	{
+		strSinger = NULL;
+	}
 	strTrackInfo = (char*) malloc((strlen(strTitle)+
 									strlen(" - ") +
 									strlen(strSinger)
@@ -387,6 +409,7 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	int iMoveCam = 0;
 	int iIncrementTimerID = 0;
 	int iTID = 0;
+	int iPlay = 0;
 
 	GtkCellRenderer* psCellRender = NULL;
 	GtkTreeModel* psListStore = NULL;
@@ -405,26 +428,13 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	psListStore = GTK_TREE_MODEL( gtk_builder_get_object (psMainBuilder,
 														"liststore1"));
 
-	/* Si la liste de lecture est vide, on lance la lecture */
+	/* Si la liste de lecture est vide, il faut lancer la lecture */
 	if (gtk_tree_model_get_iter_first(psListStore, &Iter) == FALSE)
 	{
-		on_Stop_Action_activate(NULL, pData);
-		guiPlayTrack(pTrack,
-					psMainBuilder,
-					psFmodContext,
-					&psPlayingChannel,
-					iMoveCam,
-					psGLData);
-		playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
-
-
-		iIncrementTimerID =
-			g_timeout_add_seconds(1,
-						(GSourceFunc) guiTrackScaleIncrement,
-						pData);
-		guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+		iPlay = 1;
 	}
 
+	/* On ajoute le morceau à la playlist */
 	strTrackPath = analyzedTrackGetPath(pTrack);
 	strTrackName = strrchr(strTrackPath, '/');
 	iTID = analyzedTrackGetTID(pTrack);
@@ -439,9 +449,38 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	gtk_list_store_set(GTK_LIST_STORE(psListStore), &Iter,
 						0, &(strTrackName[1]), 1, iTID, -1);
 
-
-
 	gtk_widget_show_all(GTK_WIDGET(psTreeView));
+
+	/* On lance la lecture */
+	if (iPlay == 1)
+	{
+		GtkTreePath* psPath = NULL;
+		GtkTreeRowReference* psRowRef = NULL;
+
+		on_Stop_Action_activate(NULL, pData);
+		guiPlayTrack(pTrack,
+					psMainBuilder,
+					psFmodContext,
+					&psPlayingChannel,
+					iMoveCam,
+					psGLData);
+		playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
+
+		iIncrementTimerID =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
+		guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+
+
+		/* On met à jour le morceau actif de la playlist */
+		psPath = gtk_tree_path_new_first();
+		psRowRef = gtk_tree_row_reference_new(GTK_TREE_MODEL(psListStore),
+												psPath);
+		guiDataSetTreeRowReference(psGuiData, psRowRef);
+		gtk_tree_row_reference_free(psRowRef);
+		gtk_tree_path_free(psPath);
+	}
 
 	return EXIT_SUCCESS;
 }
@@ -469,6 +508,10 @@ int guiLoad (void** ppDatas)
 	GtkBuilder* pMainBuilder = NULL;
 	GtkWidget* pMainWindow = NULL;
 
+	int iNbTracks = 0;
+	int i = 0;
+	AnalyzedTrack* psTrackToAnalyzed = NULL;
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                             CHARGEMENTS                               */
@@ -494,6 +537,8 @@ int guiLoad (void** ppDatas)
 
 	ppDatas[1] = (void*) preferencesCreateFromFile(ppsFiles);
 
+	filesClose(&ppsFiles);
+
 /* ********************************************************************* */
 /* Initialisation de l'interface...                                      */
 /* ********************************************************************* */
@@ -501,6 +546,7 @@ int guiLoad (void** ppDatas)
 	ppDatas[2] = (void*) guiDataCreateWithData(GUI_WIN,
 										GUI_STELLARIUM,
 										GUI_PREFERENCES,
+										GUI_LIBRARY,
 										GUI_ABOUT);
 	guiDataConnectSignals((GuiData*) ppDatas[2],
 						ppDatas);
@@ -518,6 +564,19 @@ int guiLoad (void** ppDatas)
 	ppDatas[4] = malloc(sizeof(OpenGLData));
 	drawingGLStellariumInit(ppDatas[4]);
 
+
+/* ********************************************************************* */
+/* Remise en analyse des morceaux non finis.                             */
+/* ********************************************************************* */
+
+	iNbTracks = analyzedTracksGetNbTracks(ppDatas[0]);
+	for (i = 0; i < iNbTracks; i++)
+	{
+		psTrackToAnalyzed = analyzedTracksGetTrackInArray(ppDatas[0],
+															i);
+		analyzedTracksCheckForAnalyze(psTrackToAnalyzed, ppDatas);
+	}
+
 /* ********************************************************************* */
 /* Ouverture de la fenêtre...                                            */
 /* ********************************************************************* */
@@ -529,8 +588,6 @@ int guiLoad (void** ppDatas)
 							"data/images/icone.png", NULL);
 
 	gtk_widget_show_all(pMainWindow);
-
-	filesClose(&ppsFiles);
 
 /* ********************************************************************* */
 /* Fin                                                                   */
@@ -589,6 +646,7 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	AnalyzedTrack* psTrackToPlay = NULL;
 	GtkBuilder* psMainBuilder = NULL;
 	GtkTreeModel* psModel = NULL;
+	GtkTreeRowReference* psRowRef = NULL;
 	GtkTreePath* psPath = NULL;
 	GtkTreeIter sIter;
 	int iTrackIndex = -1;
@@ -630,7 +688,8 @@ int on_Play_Action_activate (GtkWidget* psWidget, gpointer* pData)
 			int iGoToStar = -1;
 
 			/* Sinon, on lit le morceau actif de la liste */
-			psPath = guiDataGetTreePath(psGuiData);
+			psRowRef = guiDataGetTreeRowReference(psGuiData);
+			psPath = gtk_tree_row_reference_get_path(psRowRef);
 			assert(gtk_tree_model_get_iter(psModel, &sIter, psPath)
 					== TRUE);
 			gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
@@ -1084,6 +1143,56 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	return EXIT_SUCCESS;
 }
 
+int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData)
+{
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psLibraryBuilder = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkWidget* psLibraryWin = NULL;
+	GtkWidget* psContainer = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	guiUnparent(psGuiData);
+
+	psLibraryBuilder = guiDataGetBuilder(psGuiData, LIBRARY);
+	psMainBuilder = guiDataGetBuilder (psGuiData, MAIN);
+
+	psLibraryWin = GTK_WIDGET(gtk_builder_get_object(
+										psLibraryBuilder,
+										GUI_LIBRARY_WIN));
+	psContainer = GTK_WIDGET(gtk_builder_get_object(
+										psMainBuilder,
+										GUI_MAIN_CONTAINER));
+
+
+	printf("Chargement de la liste des morceaux.\n");
+
+
+	gtk_box_pack_start((GtkBox*)psContainer,
+							psLibraryWin, TRUE, TRUE, 0);
+	gtk_widget_show_all(psLibraryWin);
+
+	return EXIT_SUCCESS;
+}
+
+
+
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
 
@@ -1144,6 +1253,7 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	AnalyzedTrack* psTrackToPlay = NULL;
 	GtkBuilder* psMainBuilder = NULL;
 	GtkTreeModel* psModel = NULL;
+	GtkTreeRowReference* psRowRef = NULL;
 	GtkTreePath* psPath = NULL;
 
 	GtkTreeIter sIter;
@@ -1171,13 +1281,18 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		int iIncrementTimerID = 0;
 
 		/* Sinon, on lit le morceau suivant de la liste */
-		psPath = guiDataGetTreePath(psGuiData);
+		psRowRef = guiDataGetTreeRowReference(psGuiData);
+		psPath = gtk_tree_row_reference_get_path(psRowRef);
 		gtk_tree_model_get_iter(psModel, &sIter, psPath);
+
 		/* Si le morceau suivant est valide/existe */
 		if (gtk_tree_model_iter_next(psModel, &sIter) == TRUE)
 		{
 			/* On met à jour le morceau actif */
 			gtk_tree_path_next(psPath);
+			psRowRef = gtk_tree_row_reference_new(psModel, psPath);
+			guiDataSetTreeRowReference(psGuiData, psRowRef);
+			gtk_tree_row_reference_free(psRowRef);
 
 			/* On arrête la lecture en cours */
 			on_Stop_Action_activate(psWidget, pData);
@@ -1203,6 +1318,99 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		else /* Si le morceau suivant n'est pas valide (fin de la liste...)*/
 		{
 			printf("Fin de la playlist.\n");
+		}
+
+	}
+
+
+	return EXIT_SUCCESS;
+}
+
+int on_Previous_Action_activate (GtkWidget* psWidget, gpointer* pData)
+{
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	Preferences* psPreferences = pData[1];
+	GuiData* psGuiData = pData[2];
+	PlayerData* psPlayerData = pData[3];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	FMOD_CHANNEL* psPlayingChannel = NULL;
+	AnalyzedTrack* psTrackToPlay = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreeRowReference* psRowRef = NULL;
+	GtkTreePath* psPath = NULL;
+
+	GtkTreeIter sIter;
+	int iTrackIndex = -1;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+	psModel = GTK_TREE_MODEL(
+			gtk_builder_get_object(psMainBuilder, "liststore1"));
+
+	/* Si la liste est vide */
+	if (gtk_tree_model_get_iter_first(psModel, &sIter) == FALSE)
+	{
+		/* On affiche un message à l'utilisateur */
+		/** @todo Affichage d'un msg. **/
+		printf("La playlist est vide...\n");
+	}
+	else
+	{
+		FMOD_SYSTEM* psFmodContext = NULL;
+		int iGoToStar = -1;
+		int iIncrementTimerID = 0;
+
+		/* Sinon, on lit le morceau suivant de la liste */
+		psRowRef = guiDataGetTreeRowReference(psGuiData);
+		psPath = gtk_tree_row_reference_get_path(psRowRef);
+
+		/* Si le morceau précédent est valide/existe */
+		if (gtk_tree_path_prev(psPath) == TRUE)
+		{
+			/* On met à jour le morceau actif */
+			psRowRef = gtk_tree_row_reference_new(psModel, psPath);
+			guiDataSetTreeRowReference(psGuiData, psRowRef);
+			gtk_tree_row_reference_free(psRowRef);
+
+			/* On arrête la lecture en cours */
+			on_Stop_Action_activate(psWidget, pData);
+
+			gtk_tree_model_get_iter(psModel, &sIter, psPath);
+			gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
+
+			psTrackToPlay =
+				analyzedTracksGetTrack(psTracks, iTrackIndex);
+
+			psFmodContext = playerDataGetSystem(psPlayerData);
+			iGoToStar = preferencesGetMoveCam(psPreferences);
+
+			guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
+							&psPlayingChannel, iGoToStar, psGLData);
+			playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
+
+			iIncrementTimerID =
+			g_timeout_add_seconds(1,
+						(GSourceFunc) guiTrackScaleIncrement,
+						pData);
+			guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+		}
+		else /* Si le morceau suivant n'est pas valide (fin de la liste...)*/
+		{
+			printf("Debut de la playlist.\n");
 		}
 
 	}
@@ -1262,14 +1470,18 @@ int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
 /* Données annexes                                                       */
 /* ********************************************************************* */
 
-	GtkTreePath* psCurrentPath = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreeRowReference* psRowRef = NULL;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
+
+	psModel = gtk_tree_view_get_model(psTreeView);
 
 	/* On met a jour le chemin du morceau sélectionné. */
-	psCurrentPath = guiDataGetTreePath(psGuiData);
-	psCurrentPath = gtk_tree_path_copy(psSelectedTrackPath);
+	psRowRef = gtk_tree_row_reference_new(psModel, psSelectedTrackPath);
+	guiDataSetTreeRowReference(psGuiData, psRowRef);
+	gtk_tree_row_reference_free(psRowRef);
 
 	/* On arrête la lecture courante */
 	on_Stop_Action_activate(NULL, pData);
@@ -1282,7 +1494,88 @@ int on_PlayList_TreeView_row_activated (GtkTreeView* psTreeView,
 }
 
 
+int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData)
+{
 
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	int iStop = 0;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkTreeView* psTreeView = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreePath* psPointedPath = NULL;
+	GtkTreePath* psCurrentPath = NULL;
+	GtkTreeRowReference* psRowRef = NULL;
+	GtkTreeIter sIter;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* Si on appuie sur la touche 'suppr' */
+	if (psEvent->key.keyval == 0xffff)
+	{
+		/* On récupère la ligne active de la playlist */
+		psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+		psModel = GTK_TREE_MODEL(gtk_builder_get_object(psMainBuilder,
+													"liststore1"));
+		psTreeView = GTK_TREE_VIEW(gtk_builder_get_object(psMainBuilder,
+													"PlayList_TreeView"));
+		gtk_tree_view_get_cursor(psTreeView, &psPointedPath, NULL);
+
+		/* S'il y en a une */
+		if (psPointedPath != NULL)
+		{
+
+			psRowRef = guiDataGetTreeRowReference(psGuiData);
+			psCurrentPath = gtk_tree_row_reference_get_path(psRowRef);
+
+			/* On regarde si c'est celle en lecture */
+			if (gtk_tree_path_compare(psCurrentPath, psPointedPath) == 0)
+			{ /* Si oui */
+				iStop = 1;
+			}
+
+			/* On supprime la ligne */
+			gtk_tree_model_get_iter(psModel, &sIter, psPointedPath);
+			gtk_list_store_remove(GTK_LIST_STORE(psModel), &sIter);
+
+			/* Si la ligne supprimée est celle qui était en lecture */
+			if (iStop == 1)
+			{
+				GtkTreePath* psNewPath = NULL;
+
+				/* On stoppe la lecture */
+				on_Stop_Action_activate(psWidget, pData);
+
+				/* Et on réinitialise le morceau en lecture sur le
+				morceau suivant */
+				psNewPath = gtk_tree_model_get_path(psModel, &sIter);
+				psRowRef = gtk_tree_row_reference_new(psModel, psNewPath);
+				guiDataSetTreeRowReference(psGuiData, psRowRef);
+				gtk_tree_path_free(psNewPath);
+				gtk_tree_row_reference_free(psRowRef);
+
+			}
+
+			gtk_tree_path_free(psCurrentPath);
+		}
+
+		gtk_tree_path_free(psPointedPath);
+
+	}
+
+	return EXIT_SUCCESS;
+}
 
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
@@ -1433,8 +1726,9 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 	linkedListGetLength(psAnalyzeList, &iListLength);
 	psAnalyzingChannel = playerDataGetAnalyzingChannel(psPlayerData);
 
+/* Si la liste d'analyse est vide et aucun morceau en train d'être analysé */
 	if (iListLength == 0 &&
-		!playerIsPlaying(psAnalyzingChannel)) /* Si la liste d'analyse est vide */
+		playerIsPlaying(psAnalyzingChannel) == FALSE)
 	{
 		GtkBuilder* psMainBuilder = NULL;
 		GtkWidget* psStatusBar = NULL;
@@ -1446,9 +1740,6 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 									"Stellody_StatusBar"));
 		gtk_statusbar_pop(GTK_STATUSBAR(psStatusBar), 1);
 
-/* ********************************************************************* */
-/* ********************************************************************* */
-
 		/* C'est fonction n'a plus lieu d'être appelée */
 
 		playerDataSetCheckForAnalyze(psPlayerData, 0);
@@ -1457,14 +1748,14 @@ gboolean guiTimeoutCheckForAnalyze (gpointer* pData)
 	}
 	else
 	{
-		if (playerIsPlaying(psAnalyzingChannel))
-		{
-			/* Si le canal d'analyse est déja en train d'analysé,
-			on attend */
 
+		/* Si le canal d'analyse est déja en train d'analysé, */
+		if (playerIsPlaying(psAnalyzingChannel) == TRUE)
+		{
+			/* on attend */
 			return TRUE;
 		}
-		else /* On lance une nouvelle analyse */
+		else /* Sinon, on lance une nouvelle analyse */
 		{
 			LinkedList* psFirstCell = NULL;
 			FMOD_SYSTEM* psFmodContext = NULL;

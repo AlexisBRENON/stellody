@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkHBox" id="Library_Box">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <child>
+          <object class="GtkTreeView" id="Library_TreeView">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="model">Library_ListStore</property>
+            <property name="headers_clickable">False</property>
+            <property name="search_column">1</property>
+            <child>
+              <object class="GtkTreeViewColumn" id="ID_Column">
+                <property name="resizable">True</property>
+                <property name="title" translatable="yes">ID</property>
+                <property name="sort_indicator">True</property>
+                <child>
+                  <object class="GtkCellRendererSpin" id="ID"/>
+                  <attributes>
+                    <attribute name="digits">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn" id="Chemin">
+                <property name="resizable">True</property>
+                <property name="title" translatable="yes">Chemin</property>
+                <child>
+                  <object class="GtkCellRendererText" id="Chemin1"/>
+                  <attributes>
+                    <attribute name="markup">1</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn" id="Coord">
+                <property name="resizable">True</property>
+                <property name="title" translatable="yes">Coord</property>
+                <child>
+                  <object class="GtkCellRendererSpin" id="Coord X"/>
+                  <attributes>
+                    <attribute name="digits">2</attribute>
+                  </attributes>
+                </child>
+                <child>
+                  <object class="GtkCellRendererSpin" id="Coord Y"/>
+                  <attributes>
+                    <attribute name="digits">3</attribute>
+                  </attributes>
+                </child>
+                <child>
+                  <object class="GtkCellRendererSpin" id="Coord Z"/>
+                  <attributes>
+                    <attribute name="digits">4</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkListStore" id="Library_ListStore">
+    <columns>
+      <!-- column-name ID -->
+      <column type="gint"/>
+      <!-- column-name Chemin -->
+      <column type="gchararray"/>
+      <!-- column-name Coord X -->
+      <column type="gfloat"/>
+      <!-- column-name Coord Y -->
+      <column type="gfloat"/>
+      <!-- column-name Coord Z -->
+      <column type="gfloat"/>
+    </columns>
+  </object>
+</interface>

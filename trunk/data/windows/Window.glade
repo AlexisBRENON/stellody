@@ -26,6 +26,12 @@
     <property name="icon_name">list-add</property>
     <signal name="activate" handler="on_AddTrack_Action_activate" swapped="no"/>
   </object>
+  <object class="GtkAction" id="Library_Action">
+    <property name="label" translatable="yes">Bibliothèque</property>
+    <property name="short_label" translatable="yes">Bibliothèque</property>
+    <property name="tooltip" translatable="yes">Affiche la bibliothèqe</property>
+    <signal name="activate" handler="on_Library_Action_activate" swapped="no"/>
+  </object>
   <object class="GtkAction" id="Next_Action">
     <property name="label">Suivant</property>
     <property name="short_label">&gt;&gt;|</property>
@@ -93,6 +99,7 @@
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
     <property name="extension_events">cursor</property>
     <property name="title" translatable="yes">Stellody</property>
+    <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">../images/icone.png</property>
     <property name="icon_name">Stellody</property>
@@ -206,6 +213,7 @@
                         <property name="related_action">Next_Action</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="n" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -283,6 +291,7 @@
           <object class="GtkHBox" id="Play_HBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="border_width">5</property>
             <child>
               <object class="GtkVButtonBox" id="vbuttonbox2">
                 <property name="visible">True</property>
@@ -459,6 +468,11 @@
                         <property name="can_focus">True</property>
                         <property name="model">liststore1</property>
                         <property name="headers_clickable">False</property>
+                        <property name="expander_column">treeviewcolumn1</property>
+                        <property name="reorderable">True</property>
+                        <property name="rules_hint">True</property>
+                        <property name="enable_search">False</property>
+                        <signal name="key-release-event" handler="on_PlayList_TreeView_key_release_event" swapped="no"/>
                         <signal name="row-activated" handler="on_PlayList_TreeView_row_activated" swapped="no"/>
                         <child>
                           <object class="GtkTreeViewColumn" id="treeviewcolumn1">
@@ -501,6 +515,19 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkButton" id="Library_Button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="related_action">Library_Action</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkButton" id="Preferences_But">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -511,7 +538,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
@@ -525,7 +552,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
