@@ -214,6 +214,7 @@ int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
 											GdkEvent* psEvent,
 											gpointer* pData);
 
+
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
 /* ********************************************************************* */
@@ -373,6 +374,33 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 												GdkEventMotion* psEvent,
 												gpointer* pData);
 
+
+/* ********************************************************************* */
+/*                           FENETRE LIBRAIRIE                           */
+/* ********************************************************************* */
+
+
+/**
+  * @fn int on_Library_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData);
+  * @brief Ajoute un morceau à la playlist depuis la liste de la
+  bibliothèque.
+  *
+  * @param[in,out] psTreeView Pointeur sur la vue cliquée
+  * @param[in,out] psSelectedTrackPath Chemin vers le morceau cliqué
+  * @param[in,out] psColumn Colonne cliquée
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
+int on_Library_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData);
+
+int on_Library_Columns_clicked (GtkTreeViewColumn* psColumn,
+								gpointer* pData);
 
 /* ********************************************************************* */
 /* ********************************************************************* */

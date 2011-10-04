@@ -18,23 +18,28 @@
             <property name="model">Library_ListStore</property>
             <property name="headers_clickable">False</property>
             <property name="search_column">1</property>
+            <signal name="row-activated" handler="on_Library_TreeView_row_activated" swapped="no"/>
             <child>
               <object class="GtkTreeViewColumn" id="ID_Column">
                 <property name="resizable">True</property>
                 <property name="title" translatable="yes">ID</property>
+                <property name="clickable">True</property>
                 <property name="sort_indicator">True</property>
+                <signal name="clicked" handler="on_Library_Columns_clicked" swapped="no"/>
                 <child>
-                  <object class="GtkCellRendererSpin" id="ID"/>
+                  <object class="GtkCellRendererText" id="ID"/>
                   <attributes>
-                    <attribute name="digits">0</attribute>
+                    <attribute name="text">0</attribute>
                   </attributes>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="Chemin">
+              <object class="GtkTreeViewColumn" id="Fichier">
                 <property name="resizable">True</property>
-                <property name="title" translatable="yes">Chemin</property>
+                <property name="title" translatable="yes">Fichier</property>
+                <property name="clickable">True</property>
+                <signal name="clicked" handler="on_Library_Columns_clicked" swapped="no"/>
                 <child>
                   <object class="GtkCellRendererText" id="Chemin1"/>
                   <attributes>
@@ -44,25 +49,43 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="Coord">
+              <object class="GtkTreeViewColumn" id="CoordX1">
                 <property name="resizable">True</property>
-                <property name="title" translatable="yes">Coord</property>
+                <property name="title" translatable="yes">CoordX</property>
+                <property name="clickable">True</property>
+                <signal name="clicked" handler="on_Library_Columns_clicked" swapped="no"/>
                 <child>
-                  <object class="GtkCellRendererSpin" id="Coord X"/>
+                  <object class="GtkCellRendererText" id="CoordX"/>
                   <attributes>
-                    <attribute name="digits">2</attribute>
+                    <attribute name="text">2</attribute>
                   </attributes>
                 </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn" id="CoordY">
+                <property name="resizable">True</property>
+                <property name="title" translatable="yes">CoordY</property>
+                <property name="clickable">True</property>
+                <signal name="clicked" handler="on_Library_Columns_clicked" swapped="no"/>
                 <child>
-                  <object class="GtkCellRendererSpin" id="Coord Y"/>
+                  <object class="GtkCellRendererText" id="CoordY1"/>
                   <attributes>
-                    <attribute name="digits">3</attribute>
+                    <attribute name="text">3</attribute>
                   </attributes>
                 </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkTreeViewColumn" id="CoordZ">
+                <property name="resizable">True</property>
+                <property name="title" translatable="yes">CoordZ</property>
+                <property name="clickable">True</property>
+                <signal name="clicked" handler="on_Library_Columns_clicked" swapped="no"/>
                 <child>
-                  <object class="GtkCellRendererSpin" id="Coord Z"/>
+                  <object class="GtkCellRendererText" id="CoordZ1"/>
                   <attributes>
-                    <attribute name="digits">4</attribute>
+                    <attribute name="text">4</attribute>
                   </attributes>
                 </child>
               </object>
@@ -83,11 +106,11 @@
       <column type="gint"/>
       <!-- column-name Chemin -->
       <column type="gchararray"/>
-      <!-- column-name Coord X -->
+      <!-- column-name Coord -->
       <column type="gfloat"/>
-      <!-- column-name Coord Y -->
+      <!-- column-name Coord1 -->
       <column type="gfloat"/>
-      <!-- column-name Coord Z -->
+      <!-- column-name Coord2 -->
       <column type="gfloat"/>
     </columns>
   </object>
