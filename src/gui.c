@@ -411,7 +411,6 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	int iTID = 0;
 	int iPlay = 0;
 
-	GtkCellRenderer* psCellRender = NULL;
 	GtkTreeModel* psListStore = NULL;
 	GtkTreeView* psTreeView = NULL;
 	GtkTreeIter Iter;
@@ -441,8 +440,6 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 
 	psTreeView = (GtkTreeView*) gtk_builder_get_object(psMainBuilder,
 													"PlayList_TreeView");
-
-	psCellRender = gtk_cell_renderer_text_new ();
 
 
 	gtk_list_store_append(GTK_LIST_STORE(psListStore), &Iter);
@@ -1151,10 +1148,7 @@ int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData)
 /* ********************************************************************* */
 
 	AnalyzedTracks* psTracks = pData[0];
-	Preferences* psPreferences = pData[1];
 	GuiData* psGuiData = pData[2];
-	PlayerData* psPlayerData = pData[3];
-	OpenGLData* psGLData = pData[4];
 
 /* ********************************************************************* */
 /* Données annexes                                                       */
@@ -1164,6 +1158,18 @@ int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkBuilder* psMainBuilder = NULL;
 	GtkWidget* psLibraryWin = NULL;
 	GtkWidget* psContainer = NULL;
+
+	GtkListStore* psListStore = NULL;
+	GtkTreeIter sIter;
+
+	AnalyzedTrack* psTrack = NULL;
+	int iTID = 0;
+	char* strPath = NULL;
+	char* strFileName = NULL;
+	float* pfCoord = NULL;
+
+	int iNbTracks = 0;
+	int i = 0;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1180,8 +1186,30 @@ int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData)
 										psMainBuilder,
 										GUI_MAIN_CONTAINER));
 
+	psListStore = GTK_LIST_STORE(gtk_builder_get_object(psLibraryBuilder,
+													"Library_ListStore"));
 
-	printf("Chargement de la liste des morceaux.\n");
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(psListStore),
+									&sIter) == FALSE)
+	{
+		iNbTracks = analyzedTracksGetNbTracks(psTracks);
+		for (i = 0; i < iNbTracks; i++)
+		{
+			psTrack = analyzedTracksGetTrackInArray(psTracks, i);
+			iTID = analyzedTrackGetTID(psTrack);
+			strPath = analyzedTrackGetPath(psTrack);
+			strFileName = strrchr(strPath, '/');
+			pfCoord = analyzedTrackGetCoord(psTrack);
+
+			gtk_list_store_append(GTK_LIST_STORE(psListStore), &sIter);
+			gtk_list_store_set(GTK_LIST_STORE(psListStore), &sIter,
+								0, iTID,
+								1, &(strFileName[1]),
+								2, pfCoord[0],
+								3, pfCoord[1],
+								4, pfCoord[2], -1);
+		}
+	}
 
 
 	gtk_box_pack_start((GtkBox*)psContainer,
@@ -1190,8 +1218,6 @@ int on_Library_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	return EXIT_SUCCESS;
 }
-
-
 
 int on_About_Action_activate (GtkWidget* psWidget, gpointer* pData)
 {
@@ -1547,7 +1573,11 @@ int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
 
 			/* On supprime la ligne */
 			gtk_tree_model_get_iter(psModel, &sIter, psPointedPath);
-			gtk_list_store_remove(GTK_LIST_STORE(psModel), &sIter);
+			if (gtk_list_store_remove(GTK_LIST_STORE(psModel),
+									&sIter) == FALSE)
+			{
+				gtk_tree_model_get_iter_first(psModel, &sIter);
+			}
 
 			/* Si la ligne supprimée est celle qui était en lecture */
 			if (iStop == 1)
@@ -1576,6 +1606,7 @@ int on_PlayList_TreeView_key_release_event (GtkWidget* psWidget,
 
 	return EXIT_SUCCESS;
 }
+
 
 /* ********************************************************************* */
 /*                            FONCTIONS TIMEOUT                          */
@@ -2206,3 +2237,131 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 	return EXIT_SUCCESS;
 }
 
+
+/* ********************************************************************* */
+/*                           FENETRE LIBRAIRIE                           */
+/* ********************************************************************* */
+
+
+int on_Library_TreeView_row_activated (GtkTreeView* psTreeView,
+										GtkTreePath* psSelectedTrackPath,
+										GtkTreeViewColumn* psColumn,
+										gpointer* pData)
+{
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkTreeModel* psModel = NULL;
+	GtkTreeIter sIter;
+
+	int iTID = 0;
+	AnalyzedTrack* psTrack = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psModel = gtk_tree_view_get_model(psTreeView);
+
+	gtk_tree_model_get_iter(psModel, &sIter, psSelectedTrackPath);
+	gtk_tree_model_get(psModel, &sIter, 0, &iTID, -1);
+
+	psTrack = analyzedTracksGetTrack(psTracks, iTID);
+
+	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+	guiAddTrackToPlaylist(psMainBuilder, psTrack, pData);
+
+
+	return EXIT_SUCCESS;
+}
+
+
+int on_Library_Columns_clicked (GtkTreeViewColumn* psColumn,
+								gpointer* pData)
+{
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkTreeViewColumn* psTempColumn = NULL;
+	GtkTreeView* psTreeView = NULL;
+	GtkListStore* psListStore = NULL;
+	GtkSortType iSortOrder;
+
+	const gchar* strTitle = NULL;
+	int i = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	psTreeView = GTK_TREE_VIEW(
+						gtk_tree_view_column_get_tree_view(psColumn));
+	psListStore = GTK_LIST_STORE(gtk_tree_view_get_model(psTreeView));
+
+	for (i = 0; i < 5; i++)
+	{
+		psTempColumn = gtk_tree_view_get_column(psTreeView, i);
+		gtk_tree_view_column_set_sort_indicator(psTempColumn, FALSE);
+	}
+
+	strTitle = gtk_tree_view_column_get_title(psColumn);
+	iSortOrder = gtk_tree_view_column_get_sort_order(psColumn);
+	gtk_tree_view_column_set_sort_indicator(psColumn, TRUE);
+
+	if (strcmp(strTitle, "ID") == 0)
+	{
+		gtk_tree_view_column_set_sort_order(psColumn, !iSortOrder);
+		gtk_tree_sortable_set_sort_column_id(
+									GTK_TREE_SORTABLE(psListStore),
+									0,
+									!iSortOrder);
+	}
+	else if (strcmp(strTitle, "Fichier") == 0)
+	{
+		gtk_tree_view_column_set_sort_order(psColumn, !iSortOrder);
+		gtk_tree_sortable_set_sort_column_id(
+									GTK_TREE_SORTABLE(psListStore),
+									1,
+									!iSortOrder);
+	}
+	else if (strcmp(strTitle, "CoordX") == 0)
+	{
+		gtk_tree_view_column_set_sort_order(psColumn, !iSortOrder);
+		gtk_tree_sortable_set_sort_column_id(
+									GTK_TREE_SORTABLE(psListStore),
+									2,
+									!iSortOrder);
+	}
+	else if (strcmp(strTitle, "CoordY") == 0)
+	{
+		gtk_tree_view_column_set_sort_order(psColumn, !iSortOrder);
+		gtk_tree_sortable_set_sort_column_id(
+									GTK_TREE_SORTABLE(psListStore),
+									3,
+									!iSortOrder);
+	}
+	else if (strcmp(strTitle, "CoordZ") == 0)
+	{
+		gtk_tree_view_column_set_sort_order(psColumn, !iSortOrder);
+		gtk_tree_sortable_set_sort_column_id(
+									GTK_TREE_SORTABLE(psListStore),
+									4,
+									!iSortOrder);
+	}
+	else
+	{
+		/* On ne fait rien */
+	}
+
+	return EXIT_SUCCESS;
+}
