@@ -399,8 +399,32 @@ int on_Library_TreeView_row_activated (GtkTreeView* psTreeView,
 										GtkTreeViewColumn* psColumn,
 										gpointer* pData);
 
+/**
+  * @fn int on_Library_Columns_clicked (GtkTreeViewColumn* psColumn,
+								gpointer* pData);
+  * @brief Change l'ordre de tri de la librarie.
+  *
+  * @param[in,out] psColumn Colonne cliquée.
+  * @param[in,out] pData Données autres passées au callback.
+  * @return EXIT_SUCCESS si tout est OK.
+  */
 int on_Library_Columns_clicked (GtkTreeViewColumn* psColumn,
 								gpointer* pData);
+
+/**
+  * @fn int on_Library_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData);
+  * @brief Supprime un morceau de la bibliothèque.
+  *
+  * @param[in,out] psWidget Widget appellant
+  * @param[in,out] psEvent Données de l'évenement
+  * @param[in,out] pData Données autres
+  * @return EXIT_SUCCESS
+  */
+int on_Library_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData);
 
 /* ********************************************************************* */
 /* ********************************************************************* */

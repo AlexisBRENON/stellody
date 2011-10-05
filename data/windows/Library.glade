@@ -18,6 +18,7 @@
             <property name="model">Library_ListStore</property>
             <property name="headers_clickable">False</property>
             <property name="search_column">1</property>
+            <signal name="key-release-event" handler="on_Library_TreeView_key_release_event" swapped="no"/>
             <signal name="row-activated" handler="on_Library_TreeView_row_activated" swapped="no"/>
             <child>
               <object class="GtkTreeViewColumn" id="ID_Column">

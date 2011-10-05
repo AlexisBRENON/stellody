@@ -79,14 +79,24 @@ int stellariumCreateStar(Stellarium * pStellarium, AnalyzedTrack * pTrack) ;
  * @fn int stellariumAddStar(Stellarium * pStellarium, Star * pStar)
  * @brief Ajoute une étoile au stellarium.
  *
- * @param[in,out] pStellarium Pointeur sur le stellarium à libérer.
+ * @param[in,out] pStellarium Pointeur sur le stellarium.
  * @param[in,out] pStar Pointeur sur l'étoile.
  * @return EXIT_SUCCESS si tout est OK.
  */
 int stellariumAddStar(Stellarium * pStellarium, Star * pStar) ;
 
 /**
- * @fn const Star * stellariumGetStar(const Stellarium * pStellarium,
+  * @fn int stellariumRemoveStar (Stellarium* pStellarium, int iTID);
+  * @brief Supprime une étoile du stellarium.
+  *
+  * @param[in,out] pStellarium Pointeur sur le stellarium.
+  * @param[in] iTID Identifiant de l'étoile à supprimer
+  * @return EXIT_SUCCESS
+  */
+int stellariumRemoveStar (Stellarium* pStellarium, int iTID);
+
+/**
+ * @fn Star * stellariumGetStar(const Stellarium * pStellarium,
 									unsigned int uiNumber)
  * @brief Renvoie la i-ème étoile du stellarium
  *
@@ -94,7 +104,7 @@ int stellariumAddStar(Stellarium * pStellarium, Star * pStar) ;
  * @param[in] uiNumber Numéro de l'étoile recherchée.
  * @return La i-ème étoile du stellarium.
  */
-const Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNumber) ;
+Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNumber) ;
 
 /**
  * @fn unsigned int stellariumGetLastPosition(const Stellarium * pStellarium)

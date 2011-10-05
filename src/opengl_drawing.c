@@ -2514,7 +2514,17 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 	return EXIT_SUCCESS;
 }
 
+int drawingGLRemoveStar (OpenGLData* pData, int iTID)
+{
+	Stellarium* psStellarium = NULL;
 
+	assert (pData != NULL);
+
+	psStellarium = pData->psStellarium;
+	stellariumRemoveStar(psStellarium, iTID);
+
+	return EXIT_SUCCESS;
+}
 /* ********************************************************************* */
 /*                                                                       */
 /*                        Mutateurs d'OpenGLData                         */

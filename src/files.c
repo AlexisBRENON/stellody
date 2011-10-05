@@ -125,6 +125,9 @@ int filesSave(GKeyFile** ppsContext,
 		int i = 0;
 
 		iNbTracks = analyzedTracksGetNbTracks(psTracks);
+		g_key_file_free(ppsContext[DATA]);
+		ppsContext[DATA] = g_key_file_new();
+
 		for (i = 0; i < iNbTracks; i++)
 		{
 			psTrack = analyzedTracksGetTrackInArray(psTracks, i);

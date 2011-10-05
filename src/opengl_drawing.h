@@ -227,6 +227,15 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
 				   int iPrecision) ;
 
+/**
+  * @fn int drawingGLRemoveStar (OpenGLData* pData, int iTID);
+  * @brief Supprime une étoile du stellarium.
+  *
+  * @param[in,out] pData Données OpenGL
+  * @param[in] iTID Identifiant de l'étoile à supprimer.
+  * @return EXIT_SUCCESS
+  */
+int drawingGLRemoveStar (OpenGLData* pData, int iTID);
 
 /* ********************************************************************* */
 /*                                                                       */
