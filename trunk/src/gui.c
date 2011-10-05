@@ -2198,6 +2198,7 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 /* Données habituelles                                                   */
 /* ********************************************************************* */
 
+	AnalyzedTracks* psTracks = pData[0];
 	GuiData* psGuiData = pData[2];
 	OpenGLData* psGLData = pData[4];
 
@@ -2230,6 +2231,58 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 		fStepY = (float) iYMousePosition - (float) psEvent->y;
 
 		drawingGLTranslate(psGLData, -fStepX/500, fStepY/500, 0);
+	}
+	else /* Si on appuie pas sur un bouton de la souris */
+	{
+		int iTID = -1;
+		GdkGLContext * psContext = NULL;
+		GdkGLDrawable * psSurface = NULL;
+		gboolean bActivate = FALSE;
+		GtkBuilder* psStellariumBuilder = NULL;
+		GtkWidget* psStellariumLabel = NULL;
+
+		psContext = gtk_widget_get_gl_context(psWidget);
+		psSurface = gtk_widget_get_gl_drawable(psWidget);
+
+		bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
+
+		if (bActivate == TRUE)
+		{
+			iTID = drawingGLSelect(
+				psGLData,
+				psTracks,
+				((GdkEventButton*)psEvent)->x,
+				((GdkEventButton*)psEvent)->y);
+
+			gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
+			gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
+		}
+
+		psStellariumBuilder = guiDataGetBuilder(psGuiData,
+												STELLARIUM);
+		psStellariumLabel = GTK_WIDGET(gtk_builder_get_object(
+												psStellariumBuilder,
+												"Stellarium_Label"));
+
+		if (iTID >= 0)
+		{
+			AnalyzedTrack* pTrack = NULL;
+			char* strPath = NULL;
+			char* strFileName = NULL;
+
+			pTrack = analyzedTracksGetTrack(psTracks, iTID);
+			strPath = analyzedTrackGetPath(pTrack);
+			strFileName = strrchr(strPath, '/');
+
+			gtk_label_set(GTK_LABEL(psStellariumLabel),
+							&(strFileName[1]));
+
+		}
+		else
+		{
+			gtk_label_set(GTK_LABEL(psStellariumLabel),
+							"");
+		}
 	}
 
 	guiDataSetMousePosition(psGuiData, psEvent->x, psEvent->y);
@@ -2365,3 +2418,144 @@ int on_Library_Columns_clicked (GtkTreeViewColumn* psColumn,
 
 	return EXIT_SUCCESS;
 }
+
+
+int on_Library_TreeView_key_release_event (GtkWidget* psWidget,
+											GdkEvent* psEvent,
+											gpointer* pData)
+{
+
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
+	AnalyzedTracks* psTracks = pData[0];
+	GuiData* psGuiData = pData[2];
+	OpenGLData* psGLData = pData[4];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
+
+	GtkBuilder* psLibraryBuilder = NULL;
+	GtkBuilder* psMainBuilder = NULL;
+	GtkTreeView* psTreeView = NULL;
+	GtkTreeModel* psModel = NULL;
+	GtkTreeView* psPlayListTreeView = NULL;
+	GtkTreeModel* psPlayListModel = NULL;
+	GtkTreePath* psPointedPath = NULL;
+	GtkTreeIter sIter;
+	GtkTreeIter sPlayListIter;
+
+	GtkTreePath* psPlayListPath = NULL;
+	int iTIDInPlayList = -1;
+
+	int iTID = 0;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	/* Si on appuie sur la touche 'suppr' */
+	if (psEvent->key.keyval == 0xffff)
+	{
+		/* On récupère la ligne active de la bibliothèque */
+		psLibraryBuilder = guiDataGetBuilder(psGuiData, LIBRARY);
+		psModel = GTK_TREE_MODEL(gtk_builder_get_object(psLibraryBuilder,
+													"Library_ListStore"));
+		psTreeView = GTK_TREE_VIEW(gtk_builder_get_object(psLibraryBuilder,
+													"Library_TreeView"));
+		gtk_tree_view_get_cursor(psTreeView, &psPointedPath, NULL);
+
+		/* S'il y en a une */
+		if (psPointedPath != NULL)
+		{
+			/* On récupère le TID du morceau sélectionné */
+			gtk_tree_model_get_iter(psModel, &sIter, psPointedPath);
+			gtk_tree_model_get(psModel, &sIter, 0, &iTID, -1);
+
+
+			/* Il va falloir supprimer les morceau de la playlist qui
+			font références à ce morceau */
+			psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
+			psPlayListModel = GTK_TREE_MODEL(gtk_builder_get_object(
+														psMainBuilder,
+														"liststore1"));
+			psPlayListTreeView = GTK_TREE_VIEW(gtk_builder_get_object(
+														psMainBuilder,
+													"PlayList_TreeView"));
+			if(gtk_tree_model_get_iter_first(psPlayListModel,
+										&sPlayListIter) == TRUE)
+			{
+				/* Tant qu'on est pas à la fin de la playlist */
+				do
+				{
+					gtk_tree_model_get(psPlayListModel, &sPlayListIter,
+										1, &iTIDInPlayList, -1);
+					/* Si le TID du morceau de la playlist est le même */
+					if (iTID == iTIDInPlayList)
+					{
+						psPlayListPath = gtk_tree_model_get_path(
+													psPlayListModel,
+													&sPlayListIter);
+						/* On active cette ligne */
+						gtk_tree_view_set_cursor(psPlayListTreeView,
+													psPlayListPath,
+													NULL, FALSE);
+						/* Et la supprimons */
+						on_PlayList_TreeView_key_release_event(psWidget,
+																psEvent,
+																pData);
+					}
+				} while (gtk_tree_model_iter_next(psPlayListModel,
+											&sPlayListIter) == TRUE);
+
+			}
+
+			/* On supprime la ligne */
+			gtk_list_store_remove(GTK_LIST_STORE(psModel), &sIter);
+
+			/* le morceau */
+			analyzedTracksRemoveTrack(psTracks, iTID);
+
+			/* Et l'étoile */
+			drawingGLRemoveStar(psGLData, iTID);
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

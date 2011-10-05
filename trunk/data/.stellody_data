@@ -1,66 +1,157 @@
 
-[/home/alexis/Musique/Jimmy Hendrix Tribute.mp3]
-strPath=/home/alexis/Musique/Jimmy Hendrix Tribute.mp3
-iTID=0
-bAnalyzed=1
-uiLength=294635
-fAverage=247.72711181640625
-fBass=0.62727075815200806
-fMedium=0.18540607392787933
-fTreble=0.18732313811779022
-fCoordX=-0.63646221160888672
-fCoordY=-2.8756351470947266
-fCoordZ=6.9787769317626953
-
-[/home/alexis/Musique/the black keys - i got mine.mp3]
-strPath=/home/alexis/Musique/the black keys - i got mine.mp3
-iTID=1
-bAnalyzed=1
-uiLength=239255
-fAverage=171.35897827148438
-fBass=0.56862461566925049
-fMedium=0.20929887890815735
-fTreble=0.22207650542259216
-fCoordX=-3.5687694549560547
-fCoordY=-1.4420671463012695
-fCoordZ=11.149181365966797
-
-[/home/alexis/Musique/florida - good feeling.mp3]
-strPath=/home/alexis/Musique/florida - good feeling.mp3
-iTID=2
-bAnalyzed=1
-uiLength=249155
-fAverage=112.109375
-fBass=0.53044998645782471
-fMedium=0.28376826643943787
-fTreble=0.18578173220157623
-fCoordX=-5.4775009155273438
-fCoordY=3.0260963439941406
-fCoordZ=6.7938079833984375
-
 [/home/alexis/Musique/Vivaldi's Four Season.mp3]
 strPath=/home/alexis/Musique/Vivaldi's Four Season.mp3
-iTID=3
+iTID=0
 bAnalyzed=1
 uiLength=179147
-fAverage=15.238883018493652
-fBass=0.83838135004043579
-fMedium=0.090754151344299316
-fTreble=0.07086452841758728
-fCoordX=9.9190673828125
-fCoordY=-8.5547504425048828
-fCoordZ=-6.9962568283081055
+fAverage=197.3876953125
+fBass=0.67764753103256226
+fMedium=0.13993747532367706
+fTreble=0.1824149489402771
+fCoordX=1.8823766708374023
+fCoordY=-5.6037511825561523
+fCoordZ=6.3897933959960938
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/12 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 3. Allegro.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/12 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 3. Allegro.mp3
+iTID=2
+bAnalyzed=1
+uiLength=179591
+fAverage=144.15283203125
+fBass=0.60065114498138428
+fMedium=0.33115029335021973
+fTreble=0.068198606371879578
+fCoordX=-1.9674434661865234
+fCoordY=5.8690185546875
+fCoordZ=-7.316166877746582
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/11 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 2. Largo.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/11 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 2. Largo.mp3
+iTID=3
+bAnalyzed=1
+uiLength=139154
+fAverage=45.916389465332031
+fBass=0.71026730537414551
+fMedium=0.1703738272190094
+fTreble=0.11935886740684509
+fCoordX=3.5133657455444336
+fCoordY=-3.7775707244873047
+fCoordZ=-1.176936149597168
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/05 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 2. Adagio.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/05 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 2. Adagio.mp3
+iTID=4
+bAnalyzed=1
+uiLength=129175
+fAverage=52.105030059814453
+fBass=0.62340265512466431
+fMedium=0.20596463978290558
+fTreble=0.17063270509243011
+fCoordX=-0.82986736297607422
+fCoordY=-1.6421213150024414
+fCoordZ=4.9759254455566406
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/07 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 1. Allegro.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/07 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 1. Allegro.mp3
+iTID=5
+bAnalyzed=1
+uiLength=299258
+fAverage=101.65223693847656
+fBass=0.42851737141609192
+fMedium=0.3362482488155365
+fTreble=0.23523440957069397
+fCoordX=-10.574131011962891
+fCoordY=6.1748943328857422
+fCoordZ=12.728128433227539
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/06 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 3. Presto.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/06 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 3. Presto.mp3
+iTID=6
+bAnalyzed=1
+uiLength=172773
+fAverage=11.730149269104004
+fBass=0.89990061521530151
+fMedium=0.050115711987018585
+fTreble=0.049983695149421692
+fCoordX=12.995029449462891
+fCoordY=-10.993057250976562
+fCoordZ=-9.5019569396972656
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/09 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 3. Allegro.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/09 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 3. Allegro.mp3
+iTID=7
+bAnalyzed=1
+uiLength=211252
+fAverage=0
+fBass=0.99974513053894043
+fMedium=0.00014446112618315965
+fTreble=0.00011038654338335618
+fCoordX=17.987255096435547
+fCoordY=-13.991332054138184
+fCoordZ=-15.486753463745117
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/03 Vivaldi_ Violin Concerto In E, Op. 8_1, RV 269, _The Four Seasons (Spring)_ - 3. Danza Pastorale.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/03 Vivaldi_ Violin Concerto In E, Op. 8_1, RV 269, _The Four Seasons (Spring)_ - 3. Danza Pastorale.mp3
+iTID=8
+bAnalyzed=1
+uiLength=280476
+fAverage=68.83367919921875
+fBass=0.61572098731994629
+fMedium=0.28000181913375854
+fTreble=0.10427718609571457
+fCoordX=-1.2139511108398438
+fCoordY=2.80010986328125
+fCoordZ=-2.9867372512817383
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/10 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 1. Allegro Non Molto.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/10 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 1. Allegro Non Molto.mp3
+iTID=9
+bAnalyzed=1
+uiLength=198400
+fAverage=57.802509307861328
+fBass=0.33258244395256042
+fMedium=0.51369011402130127
+fTreble=0.1537274569272995
+fCoordX=-15.370878219604492
+fCoordY=16.821407318115234
+fCoordZ=2.9472942352294922
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/08 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 2. Adagio Molto.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/08 Vivaldi_ Violin Concerto In F, Op. 8_3, RV 293, _The Four Seasons (Autumn)_ - 2. Adagio Molto.mp3
+iTID=10
+bAnalyzed=1
+uiLength=175986
+fAverage=27.845947265625
+fBass=0.70662730932235718
+fMedium=0.22824375331401825
+fTreble=0.065128952264785767
+fCoordX=3.3313655853271484
+fCoordY=-0.30537509918212891
+fCoordZ=-7.6845254898071289
 
 [/home/alexis/Musique/Vivaldi_ The Four Seasons/01 Vivaldi_ Violin Concerto In E, Op. 8_1, RV 269, _The Four Seasons (Spring)_ - 1. Allegro.mp3]
 strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/01 Vivaldi_ Violin Concerto In E, Op. 8_1, RV 269, _The Four Seasons (Spring)_ - 1. Allegro.mp3
-iTID=4
+iTID=11
 bAnalyzed=1
 uiLength=192862
-fAverage=549.551513671875
-fBass=0.53433144092559814
-fMedium=0.29568839073181152
-fTreble=0.16998012363910675
-fCoordX=-5.2834281921386719
-fCoordY=3.741302490234375
-fCoordZ=4.8976154327392578
+fAverage=27.551515579223633
+fBass=0.63070404529571533
+fMedium=0.25018194317817688
+fTreble=0.11911404132843018
+fCoordX=-1.1084463596343994
+fCoordY=1.9293563365936279
+fCoordZ=-3.328150749206543
+
+[/home/alexis/Musique/Vivaldi_ The Four Seasons/04 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 1. Allegro Non Molto.mp3]
+strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/04 Vivaldi_ Violin Concerto In G Minor, Op. 8_2, RV 315, _The Four Seasons (Summer)_ - 1. Allegro Non Molto.mp3
+iTID=12
+bAnalyzed=1
+uiLength=376215
+fAverage=21.079252243041992
+fBass=0.66942524909973145
+fMedium=0.22465318441390991
+fTreble=0.10592158883810043
+fCoordX=1.8237127065658569
+fCoordY=-1.2938191890716553
+fCoordZ=-3.3168885707855225
 

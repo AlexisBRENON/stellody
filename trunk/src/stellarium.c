@@ -276,7 +276,35 @@ int stellariumAddStar(Stellarium * pStellarium, Star * pStar)
 	return EXIT_SUCCESS ;
 }
 
-const Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNumber)
+int stellariumRemoveStar (Stellarium* pStellarium, int iTID)
+{
+	int i = 0;
+	int iStop = 0;
+	int iNbStars = 0;
+	Star* psStar = NULL;
+	int iTIDToCompare = 0;
+
+	assert(pStellarium != NULL);
+
+	iNbStars = stellariumGetLastPosition(pStellarium);
+	for (i = 0; i < iNbStars && iStop == 0; i++)
+	{
+		psStar = stellariumGetStar(pStellarium, i);
+		iTIDToCompare = starGetTID(psStar);
+
+		if (iTID == iTIDToCompare)
+		{
+			dynamicArrayRemove((DynamicArray*) pStellarium, i);
+			iStop = 1;
+		}
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+
+Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNumber)
 {
 	Star* psStar = NULL;
 
@@ -284,7 +312,7 @@ const Star * stellariumGetStar(const Stellarium * pStellarium, unsigned int uiNu
 
 	dynamicArrayGet(pStellarium, uiNumber, (void**) &psStar);
 
-	return (const Star *)  psStar;
+	return psStar;
 }
 
 unsigned int stellariumGetLastPosition(const Stellarium * pStellarium)
