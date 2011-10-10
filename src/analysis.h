@@ -39,6 +39,17 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
 
 
 /**
+  * @fn void analysisAddTracksToAnalyzed (char* strFileName,
+										gpointer* pData);
+  * @brief Permet un appel sur chacun des éléments d'une liste pour ajouter
+  un morceau à la bibliothèque.
+  *
+  * @param[in,out] strFileName Nom de l'entité (Dossier/Fichier)
+  * @param[in,out] pData Données annexes
+  */
+void analysisAddTracksToAnalyzed (char* strFileName, gpointer* pData);
+
+/**
   * @fn int analysisTrack (const char* strPath, gpointer* pData)
   * @brief Lance l'analyse d'un morceau.
   *

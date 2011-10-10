@@ -5,12 +5,12 @@ iTID=0
 bAnalyzed=1
 uiLength=179147
 fAverage=197.3876953125
-fBass=0.67764753103256226
-fMedium=0.13993747532367706
-fTreble=0.1824149489402771
-fCoordX=1.8823766708374023
-fCoordY=-5.6037511825561523
-fCoordZ=6.3897933959960938
+fBass=0.67764759063720703
+fMedium=0.13993749022483826
+fTreble=0.18241496384143829
+fCoordX=1.8823795318603516
+fCoordY=-5.6037502288818359
+fCoordZ=6.3897953033447266
 
 [/home/alexis/Musique/Vivaldi_ The Four Seasons/12 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 3. Allegro.mp3]
 strPath=/home/alexis/Musique/Vivaldi_ The Four Seasons/12 Vivaldi_ Violin Concerto In F Minor, Op. 8_4, RV 297, _The Four Seasons (Winter)_ - 3. Allegro.mp3
@@ -157,14 +157,53 @@ fCoordZ=-3.3168885707855225
 
 [/home/alexis/Musique/florida - good feeling.mp3]
 strPath=/home/alexis/Musique/florida - good feeling.mp3
-iTID=12
+iTID=13
 bAnalyzed=1
 uiLength=249155
-fAverage=56.666336059570312
-fBass=0.75119239091873169
-fMedium=0.095045976340770721
-fTreble=0.15376165509223938
-fCoordX=5.5596199035644531
-fCoordY=-8.2972412109375
-fCoordZ=2.9513988494873047
+fAverage=29.580965042114258
+fBass=0.90790647268295288
+fMedium=0.056052140891551971
+fTreble=0.036041386425495148
+fCoordX=13.395322799682617
+fCoordY=-10.636871337890625
+fCoordZ=-11.175033569335938
+
+[/home/alexis/Musique/Gary Jules - Mad World.mp3]
+strPath=/home/alexis/Musique/Gary Jules - Mad World.mp3
+iTID=14
+bAnalyzed=1
+uiLength=187663
+fAverage=11.812500953674316
+fBass=0.95387798547744751
+fMedium=0.034447517246007919
+fTreble=0.011674512177705765
+fCoordX=15.693899154663086
+fCoordY=-11.933149337768555
+fCoordZ=-14.099058151245117
+
+[/home/alexis/Musique/Jimmy Hendrix Tribute.mp3]
+strPath=/home/alexis/Musique/Jimmy Hendrix Tribute.mp3
+iTID=15
+bAnalyzed=1
+uiLength=294635
+fAverage=0
+fBass=0.99974513053894043
+fMedium=0.00014446102431975305
+fTreble=0.00011038654338335618
+fCoordX=17.98725700378418
+fCoordY=-14.791332244873047
+fCoordZ=-15.486753463745117
+
+[/home/alexis/Musique/the black keys - i got mine.mp3]
+strPath=/home/alexis/Musique/the black keys - i got mine.mp3
+iTID=16
+bAnalyzed=1
+uiLength=239255
+fAverage=0
+fBass=0.99974513053894043
+fMedium=0.00014446105342358351
+fTreble=0.00011038654338335618
+fCoordX=18.652431488037109
+fCoordY=-14.435788154602051
+fCoordZ=-15.486753463745117
 
