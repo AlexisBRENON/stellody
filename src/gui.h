@@ -17,6 +17,8 @@
 /*                                                                       */
 /* ********************************************************************* */
 
+int test (GtkWidget* psWidget, gpointer* pData);
+
 /**
   * @fn int guiLoad (void** ppDatas)
   * @brief Crée et initialise chaque structure de données.
