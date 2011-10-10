@@ -561,7 +561,6 @@ int guiLoad (void** ppDatas)
 	ppDatas[4] = malloc(sizeof(OpenGLData));
 	drawingGLStellariumInit(ppDatas[4]);
 
-
 /* ********************************************************************* */
 /* Remise en analyse des morceaux non finis.                             */
 /* ********************************************************************* */
@@ -578,7 +577,9 @@ int guiLoad (void** ppDatas)
 /* Ouverture de la fenêtre...                                            */
 /* ********************************************************************* */
 
-	pMainBuilder = guiDataGetBuilder((GuiData*) ppDatas[2], MAIN);
+	pMainBuilder= guiDataGetBuilder((GuiData*) ppDatas[2],
+											MAIN);
+
 	pMainWindow = GTK_WIDGET(
 				gtk_builder_get_object(pMainBuilder, GUI_MAIN_WIN));
 	gtk_window_set_icon_from_file (GTK_WINDOW(pMainWindow),
@@ -1997,7 +1998,6 @@ int on_Stellarium_DrawingArea_realize(
 	bActivate = gdk_gl_drawable_gl_begin(psSurface,psContext);
 	if (bActivate == TRUE)
 	{
-
 		drawingGLInit(psGLData);
 
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
