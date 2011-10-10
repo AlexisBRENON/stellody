@@ -817,6 +817,8 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 				      NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(pDialog),
 										"$HOME");
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(pDialog),
+										TRUE);
 	iDialogAnswer = gtk_dialog_run (GTK_DIALOG (pDialog));
 	gtk_widget_hide_all (pDialog);
 
@@ -824,50 +826,15 @@ int on_AddTrack_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	/* Si l'utilisateur a ouvert un fichier */
 	if (iDialogAnswer == GTK_RESPONSE_ACCEPT)
 	{
-		char* strFilename;
-		char* strExtension;
-		int iLength;
-		int i;
+		GSList* psListOfFiles = NULL;
+		psListOfFiles = gtk_file_chooser_get_filenames(
+										GTK_FILE_CHOOSER(pDialog));
 
-		strFilename = gtk_file_chooser_get_filename(
-											GTK_FILE_CHOOSER (pDialog));
-		strExtension = strrchr(strFilename, '.');
-		iLength = strlen(strExtension);
+		g_slist_foreach(psListOfFiles,
+						(GFunc) analysisAddTracksToAnalyzed,
+						pData);
 
-		for (i = 0; i<iLength; i++)
-		{
-			strExtension[i] = tolower(strExtension[i]);
-		}
-
-		/* On vérifie que ce soit un fichier pris en charge */
-		if (strcmp(strExtension, ".mp3") == 0 ||
-			strcmp(strExtension, ".mid") == 0 ||
-			strcmp(strExtension, ".m3u") == 0 ||
-			strcmp(strExtension, ".mp2") == 0 ||
-			strcmp(strExtension, ".ogg") == 0 ||
-			strcmp(strExtension, ".raw") == 0 ||
-			strcmp(strExtension, ".wav") == 0)
-		{
-			analysisTrack(strFilename, pData);
-		}
-		else
-		{
-			GtkWidget* pErrorDialog;
-
-			pErrorDialog = gtk_message_dialog_new_with_markup(
-										GTK_WINDOW(pParent),
-										GTK_DIALOG_MODAL,
-										GTK_MESSAGE_WARNING,
-										GTK_BUTTONS_CLOSE,
-								"<b><big><u>Erreur :</u></big></b>\n\n\
-Le fichier:\n \t%s\n n'est pas un fichier comptatible.",
-										strFilename);
-			gtk_dialog_run(GTK_DIALOG(pErrorDialog));
-
-			gtk_widget_destroy(pErrorDialog);
-		}
-
-		g_free (strFilename);
+		g_slist_free(psListOfFiles);
 	}
 
 	gtk_widget_destroy (pDialog);
