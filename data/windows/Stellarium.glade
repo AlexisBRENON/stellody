@@ -10,8 +10,6 @@
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
     <property name="extension_events">all</property>
     <property name="spacing">5</property>
-    <signal name="destroy" handler="test" swapped="no"/>
-    <signal name="unrealize" handler="test" swapped="no"/>
     <child>
       <object class="GtkLabel" id="Stellarium_Label">
         <property name="visible">True</property>
@@ -32,12 +30,12 @@
         <property name="has_focus">True</property>
         <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
         <property name="extension_events">all</property>
-        <signal name="scroll-event" handler="on_Stellarium_DrawingArea_button_release_event" swapped="no"/>
-        <signal name="configure-event" handler="on_Stellarium_DrawingArea_configure_event" swapped="no"/>
-        <signal name="realize" handler="on_Stellarium_DrawingArea_realize" swapped="no"/>
-        <signal name="expose-event" handler="on_Stellarium_DrawingArea_expose_event" swapped="no"/>
-        <signal name="motion-notify-event" handler="on_Stellarium_DrawingArea_motion_notify_event" swapped="no"/>
         <signal name="button-release-event" handler="on_Stellarium_DrawingArea_button_release_event" swapped="no"/>
+        <signal name="configure-event" handler="on_Stellarium_DrawingArea_configure_event" swapped="no"/>
+        <signal name="expose-event" handler="on_Stellarium_DrawingArea_expose_event" swapped="no"/>
+        <signal name="realize" handler="on_Stellarium_DrawingArea_realize" swapped="no"/>
+        <signal name="motion-notify-event" handler="on_Stellarium_DrawingArea_motion_notify_event" swapped="no"/>
+        <signal name="scroll-event" handler="on_Stellarium_DrawingArea_button_release_event" swapped="no"/>
       </object>
       <packing>
         <property name="expand">True</property>
