@@ -104,6 +104,10 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 								gpointer* pData);
 
 
+static int guiAddFolderToAnalyze (char* strFolderName,
+								gpointer* pData);
+
+
 /* ********************************************************************* */
 /* Implémentation                                                        */
 /* ********************************************************************* */
@@ -482,6 +486,82 @@ static int guiAddTrackToPlaylist (GtkBuilder* pMainBuilder,
 	return EXIT_SUCCESS;
 }
 
+static int guiAddFolderToAnalyze (char* strFolderName,
+								gpointer* pData)
+{
+	DIR *dirp;
+	struct dirent *dp;
+	unsigned char ucFileType = 0;
+	char* strFileName = NULL;
+	char* strExtension = NULL;
+	int iLength = 0;
+	int i = 0;
+
+	/* Ajoute tous les fichiers du dossier. */
+	dirp = opendir(strFolderName);
+	assert(dirp);
+	while ((dp = readdir(dirp)) != NULL)
+	{
+		ucFileType = dp->d_type;
+		strFileName = dp->d_name;
+
+		/* S'il s'agit d'un dossier */
+		if (ucFileType == 4 &&
+			strcmp(strFileName, ".") != 0 &&
+			strcmp(strFileName, "..") != 0)
+		{
+			char* strFullFileName = NULL;
+			strFullFileName = (char*) malloc(strlen(strFolderName)+
+												1+
+												strlen(strFileName)+
+												1);
+			strcpy(strFullFileName, strFolderName);
+			strcat(strFullFileName, "/");
+			strcat(strFullFileName, strFileName);
+			guiAddFolderToAnalyze(strFullFileName, pData);
+			free(strFullFileName);
+		}
+		else
+		{
+			iLength = strlen(strFileName);
+			strExtension = &(strFileName[iLength-4]);
+
+			for (i = 1; i < 4; i++)
+			{
+				strExtension[i] = tolower(strExtension[i]);
+			}
+
+			/* On vérifie que ce soit un fichier pris en charge */
+			if (strcmp(strExtension, ".mp3") == 0 ||
+				strcmp(strExtension, ".mid") == 0 ||
+				strcmp(strExtension, ".m3u") == 0 ||
+				strcmp(strExtension, ".mp2") == 0 ||
+				strcmp(strExtension, ".ogg") == 0 ||
+				strcmp(strExtension, ".raw") == 0 ||
+				strcmp(strExtension, ".wav") == 0)
+			{
+				char* strFullFileName = NULL;
+				int iPathLength = 0;
+
+				iPathLength = strlen(strFolderName);
+				strFullFileName = (char*) malloc(
+							(iLength+iPathLength+2)*sizeof(char));
+				strcpy(strFullFileName, strFolderName);
+				strcat(strFullFileName, "/");
+				strcat(strFullFileName, strFileName);
+
+				analysisTrack(strFullFileName, pData);
+
+				free(strFullFileName);
+				strFullFileName = NULL;
+			}
+		}
+	}
+
+	closedir(dirp);
+
+	return EXIT_SUCCESS;
+}
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -908,12 +988,6 @@ Utilisez un systeme <u>UNIX</u> :p !");
 	if (iDialogAnswer == GTK_RESPONSE_ACCEPT)
 	{
 		char* strFolderName;
-		char* strFileName;
-		char* strExtension;
-		DIR *dirp;
-		struct dirent *dp;
-		int iLength = 0;
-		int i = 0;
 		int iPathAdded = 0;
 
 
@@ -925,54 +999,14 @@ Utilisez un systeme <u>UNIX</u> :p !");
 
 		if (iPathAdded == EXIT_SUCCESS)
 		{
-			/* Ajoute tous les fichiers du dossier. */
-			dirp = opendir(strFolderName);
-			assert(dirp);
-			while ((dp = readdir(dirp)) != NULL)
-			{
-				strFileName = dp->d_name;
-				iLength = strlen(strFileName);
-				strExtension = &(strFileName[iLength-4]);
-
-				for (i = 1; i < 4; i++)
-				{
-					strExtension[i] = tolower(strExtension[i]);
-				}
-
-				/* On vérifie que ce soit un fichier pris en charge */
-				if (strcmp(strExtension, ".mp3") == 0 ||
-					strcmp(strExtension, ".mid") == 0 ||
-					strcmp(strExtension, ".m3u") == 0 ||
-					strcmp(strExtension, ".mp2") == 0 ||
-					strcmp(strExtension, ".ogg") == 0 ||
-					strcmp(strExtension, ".raw") == 0 ||
-					strcmp(strExtension, ".wav") == 0)
-				{
-					char* strFullFileName = NULL;
-					int iPathLength = 0;
-
-					iPathLength = strlen(strFolderName);
-					strFullFileName = (char*) malloc(
-								(iLength+iPathLength+2)*sizeof(char));
-					strcpy(strFullFileName, strFolderName);
-					strcat(strFullFileName, "/");
-					strcat(strFullFileName, strFileName);
-
-					analysisTrack(strFullFileName, pData);
-
-					free(strFullFileName);
-					strFullFileName = NULL;
-				}
-			}
-
-			closedir(dirp);
-
-			g_free (strFolderName);
+			guiAddFolderToAnalyze(strFolderName, pData);
 		}
 		else
 		{
 			printf ("Dossier déjà existant...\n");
 		}
+
+		g_free (strFolderName);
 	}
 
 #endif

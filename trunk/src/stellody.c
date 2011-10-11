@@ -4,7 +4,6 @@
   * @author STELLODY TEAM
   * @file stellody.c
   * @todo
-		Ajouter récurcivement les dossiers de musique. \n
 		Refaire l'algo d'analyse (+ tests) \n
   */
 
