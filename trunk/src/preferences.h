@@ -35,6 +35,7 @@ struct sPreferences
 	int iMaxTID;			/**< Plus grand identifiant dans l'arbre */
 	int iNbPath; 			/**< Nombre de chemin/taille du tableau pstrFilesPath */
 	int iMoveCam;			/**< 1 S'il faut bouger la caméra lorsque l'on clique sur une étoile */
+	int iDispGrid;			/**< 1 S'il faut afficher une grille dans le stellarium */
 	char** pstrFilesPath;	/**< Chemins des dossiers contenant les
 	morceaux */
 };
@@ -290,6 +291,23 @@ int preferencesGetMoveCam (const Preferences* psPref);
   */
 int preferencesSetMoveCam (Preferences* psPref, int iValue);
 
+/**
+  * @fn int preferencesGetGrid (const Preferences* psPref)
+  * @brief Accesseur sur l'option de grille.
+  *
+  * @param[in] psPref Pointeur sur la structure à accéder
+  * @return 0 s'il ne faut pas de grille, 1 sinon.
+  */
+int preferencesGetGrid (const Preferences* psPref);
+/**
+  * @fn int preferencesSetGrid (Preferences* psPref, int iValue)
+  * @brief Mutateur sur l'option de grille.
+  *
+  * @param[in,out] psPref Pointeur sur la structure à modifier.
+  * @param[in] iValue Valeur à assigner
+  * @return EXIT_SUCCESS si tout est OK
+  */
+int preferencesSetGrid (Preferences* psPref, int iValue);
 
 /* ********************************************************************* */
 /*                                                                       */

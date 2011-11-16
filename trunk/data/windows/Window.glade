@@ -97,12 +97,13 @@
   <object class="GtkWindow" id="Stellody_Window">
     <property name="can_focus">False</property>
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
-    <property name="extension_events">cursor</property>
+    <property name="extension_events">all</property>
     <property name="title" translatable="yes">Stellody</property>
     <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">../images/icone.png</property>
     <property name="icon_name">Stellody</property>
+    <signal name="drag-data-received" handler="test" swapped="no"/>
     <signal name="destroy" handler="on_Quit_Action_activate" swapped="no"/>
     <child>
       <object class="GtkVBox" id="Main_VBox">

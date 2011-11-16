@@ -583,11 +583,15 @@ int guiLoad (void** ppDatas)
 	GKeyFile** ppsFiles = NULL;
 
 	GtkBuilder* pMainBuilder = NULL;
+	GtkBuilder* psStellariumBuilder = NULL;
 	GtkWidget* pMainWindow = NULL;
+	GdkGLConfig* pConfig = NULL;
+	GtkWidget* pDrawingArea = NULL;
 
 	int iNbTracks = 0;
 	int i = 0;
 	AnalyzedTrack* psTrackToAnalyzed = NULL;
+
 
 /* ********************************************************************* */
 /*                                                                       */
@@ -641,6 +645,21 @@ int guiLoad (void** ppDatas)
 	ppDatas[4] = malloc(sizeof(OpenGLData));
 	drawingGLStellariumInit(ppDatas[4]);
 
+	psStellariumBuilder = guiDataGetBuilder(ppDatas[2], STELLARIUM);
+	/* Active la capacité OpenGL au Stellarium */
+	pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psStellariumBuilder,
+										"Stellarium_DrawingArea"));
+
+	pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
+										GDK_GL_MODE_DEPTH |
+										GDK_GL_MODE_DOUBLE);
+	gtk_widget_set_gl_capability(pDrawingArea,
+									pConfig,
+									NULL,
+									FALSE,
+									GDK_GL_RGBA_TYPE);
+
+
 /* ********************************************************************* */
 /* Remise en analyse des morceaux non finis.                             */
 /* ********************************************************************* */
@@ -664,6 +683,11 @@ int guiLoad (void** ppDatas)
 				gtk_builder_get_object(pMainBuilder, GUI_MAIN_WIN));
 	gtk_window_set_icon_from_file (GTK_WINDOW(pMainWindow),
 							"data/images/icone.png", NULL);
+
+	gtk_drag_dest_set(pMainWindow,
+					GTK_DEST_DEFAULT_ALL,
+					NULL, 0,
+					GDK_ACTION_PRIVATE);
 
 	gtk_widget_show_all(pMainWindow);
 
@@ -1034,9 +1058,6 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psStellarium = NULL;
 	GtkWidget* psContainer = NULL;
 
-	GdkGLConfig* pConfig = NULL;
-	GtkWidget* pDrawingArea = NULL;
-
 /* ********************************************************************* */
 /* On détache le widget attaché.                                         */
 /* ********************************************************************* */
@@ -1045,20 +1066,6 @@ int on_Stellarium_Action_activate (GtkWidget* psWidget, gpointer* pData)
 
 	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
 	psStellariumBuilder = guiDataGetBuilder(psGuiData, STELLARIUM);
-
-	/* Active la capacité OpenGL au Stellarium */
-	pDrawingArea = GTK_WIDGET(gtk_builder_get_object(psStellariumBuilder,
-										"Stellarium_DrawingArea"));
-
-	pConfig = gdk_gl_config_new_by_mode(GDK_GL_MODE_RGBA |
-										GDK_GL_MODE_DEPTH |
-										GDK_GL_MODE_DOUBLE);
-
-	gtk_widget_set_gl_capability(pDrawingArea,
-									pConfig,
-									NULL,
-									TRUE,
-									GDK_GL_RGBA_TYPE);
 
 	psStellarium = GTK_WIDGET(gtk_builder_get_object(
 											psStellariumBuilder,
@@ -1093,8 +1100,9 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkWidget* psContainer = NULL;
 	GtkWidget* psScale = NULL;
 	GtkWidget* psCheckBut = NULL;
-	int iCheck = 0;
-	gboolean bCheck = FALSE;
+	GtkWidget* psGridCheck = NULL;
+	gboolean bMoveCam = FALSE;
+	gboolean bGrid = FALSE;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1125,11 +1133,20 @@ int on_Preferences_Action_activate (GtkWidget* psWidget, gpointer* pData)
 										psPreferencesBuilder,
 										"MoveCamera_Check"));
 
-	iCheck = preferencesGetMoveCam(psPreferences);
-	bCheck = (gboolean) preferencesGetMoveCam(psPreferences);
+	psGridCheck = GTK_WIDGET(gtk_builder_get_object(
+										psPreferencesBuilder,
+										"Grid_Check"));
+
+	bMoveCam = (gboolean) preferencesGetMoveCam(psPreferences);
 	gtk_toggle_button_set_active(
 					GTK_TOGGLE_BUTTON(psCheckBut),
-					bCheck);
+					bMoveCam);
+
+	bGrid = (gboolean) preferencesGetGrid(psPreferences);
+	gtk_toggle_button_set_active(
+					GTK_TOGGLE_BUTTON(psGridCheck),
+					bGrid);
+
 
 	psContainer = GTK_WIDGET(
 						gtk_builder_get_object(psMainBuilder,
@@ -1302,7 +1319,7 @@ int on_Next_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		/** @todo Affichage d'un msg. **/
 		printf("La playlist est vide...\n");
 	}
-	else
+	else if (playerIsPlaying(psPlayingChannel)) /* Si un morceau est en lecture */
 	{
 		FMOD_SYSTEM* psFmodContext = NULL;
 		int iGoToStar = -1;
@@ -1378,8 +1395,15 @@ int on_Previous_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkTreeRowReference* psRowRef = NULL;
 	GtkTreePath* psPath = NULL;
 
+	GtkWidget* psTrackScale = NULL;
+	int iCurrentTime = 0;
+
 	GtkTreeIter sIter;
 	int iTrackIndex = -1;
+	FMOD_SYSTEM* psFmodContext = NULL;
+	int iGoToStar = -1;
+	int iIncrementTimerID = 0;
+
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1396,53 +1420,58 @@ int on_Previous_Action_activate (GtkWidget* psWidget, gpointer* pData)
 		/** @todo Affichage d'un msg. **/
 		printf("La playlist est vide...\n");
 	}
-	else
+	else if (playerIsPlaying(psPlayingChannel)) /* Si un morceau est en lecture */
 	{
-		FMOD_SYSTEM* psFmodContext = NULL;
-		int iGoToStar = -1;
-		int iIncrementTimerID = 0;
+		psTrackScale = GTK_WIDGET(gtk_builder_get_object(psMainBuilder,
+													"Track_Scale"));
+		iCurrentTime = (int) gtk_range_get_value(GTK_RANGE(psTrackScale));
 
-		/* Sinon, on lit le morceau suivant de la liste */
-		psRowRef = guiDataGetTreeRowReference(psGuiData);
-		psPath = gtk_tree_row_reference_get_path(psRowRef);
-
-		/* Si le morceau précédent est valide/existe */
-		if (gtk_tree_path_prev(psPath) == TRUE)
+		if (iCurrentTime >= 2) /* Si on clique pdt le début du morceau */
 		{
-			/* On met à jour le morceau actif */
-			psRowRef = gtk_tree_row_reference_new(psModel, psPath);
-			guiDataSetTreeRowReference(psGuiData, psRowRef);
-			gtk_tree_row_reference_free(psRowRef);
-
-			/* On arrête la lecture en cours */
-			on_Stop_Action_activate(psWidget, pData);
-
-			gtk_tree_model_get_iter(psModel, &sIter, psPath);
-			gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
-
-			psTrackToPlay =
-				analyzedTracksGetTrack(psTracks, iTrackIndex);
-
-			psFmodContext = playerDataGetSystem(psPlayerData);
-			iGoToStar = preferencesGetMoveCam(psPreferences);
-
-			guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
-							&psPlayingChannel, iGoToStar, psGLData);
-			playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
-
-			iIncrementTimerID =
-			g_timeout_add_seconds(1,
-						(GSourceFunc) guiTrackScaleIncrement,
-						pData);
-			guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+			gtk_range_set_value(GTK_RANGE(psTrackScale), 0);
+			on_Track_Scale_value_changed(psTrackScale, NULL, pData);
 		}
-		else /* Si le morceau suivant n'est pas valide (fin de la liste...)*/
+		else
 		{
-			printf("Debut de la playlist.\n");
-		}
+			psRowRef = guiDataGetTreeRowReference(psGuiData);
+			psPath = gtk_tree_row_reference_get_path(psRowRef);
 
+			/* Si le morceau précédent est valide/existe */
+			if (gtk_tree_path_prev(psPath) == TRUE)
+			{
+				/* On met à jour le morceau actif */
+				psRowRef = gtk_tree_row_reference_new(psModel, psPath);
+				guiDataSetTreeRowReference(psGuiData, psRowRef);
+				gtk_tree_row_reference_free(psRowRef);
+
+				/* On arrête la lecture en cours */
+				on_Stop_Action_activate(psWidget, pData);
+
+				gtk_tree_model_get_iter(psModel, &sIter, psPath);
+				gtk_tree_model_get(psModel, &sIter, 1, &iTrackIndex, -1);
+
+				psTrackToPlay =
+					analyzedTracksGetTrack(psTracks, iTrackIndex);
+
+				psFmodContext = playerDataGetSystem(psPlayerData);
+				iGoToStar = preferencesGetMoveCam(psPreferences);
+
+				guiPlayTrack(psTrackToPlay, psMainBuilder, psFmodContext,
+								&psPlayingChannel, iGoToStar, psGLData);
+				playerDataSetPlayingChannel(psPlayerData, psPlayingChannel);
+
+				iIncrementTimerID =
+				g_timeout_add_seconds(1,
+							(GSourceFunc) guiTrackScaleIncrement,
+							pData);
+				guiDataSetIncrementTimerID(psGuiData, iIncrementTimerID);
+			}
+			else /* Si le morceau suivant n'est pas valide (fin de la liste...)*/
+			{
+				printf("Debut de la playlist.\n");
+			}
+		}
 	}
-
 
 	return EXIT_SUCCESS;
 }
@@ -1468,7 +1497,6 @@ int on_Track_Scale_value_changed (GtkWidget* psWidget,
 
 /* ********************************************************************* */
 /* ********************************************************************* */
-
 	psPlayingChannel = playerDataGetPlayingChannel(psPlayerData);
 
 	if (psPlayingChannel != NULL)
@@ -1900,6 +1928,7 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	GtkBuilder* psPreferencesBuilder = NULL;
 	GtkWidget* psScale = NULL;
 	GtkWidget* psCheckBut = NULL;
+	GtkWidget* psGridCheck = NULL;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
@@ -1921,9 +1950,21 @@ int on_PrefOKBut_Action_activate (GtkWidget* psWidget, gpointer* pData)
 	psCheckBut = GTK_WIDGET(gtk_builder_get_object(
 										psPreferencesBuilder,
 										"MoveCamera_Check"));
+
 	preferencesSetMoveCam(psPreferences,
 						(int) gtk_toggle_button_get_active(
 										GTK_TOGGLE_BUTTON(psCheckBut)));
+
+
+	psGridCheck = GTK_WIDGET(gtk_builder_get_object(
+										psPreferencesBuilder,
+										"Grid_Check"));
+
+	preferencesSetGrid(psPreferences,
+						(int) gtk_toggle_button_get_active(
+										GTK_TOGGLE_BUTTON(psGridCheck)));
+
+
 
 	on_Stellarium_Action_activate(psWidget, pData);
 
@@ -2083,7 +2124,8 @@ int on_Stellarium_DrawingArea_expose_event (
 	{
 		drawingGLDraw(psGLData, psTracks,
 					  preferencesGet3DQuality(
-								psPreferences));
+								psPreferences),
+					  preferencesGetGrid(psPreferences));
 		gdk_gl_drawable_swap_buffers(psSurface); /* permutation des tampons */
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
@@ -2532,10 +2574,17 @@ int on_Library_TreeView_key_release_event (GtkWidget* psWidget,
 
 
 
-
-
-
-
+void test (GtkWidget 			*widget,
+			GdkDragContext   	*drag_context,
+			gint              	x,
+			gint              	y,
+			GtkSelectionData 	*data,
+			guint             	info,
+			guint             	time2,
+			gpointer          	user_data)
+{
+	printf ("Test\n");
+}
 
 
 

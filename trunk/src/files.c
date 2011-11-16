@@ -106,6 +106,9 @@ int filesSave(GKeyFile** ppsContext,
 		g_key_file_set_integer(ppsContext[CONFIG],
 								"DEFAULT", "iMoveCam",
 								preferencesGetMoveCam(psPref));
+		g_key_file_set_integer(ppsContext[CONFIG],
+								"DEFAULT", "iDispGrid",
+								preferencesGetGrid(psPref));
 		g_key_file_set_string_list(ppsContext[CONFIG],
 									"DEFAULT", "pstrPath",
 			(const gchar* const*) preferencesGetFilesPath(psPref, &iSize),

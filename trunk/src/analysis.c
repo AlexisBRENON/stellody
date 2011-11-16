@@ -257,7 +257,7 @@ int analysisTrack (const char* strPath, gpointer* pData)
     analyzedTrackSetPath(psTrack, strPath);
 
     /* On ajoute le morceau à la liste d'analyse (et la liste complète
-    en cas de sauvegarde. */
+    en cas de sauvegarde). */
     linkedListAppend(psAnalyzeList, psTrack);
     analyzedTracksInsertTrack(psTracks,
                               psTrack);

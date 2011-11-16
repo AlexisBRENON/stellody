@@ -216,16 +216,17 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 
 /**
  * @fn int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
-						  int iPrecision)
+						  int iPrecision, int iGrid)
   * @brief Rafraichit la scene.
   *
   * @param[in, out] pTracks Données des chansons
   * @param[in,out] pData Données OpenGL
   * @param[in] iPrecision Precision des dessins
+  * @param[in] iGrid Affichage d'une grille?
   * @return EXIT_SUCCESS si tout est OK
   */
 int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
-				   int iPrecision) ;
+				   int iPrecision, int iGrid) ;
 
 /**
   * @fn int drawingGLRemoveStar (OpenGLData* pData, int iTID);

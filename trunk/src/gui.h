@@ -17,8 +17,6 @@
 /*                                                                       */
 /* ********************************************************************* */
 
-int test (GtkWidget* psWidget, gpointer* pData);
-
 /**
   * @fn int guiLoad (void** ppDatas)
   * @brief Crée et initialise chaque structure de données.
@@ -430,6 +428,23 @@ int on_Library_TreeView_key_release_event (GtkWidget* psWidget,
 
 /* ********************************************************************* */
 /* ********************************************************************* */
+
+void test (GtkWidget 			*widget,
+			GdkDragContext   	*drag_context,
+			gint              	x,
+			gint              	y,
+			GtkSelectionData 	*data,
+			guint             	info,
+			guint             	time,
+			gpointer          	user_data);
+
+
+gboolean test2 (GtkWidget *widget,
+			GdkDragContext *context,
+			gint x, gint y,
+			guint time,
+			gpointer user_data);
+
 
 
 #endif /* __GUI_H__ */
