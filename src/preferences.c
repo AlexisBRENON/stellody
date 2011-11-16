@@ -33,6 +33,7 @@ int preferencesInit (Preferences* psPref)
 	psPref->iMinTID = 0;
 	psPref->iNbPath = 0;
 	psPref->iMoveCam = 0;
+	psPref->iDispGrid = 0;
 	psPref->pstrFilesPath = NULL;
 
 	return EXIT_SUCCESS;
@@ -74,6 +75,9 @@ int preferencesInitFromFile(Preferences* psPref, GKeyFile* ppsContext[])
 	psPref->iMoveCam = g_key_file_get_integer(ppsContext[CONFIG],
 											"DEFAULT",
 											"iMoveCam", NULL);
+	psPref->iDispGrid = g_key_file_get_integer(ppsContext[CONFIG],
+											"DEFAULT",
+											"iDispGrid", NULL);
 
 	/* Copie le tableau de chaines de manière à ne pas mélanger allocations
 	GTK et libération manuelle (on alloue manuellement et on libère avec
@@ -110,6 +114,7 @@ int preferencesRelease (Preferences* psPref)
 	psPref->iMaxTID = -1;
 	psPref->iMinTID = -1;
 	psPref->iMoveCam = -1;
+	psPref->iDispGrid = -1;
 	if (psPref->pstrFilesPath != NULL)
 	{
 		for (i = 0; psPref->pstrFilesPath[i] != NULL; i++)
@@ -364,6 +369,24 @@ int preferencesSetMoveCam(Preferences* psPref, int iValue)
 	assert (iValue == 0 || iValue == 1);
 
 	psPref->iMoveCam = iValue;
+
+	return EXIT_SUCCESS;
+}
+
+int preferencesGetGrid(const Preferences* psPref)
+{
+	assert (psPref != NULL);
+
+	return psPref->iDispGrid;
+}
+
+int preferencesSetGrid(Preferences* psPref, int iValue)
+{
+
+	assert (psPref != NULL);
+	assert (iValue == 0 || iValue == 1);
+
+	psPref->iDispGrid = iValue;
 
 	return EXIT_SUCCESS;
 }

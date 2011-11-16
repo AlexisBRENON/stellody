@@ -295,6 +295,7 @@ static void drawCutCone(float Longueur, int iPrecision)
 
 static void drawCylinder(int iPrecision)
 {
+
     float beta = 0 ;
     float betaS = 0 ;
     float x1 = 0 ;
@@ -2304,14 +2305,7 @@ int drawingGLStellariumInit(OpenGLData* pData)
 
 int drawingGLInit (OpenGLData* pData)
 {
-    /* Début de l'initialisation. */
-    if (iGLDataInitialized == 1)
-    {
-        return EXIT_SUCCESS;
-    }
-    else
-    {
-        int i = 0 ;
+	int i = 0 ;
         float fAmbiantLight = 0 ;
         float fDiffuseLight = 0 ;
         float fSpecularLight = 0 ;
@@ -2319,6 +2313,16 @@ int drawingGLInit (OpenGLData* pData)
         float pfDiffuseLight[4] = {0, 0, 0, 0} ;
         float pfSpecularLight[4] = {0, 0, 0, 0} ;
         float pfPositionLight[4] = {0, 0, 0, 0} ;
+
+
+    /* Début de l'initialisation. */
+    if (iGLDataInitialized == 1)
+    {
+		/* L'initialisation est déja faite */
+    }
+    else
+    {
+
 
         pData->fRadius = 20 ;
         pData->fAlpha = 0 ;
@@ -2344,6 +2348,7 @@ int drawingGLInit (OpenGLData* pData)
 
         drawingGLUpdateTransfertMatrix(pData) ;
 
+/* Partie à copier pour obtenir preque un bon rendu !!!! */
         glClearColor(0.0f, 0.0f, 0.1f, 1.0f) ;
         glClearDepth(1.0) ;
         glDepthFunc(GL_LESS) ;
@@ -2390,9 +2395,9 @@ int drawingGLInit (OpenGLData* pData)
 
         iGLDataInitialized = 1;
 
-        return EXIT_SUCCESS;
     }
 
+	return EXIT_SUCCESS;
 }
 
 int drawingGLFree (OpenGLData* pData)
@@ -2473,7 +2478,7 @@ int drawingGLSelect (OpenGLData* pData, AnalyzedTracks* pTracks,
 }
 
 int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
-                   int iPrecision)
+                   int iPrecision, int iGrid)
 {
     int iLength = 0;
     int i = 0;

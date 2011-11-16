@@ -19,6 +19,9 @@ GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`
 	# Fichiers nécessaires à  OpenGL (pour Ubuntu)
 GL_CFLAGS = 	`pkg-config --cflags gl glu`
 GL_LDFLAGS = 	`pkg-config --libs gl glu`
+	# Fichiers nécessaires à  GtkGLExt
+GTKGL_CFLAGS =	`pkg-config --cflags gtkglext-x11-1.0`
+GTKGL_LDFLAGS =	`pkg-config --libs gtkglext-x11-1.0`
 
 	# Dossier contenant les sources
 SRC_DIR = 		src
@@ -52,10 +55,10 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 
 	# Options nécessaires à  la compilation sous linux
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
-					$(GTK_CFLAGS)	$(GL_CFLAGS)
-LIN_LDFLAGS =		-export-dynamic \
-					-lfmodex64-4.34.05 \
-					-lgtkglext-x11-1.0 \
+					$(GTK_CFLAGS)	$(GL_CFLAGS)	$(GTKGL_CFLAGS)
+LIN_LDFLAGS =		-L/usr/lib64 -export-dynamic \
+					-lfmodex64-4.36.05 \
+					$(GTKGL_LDFLAGS) \
 					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 
 	# Options nécessaires à  la compilation sous MAC
@@ -161,7 +164,7 @@ clean :
 flush :
 	@echo "\033[1;33mVidage des fichiers...\n"
 	@echo "# Fichier de données de l'application Stellody" >data/.stellody_data
-	@echo "# Fichier de configuration\n\n[DEFAULT]\niAnalysisRate=1\niWindowXSize=0\niWindowYSize=0\ni3DQuality=25\niTIDMax=0\niTIDMin=0\niMoveCam=1\npstrPath=\n" >data/.stellody_config
+	@echo "# Fichier de configuration\n\n[DEFAULT]\niAnalysisRate=1\niWindowXSize=0\niWindowYSize=0\ni3DQuality=25\niTIDMax=0\niTIDMin=0\niMoveCam=1\niDispGrid=1\npstrPath=\n" >data/.stellody_config
 	@echo "=======================================\033[0m"
 
 mrproper :
