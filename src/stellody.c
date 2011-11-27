@@ -161,7 +161,7 @@ int stellody(int argc, char* argv[])
 	void* ppDatas[5] = {NULL, NULL, NULL, NULL, NULL};
 
 	gtk_init(&argc, &argv);
-	gtk_gl_init(&argc, &argv);
+	gdk_gl_init(&argc, &argv);
 	assert (guiLoad(ppDatas) == EXIT_SUCCESS);
 
 	gtk_main();

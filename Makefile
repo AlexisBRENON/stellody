@@ -57,7 +57,7 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
 					$(GTK_CFLAGS)	$(GL_CFLAGS)	$(GTKGL_CFLAGS)
 LIN_LDFLAGS =		-L/usr/lib64 -export-dynamic \
-					-lfmodex64-4.36.05 \
+					-lfmodex64-4.36.05 -lm\
 					$(GTKGL_LDFLAGS) \
 					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
 
@@ -137,7 +137,7 @@ lin : check $(OBJS_LIN)
 	@echo "\033[1;33m"
 	@echo "Début des messages linker."
 	@echo "\033[1;31m"
-	@$(CC) $(LIN_LDFLAGS) $(OBJS_LIN) -o $(BIN_DIR)/$(EXEC)
+	@$(CC) $(OBJS_LIN) $(LIN_LDFLAGS) -o $(BIN_DIR)/$(EXEC)
 	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
 	@echo

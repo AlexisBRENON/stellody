@@ -2042,6 +2042,7 @@ int on_Stellarium_DrawingArea_realize(
 	{
 		drawingGLInit(psGLData);
 
+		gdk_gl_drawable_swap_buffers(psSurface);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 
 		g_timeout_add(40,
@@ -2084,6 +2085,7 @@ int on_Stellarium_DrawingArea_configure_event(
 	if (bActivate == TRUE)
 	{
 		drawingGLResize(psGLData, psEvent->width, psEvent->height);
+		gdk_gl_drawable_swap_buffers(psSurface);
 		gdk_gl_drawable_gl_end(psSurface); /* désactivation du contexte */
 	}
 	return EXIT_SUCCESS;
@@ -2259,7 +2261,8 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 
 	guiDataGetMousePosition(psGuiData, &iXMousePosition, &iYMousePosition);
 
-	if (((psEvent->state)>>9)%2 == 1 || ((psEvent->state)>>10)%2 == 1)
+	if ((psEvent->state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK ||
+		(psEvent->state & GDK_BUTTON3_MASK) == GDK_BUTTON3_MASK)
 	/* Si le déplacement est fait avec le boutton central ou droit appuyé */
 	{
 		fStepX = (float) iXMousePosition - (float) psEvent->x;
@@ -2267,7 +2270,7 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 
 		drawingGLRotate(psGLData, -fStepX/20, fStepY/20);
 	}
-	else if (((psEvent->state)>>8)%2 == 1)
+	else if ((psEvent->state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	/* Si c'est avec le bouton gauche */
 	{
 		fStepX = (float) iXMousePosition - (float) psEvent->x;
@@ -2275,7 +2278,8 @@ int on_Stellarium_DrawingArea_motion_notify_event (GtkWidget* psWidget,
 
 		drawingGLTranslate(psGLData, -fStepX/500, fStepY/500, 0);
 	}
-	else /* Si on appuie pas sur un bouton de la souris */
+	else if ((psEvent->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK)
+	/* Si on appuie sur Ctrl */
 	{
 		int iTID = -1;
 		GdkGLContext * psContext = NULL;
