@@ -2020,6 +2020,8 @@ static int drawingGLUpdateTransfertMatrix (OpenGLData* pData)
 
 static int drawingGLMoveDirection(OpenGLData * pData)
 {
+	assert(pData != NULL);
+
     if (pData->fMoveX != 0)
     {
         if (pData->fCenterX < pData->iDirectionX)
@@ -2484,7 +2486,7 @@ int drawingGLDraw (OpenGLData* pData, AnalyzedTracks* pTracks,
     int i = 0;
 
     /* Gestion de la vision. */
-
+	assert (pData != NULL);
     drawingGLMoveDirection(pData) ;
 
     glMatrixMode(GL_MODELVIEW) ;
