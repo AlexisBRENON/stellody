@@ -314,7 +314,7 @@ int on_Stellarium_DrawingArea_configure_event(
   Entraine le rafraichissement de la scene OpenGL.
   *
   * @param[in,out] psWidget Widget appelant ce callback
-  * @param[in,out] psEvent Structure de l'évenement
+  * @param[in,out] psEvent Evenement d'affichage
   * @param[in,out] pData Données tierces
   * @return EXIT_SUCCESS si tout est OK
   */

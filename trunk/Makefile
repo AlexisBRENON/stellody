@@ -19,9 +19,9 @@ GTK_LDFLAGS = 	`pkg-config --libs gtk+-2.0`
 	# Fichiers nécessaires à  OpenGL (pour Ubuntu)
 GL_CFLAGS = 	`pkg-config --cflags gl glu`
 GL_LDFLAGS = 	`pkg-config --libs gl glu`
-	# Fichiers nécessaires à  GtkGLExt
-GTKGL_CFLAGS =	`pkg-config --cflags gtkglext-x11-1.0`
-GTKGL_LDFLAGS =	`pkg-config --libs gtkglext-x11-1.0`
+	# Fichiers nécessaires à  GtkGlExt
+GTKGL_CFLAGS = 	`pkg-config --cflags gdkglext-1.0 gtkglext-1.0`
+GTKGL_LDFLAGS =	`pkg-config --libs gdkglext-1.0 gtkglext-1.0`
 
 	# Dossier contenant les sources
 SRC_DIR = 		src
@@ -55,11 +55,11 @@ OBJS_MAC = 		$(SRCS:%.c=$(OBJ_DIR)/%_mac.o)
 
 	# Options nécessaires à  la compilation sous linux
 LIN_CFLAGS = 		-Wall -pedantic -ansi -g  \
-					$(GTK_CFLAGS)	$(GL_CFLAGS)	$(GTKGL_CFLAGS)
-LIN_LDFLAGS =		-L/usr/lib64 -export-dynamic \
-					-lfmodex64-4.36.05 -lm\
-					$(GTKGL_LDFLAGS) \
-					$(GTK_LDFLAGS)	$(GL_LDFLAGS)
+					$(GTK_CFLAGS)	$(GL_CFLAGS) $(GTKGL_CFLAGS)
+LIN_LDFLAGS =		-lm \
+					-export-dynamic \
+					-lfmodex64-4.36.05 \
+					$(GTKGL_LDFLAGS) $(GTK_LDFLAGS)	$(GL_LDFLAGS)
 
 	# Options nécessaires à  la compilation sous MAC
 MAC_CFLAGS = 		-Wall -pedantic -ansi -m32 -g \
@@ -120,7 +120,7 @@ mac : check $(OBJS_MAC)
 	@echo "\033[1;33m"
 	@echo "Début des messages linker."
 	@echo "\033[1;31m"
-	@$(CC) $(MAC_LDFLAGS) $(OBJS_MAC) -o $(BIN_DIR)/$(EXEC)
+	@$(CC) $(OBJS_MAC) $(MAC_LDFLAGS) -o $(BIN_DIR)/$(EXEC)
 	@echo "\033[1;32m"
 	@echo "Fin des messages linker."
 	@echo
