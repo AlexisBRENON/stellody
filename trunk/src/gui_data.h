@@ -50,6 +50,7 @@ struct sGuiData
 	GtkBuilder* pPreferencesBuilder; /**< Builder de la gestion de préférences */
 	GtkBuilder* pLibraryBuilder; /**< Builder de la librairie */
 	GtkBuilder* pAboutBuilder; /**< Builder du @em A Propos */
+	GtkWidget* psStellarium;
 
 	GtkTreeRowReference* psRowRef; /**< Pointeur sur le morceau de la playlist. */
 

@@ -70,7 +70,6 @@ int analyzedTrackInitWithData(AnalyzedTrack* psTrack, int iTID,
 	assert (fAverage >= 0 && fAverage <= 22050);
 
 	/* Si on lui passe une chaine de caractère (même vide), on la copie.*/
-
 	if (strPath != NULL)
 	{
 		psTrack->strPath = (char*) malloc((strlen(strPath)+1)*sizeof(char));
@@ -371,7 +370,7 @@ int analyzedTrackSetCoords(AnalyzedTrack* psTrack,
 unsigned char analyzedTrackGetbAdded (const AnalyzedTrack* psTrack)
 {
 	assert (psTrack != NULL) ;
-	
+
 	return psTrack->bAdded ;
 }
 
@@ -380,7 +379,7 @@ int analyzedTrackSetbAdded (AnalyzedTrack* psTrack, unsigned char bAdded)
 	assert (psTrack != NULL && (bAdded == 0 || bAdded == 1)) ;
 
 	psTrack->bAdded = bAdded ;
-	
+
 	return EXIT_SUCCESS ;
 }
 

@@ -35,6 +35,13 @@
 
 #define fHERTZSTEP 43.06640625 /**< Ecart entre 2 raies du spectre d'amplitude */
 
+
+/* ********************************************************************* */
+/*                            Fonctions privées                          */
+/* ********************************************************************* */
+
+static int analysisAdd (const char* strPath, gpointer* pData);
+
 /* ********************************************************************* */
 /*                                                                       */
 /*                     Fonctions relatives à l'analyse                   */
@@ -47,41 +54,58 @@ int analysisAnalyze (FMOD_CHANNEL* pChannel,
                      AnalyzedTrack* pTrack,
                      int iAnalyzingCounter)
 {
-   float farrWave[1024] = {0};
-   FMOD_RESULT iWave = 0;
+	unsigned int uiPosition;
+	unsigned int uiNewPosition;
 
 /* ********************************************************************* */
 /* ********************************************************************* */
 
-	iWave = FMOD_Channel_GetWaveData(
-						pChannel,
-						farrWave,
-						1024,
-						0
-						);
-	if (iWave != 0)
+	fprintf(stdout, "\tAnalyse n°%d...\n", iAnalyzingCounter);
+
+	FMOD_Channel_GetPosition(pChannel,
+							&uiPosition,
+							FMOD_TIMEUNIT_MS);
+	FMOD_Channel_SetPosition(pChannel,
+							uiPosition+fAnalysisRate,
+							FMOD_TIMEUNIT_MS);
+	FMOD_Channel_GetPosition(pChannel,
+							&uiNewPosition,
+							FMOD_TIMEUNIT_MS);
+
+
+	/* Si on ne peux plus incrémenter, on arrête */
+
+
+	if (uiNewPosition == uiPosition)
 	{
-		iWave = FMOD_Channel_GetWaveData(
-							pChannel,
-							farrWave,
-							1024,
-							1
-							);
+		FMOD_Channel_Stop(pChannel);
 
+		return EXIT_SUCCESS;
 	}
-
-
 
     return EXIT_SUCCESS;
 }
 
-void analysisAddTracksToAnalyzed (char* strFilename, gpointer* pData)
+void analysisAddTrackToAnalyze (char* strFilename, gpointer* pData)
 {
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
+
 	GuiData* psGuiData = pData[2];
+
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
 
     char* strExtension;
     int iLength;
     int i;
+
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	fprintf(stdout, "Ajout d'un fichier à la liste d'analyse.\n");
 
     strExtension = strrchr(strFilename, '.');
     iLength = strlen(strExtension);
@@ -93,20 +117,23 @@ void analysisAddTracksToAnalyzed (char* strFilename, gpointer* pData)
 
     /* On vérifie que ce soit un fichier pris en charge */
     if (strcmp(strExtension, ".mp3") == 0 ||
-            strcmp(strExtension, ".mid") == 0 ||
-            strcmp(strExtension, ".m3u") == 0 ||
-            strcmp(strExtension, ".mp2") == 0 ||
-            strcmp(strExtension, ".ogg") == 0 ||
-            strcmp(strExtension, ".raw") == 0 ||
-            strcmp(strExtension, ".wav") == 0)
+		strcmp(strExtension, ".mid") == 0 ||
+		strcmp(strExtension, ".m3u") == 0 ||
+		strcmp(strExtension, ".mp2") == 0 ||
+		strcmp(strExtension, ".ogg") == 0 ||
+		strcmp(strExtension, ".raw") == 0 ||
+		strcmp(strExtension, ".wav") == 0)
     {
-        analysisTrack(strFilename, pData);
+        analysisAdd(strFilename, pData);
     }
     else
     {
     	GtkBuilder* psMainBuilder = NULL;
     	GtkWidget* pErrorDialog;
 		GtkWidget* pParent = NULL;
+
+		fprintf(stderr, "Ajout impossible du fichier %s.\n\
+Fichier non pris en charge (extension invalide).\n\n", strFilename);
 
     	psMainBuilder = guiDataGetBuilder(psGuiData, MAIN);
     	pParent = GTK_WIDGET(gtk_builder_get_object(psMainBuilder,
@@ -129,27 +156,30 @@ Le fichier:\n \t%s\n n'est pas un fichier comptatible.",
 }
 
 
-int analysisTrack (const char* strPath, gpointer* pData)
+static int analysisAdd (const char* strPath, gpointer* pData)
 {
 
-    /* ********************************************************************* */
-    /* Données habituelles                                                   */
-    /* ********************************************************************* */
+/* ********************************************************************* */
+/* Données habituelles                                                   */
+/* ********************************************************************* */
 
     AnalyzedTracks* psTracks = pData[0];
     PlayerData* psPlayerData = pData[3];
 
-    /* ********************************************************************* */
-    /* Données annexes                                                       */
-    /* ********************************************************************* */
+/* ********************************************************************* */
+/* Données annexes                                                       */
+/* ********************************************************************* */
 
     LinkedList* psAnalyzeList = NULL;
     AnalyzedTrack* psTrack = NULL;
 
     int iCheckAnalyze = 0;
 
-    /* ********************************************************************* */
-    /* ********************************************************************* */
+/* ********************************************************************* */
+/* ********************************************************************* */
+
+	fprintf(stdout,
+			"Ajout d'un morceau \"%s\" à la liste d'analyse.\n", strPath);
 
     psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
     psTrack = analyzedTrackCreate();

@@ -98,11 +98,10 @@ int regressionTests()
 	printf ("\t2 : analyzedTracksRegressionTest\n");
 	printf ("\t3 : analyzedTrackRegressionTest\n");
 	printf ("\t4 : filesRegressionTest\n");
-	printf ("\t5 : openglRegressionTest\n");
-	printf ("\t6 : dynamicArrayRegressionTest\n");
-	printf ("\t7 : linkedListRegressionTest\n");
+	printf ("\t5 : dynamicArrayRegressionTest\n");
+	printf ("\t6 : linkedListRegressionTest\n");
 
-	while (iAnswer < 0 || iAnswer > 7)
+	while (iAnswer < 0 || iAnswer > 6)
     {
     	printf("\n Choix : ");
     	scanf("%d", &iAnswer);
@@ -128,13 +127,9 @@ int regressionTests()
 			break;
 		case 5:
 			printf("Returned value : %d\n",
-				   drawingGLRegressionTest());
-			break;
-		case 6:
-			printf("Returned value : %d\n",
 					dynamicArrayRegressionTest());
 			break;
-		case 7:
+		case 6:
 			printf("Returned value : %d\n",
 					linkedListRegressionTest());
 				break;
@@ -162,6 +157,7 @@ int stellody(int argc, char* argv[])
 
 	gtk_init(&argc, &argv);
 	gdk_gl_init(&argc, &argv);
+	gtk_gl_init(&argc, &argv);
 	assert (guiLoad(ppDatas) == EXIT_SUCCESS);
 
 	gtk_main();
