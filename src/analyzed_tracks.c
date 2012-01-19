@@ -343,55 +343,6 @@ int analyzedTracksGetNbTracks (const AnalyzedTracks* psTracks)
 	return iSize;
 }
 
-
-gboolean analyzedTracksCheckForAnalyze(AnalyzedTrack* psTrack,
-										gpointer* pData)
-{
-
-/* ********************************************************************* */
-/* Données habituelles                                                   */
-/* ********************************************************************* */
-
-	PlayerData* psPlayerData = pData[3];
-
-/* ********************************************************************* */
-/* Données annexes                                                       */
-/* ********************************************************************* */
-
-	LinkedList* psAnalyzeList = NULL;
-	char bAnalyzed = 0;
-	int iCheckAnalyze = 0;
-
-/* ********************************************************************* */
-/* ********************************************************************* */
-
-	bAnalyzed = analyzedTrackGetAnalyzed(psTrack);
-
-	if (bAnalyzed == 0)
-	{
-		analyzedTrackSetAverage(psTrack, 0);
-		analyzedTrackSetRate(psTrack, NULL);
-		analyzedTrackSetCoord(psTrack, NULL);
-
-		psAnalyzeList = playerDataGetAnalyzingList(psPlayerData);
-		linkedListAppend(psAnalyzeList, psTrack);
-
-		/* On crée le timer sur la vérification d'analyse s'il n'existe pas */
-
-		iCheckAnalyze = playerDataGetCheckForAnalyze(psPlayerData);
-		if (iCheckAnalyze == 0)
-		{
-			iCheckAnalyze =
-				g_timeout_add_seconds(2,
-								(GSourceFunc) guiTimeoutCheckForAnalyze,
-								pData);
-			playerDataSetCheckForAnalyze(psPlayerData, iCheckAnalyze);
-		}
-	}
-
-	return FALSE;
-}
-
 /* ********************************************************************* */
 /*                                                                       */
 /*                           Test de regression                          */
